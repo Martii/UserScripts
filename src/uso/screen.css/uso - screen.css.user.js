@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 CHANGELOG
 =========
-http://userscripts.org/topics/{}
+http://userscripts.org/topics/26082
 
 */
 
