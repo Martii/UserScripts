@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 CHANGELOG
 =========
-{}
+http://userscripts.org/topics/26205
 
 */
 
@@ -32,11 +32,9 @@ CHANGELOG
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.1
+// @version       0.0.2
 // @include       http://userscripts.org/topics/*
 // @include       https://userscripts.org/topics/*
-// @exclude       http://userscripts.org/topics/new*
-// @exclude       https://userscripts.org/topics/new*
 // ==/UserScript==
 
 (function() {
@@ -63,7 +61,7 @@ CHANGELOG
   }
   //  ***************************************************************************
 
-  if (unsafeWindow instanceof Object && typeof unsafeWindow.Prototype == "object")
+  if (typeof unsafeWindow == "object" && typeof unsafeWindow.Prototype == "object")
     return;
   
   if (document.evaluate(
@@ -83,7 +81,7 @@ CHANGELOG
     );
 
     if (xpr)
-      for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i ) {
+      for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i) {
         thisNode.setAttribute("onclick", "javascript:void(0);");
         thisNode.setAttribute("href", "javascript:void(0);");
         thisNode.addEventListener("click", cancelReply, false);
