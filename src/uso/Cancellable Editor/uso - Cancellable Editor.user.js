@@ -1,30 +1,6 @@
-/*
-userscripts.org - Cancellable Editor
+(function () {
 
-NOTE: This uses object existence tests on unsafeWindow, but NEVER CALLS those objects
-
-LICENSE
-=======
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; version 3 of the License or any later version.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
-
-
-CHANGELOG
-=========
-http://userscripts.org/topics/26205
-
-*/
-
+var fileMETA = <><![CDATA[
 // ==UserScript==
 // @name          uso - Cancellable Editor
 // @namespace     http://userscripts.org/users/37004
@@ -32,18 +8,27 @@ http://userscripts.org/topics/26205
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.2
+// @version       0.0.3
 // @include       http://userscripts.org/topics/*
 // @include       https://userscripts.org/topics/*
 // ==/UserScript==
+]]></>;
 
-(function() {
+/*
+NOTE: This script uses object existence tests on unsafeWindow, but NEVER CALLS those objects
+
+CHANGELOG
+=========
+http://userscripts.org/topics/26205
+
+*/
+
 
   //  ***************************************************************************
   function cancelReply(ev) {
     this.removeEventListener("click", cancelReply, false);
 
-    this.setAttribute("onclick", "$('reply').hide(); return false;");
+    this.setAttribute("onclick", "$('#reply').hide(); return false;");
     this.setAttribute("href", "#");
 
     var xpr = document.evaluate(
@@ -73,7 +58,7 @@ http://userscripts.org/topics/26205
   ).booleanValue) {
 
     var xpr = document.evaluate(
-      '//a[starts-with(@onclick,"$(\'reply\').hide();")]',
+      '//a[starts-with(@onclick,"$(\'#reply\').hide();")]',
       document,
       null,
       XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
