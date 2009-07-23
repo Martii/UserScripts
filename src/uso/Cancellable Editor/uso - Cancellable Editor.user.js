@@ -1,6 +1,6 @@
 (function () {
 
-var fileMETA = <><![CDATA[
+USO.usoCheckup.userMeta = USO.usoCheckup.parseMeta(<><![CDATA[
 // ==UserScript==
 // @name          uso - Cancellable Editor
 // @namespace     http://userscripts.org/users/37004
@@ -8,10 +8,10 @@ var fileMETA = <><![CDATA[
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.3.3
+// @version       0.0.4
 // @include       http://userscripts.org/topics/*
 // @include       https://userscripts.org/topics/*
-// @require       http://updater.usotools.co.cc/48200.js?e4x=1&interval=7
+// @require       http://usocheckup.dune.net/index.php?scriptid=48200&maxage=7&method=install
 // ==/UserScript==
 ]]></>;
 
