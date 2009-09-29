@@ -7,13 +7,15 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.8
+// @version       0.0.8.1
 // @include       http://userscripts.org/topics/*
 // @include       https://userscripts.org/topics/*
 // @require       http://usocheckup.dune.net/48200.js
 // ==/UserScript==
 
-  usoCheckup.widgets("query");   // Activate the default query widget
+  if (typeof usoCheckup != "undefined") {
+    usoCheckup.widgets("query");   // Activate the default query widget.
+  }
 
 /*
 NOTE: This script uses object existence tests on unsafeWindow, but NEVER CALLS those objects
