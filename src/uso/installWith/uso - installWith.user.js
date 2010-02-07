@@ -7,15 +7,12 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.5
+// @version       0.0.6
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
 // @include   https://userscripts.org/topics/*
 // ==/UserScript==
-
-alert("This script is disabled.  Please check again at a later time for a new update");
-return;
 
   function getScriptid() {
     var scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
@@ -202,7 +199,7 @@ return;
                         thisNode.setAttribute("title", message);
                         break;
                       case "usoCheckupDOMNotify":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=usoCheckupDOMNotify&is=.user.js");
+                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?theme=61794&is=.user.js");
                         thisNode.setAttribute("title", message);
                         break;
                       default:
@@ -235,10 +232,10 @@ return;
                 updaterNode.textContent = "usoCheckup";
                 selectNode.appendChild(updaterNode);
 
-                // updaterNode = document.createElement("option");
-                // updaterNode.setAttribute("value", "usoCheckupDOMNotify");
-                // updaterNode.textContent = "usoCheckup + DOMNotify";
-                // selectNode.appendChild(updaterNode);
+                updaterNode = document.createElement("option");
+                updaterNode.setAttribute("value", "usoCheckupDOMNotify");
+                updaterNode.textContent = "usoCheckup + DOMNotify";
+                selectNode.appendChild(updaterNode);
 
                 thisNode.parentNode.insertBefore(selectNode, thisNode);
                 defaultNode.textContent = "userscripts.org (default)";
