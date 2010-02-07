@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.2
+// @version       0.0.3
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -72,42 +72,48 @@
                 headers["licence"] = headers["license"];
 
                 var knownUpdaters = [
-                  "http://usocheckup.dune.net/",
-                  "http://updater.usotools.co.cc/",
-                  "http://sizzlemctwizzle.com/updater.php",
-                  "http://buzzy.260mb.com/AutoUpdater.js",
-                  "http://userscripts.org/scripts/source/2296.user.js",
-                  "http://userscripts.org/scripts/source/8877.user.js",
-                  "http://userscripts.org/scripts/source/12193.user.js",
-                  "http://userscripts.org/scripts/source/16144.user.js",
-                  "http://userscripts.org/scripts/source/16338.user.js",
-                  "http://userscripts.org/scripts/source/20145.user.js",
-                  "http://userscripts.org/scripts/source/22372.user.js",
-                  "http://userscripts.org/scripts/source/26062.user.js",
-                  "http://userscripts.org/scripts/source/29878.user.js",
-                  "http://userscripts.org/scripts/source/29880.user.js",
-                  "http://userscripts.org/scripts/source/35611.user.js",
-                  "http://userscripts.org/scripts/source/36259.user.js",
-                  "http://userscripts.org/scripts/source/37853.user.js",
-                  "http://userscripts.org/scripts/source/38788.user.js",
-                  "http://userscripts.org/scripts/source/38017.user.js",
-                  "http://userscripts.org/scripts/source/41075.user.js",
-                  "http://userscripts.org/scripts/source/45266.user.js",
-                  "http://userscripts.org/scripts/source/45904.user.js",
-                  "http://userscripts.org/scripts/source/45989.user.js",
-                  "http://userscripts.org/scripts/source/51513.user.js",
-                  "http://userscripts.org/scripts/source/52251.user.js",
-                  "http://userscripts.org/scripts/source/57756.user.js"
+                  "http:\/\/usocheckup\.dune\.net/",
+                  "http:\/\/updater\.usotools\.co\.cc/",
+                  "http:\/\/sizzlemctwizzle\.com/updater\.php",
+                  "http:\/\/buzzy.260mb.com/AutoUpdater.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/2296\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/8877\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/12193\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/16144\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/16338\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/20145\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/22372\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/26062\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/29878\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/29880\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/35611\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/36259\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/37853\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/38788\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/38017\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/41075\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/45266\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/45904\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/45989\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/51513\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/52251\.user\.js",
+                  "http:\/\/userscripts\.org\/scripts\/source\/57756\.user\.js"
                 ];
 
-                if (headers["require"])
-                  for each (var require in headers["require"]) {
+                if (headers["require"]) {
+                  if (typeof headers["require"] == "string")
+                    requires = [headers["require"]];
+                  else
+                    requires = headers["require"];
+
+                  for each (var require in requires) {
                     for each (var updater in knownUpdaters) {
                       var rex = new RegExp(updater + ".*", "i");
                       if (require.match(rex))
                         return;
                     }
                   }
+                }
 
                 var installNode = document.evaluate(
                   "//div[@id='install_script']/a[@class='userjs']",
@@ -177,7 +183,7 @@
                   if (installNode && installNode.singleNodeValue) {
                     var thisNode = installNode.singleNodeValue;
 
-                    var message = "Are you sure this script doesn't already have an embedded updater?";
+                    var message = "Are you sure this script doesn't already have an updater?";
 
                     switch (ev.target.value) {
                       case "AnotherAutoUpdater":
