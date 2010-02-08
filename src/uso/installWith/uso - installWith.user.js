@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.10
+// @version       0.0.11
 // @include   http://userscripts.org/scripts/show/*
 // @include   https://userscripts.org/scripts/show/*
 // ==/UserScript==
@@ -184,10 +184,10 @@
                     var message = "Are you sure this script doesn't already have an updater?";
 
                     switch (ev.target.value) {
-                      case "AnotherAutoUpdater":
+/*                      case "AnotherAutoUpdater":
                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=AnotherAutoUpdater&is=.user.js");
                         thisNode.setAttribute("title", message);
-                        break;
+                        break;*/
                       case "USOUpdater":
                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=USOUpdater&is=.user.js");
                         thisNode.setAttribute("title", message);
@@ -215,10 +215,10 @@
                 updaterNode.textContent = "* populating list *";
                 selectNode.appendChild(updaterNode);
 
-                updaterNode = document.createElement("option");
-                updaterNode.setAttribute("value", "AnotherAutoUpdater");
-                updaterNode.textContent = "Another Auto Updater";
-                selectNode.appendChild(updaterNode);
+//                 updaterNode = document.createElement("option");
+//                 updaterNode.setAttribute("value", "AnotherAutoUpdater");
+//                 updaterNode.textContent = "Another Auto Updater";
+//                 selectNode.appendChild(updaterNode);
 
                 updaterNode = document.createElement("option");
                 updaterNode.setAttribute("value", "USOUpdater");
