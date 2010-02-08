@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.7
+// @version       0.0.8
 // @include   http://userscripts.org/scripts/show/*
 // @include   https://userscripts.org/scripts/show/*
 // ==/UserScript==
@@ -193,11 +193,11 @@
                         thisNode.setAttribute("title", message);
                         break;
                       case "usoCheckup":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js");
+                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapper=" + scriptid + "&is=.user.js");
                         thisNode.setAttribute("title", message);
                         break;
                       case "usoCheckupDOMNotify":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?theme=61794&is=.user.js");
+                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapper=" + scriptid + "&theme=61794&is=.user.js");
                         thisNode.setAttribute("title", message);
                         break;
                       default:
