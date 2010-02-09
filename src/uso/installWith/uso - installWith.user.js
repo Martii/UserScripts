@@ -7,9 +7,11 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.11
-// @include   http://userscripts.org/scripts/show/*
-// @include   https://userscripts.org/scripts/show/*
+// @version       0.0.12
+// @include http://userscripts.org/scripts/show/*
+// @include https://userscripts.org/scripts/show/*
+// @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&id=usoCheckup
+// @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
 
   function getScriptid() {
@@ -73,6 +75,7 @@
                   "http:\/\/usocheckup\.dune\.net/",
                   "http:\/\/updater\.usotools\.co\.cc/",
                   "http:\/\/sizzlemctwizzle\.com/updater\.php",
+                  "http:\/\/vulcan\.ist\.unomaha\.edu\/~medleymj\/updater\/",
                   "http:\/\/buzzy.260mb.com/AutoUpdater.js",
                   "http:\/\/userscripts\.org\/scripts\/source\/2296\.user\.js",
                   "http:\/\/userscripts\.org\/scripts\/source\/8877\.user\.js",
@@ -184,10 +187,10 @@
                     var message = "Are you sure this script doesn't already have an updater?";
 
                     switch (ev.target.value) {
-/*                      case "AnotherAutoUpdater":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=AnotherAutoUpdater&is=.user.js");
-                        thisNode.setAttribute("title", message);
-                        break;*/
+//                       case "AnotherAutoUpdater":
+//                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=AnotherAutoUpdater&is=.user.js");
+//                         thisNode.setAttribute("title", message);
+//                         break;
                       case "USOUpdater":
                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=USOUpdater&is=.user.js");
                         thisNode.setAttribute("title", message);
@@ -197,7 +200,7 @@
                         thisNode.setAttribute("title", message);
                         break;
                       case "usoCheckupDOMNotify":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&method=install&open=window&theme=61794&id=usoCheckup&is=.user.js");
+                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&method=install&open=window&theme=61794&custom=yes&id=usoCheckup&is=.user.js");
                         thisNode.setAttribute("title", message);
                         break;
                       default:
