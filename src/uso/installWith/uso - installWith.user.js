@@ -199,6 +199,10 @@
                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&is=.user.js");
                         thisNode.setAttribute("title", message);
                         break;
+                      case "usoCheckupbottomsUp":
+                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&method=install&open=window&theme=68506&custom=yes&id=usoCheckup&is=.user.js");
+                        thisNode.setAttribute("title", message);
+                        break;
                       case "usoCheckupDOMNotify":
                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&method=install&open=window&theme=61794&custom=yes&id=usoCheckup&is=.user.js");
                         thisNode.setAttribute("title", message);
@@ -231,6 +235,11 @@
                 updaterNode = document.createElement("option");
                 updaterNode.setAttribute("value", "usoCheckup");
                 updaterNode.textContent = "usoCheckup";
+                selectNode.appendChild(updaterNode);
+
+                updaterNode = document.createElement("option");
+                updaterNode.setAttribute("value", "usoCheckupbottomsUp");
+                updaterNode.textContent = "usoCheckup + bottomsUp (Experimental)";
                 selectNode.appendChild(updaterNode);
 
                 updaterNode = document.createElement("option");
