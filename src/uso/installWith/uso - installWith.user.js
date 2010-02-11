@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.18
+// @version       0.0.19
 // @include http://userscripts.org/scripts/show/*
 // @include https://userscripts.org/scripts/show/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
@@ -73,7 +73,7 @@
               var line, name, prefix, header, key, value;
                 var lines = metadataBlock.split(/\n/).filter(/\/\/ @/);
                 for each (line in lines) {
-                  [, name, value] = line.match(/\/\/ @(\S+)\s*(.*)/);
+                  [, name, value] = line.match(/\/\/ @(\S*)\s*(.*)/);
                   switch (name) {
                     case "licence":
                       name = "license";
