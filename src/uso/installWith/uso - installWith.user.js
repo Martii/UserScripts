@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.17
+// @version       0.0.18
 // @include http://userscripts.org/scripts/show/*
 // @include https://userscripts.org/scripts/show/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
@@ -36,23 +36,6 @@
     if (xpr)
       for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i)
         thisNode.setAttribute("target", "_top");
-
-    // Turn div.container width to 100%
-    // Turn div#content width to 100%
-    // Turn div#content left to 0;
-    document.evaluate(
-      "//div[@class='container']/div[@id='content']",
-      document,
-      null,
-      XPathResult.ANY_UNORDERED_NODE_TYPE,
-      xpr
-    );
-
-    if (xpr && xpr.singleNodeValue) {
-      thisNode = xpr.singleNodeValue;
-      thisNode.parentNode.setAttribute("style", "display: block; width: auto;");
-      thisNode.setAttribute("style", "width: 100% !important; left: 0");
-    }
   }
 
   function getScriptid() {
