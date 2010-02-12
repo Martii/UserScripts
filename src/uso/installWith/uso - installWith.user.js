@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.19
+// @version       0.0.20
 // @include http://userscripts.org/scripts/show/*
 // @include https://userscripts.org/scripts/show/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
@@ -212,10 +212,10 @@
                     var message = "Are you sure this script doesn't already have an updater?";
 
                     switch (ev.target.value) {
-//                       case "AnotherAutoUpdater":
-//                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=AnotherAutoUpdater&is=.user.js");
-//                         thisNode.setAttribute("title", message);
-//                         break;
+                      case "AnotherAutoUpdater":
+                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=AnotherAutoUpdater&show&is=.user.js");
+                        thisNode.setAttribute("title", message);
+                        break;
                       case "USOUpdater":
                         thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=USOUpdater&is=.user.js");
                         thisNode.setAttribute("title", message);
@@ -247,28 +247,33 @@
                 updaterNode.textContent = "* populating list *";
                 selectNode.appendChild(updaterNode);
 
-//                 updaterNode = document.createElement("option");
-//                 updaterNode.setAttribute("value", "AnotherAutoUpdater");
-//                 updaterNode.textContent = "Another Auto Updater";
-//                 selectNode.appendChild(updaterNode);
+                updaterNode = document.createElement("option");
+                updaterNode.setAttribute("value", "AnotherAutoUpdater");
+                updaterNode.setAttribute("title", "by sizzlemctwizzle");
+                updaterNode.textContent = "Another Auto Updater";
+                selectNode.appendChild(updaterNode);
 
                 updaterNode = document.createElement("option");
                 updaterNode.setAttribute("value", "USOUpdater");
                 updaterNode.textContent = "USO Updater";
+                updaterNode.setAttribute("title", "by TimSmart");
                 selectNode.appendChild(updaterNode);
 
                 updaterNode = document.createElement("option");
                 updaterNode.setAttribute("value", "usoCheckup");
+                updaterNode.setAttribute("title", "by tHE gREASEmONKEYS");
                 updaterNode.textContent = "usoCheckup";
                 selectNode.appendChild(updaterNode);
 
                 updaterNode = document.createElement("option");
                 updaterNode.setAttribute("value", "usoCheckupbottomsUp");
+                updaterNode.setAttribute("title", "themed by Marti Martz");
                 updaterNode.textContent = "usoCheckup + bottomsUp";
                 selectNode.appendChild(updaterNode);
 
                 updaterNode = document.createElement("option");
                 updaterNode.setAttribute("value", "usoCheckupDOMNotify");
+                updaterNode.setAttribute("title", "themed by Marti Martz");
                 updaterNode.textContent = "usoCheckup + DOMNotify";
                 selectNode.appendChild(updaterNode);
 
