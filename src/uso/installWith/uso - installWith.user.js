@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.21
+// @version       0.0.22
 // @include http://userscripts.org/scripts/show/*
 // @include https://userscripts.org/scripts/show/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
@@ -96,6 +96,16 @@
                 headers["licence"] = headers["license"];
 
                 var updaters = {
+                  "-": {
+                    "value": "-",
+                    "textContent": '---------------',
+                    "title": '',
+                    "updater": "",
+                    "url": [
+                      ""
+                    ],
+                    "qs": ""
+                  },
                   "AnotherAutoUpdater": {
                     "value": "AnotherAutoUpdater",
                     "textContent": 'Another Auto Updater',
@@ -338,6 +348,16 @@
                     ],
                     "qs": ""
                   },
+                  "--": {
+                    "value": "-",
+                    "textContent": '---------------',
+                    "title": '',
+                    "updater": "",
+                    "url": [
+                      ""
+                    ],
+                    "qs": ""
+                  },
                   "usoCheckup": {
                     "value": "usoCheckup",
                     "textContent": 'usoCheckup',
@@ -384,7 +404,7 @@
                     for each (var updater in updaters)
                       for each (var url in updater["url"]) {
                         var rex = new RegExp(url  + ".*", "i");
-                        if (require.match(rex))
+                        if (updater["value"] != "-" && require.match(rex))
                           return;
                       }
 
@@ -463,7 +483,7 @@
 
                     var pathtoWrapper = "http://usocheckup.dune.net/" + scriptid + ".user.js";
 
-                    if (ev.target.value == "") {
+                    if (ev.target.value == "" || ev.target.value == "-") {
                       thisNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
                       thisNode.removeAttribute("title");
                     }
