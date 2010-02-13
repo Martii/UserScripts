@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.22
+// @version       0.0.23
 // @include http://userscripts.org/scripts/show/*
 // @include https://userscripts.org/scripts/show/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
@@ -407,7 +407,6 @@
                         if (updater["value"] != "-" && require.match(rex))
                           return;
                       }
-
                 }
 
                 var installNode = document.evaluate(
@@ -469,6 +468,7 @@
                 var selectNode = document.createElement("select");
                 selectNode.setAttribute("style", "width: 90%; font-size: 0.9em;");
                 selectNode.addEventListener("change", function(ev) {
+
                   var installNode = document.evaluate(
                     "//div[@id='install_script']/a[@class='userjs']",
                     document,
@@ -496,6 +496,27 @@
                         + ((qs) ? ((updater == "usocheckup") ? "?" : "&") + qs : "")
                         + ((updater == "usocheckup" && !qs) ? "?is=.user.js" : "&is=.user.js"));
                       thisNode.setAttribute("title", "Are you sure this script doesn't have an updater?");
+
+                      var textContent = updaters[ev.target.value]["textContent"];
+                      var value = updaters[ev.target.value]["value"];
+                      GM_xmlhttpRequest({
+                        url: thisNode.getAttribute("href"),
+                        method: "HEAD",
+                        onload: function(xhr) {
+                          if (xhr.status != 200) {
+                            GM_deleteValue(":updaterPreference");
+                            selectNode.selectedIndex = 0;
+
+                            var ev = document.createEvent("HTMLEvents");
+                            ev.initEvent("change", true, true);
+                            selectNode.dispatchEvent(ev);
+
+                            alert(textContent + ' is unavailable at this time.\nDefaulting back to userscripts.org.\n\nPlease try again later.');
+                          }
+                          else
+                            GM_setValue(":updaterPreference", value);
+                        }
+                      });
                     }
                   }
                 }, true);
@@ -519,6 +540,13 @@
 
                 defaultNode.textContent = "userscripts.org (default)";
                 selectNode.selectedIndex = 0;
+
+                var updaterPreference = GM_getValue(":updaterPreference", "");
+                for (var i = 0; i < selectNode.options.length; ++i)
+                  if (selectNode.options[i].value == updaterPreference) {
+                    selectNode.selectedIndex = i;
+                    break;
+                  }
 
                 var ev = document.createEvent("HTMLEvents");
                 ev.initEvent("change", true, true);
