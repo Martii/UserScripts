@@ -486,6 +486,7 @@
                     if (ev.target.value == "" || ev.target.value == "-") {
                       thisNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
                       thisNode.removeAttribute("title");
+                      GM_deleteValue(":updaterPreference");
                     }
                     else {
                       var updater = updaters[ev.target.value]["updater"];
