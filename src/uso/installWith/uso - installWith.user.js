@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.20
+// @version       0.0.21
 // @include http://userscripts.org/scripts/show/*
 // @include https://userscripts.org/scripts/show/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
@@ -21,7 +21,7 @@
   catch (e) {}
 
   // Clean up USO for framed presentation
-  if (!frameless && window.location.href.match(/http[s]{0,1}:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
+  if (!frameless && window.location.href.match(/^http[s]{0,1}:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
     var thisNode;
 
     // Change all links to _top
@@ -95,49 +95,299 @@
                 }
                 headers["licence"] = headers["license"];
 
-                var knownUpdaters = [
-                  "http:\/\/usocheckup\.dune\.net/",
-                  "http:\/\/updater\.usotools\.co\.cc/",
-                  "http:\/\/sizzlemctwizzle\.com/updater\.php",
-                  "http:\/\/vulcan\.ist\.unomaha\.edu\/~medleymj\/updater\/",
-                  "http:\/\/buzzy.260mb.com/AutoUpdater.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/2296\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/8877\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/12193\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/16144\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/16338\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/20145\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/22372\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/26062\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/29878\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/29880\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/35611\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/36259\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/37853\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/38788\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/38017\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/41075\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/45266\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/45904\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/45989\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/51513\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/52251\.user\.js",
-                  "http:\/\/userscripts\.org\/scripts\/source\/57756\.user\.js"
-                ];
+                var updaters = {
+                  "AnotherAutoUpdater": {
+                    "value": "AnotherAutoUpdater",
+                    "textContent": 'Another Auto Updater',
+                    "title": 'by sizzlemctwizzle (27715)',
+                    "updater": "anotherautoupdater",
+                    "url": [
+                      "^http:\\/\\/sizzlemctwizzle\\.com\\/updater\\.php\\?id=" + scriptid,
+                      "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/" + scriptid + "\\.js"
+                    ],
+                    "qs": "show"
+                  },
+                  "16338": {
+                    "value": "",
+                    "textContent": 'AutoUpdate Test',
+                    "title": 'by TastyFlySoup (39661)',
+                    "updater": "16338",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/16338\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "45904": {
+                    "value": "",
+                    "textContent": 'Easy Update Code',
+                    "title": 'by shoecream (74855)',
+                    "updater": "45904",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45904\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "45266": {
+                    "value": "",
+                    "textContent": 'easy userscript updater snippet',
+                    "title": 'by thomd (43919)',
+                    "updater": "45266",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45266\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "35611": {
+                    "value": "",
+                    "textContent": 'GM Script Update Control',
+                    "title": 'by Sylvain Comte (21175)',
+                    "updater": "35611",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/35611\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "51513": {
+                    "value": "",
+                    "textContent": 'GM_ScriptUpdater',
+                    "title": 'by IzzySoft (89585)',
+                    "updater": "51513",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "38788": {
+                    "value": "",
+                    "textContent": 'Includes : CheckForUpdate',
+                    "title": 'by w35l3y (55607)',
+                    "updater": "38788",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "36259": {
+                    "value": "",
+                    "textContent": 'Script AutoUpdater',
+                    "title": 'by Eyal Soha (8105)',
+                    "updater": "36259",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/36259\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "20145": {
+                    "value": "",
+                    "textContent": 'Script Update Checker',
+                    "title": 'by Jarett (38602)',
+                    "updater": "20145",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/20145\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "8857": {
+                    "value": "",
+                    "textContent": 'Script Updater',
+                    "title": 'by alien scum (8158)',
+                    "updater": "8857",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/8857\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "57756": {
+                    "value": "",
+                    "textContent": 'Script Updater (userscripts.org)',
+                    "title": 'by PhasmaExMachina (106144)',
+                    "updater": "57756",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "41075": {
+                    "value": "",
+                    "textContent": 'Script Version Checker',
+                    "title": 'by littlespark (75320)',
+                    "updater": "41075",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "29878": {
+                    "value": "",
+                    "textContent": 'SelfUpdaterExample',
+                    "title": 'by ScroogeMcPump (51934)',
+                    "updater": "29878",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/29878\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "29880": {
+                    "value": "",
+                    "textContent": 'SelfUpdaterExampleOpera',
+                    "title": 'by ScroogeMcPump (51934)',
+                    "updater": "29880",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/29880\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "45989": {
+                    "value": "",
+                    "textContent": 'SVC Script Version Checker',
+                    "title": 'by devnull69 (75950)',
+                    "updater": "45989",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45989\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "22372": {
+                    "value": "",
+                    "textContent": 'Userscript Auto-Update Add-in',
+                    "title": 'by psycadelik (41688)',
+                    "updater": "22372",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "52251": {
+                    "value": "",
+                    "textContent": 'Userscripts - AutoUpdater',
+                    "title": 'by Buzzy (57340)',
+                    "updater": "52251",
+                    "url": [
+                      "^http:\\/\\/buzzy\\.260mb\\.com\\/AutoUpdater\\.js",
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "37853": {
+                    "value": "",
+                    "textContent": 'Userscripts.org Timed Updater',
+                    "title": 'by jerone (31497)',
+                    "updater": "37853",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/37853\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "26062": {
+                    "value": "",
+                    "textContent": 'Userscripts Updater',
+                    "title": 'by lazyttrick (20871)',
+                    "updater": "26062",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/26062\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "12193": {
+                    "value": "",
+                    "textContent": 'UserScript Update Notification',
+                    "title": 'by Seifer (33118)',
+                    "updater": "12193",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/12193\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "2296": {
+                    "value": "",
+                    "textContent": 'User Script Updates',
+                    "title": 'by Richard Gibson (336)',
+                    "updater": "2296",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/2296\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "39678": {
+                    "value": "",
+                    "textContent": 'US Framework',
+                    "title": 'by jerone (31497)',
+                    "updater": "39678",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/39678\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "USOUpdater": {
+                    "value": "USOUpdater",
+                    "textContent": 'USO Updater',
+                    "title": 'by Tim Smart (63868)',
+                    "updater": "usoupdater",
+                    "url": [
+                      "^http:\\/\\/updater\\.usotools\\.co\\.cc\\/" + scriptid + "\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "16144": {
+                    "value": "",
+                    "textContent": 'US Update',
+                    "title": 'by jerone (31497)',
+                    "updater": "16144",
+                    "url": [
+                      "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
+                    ],
+                    "qs": ""
+                  },
+                  "usoCheckup": {
+                    "value": "usoCheckup",
+                    "textContent": 'usoCheckup',
+                    "title": 'by tHE gREASEmONKEYS (multiple contributors)',
+                    "updater": "usocheckup",
+                    "url": [
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/" + scriptid + "\\.js",
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                    ],
+                    "qs": "wrapper=" + scriptid
+                  },
+                  "usoCheckupbottomsUp": {
+                    "value": "usoCheckupbottomsUp",
+                    "textContent": 'usoCheckup + bottomsUp',
+                    "title": 'themed by Marti Martz (37004)',
+                    "updater": "usocheckup",
+                    "url": [
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/" + scriptid + "\\.js",
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                    ],
+                    "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506&custom=yes&id=usoCheckup"
+                  },
+                  "usoCheckupDOMNotify": {
+                    "value": "usoCheckupDOMNotify",
+                    "textContent": 'usoCheckup + DOMNotify',
+                    "title": 'themed by Marti Martz (37004)',
+                    "updater": "usocheckup",
+                    "url": [
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/" + scriptid + "\\.js",
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                    ],
+                    "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794&custom=yes&id=usoCheckup"
+                  }
+                }
 
+                var requires;
                 if (headers["require"]) {
                   if (typeof headers["require"] == "string")
                     requires = [headers["require"]];
                   else
                     requires = headers["require"];
 
-                  for each (var require in requires) {
-                    for each (var updater in knownUpdaters) {
-                      var rex = new RegExp(updater + ".*", "i");
-                      if (require.match(rex))
-                        return;
-                    }
-                  }
+                  for each (var require in requires)
+                    for each (var updater in updaters)
+                      for each (var url in updater["url"]) {
+                        var rex = new RegExp(url  + ".*", "i");
+                        if (require.match(rex))
+                          return;
+                      }
+
                 }
 
                 var installNode = document.evaluate(
@@ -191,7 +441,9 @@
                   + "tgDOAB+KSOLmpAnoWMCLwAqgmmt01XdnUB3uCqrG6oACFJASmADuAYx/z/QfqoD7gSeAe4GaXScP"
                   + "/A58CVzcze7/FQCYQK3APk1oUWD4CgdYB1YBB/Bvyv8Asu15fjeIVHcAAAAASUVORK5CYII=";
 
-                thisNode.setAttribute("style", "width: 16px; height: 16px; margin-top: 0.6em; background: transparent url(" + qmark + ") no-repeat center center; float: right;");
+                thisNode.setAttribute("style", "width: 16px; height: 16px; margin-top: 0.6em; background: transparent url("
+                  + qmark
+                  + ") no-repeat center center; float: right;");
                 thisNode.textContent = "";
 
                 var selectNode = document.createElement("select");
@@ -209,75 +461,42 @@
                     var thisNode = installNode.singleNodeValue;
                     thisNode.style.backgroundRepeat = "repeat-x";
 
-                    var message = "Are you sure this script doesn't already have an updater?";
+                    var pathtoWrapper = "http://usocheckup.dune.net/" + scriptid + ".user.js";
 
-                    switch (ev.target.value) {
-                      case "AnotherAutoUpdater":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=AnotherAutoUpdater&show&is=.user.js");
-                        thisNode.setAttribute("title", message);
-                        break;
-                      case "USOUpdater":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?updater=USOUpdater&is=.user.js");
-                        thisNode.setAttribute("title", message);
-                        break;
-                      case "usoCheckup":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&is=.user.js");
-                        thisNode.setAttribute("title", message);
-                        break;
-                      case "usoCheckupbottomsUp":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&method=install&open=window&theme=68506&custom=yes&id=usoCheckup&is=.user.js");
-                        thisNode.setAttribute("title", message);
-                        break;
-                      case "usoCheckupDOMNotify":
-                        thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js?wrapperid=" + scriptid + "&method=install&open=window&theme=61794&custom=yes&id=usoCheckup&is=.user.js");
-                        thisNode.setAttribute("title", message);
-                        break;
-                      default:
-                        thisNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
-                        thisNode.setAttribute("title", "");
-                        break;
+                    if (ev.target.value == "") {
+                      thisNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
+                      thisNode.removeAttribute("title");
+                    }
+                    else {
+                      var updater = updaters[ev.target.value]["updater"];
+                      var qs =  updaters[ev.target.value]["qs"];
+
+                      thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js"
+                        + ((updater != "usocheckup") ? "?updater=" + updater : "")
+                        + ((qs) ? ((updater == "usocheckup") ? "?" : "&") + qs : "")
+                        + ((updater == "usocheckup" && !qs) ? "?is=.user.js" : "&is=.user.js"));
+                      thisNode.setAttribute("title", "Are you sure this script doesn't have an updater?");
                     }
                   }
                 }, true);
 
-                var updaterNode = document.createElement("option");
+                var defaultNode = document.createElement("option");
+                defaultNode.setAttribute("value", "");
+                defaultNode.textContent = "* populating list *";
+                selectNode.appendChild(defaultNode);
 
-                var defaultNode = updaterNode;
-                updaterNode.setAttribute("value", "");
-                updaterNode.textContent = "* populating list *";
-                selectNode.appendChild(updaterNode);
+              thisNode.parentNode.insertBefore(selectNode, thisNode);
 
-                updaterNode = document.createElement("option");
-                updaterNode.setAttribute("value", "AnotherAutoUpdater");
-                updaterNode.setAttribute("title", "by sizzlemctwizzle");
-                updaterNode.textContent = "Another Auto Updater";
-                selectNode.appendChild(updaterNode);
+                var updaterNode;
+                for each (var updater in updaters)
+                  if (updater["value"] != "") {
+                    updaterNode = document.createElement("option");
+                    updaterNode.setAttribute("value", updater["value"]);
+                    updaterNode.setAttribute("title", updater["title"]);
+                    updaterNode.textContent = updater["textContent"];
+                    selectNode.appendChild(updaterNode);
+                  }
 
-                updaterNode = document.createElement("option");
-                updaterNode.setAttribute("value", "USOUpdater");
-                updaterNode.textContent = "USO Updater";
-                updaterNode.setAttribute("title", "by TimSmart");
-                selectNode.appendChild(updaterNode);
-
-                updaterNode = document.createElement("option");
-                updaterNode.setAttribute("value", "usoCheckup");
-                updaterNode.setAttribute("title", "by tHE gREASEmONKEYS");
-                updaterNode.textContent = "usoCheckup";
-                selectNode.appendChild(updaterNode);
-
-                updaterNode = document.createElement("option");
-                updaterNode.setAttribute("value", "usoCheckupbottomsUp");
-                updaterNode.setAttribute("title", "themed by Marti Martz");
-                updaterNode.textContent = "usoCheckup + bottomsUp";
-                selectNode.appendChild(updaterNode);
-
-                updaterNode = document.createElement("option");
-                updaterNode.setAttribute("value", "usoCheckupDOMNotify");
-                updaterNode.setAttribute("title", "themed by Marti Martz");
-                updaterNode.textContent = "usoCheckup + DOMNotify";
-                selectNode.appendChild(updaterNode);
-
-                thisNode.parentNode.insertBefore(selectNode, thisNode);
                 defaultNode.textContent = "userscripts.org (default)";
                 selectNode.selectedIndex = 0;
 
