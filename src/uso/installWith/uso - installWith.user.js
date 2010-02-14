@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.26
+// @version       0.0.27
 // @include http://userscripts.org/scripts/show/*
 // @include https://userscripts.org/scripts/show/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
@@ -113,8 +113,8 @@
                     "title": 'by sizzlemctwizzle (27715)',
                     "updater": "anotherautoupdater",
                     "rex": [
-                      "^http:\\/\\/sizzlemctwizzle\\.com\\/updater\\.php\\?id=" + scriptid,
-                      "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/" + scriptid + "\\.js"
+                      "^http:\\/\\/sizzlemctwizzle\\.com\\/updater\\.php\\?id=\\d+",
+                      "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/\\d+\\.js"
                     ],
                     "url": "http://sizzlemctwizzle.com/updater.php?id=" + scriptid,
                     "qs": "show"
@@ -357,7 +357,7 @@
                     "title": 'by Tim Smart (63868)',
                     "updater": "usoupdater",
                     "rex": [
-                      "^http:\\/\\/updater\\.usotools\\.co\\.cc\\/" + scriptid + "\\.js"
+                      "^http:\\/\\/updater\\.usotools\\.co\\.cc\\/\\d+\\.js"
                     ],
                     "url": "http://updater.usotools.co.cc/" + scriptid + ".js",
                     "qs": ""
@@ -390,7 +390,7 @@
                     "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                     "updater": "usocheckup",
                     "rex": [
-                      "^http:\\/\\/usocheckup\\.dune\\.net\\/" + scriptid + "\\.js",
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
                       "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                     ],
                     "url": "http://usocheckup.dune.net/" + scriptid + ".js",
@@ -402,7 +402,7 @@
                     "title": 'themed by Marti Martz (37004)',
                     "updater": "usocheckup",
                     "rex": [
-                      "^http:\\/\\/usocheckup\\.dune\\.net\\/" + scriptid + "\\.js",
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
                       "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                     ],
                     "url": "http://usocheckup.dune.net/" + scriptid + ".js",
@@ -414,7 +414,7 @@
                     "title": 'themed by Marti Martz (37004)',
                     "updater": "usocheckup",
                     "rex": [
-                      "^http:\\/\\/usocheckup\\.dune\\.net\\/" + scriptid + "\\.js",
+                      "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
                       "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                     ],
                     "url": "http://usocheckup.dune.net/" + scriptid + ".js",
