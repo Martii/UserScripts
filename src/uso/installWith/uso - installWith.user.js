@@ -7,9 +7,11 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.27
-// @include http://userscripts.org/scripts/show/*
-// @include https://userscripts.org/scripts/show/*
+// @version       0.1.0
+// @include   http://userscripts.org/scripts/*/*
+// @include   https://userscripts.org/scripts/*/*
+// @include   http://userscripts.org/topics/*
+// @include   https://userscripts.org/topics/*
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
@@ -96,14 +98,21 @@
                 headers["licence"] = headers["license"];
 
                 var updaters = {
+                  "uso": {
+                    "value": "uso",
+                    "textContent": 'userscripts.org (default)',
+                    "title": '',
+                    "updater": "",
+                    "rex": [],
+                    "url": window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".user.js",
+                    "qs": ""
+                  },
                   "-": {
                     "value": "-",
                     "textContent": '---------------',
                     "title": '',
                     "updater": "",
-                    "rex": [
-                      ""
-                    ],
+                    "rex": [],
                     "url": "",
                     "qs": ""
                   },
@@ -379,7 +388,6 @@
                     "title": '',
                     "updater": "",
                     "rex": [
-                      ""
                     ],
                     "url": "",
                     "qs": ""
@@ -463,9 +471,73 @@
                   return;
 
                 var thisNode = installNode;
-
                 thisNode.textContent += " with";
                 thisNode.setAttribute("style", "font-size: 1.0em;");
+                thisNode.setAttribute("href", "javascript:void(0);");
+                thisNode.addEventListener("click", function(ev) {
+                  var xpr = document.evaluate(
+                    "//select[@id='usoCWrap']",
+                    document,
+                    null,
+                    XPathResult.ANY_UNORDERED_NODE_TYPE,
+                    null
+                  );
+
+                  if (xpr && xpr.singleNodeValue) {
+                    selectNode = xpr.singleNodeValue;
+
+                    var thisUpdater = updaters[selectNode.options[selectNode.selectedIndex].value];
+
+                    if (thisUpdater.value == "uso") {
+                      var url = window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".user.js";
+                      window.location.href = url;
+                    }
+                    else {
+                      GM_xmlhttpRequest({
+                        url: thisUpdater["url"],
+                        method: "HEAD",
+                        onload: function(xhr) {
+                          if (xhr.status == 200) {
+                            GM_xmlhttpRequest({
+                              url: "http://usocheckup.dune.net/" + scriptid + ".user.js",
+                              method: "HEAD",
+                              onload: function(xhr) {
+                                if (xhr.status == 200) {
+                                  var url = "http://usocheckup.dune.net/" + scriptid + ".user.js"
+                                    + ((thisUpdater["value"] != "usocheckup") ? "?updater=" + thisUpdater["value"] : "")
+                                    + ((thisUpdater["qs"]) ? ((thisUpdater["value"] == "usocheckup") ? "?" : "&") + thisUpdater["qs"] : "")
+                                    + ((thisUpdater["value"] == "usocheckup" && !thisUpdater["qs"]) ? "?is=.user.js" : "&is=.user.js")
+                                  window.location.href = url;
+                                 }
+                                else {
+                                  GM_deleteValue(":updaterPreference");
+                                  selectNode.selectedIndex = 0;
+
+                                  var ev = document.createEvent("HTMLEvents");
+                                  ev.initEvent("change", true, true);
+                                  selectNode.dispatchEvent(ev);
+
+                                  alert('The script wrapper is unavailable at this time.\nDefaulting back to userscripts.org.\n\nPlease try again later.');
+                                }
+                              }
+                            });
+                          }
+                          else {
+                            GM_deleteValue(":updaterPreference");
+                            selectNode.selectedIndex = 0;
+
+                            var ev = document.createEvent("HTMLEvents");
+                            ev.initEvent("change", true, true);
+                            selectNode.dispatchEvent(ev);
+
+                            alert(thisUpdater["textContent"] + ' is unavailable at this time.\nDefaulting back to userscripts.org.\n\nPlease try again later.');
+                          }
+                        }
+                      });
+                    }
+                  }
+                }, true);
+
 
                 thisNode = helpNode;
                 var qmark = "data:image/png;base64,"
@@ -487,92 +559,26 @@
                   + "tgDOAB+KSOLmpAnoWMCLwAqgmmt01XdnUB3uCqrG6oACFJASmADuAYx/z/QfqoD7gSeAe4GaXScP"
                   + "/A58CVzcze7/FQCYQK3APk1oUWD4CgdYB1YBB/Bvyv8Asu15fjeIVHcAAAAASUVORK5CYII=";
 
-                thisNode.setAttribute("style", "width: 16px; height: 16px; margin-top: 0.6em; background: transparent url("
-                  + qmark
-                  + ") no-repeat center center; float: right;");
+                thisNode.setAttribute("style", "width: 16px; height: 16px; margin-top: 0.6em; background: transparent url(" + qmark + ") no-repeat center center; float: right;");
                 thisNode.textContent = "";
 
                 var selectNode = document.createElement("select");
+                selectNode.setAttribute("id", "usoCWrap");
                 selectNode.setAttribute("style", "width: 90%; font-size: 0.9em;");
                 selectNode.addEventListener("change", function(ev) {
-
-                  var installNode = document.evaluate(
-                    "//div[@id='install_script']/a[@class='userjs']",
-                    document,
-                    null,
-                    XPathResult.ANY_UNORDERED_NODE_TYPE,
-                    null
-                  );
-
-                  if (installNode && installNode.singleNodeValue) {
-                    var thisNode = installNode.singleNodeValue;
-                    thisNode.style.backgroundRepeat = "repeat-x";
-
-                    var pathtoWrapper = "http://usocheckup.dune.net/" + scriptid + ".user.js";
-
-                    if (ev.target.value == "" || ev.target.value == "-") {
-                      thisNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
-                      thisNode.removeAttribute("title");
+                  switch(this.value) {
+                    case "-":
+                      selectNode.selectedIndex = 0;
+                    case "uso":
                       GM_deleteValue(":updaterPreference");
-                    }
-                    else {
-                      var updater = updaters[ev.target.value]["updater"];
-                      var qs =  updaters[ev.target.value]["qs"];
-
-                      thisNode.setAttribute("href", "http://usocheckup.dune.net/" + scriptid + ".user.js"
-                        + ((updater != "usocheckup") ? "?updater=" + updater : "")
-                        + ((qs) ? ((updater == "usocheckup") ? "?" : "&") + qs : "")
-                        + ((updater == "usocheckup" && !qs) ? "?is=.user.js" : "&is=.user.js"));
-                      thisNode.setAttribute("title", "Are you sure this script doesn't have an updater?");
-
-                      var textContent = updaters[ev.target.value]["textContent"];
-                      var value = updaters[ev.target.value]["value"];
-                      var url = updaters[ev.target.value]["url"];
-                      GM_xmlhttpRequest({
-                        url: thisNode.getAttribute("href"),
-                        method: "HEAD",
-                        onload: function(xhr) {
-                          if (xhr.status != 200) {
-                            GM_deleteValue(":updaterPreference");
-                            selectNode.selectedIndex = 0;
-
-                            var ev = document.createEvent("HTMLEvents");
-                            ev.initEvent("change", true, true);
-                            selectNode.dispatchEvent(ev);
-
-                            alert('The script wrapper is unavailable at this time.\nDefaulting back to userscripts.org.\n\nPlease try again later.');
-                          }
-                          else {
-                            GM_xmlhttpRequest({
-                              url: url,
-                              method: "HEAD",
-                              onload: function(xhr) {
-                                if (xhr.status != 200) {
-                                  GM_deleteValue(":updaterPreference");
-                                  selectNode.selectedIndex = 0;
-
-                                  var ev = document.createEvent("HTMLEvents");
-                                  ev.initEvent("change", true, true);
-                                  selectNode.dispatchEvent(ev);
-
-                                  alert(textContent + ' is unavailable at this time.\nDefaulting back to userscripts.org.\n\nPlease try again later.');
-                                }
-                                else {
-                                  GM_setValue(":updaterPreference", value);
-                                }
-                              }
-                            });
-                          }
-                        }
-                      });
-                    }
+                      installNode.setAttribute("title", "");
+                      break;
+                    default:
+                      GM_setValue(":updaterPreference", this.value);
+                      installNode.setAttribute("title", "Are you sure this script doesn't have an updater?");
+                      break;
                   }
                 }, true);
-
-                var defaultNode = document.createElement("option");
-                defaultNode.setAttribute("value", "");
-                defaultNode.textContent = "* populating list *";
-                selectNode.appendChild(defaultNode);
 
               thisNode.parentNode.insertBefore(selectNode, thisNode);
 
@@ -586,10 +592,9 @@
                     selectNode.appendChild(updaterNode);
                   }
 
-                defaultNode.textContent = "userscripts.org (default)";
                 selectNode.selectedIndex = 0;
 
-                var updaterPreference = GM_getValue(":updaterPreference", "");
+                var updaterPreference = GM_getValue(":updaterPreference", "uso");
                 for (var i = 0; i < selectNode.options.length; ++i)
                   if (selectNode.options[i].value == updaterPreference) {
                     selectNode.selectedIndex = i;
