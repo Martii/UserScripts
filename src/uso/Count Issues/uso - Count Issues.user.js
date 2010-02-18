@@ -89,8 +89,8 @@
         }
       }
 
-      if (yesCount == 0)
-        return;
+//      if (yesCount == 0)
+//        return;
 
       var issuesNode;
 
