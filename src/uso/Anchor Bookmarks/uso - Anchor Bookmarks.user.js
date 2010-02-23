@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.3
+// @version       0.0.4
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -31,7 +31,8 @@
           var bookmark;
           bookmark = encodeURIComponent(thatNode.textContent.toLowerCase());
           bookmark = bookmark.replace("%20", "-", "g");
-          bookmark = bookmark.replace("%0A", "", "g");
+          bookmark = bookmark.replace("%0A*$", "", "g");
+          bookmark = bookmark.replace(/^-*/, "").replace(/-*$/, "");
           bookmark = bookmark.replace("%", ".", "g");
           bookmark = "bookmark-" + bookmark;
 
