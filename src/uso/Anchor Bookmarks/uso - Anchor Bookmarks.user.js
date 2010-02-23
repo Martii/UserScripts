@@ -7,9 +7,11 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.1
+// @version       0.0.2
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
+// @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=&id=usoCheckup
+// @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
 
   var xpr = document.evaluate(
