@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.7
+// @version       0.0.8
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -40,8 +40,8 @@
           bookmark = bookmark.replace(/\s{2,}/g, " ");
 
           bookmark = encodeURIComponent(bookmark.toLowerCase());
-          bookmark = bookmark.replace("%20", "-", "g");
-          bookmark = bookmark.replace("%", ".", "g");
+          bookmark = bookmark.replace(/%20/g, "-");
+          bookmark = bookmark.replace(/%/g, ".");
           bookmark = "bookmark-" + bookmark;
 
           thisNode.setAttribute("id", bookmark);
