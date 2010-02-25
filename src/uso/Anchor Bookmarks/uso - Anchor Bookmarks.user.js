@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.9
+// @version       0.0.10
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -52,7 +52,8 @@
       }
     }
 
-    if (window.location.hash.match(/^#bookmark-/))
-      window.location.hash = window.location.hash;
+    var hash = window.location.hash.match(/^#(bookmark-.*)/);
+    if (hash)
+      document.getElementById(hash[1]).scrollIntoView();
 
 })();
