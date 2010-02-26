@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.12
+// @version       0.0.13
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -51,6 +51,8 @@
               break;
           newbookmark = newbookmark.replace(/\s*$/, "");
           newbookmark = newbookmark.replace(/\s{2,}/g, " ");
+
+          newbookmark = newbookmark.replace(/\.*/g, "");
 
           newbookmark = encodeURIComponent(newbookmark.toLowerCase());
           newbookmark = newbookmark.replace(/\%20/g, "-");
