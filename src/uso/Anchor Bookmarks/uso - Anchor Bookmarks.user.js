@@ -3,12 +3,12 @@
 // ==UserScript==
 // @name          uso - Anchor Bookmarks
 // @namespace     http://userscripts.org/users/37004
-// @description   With null anchor tags, finds next available text node line and converts it into a bookmark
+// @description   Converts anchor tags with no attributes into bookmark anchors via the next available text node line
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.15
+// @version       0.0.16
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
