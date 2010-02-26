@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.14
+// @version       0.0.15
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -106,15 +106,15 @@
 
   var hash = window.location.hash.match(/^#(bookmark-.*)/);
   if (hash) {
-    document.evaluate(
+    var anchorNode = document.evaluate(
       "//a[@id='" + hash[1] + "']",
       document,
       null,
       XPathResult.ANY_UNORDERED_NODE_TYPE,
-      xpr
+      null
     );
-    if (xpr && xpr.singleNodeValue)
-      xpr.singleNodeValue.scrollIntoView();
+    if (anchorNode && anchorNode.singleNodeValue)
+      anchorNode.singleNodeValue.scrollIntoView();
   }
 
 })();
