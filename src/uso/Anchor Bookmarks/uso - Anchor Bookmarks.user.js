@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.18
+// @version       0.0.19
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -67,7 +67,8 @@
               thisNode.setAttribute("name", newbookmark);
 
               var imgNode = document.createElement("img");
-              imgNode.setAttribute("style", "margin: 0.2em 0.2em 0.2em 0.2em; float: left;");
+              imgNode.style.setProperty("margin", "0.1em 0.2em 0", "");
+              imgNode.style.setProperty("float", "left", "");
               imgNode.setAttribute("title", "link");
               imgNode.setAttribute("alt", "link");
               imgNode.setAttribute("src", "data:image/png;base64,"
