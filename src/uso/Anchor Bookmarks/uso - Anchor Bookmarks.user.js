@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.1
+// @version       0.2.2
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -19,7 +19,6 @@
   switch ((pathname = window.location.pathname)) {
     case undefined:
     default:
-      GM_log('unsupported page');
       break;
 
     case (portion = pathname.match(/^\/scripts(.*)/i)) ? portion[0] : undefined:
@@ -55,7 +54,19 @@
           }
           break;
         case "issues":
-          // TODO: Cycle through all issues and add any bookmarks (5 of them UGGH)
+          var contextNode = document.evaluate(
+            "//p[contains(@id, 'issuecomments-')]",
+            document,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
+          );
+          for (var i = 0; i < contextNode.snapshotLength; ++i) {
+            var thisNode = contextNode.snapshotItem(i);
+
+            var commentid = thisNode.getAttribute("id").match(/issuecomments-(\d+)/i)[1];
+            addBookmarks(thisNode.nextSibling, "bookmark-" + commentid + "-");
+          }
           break;
       }
       break;
