@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.3
+// @version       0.2.4
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -22,8 +22,7 @@
       break;
 
     case (portion = pathname.match(/^\/scripts(.*)/i)) ? portion[0] : undefined:
-      var dummy, scriptid, tabid;
-      [dummy, tabid, scriptid] = (portion = portion[1].match(/^\/(show|reviews|issues)\/(.*)/i)) ? portion : [];
+      var tabid = (portion = portion[1].match(/^\/(show|reviews|issues)\/(.*)/i)) ? portion[1] : undefined;
       switch (tabid) {
         case "show":
           var contextNode = document.evaluate(
