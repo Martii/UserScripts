@@ -8,11 +8,13 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.3
+// @version       0.0.5
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
 // @include   https://userscripts.org/topics/*
+// @include   http://userscripts.org/reviews/*
+// @include   https://userscripts.org/reviews/*
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=14&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
@@ -88,9 +90,6 @@
           }
         }
       }
-
-//      if (yesCount == 0)
-//        return;
 
       var issuesNode;
 
