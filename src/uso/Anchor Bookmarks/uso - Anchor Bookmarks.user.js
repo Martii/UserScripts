@@ -8,16 +8,212 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.0
+// @version       0.2.0
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
 
+  var pathname, portion;
+  switch ((pathname = window.location.pathname)) {
+    case undefined:
+    default:
+      GM_log('unsupported page');
+      break;
+
+    case (portion = pathname.match(/^\/scripts(.*)/i)) ? portion[0] : undefined:
+      var scriptid, tabid;
+      [, tabid, scriptid] = (portion = portion[1].match(/^\/(show|reviews|issues)\/(.*)/i)) ? portion : [];
+      switch (tabid) {
+        case "show":
+          var contextNode = document.evaluate(
+            "//div[@id='full_description']",
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+          );
+          if (contextNode && contextNode.singleNodeValue) {
+            contextNode = contextNode.singleNodeValue;
+            addBookmarks(contextNode, "bookmark-");
+          }
+          break;
+        case "reviews":
+          var contextNode = document.evaluate(
+            "//div[@class='review']/div[@class='body']",
+            document,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
+          );
+          for (var i = 0; i < contextNode.snapshotLength; ++i) {
+            var thisNode = contextNode.snapshotItem(i);
+
+            var reviewid = thisNode.previousSibling.previousSibling.previousSibling.previousSibling.getAttribute("id").match(/reviews-(\d+)-status/i)[1];
+            addBookmarks(thisNode, "bookmark-" + reviewid + "-");
+          }
+          break;
+        case "issues":
+          // TODO: Cycle through all issues and add any bookmarks (5 of them UGGH)
+          break;
+      }
+      break;
+
+    case (portion = pathname.match(/^\/jetpacks(.*)/i)) ? portion[0] : undefined:
+      var jetpackid = (portion = portion[1].match(/^\/(.*)/i)) ? portion[1] : undefined;
+      if (jetpackid) {
+        var contextNode = document.evaluate(
+          "//p/b/text()['Summary:']",
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (contextNode && contextNode.singleNodeValue) {
+          contextNode = contextNode.singleNodeValue.parentNode.parentNode;
+          addBookmarks(contextNode, "bookmark-");
+        }
+      }
+      break;
+
+    case (portion = pathname.match(/^\/articles(.*)/i)) ? portion[0] : undefined:
+      var articleid = (portion = portion[1].match(/^\/(\d+).*/i)) ? portion[1] : undefined;
+      if (articleid) {
+        var contextNode = document.evaluate(
+          "//div[contains(@id, 'comment-body')]",
+          document,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+        for (var i = 0; i < contextNode.snapshotLength; ++i) {
+          var thisNode = contextNode.snapshotItem(i);
+
+          var commentid = thisNode.getAttribute("id").match(/comment-body-(\d+)/i)[1];
+          addBookmarks(thisNode, "bookmark-" + commentid + "-");
+        }
+
+        // TODO: Make sure this works cross-browser
+        contextNode = document.evaluate(
+          "//p[@class='summary']",
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (contextNode && contextNode.singleNodeValue) {
+          contextNode = contextNode.singleNodeValue;
+          addBookmarks(contextNode, "bookmark-");
+        }
+      }
+      break;
+
+    case (portion = pathname.match(/^\/groups(.*)/i)) ? portion[0] : undefined:
+      var groupid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      if (groupid) {
+        var contextNode = document.evaluate(
+          "//div[@class='description']",
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (contextNode && contextNode.singleNodeValue) {
+          contextNode = contextNode.singleNodeValue;
+          addBookmarks(contextNode, "bookmark-");
+        }
+      }
+      break;
+
+    case (portion = pathname.match(/^\/guides(.*)/i)) ? portion[0] : undefined:
+      var guideid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      if (guideid) {
+        var contextNode = document.evaluate(
+          "//div[@class='script-info']",
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (contextNode && contextNode.singleNodeValue) {
+          contextNode = contextNode.singleNodeValue;
+          addBookmarks(contextNode, "bookmark-");
+        }
+
+        // TODO: Make sure this works cross-browser
+        contextNode = document.evaluate(
+          "//div[contains(@id, 'comment-body')]",
+          document,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+        for (var i = 0; i < contextNode.snapshotLength; ++i) {
+          var thisNode = contextNode.snapshotItem(i);
+
+          var commentid = thisNode.getAttribute("id").match(/comment-body-(\d+)/i)[1];
+          addBookmarks(thisNode, "bookmark-" + commentid + "-");
+        }
+      }
+      break;
+
+    case (portion = pathname.match(/^\/topics(.*)/i)) ? portion[0] : undefined:
+      var topicid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      if (topicid) {
+        var contextNode = document.evaluate(
+          "//td[contains(@id, 'post-body')]",
+          document,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+        for (var i = 0; i < contextNode.snapshotLength; ++i) {
+          var thisNode = contextNode.snapshotItem(i);
+
+          var postid = thisNode.getAttribute("id").match(/post-body-(\d+)/i)[1];
+          addBookmarks(thisNode, "bookmark-" + postid + "-");
+        }
+      }
+      break;
+
+    case (portion = pathname.match(/^\/reviews(.*)/i)) ? portion[0] : undefined:
+      var reviewid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      if (reviewid) {
+        var contextNode = document.evaluate(
+          "//div[@class='body']",
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (contextNode && contextNode.singleNodeValue) {
+          contextNode = contextNode.singleNodeValue;
+          addBookmarks(contextNode, "bookmark-");
+        }
+        // TODO: Make sure this works cross-browser
+        contextNode = document.evaluate(
+          "//div[contains(@id, 'comment-body')]",
+          document,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+        for (var i = 0; i < contextNode.snapshotLength; ++i) {
+          var thisNode = contextNode.snapshotItem(i);
+
+          var commentid = thisNode.getAttribute("id").match(/comment-body-(\d+)/i)[1];
+          addBookmarks(thisNode, "bookmark-" + commentid + "-");
+        }
+      }
+      break;
+  }
+
+
+function addBookmarks(contextNode, prefixAttribute) {
   var xpr = document.evaluate(
-    "//a[not(@href)][not(@name)][not(@id)]",
-    document,
+    "../descendant::a[not(@href)][not(@name)][not(@id)]",
+    contextNode,
     null,
     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
     null
@@ -75,8 +271,8 @@
             var newbookmark = thatNode.textContent;
 
             newbookmark = newbookmark.replace(/^\s*/, "");
-            if (newbookmark.match(/(.{1,128})/i)) {
-              newbookmark = newbookmark.match(/(.{1,128})/i)[1];
+            if (newbookmark.match(/(.{1,64})/i)) {
+              newbookmark = newbookmark.match(/(.{1,64})/i)[1];
               newbookmark = newbookmark.replace(/\s*$/, "");
               newbookmark = newbookmark.replace(/\s{2,}/g, " ");
 
@@ -85,7 +281,7 @@
               newbookmark = encodeURIComponent(newbookmark.toLowerCase());
               newbookmark = newbookmark.replace(/\%20/g, "-");
               newbookmark = newbookmark.replace(/\%/g, ".");
-              newbookmark = "bookmark-" + newbookmark;
+              newbookmark = prefixAttribute + newbookmark;
 
               var suffix;
               if ((suffix = checkBookmark(bookmarks, newbookmark)))
@@ -93,7 +289,6 @@
 
               bookmarks[newbookmark] = newbookmark;
 
-              thisNode.setAttribute("id", newbookmark);
               thisNode.setAttribute("name", newbookmark);
 
               var imgNode = document.createElement("img");
@@ -116,14 +311,14 @@
       }
     }
   }
-
+}
   var hash = window.location.hash.match(/^#(bookmark-.*)/);
   if (hash) {
     var anchorNode = document.evaluate(
       "//a[@id='" + hash[1] + "']",
       document,
       null,
-      XPathResult.ANY_UNORDERED_NODE_TYPE,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
       null
     );
     if (anchorNode && anchorNode.singleNodeValue)
