@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.4
+// @version       0.2.5
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 // @require http://usocheckup.dune.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
@@ -256,7 +256,7 @@ function addBookmarks(contextNode, prefixAttribute) {
       var styleNode = document.createElement("style");
       styleNode.setAttribute("type", "text/css");
       styleNode.setAttribute("media", "screen, projection");
-      styleNode.textContent = ".bookmark { width: 16px; height: 16px; margin: 0.1em 0.2em 0; float: left; background: transparent url(" + img + ") no-repeat top left; }";
+      styleNode.textContent = ".bookmark { width: 16px; height: 16px; margin: 0.1em 0.2em 0; float: left; background: transparent url(" + img + ") no-repeat top left; opacity: 0.4; } .bookmark:hover { opacity: 1.0; }";
       headNode.singleNodeValue.appendChild(styleNode);
 
       var bookmarks = {};
