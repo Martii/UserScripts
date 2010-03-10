@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.6
+// @version       0.1.7
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -447,8 +447,6 @@
                             return;
                   }
 
-                  var skipVerify = GM_getValue(":skipVerify", false);
-
                   var installNode = document.evaluate(
                     "//div[@id='install_script']/a[@class='userjs']",
                     document,
@@ -477,75 +475,7 @@
 
                   var thisNode = installNode;
                   thisNode.textContent += " with";
-                  thisNode.setAttribute("style", "font-size: 1.0em;");
-
-                  if (!skipVerify) {
-                    thisNode.setAttribute("href", "javascript:void(0);");
-                    thisNode.addEventListener("click", function(ev) {
-                      var xpr = document.evaluate(
-                        "//select[@id='usoCWrap']",
-                        document,
-                        null,
-                        XPathResult.ANY_UNORDERED_NODE_TYPE,
-                        null
-                      );
-
-                      if (xpr && xpr.singleNodeValue) {
-                        selectNode = xpr.singleNodeValue;
-
-                        var thisUpdater = updaters[selectNode.options[selectNode.selectedIndex].value];
-
-                        if (thisUpdater.value == "uso") {
-                          var url = window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".user.js";
-                          window.location.href = url;
-                        }
-                        else {
-                          GM_xmlhttpRequest({
-                            url: thisUpdater["url"],
-                            method: "HEAD",
-                            onload: function(xhr) {
-                              if (xhr.status == 200) {
-                                GM_xmlhttpRequest({
-                                  url: "http://usocheckup.dune.net/" + scriptid + ".user.js",
-                                  method: "HEAD",
-                                  onload: function(xhr) {
-                                    if (xhr.status == 200) {
-                                      var rex = /usoCheckup.*/i;
-                                      var url = "http://usocheckup.dune.net/" + scriptid + ".user.js"
-                                        + ((!thisUpdater["value"].match(rex)) ? "?updater=" + thisUpdater["value"] : "")
-                                        + ((thisUpdater["qs"]) ? ((thisUpdater["value"].match(rex)) ? "?" : "&") + thisUpdater["qs"] : "")
-                                        + ((thisUpdater["value"].match(rex) && !thisUpdater["qs"]) ? "?" : "&") + "is=.user.js";
-                                      window.location.href = url;
-                                    }
-                                    else {
-                                      GM_deleteValue(":updaterPreference");
-                                      selectNode.selectedIndex = 0;
-
-                                      var ev = document.createEvent("HTMLEvents");
-                                      ev.initEvent("change", true, true);
-                                      selectNode.dispatchEvent(ev);
-
-                                      alert('The script wrapper is unavailable at this time.\nDefaulting back to userscripts.org.\n\nPlease try again later.');
-                                    }
-                                  }
-                                });
-                              }
-                              else {
-                                GM_deleteValue(":updaterPreference");
-                                selectNode.selectedIndex = 0;
-
-                                var ev = document.createEvent("HTMLEvents");
-                                ev.initEvent("change", true, true);
-                                selectNode.dispatchEvent(ev);
-
-                                alert(thisUpdater["textContent"] + ' is unavailable at this time.\nDefaulting back to userscripts.org.\n\nPlease try again later.');
-                              }
-                            }
-                          });
-                        }
-                      }
-                    }, true);
-                  }
+                  thisNode.style.setProperty("font-size", "1.0em", "");
 
                   thisNode = helpNode;
                   var qmark = "data:image/png;base64,"
@@ -567,14 +497,17 @@
                     + "tgDOAB+KSOLmpAnoWMCLwAqgmmt01XdnUB3uCqrG6oACFJASmADuAYx/z/QfqoD7gSeAe4GaXScP"
                     + "/A58CVzcze7/FQCYQK3APk1oUWD4CgdYB1YBB/Bvyv8Asu15fjeIVHcAAAAASUVORK5CYII=";
 
-                  thisNode.setAttribute("style", "width: 16px; height: 16px; margin-top: 0.6em; background: transparent url(" + qmark + ") no-repeat center center; float: right;");
+                  thisNode.style.setProperty("width", "16px", "");
+                  thisNode.style.setProperty("height", "16px", "");
+                  thisNode.style.setProperty("margin-top", "0.6em", "");
+                  thisNode.style.setProperty("background", "transparent url(" + qmark + ") no-repeat scroll top left", "");
+                  thisNode.style.setProperty("float", "right", "");
+
                   thisNode.textContent = "";
 
                   var selectNode = document.createElement("select");
-                  selectNode.setAttribute("style", "width: 90%; font-size: 0.9em;");
-                  if (!skipVerify)
-                    selectNode.setAttribute("id", "usoCWrap");
-
+                  selectNode.style.setProperty("width", "90%", "");
+                  selectNode.style.setProperty("font-size", "0.9em", "");
                   selectNode.addEventListener("change", function(ev) {
                     switch(this.value) {
                       case "-":
@@ -582,22 +515,19 @@
                       case "uso":
                         GM_deleteValue(":updaterPreference");
                         installNode.setAttribute("title", "");
-                        if (skipVerify)
-                          installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
+                        installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
                         break;
                       default:
                         GM_setValue(":updaterPreference", this.value);
                         installNode.setAttribute("title", "Are you sure this script doesn't have an updater?");
-                        if (skipVerify) {
-                          var thisUpdater = updaters[this.value];
-                          var rex = /usoCheckup.*/i;
-                          var url = "http://usocheckup.dune.net/" + scriptid + ".user.js"
-                            + ((!thisUpdater["value"].match(rex)) ? "?updater=" + thisUpdater["value"] : "")
-                            + ((thisUpdater["qs"]) ? ((thisUpdater["value"].match(rex)) ? "?" : "&") + thisUpdater["qs"] : "")
-                            + ((thisUpdater["value"].match(rex) && !thisUpdater["qs"]) ? "?" : "&") + "is=.user.js";
-                          installNode.setAttribute("href", url);
-                        }
-                        break;
+                        var thisUpdater = updaters[this.value];
+                        var rex = /usoCheckup.*/i;
+                        var url = "http://usocheckup.dune.net/" + scriptid + ".user.js"
+                          + ((!thisUpdater["value"].match(rex)) ? "?updater=" + thisUpdater["value"] : "")
+                          + ((thisUpdater["qs"]) ? ((thisUpdater["value"].match(rex)) ? "?" : "&") + thisUpdater["qs"] : "")
+                          + ((thisUpdater["value"].match(rex) && !thisUpdater["qs"]) ? "?" : "&") + "is=.user.js";
+                        installNode.setAttribute("href", url);
+                      break;
                     }
                   }, true);
 
