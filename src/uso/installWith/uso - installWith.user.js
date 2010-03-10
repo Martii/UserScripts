@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.7
+// @version       0.1.8
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -36,10 +36,23 @@
       XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
       null
     );
-
     if (xpr)
       for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i)
         thisNode.setAttribute("target", "_top");
+
+    xpr = document.evaluate(
+      "//div[@id='content']",
+      document,
+      null,
+      XPathResult.ANY_UNORDERED_NODE_TYPE,
+      null
+    );
+    if (xpr && xpr.singleNodeValue) {
+      var thisNode = xpr.singleNodeValue
+
+      thisNode.style.setProperty("width", "100%", "important");
+      thisNode.style.setProperty("left", "0", "");
+    }
   }
 
   function getScriptid() {
