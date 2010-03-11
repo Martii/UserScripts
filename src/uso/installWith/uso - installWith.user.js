@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.8
+// @version       0.1.9
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -40,18 +40,19 @@
       for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i)
         thisNode.setAttribute("target", "_top");
 
+    GM_addStyle("div.container { width: auto; margin: 0; }");
+    GM_addStyle("div#content { width: 100% !important; left: 0; }");
+
     xpr = document.evaluate(
-      "//div[@id='content']",
+      "/html/body//div[@id='heading']",
       document,
       null,
       XPathResult.ANY_UNORDERED_NODE_TYPE,
       null
     );
     if (xpr && xpr.singleNodeValue) {
-      var thisNode = xpr.singleNodeValue
-
-      thisNode.style.setProperty("width", "100%", "important");
-      thisNode.style.setProperty("left", "0", "");
+      thisNode = xpr.singleNodeValue
+      GM_addStyle("div#heading { min-height: " + (thisNode.clientHeight + 7) + "px; }");
     }
   }
 
