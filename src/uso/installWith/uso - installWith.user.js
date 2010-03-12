@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.10
+// @version       0.1.11
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -144,6 +144,17 @@
                       ],
                       "url": "http://sizzlemctwizzle.com/updater.php?id=" + scriptid,
                       "qs": "show"
+                    },
+                    "UserscriptUpdaterGenerator": {
+                      "value": "",
+                      "textContent": 'Userscript Updater Generator',
+                      "title": 'by ΙδεΠÐ (136989)',
+                      "updater": "userscriptupdatergenerator",
+                      "rex": [
+                        "^http:\\/\\/userscript-updater-generator\\.appspot\\.com\\/\\?id=\\d+"
+                      ],
+                      "url": "http://userscript-updater-generator.appspot.com/?" + scriptid,
+                      "qs": ""
                     },
                     "16338": {
                       "value": "",
