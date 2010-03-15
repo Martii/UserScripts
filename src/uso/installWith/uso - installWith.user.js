@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.12
+// @version       0.2.0
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -17,6 +17,29 @@
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
+
+  var securityAdvisory = {
+    "low": {
+      "title": "Security Advisory: LOW",
+      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFj8swls5GoNVTpdhbrdpjsN1tsuB4uuN/veWKwuiRyOuaz++l1fCv2vK23fW74PbB5PfKP126HQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUgM+i3vCUAAABFSURBVCjP1dCJDcAgDARB84TwhJD+q+V8khFSKmCng5VXVIeHGlUqkOGGBBdFCeTBLSf3bQbYkb4d0Sftd8XO2Bu9c6gJ9tkEDz54A9sAAAAASUVORK5CYII="
+    },
+    "guarded": {
+      "title": "Security Advisory: GUARDED",
+      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADZQTFRFMEvLRlzOU2jVW2/YY3jabYDdeIfgf4/jipflkZ7omqbrpbDvr7nwtsDyu8T1wcn2ytH30df4OWXj/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYqAdjJu3YAAABHSURBVCjP1dCLDYAgFEPRouCHB6j7L2tTIBg3oCdd4KKgIEsi0w1RTjpop40CeVplIfcx7x7czSW9SWrs12RU6WVqm1pnUi/yTQQLN2JVZQAAAABJRU5ErkJggg=="
+    },
+    "elevated": {
+      "title": "Security Advisory: ELEVATED",
+      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFycswys5G0tVT1dhb2tpj291t2+B44ON/4eWK5OiR6Oua7O+l7vCv8fK28/W79PbB9ffK6M6iDgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUfLtNv+sAAAABBSURBVCjP1dCLEcAQFETRh/gkJPRfrc0mGDMacE8HVx553ZAowvU7IYAHB5YOMaRJdftWukzzke/J+ko7M95sqwL11wQNX63s2AAAAABJRU5ErkJggg=="
+    },
+    "high": {
+      "title": "Security Advisory: HIGH",
+      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAIAAACtkRp8AAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYrJxPfD8oAAACASURBVDjL7ZKxDsJADEOf/P9/xFcw8QNMbAj1etdregwXAlTAVqYOlhI7zmIznA4CZLUKEKBlLgLUagoO0JyHmG0a3ddvl9I1c6+NvufkP/PTW/tc0u3tf+jXy0d+x2Ygn49qnt0DzTMG1Gz62pN1V1578qsroa86E3xOezb/xx0M5VZRPzRQRQAAAABJRU5ErkJggg=="
+    },
+    "severe": {
+      "title": "Security Advisory: SEVERE",
+      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFyzcwzk9G1VtT2GNb2mhj3XRt4IF444Z/5ZKK6JiR66Ga76ul8LSv8rm29b+79sXB983Kf5TXQQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUjGoEod4oAAABCSURBVCjP1dCJEQAREADBvdd5DvlHa4qlCMF0BiNRovwqwMMpiw8GLx7cuKoTx7BzeZLQnwTlpyt2udLPtDftzqYK8I4ECjgUovgAAAAASUVORK5CYII="
+    }
+  };
 
   var frameless = false;
   try {
@@ -80,7 +103,24 @@
       url: "http://userscripts.org/scripts/source/" + scriptid + ".user.js?",
       method: "HEAD",
       onload: function(xhr) {
-        if (xhr.status == 200) {
+        var installNode = document.evaluate(
+          "//div[@id='install_script']/a[@class='userjs']",
+          document,
+          null,
+          XPathResult.ANY_UNORDERED_NODE_TYPE,
+          null
+        );
+
+        if (installNode && installNode.singleNodeValue)
+          installNode = installNode.singleNodeValue;
+        else
+          return;
+
+        if (xhr.status != 200) {
+          installNode.setAttribute("title", securityAdvisory["elevated"]["title"] + ",UNLISTED");
+          GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+        }
+        else {
           var scriptid = getScriptid();
           GM_xmlhttpRequest({
             url: "http://userscripts.org/scripts/source/" + scriptid + ".meta.js",
@@ -122,7 +162,11 @@
                       "updater": "",
                       "rex": [],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "-": {
                       "value": "-",
@@ -131,7 +175,11 @@
                       "updater": "",
                       "rex": [],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "AnotherAutoUpdater": {
                       "value": "AnotherAutoUpdater",
@@ -143,7 +191,11 @@
                         "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/\\d+\\.js"
                       ],
                       "url": "http://sizzlemctwizzle.com/updater.php?id=" + scriptid,
-                      "qs": "show"
+                      "qs": "show",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "UserscriptUpdaterGenerator": {
                       "value": "",
@@ -154,7 +206,11 @@
                         "^http:\\/\\/userscript-updater-generator\\.appspot\\.com\\/\\?id=\\d+"
                       ],
                       "url": "http://userscript-updater-generator.appspot.com/?" + scriptid,
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": "CLOSED-SOURCE"
+                      }
                     },
                     "16338": {
                       "value": "",
@@ -165,7 +221,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/16338\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "45904": {
                       "value": "",
@@ -176,7 +236,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45904\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "45266": {
                       "value": "",
@@ -187,7 +251,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45266\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "35611": {
                       "value": "",
@@ -198,7 +266,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/35611\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "51513": {
                       "value": "",
@@ -209,7 +281,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "38788": {
                       "value": "",
@@ -220,7 +296,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "36259": {
                       "value": "",
@@ -231,7 +311,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/36259\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "20145": {
                       "value": "",
@@ -242,7 +326,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/20145\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "8857": {
                       "value": "",
@@ -253,7 +341,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/8857\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "high",
+                        "title": "BROKEN"
+                      }
                     },
                     "57756": {
                       "value": "",
@@ -264,7 +356,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "41075": {
                       "value": "",
@@ -275,7 +371,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "29878": {
                       "value": "",
@@ -286,7 +386,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/29878\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "29880": {
                       "value": "",
@@ -297,7 +401,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/29880\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "45989": {
                       "value": "",
@@ -308,7 +416,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45989\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "22372": {
                       "value": "",
@@ -319,7 +431,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "52251": {
                       "value": "",
@@ -331,7 +447,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "37853": {
                       "value": "",
@@ -342,7 +462,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/37853\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "26062": {
                       "value": "",
@@ -353,7 +477,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/26062\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "12193": {
                       "value": "",
@@ -364,7 +492,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/12193\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "2296": {
                       "value": "",
@@ -375,7 +507,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/2296\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "39678": {
                       "value": "",
@@ -386,7 +522,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/39678\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "USOUpdater": {
                       "value": "",
@@ -397,7 +537,11 @@
                         "^http:\\/\\/updater\\.usotools\\.co\\.cc\\/\\d+\\.js"
                       ],
                       "url": "http://updater.usotools.co.cc/" + scriptid + ".js",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": ",POSSIBLE SECURITY RISK"
+                      }
                     },
                     "16144": {
                       "value": "",
@@ -408,7 +552,11 @@
                         "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "--": {
                       "value": "-",
@@ -418,7 +566,11 @@
                       "rex": [
                       ],
                       "url": "",
-                      "qs": ""
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "usoCheckup": {
                       "value": "usoCheckup",
@@ -430,7 +582,11 @@
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
-                      "qs": "wrapper=" + scriptid
+                      "qs": "wrapper=" + scriptid,
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "usoCheckupbottomsUp": {
                       "value": "usoCheckupbottomsUp",
@@ -442,7 +598,11 @@
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
-                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506&custom=yes&id=usoCheckup"
+                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506&custom=yes&id=usoCheckup",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     },
                     "usoCheckupDOMNotify": {
                       "value": "usoCheckupDOMNotify",
@@ -454,7 +614,11 @@
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
-                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794&custom=yes&id=usoCheckup"
+                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794&custom=yes&id=usoCheckup",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
                     }
                   }
 
@@ -468,22 +632,12 @@
                     for each (var require in requires)
                       for each (var updater in updaters)
                         for each (var rex in updater["rex"])
-                          if (updater["value"] != "-" && require.match(new RegExp(rex  + ".*", "i")))
+                          if (updater["value"] != "-" && require.match(new RegExp(rex  + ".*", "i"))) {
+                            installNode.setAttribute("title", securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
+                            GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
                             return;
+                          }
                   }
-
-                  var installNode = document.evaluate(
-                    "//div[@id='install_script']/a[@class='userjs']",
-                    document,
-                    null,
-                    XPathResult.ANY_UNORDERED_NODE_TYPE,
-                    null
-                  );
-
-                  if (installNode && installNode.singleNodeValue)
-                    installNode = installNode.singleNodeValue;
-                  else
-                    return;
 
                   var helpNode = document.evaluate(
                     "//div[@id='install_script']/a[@class='help']",
