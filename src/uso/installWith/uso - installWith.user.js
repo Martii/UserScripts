@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.0
+// @version       0.2.1
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -20,24 +20,24 @@
 
   var securityAdvisory = {
     "low": {
-      "title": "Security Advisory: LOW",
-      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFj8swls5GoNVTpdhbrdpjsN1tsuB4uuN/veWKwuiRyOuaz++l1fCv2vK23fW74PbB5PfKP126HQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUgM+i3vCUAAABFSURBVCjP1dCJDcAgDARB84TwhJD+q+V8khFSKmCng5VXVIeHGlUqkOGGBBdFCeTBLSf3bQbYkb4d0Sftd8XO2Bu9c6gJ9tkEDz54A9sAAAAASUVORK5CYII="
+      "title": 'Security Advisory: LOW',
+      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFj8swls5GoNVTpdhbrdpjsN1tsuB4uuN/veWKwuiRyOuaz++l1fCv2vK23fW74PbB5PfKP126HQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUgM+i3vCUAAABFSURBVCjP1dCJDcAgDARB84TwhJD+q+V8khFSKmCng5VXVIeHGlUqkOGGBBdFCeTBLSf3bQbYkb4d0Sftd8XO2Bu9c6gJ9tkEDz54A9sAAAAASUVORK5CYII='
     },
     "guarded": {
-      "title": "Security Advisory: GUARDED",
-      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADZQTFRFMEvLRlzOU2jVW2/YY3jabYDdeIfgf4/jipflkZ7omqbrpbDvr7nwtsDyu8T1wcn2ytH30df4OWXj/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYqAdjJu3YAAABHSURBVCjP1dCLDYAgFEPRouCHB6j7L2tTIBg3oCdd4KKgIEsi0w1RTjpop40CeVplIfcx7x7czSW9SWrs12RU6WVqm1pnUi/yTQQLN2JVZQAAAABJRU5ErkJggg=="
+      "title": 'Security Advisory: GUARDED',
+      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADZQTFRFMEvLRlzOU2jVW2/YY3jabYDdeIfgf4/jipflkZ7omqbrpbDvr7nwtsDyu8T1wcn2ytH30df4OWXj/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYqAdjJu3YAAABHSURBVCjP1dCLDYAgFEPRouCHB6j7L2tTIBg3oCdd4KKgIEsi0w1RTjpop40CeVplIfcx7x7czSW9SWrs12RU6WVqm1pnUi/yTQQLN2JVZQAAAABJRU5ErkJggg=='
     },
     "elevated": {
-      "title": "Security Advisory: ELEVATED",
-      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFycswys5G0tVT1dhb2tpj291t2+B44ON/4eWK5OiR6Oua7O+l7vCv8fK28/W79PbB9ffK6M6iDgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUfLtNv+sAAAABBSURBVCjP1dCLEcAQFETRh/gkJPRfrc0mGDMacE8HVx553ZAowvU7IYAHB5YOMaRJdftWukzzke/J+ko7M95sqwL11wQNX63s2AAAAABJRU5ErkJggg=="
+      "title": 'Security Advisory: ELEVATED',
+      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFycswys5G0tVT1dhb2tpj291t2+B44ON/4eWK5OiR6Oua7O+l7vCv8fK28/W79PbB9ffK6M6iDgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUfLtNv+sAAAABBSURBVCjP1dCLEcAQFETRh/gkJPRfrc0mGDMacE8HVx553ZAowvU7IYAHB5YOMaRJdftWukzzke/J+ko7M95sqwL11wQNX63s2AAAAABJRU5ErkJggg=='
     },
     "high": {
-      "title": "Security Advisory: HIGH",
-      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAIAAACtkRp8AAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYrJxPfD8oAAACASURBVDjL7ZKxDsJADEOf/P9/xFcw8QNMbAj1etdregwXAlTAVqYOlhI7zmIznA4CZLUKEKBlLgLUagoO0JyHmG0a3ddvl9I1c6+NvufkP/PTW/tc0u3tf+jXy0d+x2Ygn49qnt0DzTMG1Gz62pN1V1578qsroa86E3xOezb/xx0M5VZRPzRQRQAAAABJRU5ErkJggg=="
+      "title": 'Security Advisory: HIGH',
+      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAIAAACtkRp8AAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYrJxPfD8oAAACASURBVDjL7ZKxDsJADEOf/P9/xFcw8QNMbAj1etdregwXAlTAVqYOlhI7zmIznA4CZLUKEKBlLgLUagoO0JyHmG0a3ddvl9I1c6+NvufkP/PTW/tc0u3tf+jXy0d+x2Ygn49qnt0DzTMG1Gz62pN1V1578qsroa86E3xOezb/xx0M5VZRPzRQRQAAAABJRU5ErkJggg=='
     },
     "severe": {
-      "title": "Security Advisory: SEVERE",
-      "background-image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFyzcwzk9G1VtT2GNb2mhj3XRt4IF444Z/5ZKK6JiR66Ga76ul8LSv8rm29b+79sXB983Kf5TXQQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUjGoEod4oAAABCSURBVCjP1dCJEQAREADBvdd5DvlHa4qlCMF0BiNRovwqwMMpiw8GLx7cuKoTx7BzeZLQnwTlpyt2udLPtDftzqYK8I4ECjgUovgAAAAASUVORK5CYII="
+      "title": 'Security Advisory: SEVERE',
+      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFyzcwzk9G1VtT2GNb2mhj3XRt4IF444Z/5ZKK6JiR66Ga76ul8LSv8rm29b+79sXB983Kf5TXQQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUjGoEod4oAAABCSURBVCjP1dCJEQAREADBvdd5DvlHa4qlCMF0BiNRovwqwMMpiw8GLx7cuKoTx7BzeZLQnwTlpyt2udLPtDftzqYK8I4ECjgUovgAAAAASUVORK5CYII='
     }
   };
 
@@ -65,18 +65,7 @@
 
     GM_addStyle("div.container { width: auto; margin: 0; }");
     GM_addStyle("div#content { width: 100% !important; left: 0; }");
-
-    xpr = document.evaluate(
-      "/html/body//div[@id='heading']",
-      document,
-      null,
-      XPathResult.ANY_UNORDERED_NODE_TYPE,
-      null
-    );
-    if (xpr && xpr.singleNodeValue) {
-      thisNode = xpr.singleNodeValue
-      GM_addStyle("div#heading { min-height: " + (thisNode.clientHeight + 7) + "px; }");
-    }
+    GM_addStyle("div#heading { height: 66px; min-height: 0; }");
   }
 
   function getScriptid() {
