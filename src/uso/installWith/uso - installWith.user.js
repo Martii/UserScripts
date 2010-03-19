@@ -7,14 +7,14 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.1
+// @version       0.2.2
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
 // @include   https://userscripts.org/topics/*
 // @include   http://userscripts.org/reviews/*
 // @include   https://userscripts.org/reviews/*
-// @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=14&custom=yes&topicid=45479&id=usoCheckup
+// @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=7&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
 
@@ -180,7 +180,7 @@
                         "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/\\d+\\.js"
                       ],
                       "url": "http://sizzlemctwizzle.com/updater.php?id=" + scriptid,
-                      "qs": "show",
+                      "qs": "show&uso",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
