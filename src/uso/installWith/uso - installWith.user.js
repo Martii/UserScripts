@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.2
+// @version       0.2.3
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -198,7 +198,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": "CLOSED-SOURCE"
+                        "title": "Closed-Source"
                       }
                     },
                     "16338": {
@@ -517,8 +517,22 @@
                         "title": ""
                       }
                     },
+                    "---": {
+                      "value": "-",
+                      "textContent": '---------------',
+                      "title": '',
+                      "updater": "",
+                      "rex": [
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
+                    },
                     "USOUpdater": {
-                      "value": "",
+                      "value": "USOUpdater",
                       "textContent": 'USO Updater',
                       "title": 'by Tim Smart (63868)',
                       "updater": "usoupdater",
@@ -529,7 +543,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": ",POSSIBLE SECURITY RISK"
+                        "title": ",Possible Security Risk,Hosting Instability"
                       }
                     },
                     "16144": {
@@ -677,6 +691,8 @@
                   selectNode.style.setProperty("width", "90%", "");
                   selectNode.style.setProperty("font-size", "0.9em", "");
                   selectNode.addEventListener("change", function(ev) {
+                    var thisUpdater = updaters[this.value];
+                    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
                     switch(this.value) {
                       case "-":
                         selectNode.selectedIndex = 0;
@@ -687,8 +703,7 @@
                         break;
                       default:
                         GM_setValue(":updaterPreference", this.value);
-                        installNode.setAttribute("title", "Are you sure this script doesn't have an updater?");
-                        var thisUpdater = updaters[this.value];
+                        installNode.setAttribute("title", securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["title"] + thisUpdater["securityAdvisory"]["title"]);
                         var rex = /usoCheckup.*/i;
                         var url = "http://usocheckup.dune.net/" + scriptid + ".user.js"
                           + ((!thisUpdater["value"].match(rex)) ? "?updater=" + thisUpdater["value"] : "")
