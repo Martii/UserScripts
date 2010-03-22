@@ -7,13 +7,15 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.4
-// @include   http://userscripts.org/scripts/*/*
-// @include   https://userscripts.org/scripts/*/*
-// @include   http://userscripts.org/topics/*
-// @include   https://userscripts.org/topics/*
-// @include   http://userscripts.org/reviews/*
-// @include   https://userscripts.org/reviews/*
+// @version       0.2.5
+// @include http://userscripts.org/scripts/*/*
+// @include https://userscripts.org/scripts/*/*
+// @include http://userscripts.org/topics/*
+// @include https://userscripts.org/topics/*
+// @include http://userscripts.org/reviews/*
+// @include https://userscripts.org/reviews/*
+// @exclude http://userscripts.org/scripts/source/*.meta.js
+// @exclude https://userscripts.org/scripts/source/*.meta.js
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=7&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
