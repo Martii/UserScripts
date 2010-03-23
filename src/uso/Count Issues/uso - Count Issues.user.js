@@ -8,18 +8,25 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.6
-// @include http://userscripts.org/scripts/*/*
-// @include https://userscripts.org/scripts/*/*
-// @include http://userscripts.org/topics/*
-// @include https://userscripts.org/topics/*
-// @include http://userscripts.org/reviews/*
-// @include https://userscripts.org/reviews/*
+// @version       0.1.0
+// @include   http://userscripts.org/scripts/*/*
+// @include   https://userscripts.org/scripts/*/*
+// @include   http://userscripts.org/topics/*
+// @include   https://userscripts.org/topics/*
+// @include   http://userscripts.org/reviews/*
+// @include   https://userscripts.org/reviews/*
 // @exclude http://userscripts.org/scripts/source/*.meta.js
 // @exclude https://userscripts.org/scripts/source/*.meta.js
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=14&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
+
+  function nsResolver(prefix) {
+    var ns = {
+      "xhtml": "http://www.w3.org/1999/xhtml"
+    };
+    return ns[prefix] || null;
+  }
 
   function getScriptid() {
     var scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
@@ -52,10 +59,24 @@
           method: "GET",
           url: url,
           onload: function (xhr) {
-            var doc = document.implementation.createDocument("", "", null);
-            var html = document.createElement("html");
-            html.innerHTML = xhr.responseText;
-            doc.appendChild(html);
+            var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
+
+            var h = d.getElementsByTagName('head')[0];
+            var hf = document.createDocumentFragment();
+            hf.appendChild(h);
+
+            var b = d.getElementsByTagName('body')[0];
+            var bf = document.createDocumentFragment();
+            bf.appendChild(b);
+
+            var doctype = document.implementation.createDocumentType(d.doctype.name, d.doctype.publicId, d.doctype.systemId);
+            var doc = document.implementation.createDocument(d.documentElement.namespaceURI, 'html', doctype);
+            doc.documentElement.setAttribute("lang", d.documentElement.getAttribute("lang"));
+            doc.documentElement.setAttribute("xml:lang", d.documentElement.getAttribute("xml:lang"));
+
+            doc.documentElement.appendChild(hf);
+            doc.documentElement.appendChild(bf);
+
             callback(doc);
           }
         });
@@ -71,13 +92,15 @@
         "vague":   "vague_votes"
       };
 
-      var yesCount = 0;
-      var noCount = 0;
+      var thisNode,
+        yesCount = 0,
+        noCount = 0;
+
       for each (var vote in votes) {
         var xpr = doc.evaluate(
-          "//a[contains(@href,'/scripts/issues/" + scriptid + "#" + vote + "')]",
-          doc,
-          null,
+          "//" + ((doc == document) ? "" : "xhtml:") + "a[contains(@href,'/scripts/issues/" + scriptid + "#" + vote + "')]",
+          doc.documentElement,
+          (doc == document) ? null : nsResolver,
           XPathResult.ANY_UNORDERED_NODE_TYPE,
           null
         );
@@ -93,15 +116,15 @@
         }
       }
 
-      var issuesNode;
 
-      if (document == doc) {
+      var issuesNode;
+      if (doc == document) {
         issuesNode = document.evaluate(
-            "//li/text()['Issues']",
-            document,
-            null,
-            XPathResult.ANY_UNORDERED_NODE_TYPE,
-            null
+          "//li/text()['Issues']",
+          document.documentElement,
+          null,
+          XPathResult.ANY_UNORDERED_NODE_TYPE,
+          null
         );
 
         if (issuesNode && issuesNode.singleNodeValue) {
@@ -113,11 +136,11 @@
       }
       else {
         issuesNode = document.evaluate(
-            "//li/a[contains(@href,'/scripts/issues/" + scriptid + "')]",
-            document,
-            null,
-            XPathResult.ANY_UNORDERED_NODE_TYPE,
-            null
+          "//li/a[contains(@href,'/scripts/issues/" + scriptid + "')]",
+          document.documentElement,
+          null,
+          XPathResult.ANY_UNORDERED_NODE_TYPE,
+          null
         );
 
         if (issuesNode && issuesNode.singleNodeValue) {
