@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.0
+// @version       0.1.1
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -61,16 +61,16 @@
           onload: function (xhr) {
             var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
 
-            var h = d.getElementsByTagName('head')[0];
+            var h = d.getElementsByTagName("head")[0];
             var hf = document.createDocumentFragment();
             hf.appendChild(h);
 
-            var b = d.getElementsByTagName('body')[0];
+            var b = d.getElementsByTagName("body")[0];
             var bf = document.createDocumentFragment();
             bf.appendChild(b);
 
             var doctype = document.implementation.createDocumentType(d.doctype.name, d.doctype.publicId, d.doctype.systemId);
-            var doc = document.implementation.createDocument(d.documentElement.namespaceURI, 'html', doctype);
+            var doc = document.implementation.createDocument(d.documentElement.namespaceURI, "html", doctype);
             doc.documentElement.setAttribute("lang", d.documentElement.getAttribute("lang"));
             doc.documentElement.setAttribute("xml:lang", d.documentElement.getAttribute("xml:lang"));
 
@@ -108,7 +108,7 @@
         if (xpr && xpr.singleNodeValue) {
           thisNode = xpr.singleNodeValue;
 
-          matches = thisNode.textContent.match(/(\d+) of (\d+) voted yes/i);
+          var matches = thisNode.textContent.match(/(\d+) of (\d+) voted yes/i);
           if (matches) {
             yesCount += parseInt(matches[1]);
             noCount += parseInt(matches[2]) - parseInt(matches[1]);
