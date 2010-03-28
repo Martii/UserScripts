@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.2
+// @version       0.1.3
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -75,8 +75,9 @@
 
             var doctype = document.implementation.createDocumentType(d.doctype.name, d.doctype.publicId, d.doctype.systemId);
             var doc = document.implementation.createDocument(d.documentElement.namespaceURI, "html", doctype);
-            doc.documentElement.setAttribute("lang", d.documentElement.getAttribute("lang"));
-            doc.documentElement.setAttribute("xml:lang", d.documentElement.getAttribute("xml:lang"));
+
+            for (var i = d.documentElement.attributes.length - 1; i >= 0; i--)
+              doc.documentElement.setAttribute(d.documentElement.attributes.item(i).nodeName, d.documentElement.attributes.item(i).nodeValue);
 
             doc.documentElement.appendChild(hf);
             doc.documentElement.appendChild(bf);
