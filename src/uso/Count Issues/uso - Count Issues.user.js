@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.4
+// @version       0.1.5
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -167,7 +167,7 @@
       if (doc)
         spanNode.textContent = yesCount;
       else
-        spanNode.textContent = "ERR";
+        spanNode.textContent = "0";
 
       thisNode.appendChild(spanNode);
     });
