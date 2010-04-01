@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.3
+// @version       0.1.4
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -64,7 +64,12 @@
           url: url,
           onload: function (xhr) {
             var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
-
+            if ( d.documentElement.firstChild == "[object XPCNativeWrapper [object Text]]"
+              && d.documentElement.firstChild.textContent.match(/XML Parsing Error.:*/i)
+            ) {
+              callback(null);
+                return;
+            }
             var h = d.getElementsByTagName("head")[0];
             var hf = document.createDocumentFragment();
             hf.appendChild(h);
@@ -89,34 +94,36 @@
     }
 
     getDocument("http://userscripts.org/scripts/issues/" + scriptid, function(doc) {
-      var votes = {
-        "broken":  "broken_votes",
-        "copy":    "copy_votes",
-        "harmful": "harmful_votes",
-        "spam":    "spam_votes",
-        "vague":   "vague_votes"
-      };
+      if (doc) {
+        var votes = {
+          "broken":  "broken_votes",
+          "copy":    "copy_votes",
+          "harmful": "harmful_votes",
+          "spam":    "spam_votes",
+          "vague":   "vague_votes"
+        };
 
-      var thisNode,
-        yesCount = 0,
-        noCount = 0;
+        var thisNode, xpr, matches,
+          yesCount = 0,
+          noCount = 0;
 
-      for each (var vote in votes) {
-        var xpr = doc.evaluate(
-          "//" + ((doc == document) ? "" : "xhtml:") + "a[contains(@href,'/scripts/issues/" + scriptid + "#" + vote + "')]",
-          doc.documentElement,
-          (doc == document) ? null : nsResolver,
-          XPathResult.ANY_UNORDERED_NODE_TYPE,
-          null
-        );
+        for each (let vote in votes) {
+          xpr = doc.evaluate(
+            "//" + ((doc == document) ? "" : "xhtml:") + "a[contains(@href,'/scripts/issues/" + scriptid + "#" + vote + "')]",
+            doc.documentElement,
+            nsResolver,
+            XPathResult.ANY_UNORDERED_NODE_TYPE,
+            null
+          );
 
-        if (xpr && xpr.singleNodeValue) {
-          thisNode = xpr.singleNodeValue;
+          if (xpr && xpr.singleNodeValue) {
+            thisNode = xpr.singleNodeValue;
 
-          var matches = thisNode.textContent.match(/(\d+) of (\d+) voted yes/i);
-          if (matches) {
-            yesCount += parseInt(matches[1]);
-            noCount += parseInt(matches[2]) - parseInt(matches[1]);
+            matches = thisNode.textContent.match(/(\d+) of (\d+) voted yes/i);
+            if (matches) {
+              yesCount += parseInt(matches[1]);
+              noCount += parseInt(matches[2]) - parseInt(matches[1]);
+            }
           }
         }
       }
@@ -155,9 +162,12 @@
       }
 
       var spanNode = document.createElement("span");
-      if (yesCount > noCount)
-        spanNode.setAttribute("style", "color: red");
-      spanNode.textContent = yesCount;
+      if (!doc || yesCount > noCount)
+        spanNode.setAttribute("style", "color: red;");
+      if (doc)
+        spanNode.textContent = yesCount;
+      else
+        spanNode.textContent = "ERR";
 
       thisNode.appendChild(spanNode);
     });
