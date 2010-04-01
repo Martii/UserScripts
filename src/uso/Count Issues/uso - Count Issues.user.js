@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.6
+// @version       0.1.7
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -64,8 +64,8 @@
           url: url,
           onload: function (xhr) {
 
-            // Vain attempt(s) to fix a XHTML error(s) on USO
-            xhr.responseText = xhr.responseText.replace(/\s&\s/gmi, " &amp; " );
+            // Vain attempt(s) to fix XHTML error(s) on USO
+            xhr.responseText = xhr.responseText.replace(/&/gmi, "%26" );
             
             var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
             if ( d.documentElement.firstChild == "[object XPCNativeWrapper [object Text]]"
