@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.7
+// @version       0.1.8
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -32,19 +32,23 @@
     return ns[prefix] || null;
   }
 
+  var xpr = document.evaluate(
+    "//h1[@class='title']",
+    document.documentElement,
+    null,
+    XPathResult.ANY_UNORDERED_NODE_TYPE,
+    null
+  );
+
+  var titleNode = null;
+  if (xpr && xpr.singleNodeValue)
+    titleNode = xpr.singleNodeValue;
+
   function getScriptid() {
     var scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
     if (!scriptid) {
-      var titleNode = document.evaluate(
-        "//h1[@class='title']/a",
-        document,
-        null,
-        XPathResult.ANY_UNORDERED_NODE_TYPE,
-        null
-      );
-
-      if (titleNode && titleNode.singleNodeValue)
-        scriptid = titleNode.singleNodeValue.pathname.match(/\/scripts\/show\/(\d+)/i);
+      if (titleNode)
+        scriptid = titleNode.firstChild.pathname.match(/\/scripts\/show\/(\d+)/i);
     }
     return (scriptid) ? scriptid[1] : undefined;
   }
@@ -64,12 +68,16 @@
           url: url,
           onload: function (xhr) {
 
-            // Vain attempt(s) to fix XHTML error(s) on USO
-            xhr.responseText = xhr.responseText.replace(/&/gmi, "%26" );
+            // Attempt(s) to fix XHTML error(s) on USO
+            var usoTitle = titleNode.textContent;
+            
+            var matches = usoTitle.match(/&/ig);
+            if (matches)
+              xhr.responseText = xhr.responseText.replace(usoTitle, usoTitle.replace(/&/gi, "&amp;"), "gmi" );
             
             var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
             if ( d.documentElement.firstChild == "[object XPCNativeWrapper [object Text]]"
-              && d.documentElement.firstChild.textContent.match(/XML Parsing Error.:*/i)
+              && d.documentElement.firstChild.textContent.match(/XML Parsing Error:.*/i)
             ) {
               GM_log(d.documentElement.firstChild.textContent);
               callback(null);
