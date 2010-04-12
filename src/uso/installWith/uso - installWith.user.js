@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.8
+// @version       0.2.9
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -357,6 +357,21 @@
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
+                      }
+                    },
+                    "74144": {
+                      "value": "",
+                      "textContent": 'Script Updater (userscripts.org)',
+                      "title": 'by TheSpy (106188)',
+                      "updater": "74144",
+                      "rex": [
+                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": "localStorage Vulnerability"
                       }
                     },
                     "41075": {
