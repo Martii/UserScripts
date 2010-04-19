@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.9
+// @version       0.2.10
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -20,7 +20,7 @@
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
-// @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=7&custom=yes&topicid=45479&id=usoCheckup
+// @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
 
@@ -624,7 +624,7 @@
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
-                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506&custom=yes&id=usoCheckup",
+                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
@@ -640,7 +640,7 @@
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
-                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794&custom=yes&id=usoCheckup",
+                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
