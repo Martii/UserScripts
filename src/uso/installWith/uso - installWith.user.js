@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.0
+// @version       0.3.1
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -117,6 +117,10 @@
   if (scriptid) {
     GM_xmlhttpRequest({
       url: "http://userscripts.org/scripts/source/" + scriptid + ".user.js?",
+      headers: {
+        "Cache-Control": "no-cache"
+        "Pragma": "no-cache"
+      },
       method: "HEAD",
       onload: function(xhr) {
         if (xhr.status != 200) {
