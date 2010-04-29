@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.10
+// @version       0.3.0
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -25,6 +25,10 @@
 // ==/UserScript==
 
   var securityAdvisory = {
+    "undetermined": {
+      "title": 'Security Advisory: UNDETERMINED',
+      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFfX19ioqKlJSUmZmZnp6epaWlrKyssbGxt7e3vLy8wsLCysrKz8/P1NTU2NjY29vb4ODgIPqwRwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oEHRInLN89FfMAAABFSURBVCjP1dCLDYAgEIPhioJ4vNx/WprziIQN6Jcu8KOiopisEkQveCjSTYE8XXQqR8dk372TRmuTpMSMKl+Xv8yos6kO+PgEEPaHx4wAAAAASUVORK5CYII='
+    },
     "low": {
       "title": 'Security Advisory: LOW',
       "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFj8swls5GoNVTpdhbrdpjsN1tsuB4uuN/veWKwuiRyOuaz++l1fCv2vK23fW74PbB5PfKP126HQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUgM+i3vCUAAABFSURBVCjP1dCJDcAgDARB84TwhJD+q+V8khFSKmCng5VXVIeHGlUqkOGGBBdFCeTBLSf3bQbYkb4d0Sftd8XO2Bu9c6gJ9tkEDz54A9sAAAAASUVORK5CYII='
@@ -47,6 +51,23 @@
     }
   };
 
+  var installNode = document.evaluate(
+    "//div[@id='install_script']/a[@class='userjs']",
+    document,
+    null,
+    XPathResult.ANY_UNORDERED_NODE_TYPE,
+    null
+  );
+
+  if (installNode && installNode.singleNodeValue) {
+    installNode = installNode.singleNodeValue;
+
+    installNode.setAttribute("title", securityAdvisory["undetermined"]["title"]);
+    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+  }
+  else
+    return;
+
   var frameless = false;
   try {
     frameless = (window === window.top);
@@ -54,7 +75,7 @@
   catch (e) {}
 
   // Clean up USO for framed presentation
-  if (!frameless && window.location.href.match(/^http[s]{0,1}:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
+  if (!frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
     var thisNode;
 
     // Change all links to _top
@@ -98,19 +119,6 @@
       url: "http://userscripts.org/scripts/source/" + scriptid + ".user.js?",
       method: "HEAD",
       onload: function(xhr) {
-        var installNode = document.evaluate(
-          "//div[@id='install_script']/a[@class='userjs']",
-          document,
-          null,
-          XPathResult.ANY_UNORDERED_NODE_TYPE,
-          null
-        );
-
-        if (installNode && installNode.singleNodeValue)
-          installNode = installNode.singleNodeValue;
-        else
-          return;
-
         if (xhr.status != 200) {
           installNode.setAttribute("title", securityAdvisory["elevated"]["title"] + ",UNLISTED");
           GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
@@ -215,7 +223,7 @@
                       "title": 'by TastyFlySoup (39661)',
                       "updater": "16338",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/16338\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16338\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -230,7 +238,7 @@
                       "title": 'by shoecream (74855)',
                       "updater": "45904",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45904\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45904\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -245,7 +253,7 @@
                       "title": 'by thomd (43919)',
                       "updater": "45266",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45266\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45266\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -260,7 +268,7 @@
                       "title": 'by Sylvain Comte (21175)',
                       "updater": "35611",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/35611\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/35611\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -275,7 +283,7 @@
                       "title": 'by IzzySoft (89585)',
                       "updater": "51513",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -290,7 +298,7 @@
                       "title": 'by w35l3y (55607)',
                       "updater": "38788",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -305,7 +313,7 @@
                       "title": 'by Eyal Soha (8105)',
                       "updater": "36259",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/36259\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/36259\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -320,7 +328,7 @@
                       "title": 'by Jarett (38602)',
                       "updater": "20145",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/20145\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/20145\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -335,7 +343,7 @@
                       "title": 'by alien scum (8158)',
                       "updater": "8857",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/8857\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/8857\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -350,7 +358,7 @@
                       "title": 'by PhasmaExMachina (106144)',
                       "updater": "57756",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -365,7 +373,7 @@
                       "title": 'by TheSpy (106188)',
                       "updater": "74144",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -380,7 +388,7 @@
                       "title": 'by littlespark (75320)',
                       "updater": "41075",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -395,7 +403,7 @@
                       "title": 'by ScroogeMcPump (51934)',
                       "updater": "29878",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/29878\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29878\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -410,7 +418,7 @@
                       "title": 'by ScroogeMcPump (51934)',
                       "updater": "29880",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/29880\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29880\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -425,7 +433,7 @@
                       "title": 'by devnull69 (75950)',
                       "updater": "45989",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/45989\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45989\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -440,7 +448,7 @@
                       "title": 'by psycadelik (41688)',
                       "updater": "22372",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -456,7 +464,7 @@
                       "updater": "52251",
                       "rex": [
                         "^http:\\/\\/buzzy\\.260mb\\.com\\/AutoUpdater\\.js",
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -471,7 +479,7 @@
                       "title": 'by jerone (31497)',
                       "updater": "37853",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/37853\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/37853\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -486,7 +494,7 @@
                       "title": 'by lazyttrick (20871)',
                       "updater": "26062",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/26062\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/26062\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -501,7 +509,7 @@
                       "title": 'by Seifer (33118)',
                       "updater": "12193",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/12193\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/12193\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -516,7 +524,7 @@
                       "title": 'by Richard Gibson (336)',
                       "updater": "2296",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/2296\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/2296\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -531,7 +539,7 @@
                       "title": 'by jerone (31497)',
                       "updater": "39678",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/39678\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/39678\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
@@ -575,7 +583,7 @@
                       "title": 'by jerone (31497)',
                       "updater": "16144",
                       "rex": [
-                        "^http[s]{0,1}:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
