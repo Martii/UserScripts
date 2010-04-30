@@ -379,7 +379,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
-                        "title": "localStorage Vulnerability"
+                        "title": ",localStorage Vulnerability"
                       }
                     },
                     "41075": {
