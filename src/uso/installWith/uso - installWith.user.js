@@ -349,7 +349,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "high",
-                        "title": "BROKEN"
+                        "title": ",BROKEN"
                       }
                     },
                     "57756": {
