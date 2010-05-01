@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.3
+// @version       0.3.4
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -214,7 +214,22 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": "Closed-Source"
+                        "title": ",Closed-Source"
+                      }
+                    },
+                    "75442": {
+                      "value": "",
+                      "textContent": 'AEG Userscript AutoUpdater',
+                      "title": 'by ArmEagle (111132)',
+                      "updater": "75442",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/75442\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "high",
+                        "title": ",i/frame vulnerability"
                       }
                     },
                     "16338": {
@@ -379,7 +394,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
-                        "title": ",localStorage Vulnerability"
+                        "title": ",localStorage vulnerability"
                       }
                     },
                     "41075": {
