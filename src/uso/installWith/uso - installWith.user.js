@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.4
+// @version       0.3.5
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -479,6 +479,7 @@
                       "updater": "52251",
                       "rex": [
                         "^http:\\/\\/buzzy\\.260mb\\.com\\/AutoUpdater\\.js",
+                        "^http:\\/\\/buzzy\\.hostoi\\.com\\/AutoUpdater\\.js",
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
                       ],
                       "url": "",
