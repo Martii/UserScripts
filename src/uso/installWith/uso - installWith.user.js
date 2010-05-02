@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.5
+// @version       0.3.6
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -314,6 +314,21 @@
                       "updater": "38788",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
+                    },
+                    "60663": {
+                      "value": "",
+                      "textContent": 'Script actualizador',
+                      "title": 'by Juampi_yoel (99372) es derivative of PhasmaExMachina (106144)',
+                      "updater": "60663",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60663\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
