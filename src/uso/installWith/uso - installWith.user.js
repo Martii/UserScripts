@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.6
+// @version       0.3.7
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -472,6 +472,36 @@
                         "title": ""
                       }
                     },
+                    "42456": {
+                      "value": "",
+                      "textContent": 'Tester',
+                      "title": 'by realfree (77866)',
+                      "updater": "42456",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/42456\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": ",Multiple search hosts,Interval vulnerability"
+                      }
+                    },
+                    "62036": {
+                      "value": "",
+                      "textContent": 'update Test',
+                      "title": 'by hirak99 (36905)',
+                      "updater": "62036",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/62036\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": ",Interval vulnerability"
+                      }
+                    },
                     "22372": {
                       "value": "",
                       "textContent": 'Userscript Auto-Update Add-in',
@@ -485,6 +515,21 @@
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
+                      }
+                    },
+                    "50390": {
+                      "value": "",
+                      "textContent": 'Userscripts Updater',
+                      "title": 'by oneweirdkid90 (73205)',
+                      "updater": "50390",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/50390\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": ",Outdated copy of local checker"
                       }
                     },
                     "52251": {
@@ -621,6 +666,21 @@
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
+                      }
+                    },
+                    "46384": {
+                      "value": "",
+                      "textContent": 'VeriVersion (module)',
+                      "title": 'by bluflonalgul (75209)',
+                      "updater": "46384",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": "Interval vulnerability"
                       }
                     },
                     "--": {
