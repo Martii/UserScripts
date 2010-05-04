@@ -861,7 +861,7 @@
 
                         updaterNode.setAttribute("title", updater["title"]);
 
-                        iconNode.style.setProperty("margin", "0.1em 0.5em 0.1em " + ((updater["derivative"]) ? "1.15em" : "0.5em"), "");
+                        iconNode.style.setProperty("margin", "0.15em 0.25em 0.15em " + ((updater["derivative"]) ? "0.5em" : "0"), "");
                         iconNode.style.setProperty("width", "16px", "");
                         iconNode.style.setProperty("height", "16px", "");
                         iconNode.style.setProperty("background", "transparent url(" + ((updater["iconUrl"]) ? updater["iconUrl"] : "") + ") no-repeat center center", "");
