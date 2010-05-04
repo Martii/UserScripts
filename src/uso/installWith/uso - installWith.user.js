@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.8
+// @version       0.3.9
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -163,6 +163,7 @@
                     "uso": {
                       "value": "uso",
                       "textContent": 'userscripts.org (default)',
+                      "iconUrl": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKwSURBVHjabJNJTBNRGID/mc5MQYVWVNCGTbEtNZGDBj1ogolEMR5UJA2LBmMoIokxERIj8ehJjx6MYIQoJgq4JIa6gEARkKJFTa2iFFtKWwp2oeDCzNQ+31DQCc5L/nmT/P/3749ACAFBECBxiEPFFds0Ws399DRVhtX2udc97ig0PmgOLBkIbOwjAR8uMRRdvXF7pqv/NfrqnEAOlxsdLas6j3Wk2AEpCRcbKvLydrdu1WUr0lXrITEhAZKUSkhQKvKwXiY2ppbDRzCcv29P/ZZsDaSqUkCJYVJGwKMnHTDlmWgTZ/CvjkW4sKTScP1WC+oZsKAxpwv5gyEUnAkj2xc70p88Y8Y2a8VBxT0gispOGa413UVDb23IMe6OwaEw+jTqQKMOF3pptqBSw7k74hLEPaDUOu0VmpFDV58ZCJIAkiDB5fUBz0eApmjQqbOgrqa69HhVbZO4jKUfmiBJBctysHJFPPiDYbA7J4DjeJDLaWAYGVAyErIy0uDs6RPH9OXVtULWYgfEmN3emJK8BlYrEsHl8cEvloX4ODnEyRlgKGZhV1iOhcz0VNixM7dOCCp2EBkeMF3u6DaNqDasg1U4CzlFxxSRKMyz8xjmsPAQwNmRsc2jxGPkR0esHp7n9RBFrYbyUi1DUzh1GujFG0UBQrNz8P7DR3j+9NklqTEK3VVkbNLkVNZc9AwNW5Hb60PT/gCamg6gEbsT3XvYjvIP6i9gu2ShhOWb+BvLD13O9o3azWrVdy4K3wKhv5HfWW1Q39BY19nechPbzQrVwX9bhU+iIqnyQMF+mPvJQr/FCsHwDJgG30ADhl8Y2wQ4jIUVkpdaZRnPcd6AfxomJ32AIhEwdvaC8XG7JLwwvmXPmVFn52Tu2lvQjN9Crn3M6bWY+6otr3oGpWCB/SPAAJaJRguGUxB0AAAAAElFTkSuQmCC',
                       "title": '',
                       "updater": "",
                       "rex": [],
@@ -175,7 +176,7 @@
                     },
                     "-": {
                       "value": "-",
-                      "textContent": '---------------',
+                      "textContent": '',
                       "title": '',
                       "updater": "",
                       "rex": [],
@@ -189,6 +190,7 @@
                     "AnotherAutoUpdater": {
                       "value": "AnotherAutoUpdater",
                       "textContent": 'Another Auto Updater',
+                      "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=8603ded5ba12590f2231b13d5c07c45b&r=PG&s=16&default=identicon",
                       "title": 'by sizzlemctwizzle (27715)',
                       "updater": "anotherautoupdater",
                       "rex": [
@@ -626,7 +628,7 @@
                     },
                     "---": {
                       "value": "-",
-                      "textContent": '---------------',
+                      "textContent": '',
                       "title": '',
                       "updater": "",
                       "rex": [
@@ -641,6 +643,7 @@
                     "USOUpdater": {
                       "value": "USOUpdater",
                       "textContent": 'USO Updater',
+                      "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=05f6e5c5e440e8513c86538ddb834096&r=PG&s=16&default=identicon",
                       "title": 'by Tim Smart (63868)',
                       "updater": "usoupdater",
                       "rex": [
@@ -685,7 +688,7 @@
                     },
                     "--": {
                       "value": "-",
-                      "textContent": '---------------',
+                      "textContent": '',
                       "title": '',
                       "updater": "",
                       "rex": [
@@ -700,6 +703,7 @@
                     "usoCheckup": {
                       "value": "usoCheckup",
                       "textContent": 'usoCheckup',
+                      "iconUrl": "http://s3.amazonaws.com/uso_ss/1359/large.png",
                       "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                       "updater": "usocheckup",
                       "rex": [
@@ -716,6 +720,8 @@
                     "usoCheckupbottomsUp": {
                       "value": "usoCheckupbottomsUp",
                       "textContent": 'usoCheckup + bottomsUp',
+                      "derivative": true,
+                      "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
                       "title": 'themed by Marti Martz (37004)',
                       "updater": "usocheckup",
                       "rex": [
@@ -732,6 +738,8 @@
                     "usoCheckupDOMNotify": {
                       "value": "usoCheckupDOMNotify",
                       "textContent": 'usoCheckup + DOMNotify',
+                      "derivative": true,
+                      "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
                       "title": 'themed by Marti Martz (37004)',
                       "updater": "usocheckup",
                       "rex": [
@@ -838,13 +846,37 @@
 
                 thisNode.parentNode.insertBefore(selectNode, thisNode);
 
-                  var updaterNode;
+                  var updaterNode, iconNode, textNode;
                   for each (var updater in updaters)
                     if (updater["value"] != "") {
+
                       updaterNode = document.createElement("option");
                       updaterNode.setAttribute("value", updater["value"]);
-                      updaterNode.setAttribute("title", updater["title"]);
-                      updaterNode.textContent = updater["textContent"];
+
+                      iconNode = document.createElement("img");
+                      iconNode.style.setProperty("vertical-align", "middle", "");
+
+                      if (updater["value"] != "-") {
+                        textNode = document.createTextNode(updater["textContent"]);
+
+                        updaterNode.setAttribute("title", updater["title"]);
+
+                        iconNode.style.setProperty("margin", "0.1em 0.5em 0.1em " + ((updater["derivative"]) ? "1.15em" : "0.5em"), "");
+                        iconNode.style.setProperty("width", "16px", "");
+                        iconNode.style.setProperty("height", "16px", "");
+                        iconNode.style.setProperty("background", "transparent url(" + ((updater["iconUrl"]) ? updater["iconUrl"] : "") + ") no-repeat center center", "");
+                      }
+                      else {
+                        iconNode.style.setProperty("margin", "0.2em 0", "");
+                        iconNode.style.setProperty("width", "100%", "");
+                        iconNode.style.setProperty("height", "10px", "");
+                        iconNode.style.setProperty("background", "transparent url(data:image/gif;base64,R0lGODdhAQABAIABAAAAAP///ywAAAAAAQABAAACAkQBADs=) repeat-x center center", "");
+                      }
+                      updaterNode.appendChild(iconNode);
+                      iconNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+
+                      if (updater["value"] != "-")
+                        updaterNode.appendChild(textNode);
                       selectNode.appendChild(updaterNode);
                     }
 
