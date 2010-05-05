@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.10
+// @version       0.3.11
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -206,7 +206,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "high",
-                        "title": ",i/frame vulnerability"
+                        "title": ", i/frame vulnerability"
                       }
                     },
                     "16338": {
@@ -305,6 +305,21 @@
                         "title": ""
                       }
                     },
+                    "pennerstore.de": {
+                      "value": "",
+                      "textContent": 'pennerstore.de',
+                      "title": 'by pennerstore.de (external)',
+                      "updater": "pennerstore.de",
+                      "rex": [
+                        "^https?:\\/\\/scripte\\.pennerstore\\.de\\/JS\\/updater\\.class\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "high",
+                        "title": ", Possible Security Risk"
+                      }
+                    },
                     "60663": {
                       "value": "",
                       "textContent": 'Script actualizador',
@@ -366,7 +381,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "high",
-                        "title": ",BROKEN"
+                        "title": ", BROKEN"
                       }
                     },
                     "57756": {
@@ -398,7 +413,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
-                        "title": ",localStorage vulnerability"
+                        "title": ", localStorage vulnerability"
                       }
                     },
                     "41075": {
@@ -656,7 +671,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": ",Possible Security Risk"
+                        "title": ", Possible Security Risk"
                       }
                     },
                     "16144": {
