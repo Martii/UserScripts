@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.12
+// @version       0.3.13
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -23,6 +23,33 @@
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
+
+  var frameless = false;
+  try {
+    frameless = (window === window.top);
+  }
+  catch (e) {}
+
+  // Clean up USO for framed presentation
+  if (!frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
+    var thisNode;
+
+    // Change all links to _top
+    var xpr = document.evaluate(
+      "//a",
+      document,
+      null,
+      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+      null
+    );
+    if (xpr)
+      for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i)
+        thisNode.setAttribute("target", "_top");
+
+    GM_addStyle("div.container { width: auto; margin: 0; }");
+    GM_addStyle("div#content { width: 100% !important; left: 0; }");
+    GM_addStyle("div#heading { height: 66px; min-height: 0; }");
+  }
 
   var securityAdvisory = {
     "undetermined": {
@@ -67,33 +94,6 @@
   }
   else
     return;
-
-  var frameless = false;
-  try {
-    frameless = (window === window.top);
-  }
-  catch (e) {}
-
-  // Clean up USO for framed presentation
-  if (!frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
-    var thisNode;
-
-    // Change all links to _top
-    var xpr = document.evaluate(
-      "//a",
-      document,
-      null,
-      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-      null
-    );
-    if (xpr)
-      for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i)
-        thisNode.setAttribute("target", "_top");
-
-    GM_addStyle("div.container { width: auto; margin: 0; }");
-    GM_addStyle("div#content { width: 100% !important; left: 0; }");
-    GM_addStyle("div#heading { height: 66px; min-height: 0; }");
-  }
 
   function getScriptid() {
     var scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
