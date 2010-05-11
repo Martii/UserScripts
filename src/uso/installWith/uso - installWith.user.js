@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.13
+// @version       0.3.14
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -49,6 +49,7 @@
     GM_addStyle("div.container { width: auto; margin: 0; }");
     GM_addStyle("div#content { width: 100% !important; left: 0; }");
     GM_addStyle("div#heading { height: 66px; min-height: 0; }");
+    GM_addStyle("div#details h1.title { max-height: 2.05em; overflow: hidden; }");
   }
 
   var securityAdvisory = {
