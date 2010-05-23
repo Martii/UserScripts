@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.14
+// @version       0.3.15
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -536,6 +536,22 @@
                       "updater": "22372",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
+                    },
+                    "UserscriptAutoupdateHelper": {
+                      "value": "",
+                      "textContent": 'userscript-autoupdate-helper',
+                      "iconUrl": '',
+                      "title": 'by ch.null (http://code.google.com/u/ch.null/)',
+                      "updater": "UserscriptAutoupdateHelper",
+                      "rex": [
+                        "^https?:\\/\\/userscript-autoupdate-helper\\.googlecode\\.com\\/svn\\/trunk\\/autoupdatehelper\\.js"
                       ],
                       "url": "",
                       "qs": "",
