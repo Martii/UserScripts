@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.8
+// @version       0.2.9
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @exclude http://userscripts.org/login*
@@ -286,24 +286,26 @@ function addBookmarks(contextNode, prefixAttribute) {
           if (thatNode.textContent != "") {
             var newbookmark = thatNode.textContent;
 
-            newbookmark = newbookmark.replace(/^\s*/, "");
-            if (newbookmark.match(/(.{1,64})/i)) {
-              newbookmark = newbookmark.match(/(.{1,64})/i)[1];
-              newbookmark = newbookmark.replace(/\s*$/, "");
-              newbookmark = newbookmark.replace(/\s{2,}/g, " ");
+            if (!newbookmark.match(/^about:.*/i)) {
+              newbookmark = newbookmark.replace(/^\s*/, "");
+              if (newbookmark.match(/(.{1,64})/i)) {
+                newbookmark = newbookmark.match(/(.{1,64})/i)[1];
+                newbookmark = newbookmark.replace(/\s*$/, "");
+                newbookmark = newbookmark.replace(/\s{2,}/g, " ");
 
-              newbookmark = newbookmark.replace(/\.*/g, "");
+                newbookmark = newbookmark.replace(/\.*/g, "");
 
-              newbookmark = encodeURIComponent(newbookmark.toLowerCase());
-              newbookmark = newbookmark.replace(/\%20/g, "-");
-              newbookmark = newbookmark.replace(/\%/g, ".");
-              newbookmark = prefixAttribute + newbookmark;
+                newbookmark = encodeURIComponent(newbookmark.toLowerCase());
+                newbookmark = newbookmark.replace(/\%20/g, "-");
+                newbookmark = newbookmark.replace(/\%/g, ".");
+                newbookmark = prefixAttribute + newbookmark;
 
-              var suffix;
-              if ((suffix = checkBookmark(bookmarks, newbookmark)))
-                newbookmark += "-" + suffix;
+                var suffix;
+                if ((suffix = checkBookmark(bookmarks, newbookmark)))
+                  newbookmark += "-" + suffix;
 
-              bookmarks[newbookmark] = newbookmark;
+                bookmarks[newbookmark] = newbookmark;
+              }
 
               thisNode.setAttribute("name", newbookmark);
               thisNode.setAttribute("id", newbookmark);
@@ -319,9 +321,8 @@ function addBookmarks(contextNode, prefixAttribute) {
 
               anchorNode.appendChild(imgNode);
               thisNode.parentNode.insertBefore(anchorNode, thisNode);
-
-              break;
             }
+            break;
           }
           thatNode = thatNode.nextSibling;
         }
