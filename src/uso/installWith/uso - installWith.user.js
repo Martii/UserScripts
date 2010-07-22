@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.17
+// @version       0.3.18
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -430,6 +430,22 @@
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
+                      }
+                    },
+                    "ika-info.ucoz.ru": {
+                      "value": "",
+                      "textContent": 'Script Updater (userscripts.org)',
+                      "iconUrl": '',
+                      "title": 'static derivative of PhasmaExMachina (106144)',
+                      "updater": "ika-info.ucoz.ru",
+                      "rex": [
+                        "^http:\\/\\/ika-info.ucoz.ru\\/scripts\\/Script_updater\\/script_updater.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": ", Offsite static derivative of PhasmaExMachinas"
                       }
                     },
                     "74144": {
