@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.18
+// @version       0.3.19
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -788,6 +788,24 @@
                       },
                       "border-top": "thin dotted #666"
                     },
+                    "usoCheckupbeta": {
+                      "value": "usoCheckupbeta",
+                      "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
+                      "derivative": 1,
+                      "iconUrl": "http://s3.amazonaws.com/uso_ss/9785/large.png",
+                      "title": 'by tHE gREASEmONKEYS (multiple contributors)',
+                      "updater": "usocheckup",
+                      "rex": [
+                        "^http:\\/\\/beta\\.usocheckup\\.dune\\.net\\/\\d+\\.js"
+                      ],
+                      "url": "http://beta.usocheckup.dune.net/" + scriptid + ".js",
+                      "qs": "wrapperid=" + scriptid,
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", BETA runtime, MAY NOT ALWAYS WORK! :)"
+                      },
+                      "beta": true
+                    },
                     "usoCheckupbottomsUp": {
                       "value": "usoCheckupbottomsUp",
                       "textContent": 'usoCheckup + bottomsUp',
@@ -905,7 +923,7 @@
                         GM_setValue(":updaterPreference", this.value);
                         installNode.setAttribute("title", securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["title"] + thisUpdater["securityAdvisory"]["title"]);
                         var rex = /usoCheckup.*/i;
-                        var url = "http://usocheckup.dune.net/" + scriptid + ".user.js"
+                        var url = "http://" + ((thisUpdater["beta"]) ? "beta." : "") + "usocheckup.dune.net/" + scriptid + ".user.js"
                           + ((!thisUpdater["value"].match(rex)) ? "?updater=" + thisUpdater["value"] : "")
                           + ((thisUpdater["qs"]) ? ((thisUpdater["value"].match(rex)) ? "?" : "&") + thisUpdater["qs"] : "")
                           + ((thisUpdater["value"].match(rex) && !thisUpdater["qs"]) ? "?" : "&") + "is=.user.js";
