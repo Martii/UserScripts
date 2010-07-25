@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.19
+// @version       0.3.20
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -734,7 +734,7 @@
                       "url": "http://updater.usotools.co.cc/" + scriptid + ".js",
                       "qs": "",
                       "securityAdvisory": {
-                        "advisory": "elevated",
+                        "advisory": "guarded",
                         "title": ", Possible Security Risk"
                       }
                     },
@@ -805,6 +805,42 @@
                         "title": ", BETA runtime, MAY NOT ALWAYS WORK! :)"
                       },
                       "beta": true
+                    },
+                    "usoCheckupOttoShow": {
+                      "value": "usoCheckupOttoShow",
+                      "textContent": 'usoCheckup + Otto Show',
+                      "derivative": 1,
+                      "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
+                      "title": 'themed by Marti Martz (37004)',
+                      "updater": "usocheckup",
+                      "rex": [
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                      ],
+                      "url": "http://usocheckup.dune.net/" + scriptid + ".js",
+                      "qs": "wrapperid=" + scriptid + "&theme=82206,66530,67771,74732&trim=de,pt&id=usoCheckup",
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
+                    },
+                    "usoCheckupOttoInstall": {
+                      "value": "usoCheckupOttoInstall",
+                      "textContent": 'usoCheckup + Otto Install',
+                      "derivative": 1,
+                      "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
+                      "title": 'themed by Marti Martz (37004)',
+                      "updater": "usocheckup",
+                      "rex": [
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                      ],
+                      "url": "http://usocheckup.dune.net/" + scriptid + ".js",
+                      "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,67771,74732&trim=de,pt&id=usoCheckup",
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", Implicit trust of script"
+                      }
                     },
                     "usoCheckupbottomsUp": {
                       "value": "usoCheckupbottomsUp",
