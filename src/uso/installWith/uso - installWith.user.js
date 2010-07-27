@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.0
+// @version       0.4.1
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -120,7 +120,7 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
-    if (frameless && typeof GM_config != "undefined") {
+    if (typeof GM_config != "undefined") {
       var divNode = document.getElementById("full_description");
       if (divNode && !divNode.firstChild) {
         var newdivNode = document.createElement("div");
@@ -1068,7 +1068,7 @@
                         GM_deleteValue(":updaterPreference");
                         installNode.setAttribute("title", "");
                         installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
-                        if (window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
+                        if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                           GM_config.close();
                         break;
                       default:
@@ -1090,7 +1090,7 @@
                         var url = "http://" + ((thisUpdater["beta"]) ? "beta." : "") + "usocheckup.dune.net/" + scriptid + ".user.js" + qs;
                         installNode.setAttribute("href", url);
 
-                        if (window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
+                        if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                           GM_config.open();
                       break;
                     }
