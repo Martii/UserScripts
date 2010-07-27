@@ -7,21 +7,26 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.20
+// @version       0.4.0
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
 // @include https://userscripts.org/topics/*
 // @include http://userscripts.org/reviews/*
 // @include https://userscripts.org/reviews/*
+// @include http://userscripts.org/scripts/versions/*
+// @include https://userscripts.org/scripts/versions/*
+//
 // @exclude http://userscripts.org/scripts/source/*.meta.js
 // @exclude https://userscripts.org/scripts/source/*.meta.js
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
+//
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/8dbc9a6945455c2cd41852af38abed4b46bb7a02/gm_config.js
 // ==/UserScript==
 
   var frameless = false;
@@ -51,6 +56,7 @@
     GM_addStyle("div#heading { height: 66px; min-height: 0; }");
     GM_addStyle("div#details h1.title { max-height: 2.05em; overflow: hidden; }");
   }
+
 
   var securityAdvisory = {
     "undetermined": {
@@ -114,6 +120,100 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
+    if (frameless && typeof GM_config != "undefined") {
+      var divNode = document.getElementById("full_description");
+      if (divNode && !divNode.firstChild) {
+        var newdivNode = document.createElement("div");
+        divNode = divNode.appendChild(newdivNode);
+        GM_addStyle("div #full_description { width: 96%; }");
+      }
+      else {
+        var newdivNode = document.createElement("div");
+        if (divNode)
+          divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
+        else
+          divNode = document.body.appendChild(newdivNode);
+      }
+
+      GM_config.onSave = function() {
+        var ev = document.createEvent("HTMLEvents");
+        ev.initEvent("change", true, true);
+        var selectNode = document.getElementById("updater_select");
+        selectNode.dispatchEvent(ev);
+      }
+      GM_config.init('Options' /* Script title */,
+          divNode,
+          /* Custom CSS */
+          <><![CDATA[
+
+            /* USO fixups */
+            div .postactions { clear: both; }
+
+            /* GM_config specific fixups */
+            #GM_config {
+              position: static !important;
+              z-index: 0 !important;
+              width: auto !important;
+              height: auto !important;
+              max-height: none !important;
+              max-width: none !important;
+              margin: 0 0 0.6em 0 !important;
+              border: 1px solid #ddd !important;
+            }
+
+            #GM_config .config_header {
+              color: white !important;
+              background-color: #333 !important;
+              text-align: left !important;
+              margin: 0 !important;
+              padding: 0 0 0 0.5em !important;
+              font-size: 1.5em !important;
+            }
+
+            #GM_config .config_var {
+              margin: 0.1em 1em 0 !important;
+              padding: 0 !important;
+            }
+
+            #GM_config_field_updaterMaxage,
+            #GM_config_field_updaterMinage
+            {
+              width: 2.5em !important;
+              height: 0.8em !important;
+              margin: 0.1em 0 !important;
+            }
+            #GM_config .field_label {
+              color: #333 !important;
+              font-weight: normal !important;
+              font-size: 100% !important;
+            }
+
+            #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em !important; }
+            #GM_config_saveBtn { margin: 0 3.0em !important; padding-left: 4.0em; }
+            #GM_config_resetLink { margin-right: 2.5em; }
+            #GM_config_closeBtn { display: none !important; }
+
+          ]]></>.toString(),
+
+          /* Settings object */
+          {
+            'updaterMaxage': {
+                "label": 'Maximum age in days between checks for this script using installWith',
+                "type": 'int',
+                "default": 30
+            },
+            'updaterMinage': {
+              "label": 'Minimum age in hours before starting a check for this script using installWith',
+              "type": 'int',
+              "default": 1
+            }
+          }
+      );
+    }
+    else {
+      GM_log('Something went wrong. Please let me know how to reproduce');
+    }
+
   var scriptid = getScriptid();
   if (scriptid) {
     GM_xmlhttpRequest({
@@ -121,7 +221,7 @@
       method: "HEAD",
       onload: function(xhr) {
         if (xhr.status == 403) {
-          installNode.setAttribute("title", securityAdvisory["elevated"]["title"] + ",UNLISTED");
+          installNode.setAttribute("title", securityAdvisory["elevated"]["title"] + ", UNLISTED");
           GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
         }
         else { // Assume listed due to a USO rate limiting bug in cache stack
@@ -188,6 +288,7 @@
                       ],
                       "url": "http://sizzlemctwizzle.com/updater.php?id=" + scriptid,
                       "qs": "show&uso",
+                      "qsmax": "days",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
@@ -735,7 +836,7 @@
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
-                        "title": ", Possible Security Risk"
+                        "title": ", Possible Security Risk, Custom Interval Failure"
                       }
                     },
                     "16144": {
@@ -782,6 +883,8 @@
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid,
+                      "qsmax": "maxage",
+                      "qsmin": "minage",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
@@ -800,6 +903,8 @@
                       ],
                       "url": "http://beta.usocheckup.dune.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid,
+                      "qsmax": "maxage",
+                      "qsmin": "minage",
                       "securityAdvisory": {
                         "advisory": "guarded",
                         "title": ", BETA runtime, MAY NOT ALWAYS WORK! :)"
@@ -819,6 +924,8 @@
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&theme=82206,66530,67771,74732&trim=de,pt&id=usoCheckup",
+                      "qsmax": "maxage",
+                      "qsmin": "minage",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
@@ -837,6 +944,8 @@
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,67771,74732&trim=de,pt&id=usoCheckup",
+                      "qsmax": "maxage",
+                      "qsmin": "minage",
                       "securityAdvisory": {
                         "advisory": "guarded",
                         "title": ", Implicit trust of script"
@@ -855,6 +964,8 @@
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
+                      "qsmax": "maxage",
+                      "qsmin": "minage",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
@@ -873,6 +984,8 @@
                       ],
                       "url": "http://usocheckup.dune.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
+                      "qsmax": "maxage",
+                      "qsmin": "minage",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
@@ -943,6 +1056,7 @@
                   thisNode.textContent = "";
 
                   var selectNode = document.createElement("select");
+                  selectNode.setAttribute("id", "updater_select");
                   selectNode.style.setProperty("width", "90%", "");
                   selectNode.style.setProperty("height", "1.6em", "");
                   selectNode.style.setProperty("font-size", "0.9em", "");
@@ -954,16 +1068,30 @@
                         GM_deleteValue(":updaterPreference");
                         installNode.setAttribute("title", "");
                         installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
+                        if (window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
+                          GM_config.close();
                         break;
                       default:
                         GM_setValue(":updaterPreference", this.value);
                         installNode.setAttribute("title", securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["title"] + thisUpdater["securityAdvisory"]["title"]);
-                        var rex = /usoCheckup.*/i;
-                        var url = "http://" + ((thisUpdater["beta"]) ? "beta." : "") + "usocheckup.dune.net/" + scriptid + ".user.js"
-                          + ((!thisUpdater["value"].match(rex)) ? "?updater=" + thisUpdater["value"] : "")
-                          + ((thisUpdater["qs"]) ? ((thisUpdater["value"].match(rex)) ? "?" : "&") + thisUpdater["qs"] : "")
-                          + ((thisUpdater["value"].match(rex) && !thisUpdater["qs"]) ? "?" : "&") + "is=.user.js";
+
+                        function appendQSP(qs, qsp) {
+                          if (qsp)
+                            qs += (!qs) ? "?" + qsp : "&" + qsp;
+                          return qs;
+                        }
+                        var qs = "";
+                        qs = appendQSP(qs, ((!thisUpdater["value"].match(/usoCheckup.*/i)) ? "updater=" + thisUpdater["value"] : "") );
+                        qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(GM_config.get("updaterMaxage")) : ""));
+                        qs = appendQSP(qs, ((thisUpdater["qsmin"]) ? thisUpdater["qsmin"] + "=" + parseInt(GM_config.get("updaterMinage")) : ""));
+                        qs = appendQSP(qs, thisUpdater["qs"]);
+                        qs = appendQSP(qs, "is=.user.js");
+
+                        var url = "http://" + ((thisUpdater["beta"]) ? "beta." : "") + "usocheckup.dune.net/" + scriptid + ".user.js" + qs;
                         installNode.setAttribute("href", url);
+
+                        if (window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
+                          GM_config.open();
                       break;
                     }
                   }, true);
@@ -981,7 +1109,7 @@
 
                       if (updater["border-top"])
                         updaterNode.style.setProperty("border-top", updater["border-top"], "");
-                      
+
                       iconNode = document.createElement("img");
                       iconNode.style.setProperty("vertical-align", "middle", "");
 
@@ -1020,4 +1148,5 @@
       }
     });
   }
+
 })();
