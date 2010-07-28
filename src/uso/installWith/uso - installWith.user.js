@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.5
+// @version       0.4.6
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -24,12 +24,13 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @resource undetermined http://usocheckup.dune.net/res/undetermined.png
+// @resource checking http://usocheckup.dune.net/res/checking.png
 // @resource low http://usocheckup.dune.net/res/low.png
 // @resource guarded http://usocheckup.dune.net/res/guarded.png
 // @resource elevated http://usocheckup.dune.net/res/elevated.png
 // @resource high http://usocheckup.dune.net/res/high.png
 // @resource severe http://usocheckup.dune.net/res/severe.png
+// @resource undetermined http://usocheckup.dune.net/res/undetermined.png
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // @require http://github.com/sizzlemctwizzle/GM_config/raw/8dbc9a6945455c2cd41852af38abed4b46bb7a02/gm_config.js
@@ -64,9 +65,9 @@
   }
 
   var securityAdvisory = {
-    "undetermined": {
-      "title": 'Security Advisory: UNDETERMINED',
-      "background-image": GM_getResourceURL("undetermined")
+    "checking": {
+      "title": 'Security Advisory: CHECKING, Please Wait',
+      "background-image": GM_getResourceURL("checking")
     },
     "low": {
       "title": 'Security Advisory: LOW',
@@ -87,7 +88,11 @@
     "severe": {
       "title": 'Security Advisory: SEVERE',
       "background-image": GM_getResourceURL("severe")
-    }
+    },
+    "undetermined": {
+      "title": 'Security Advisory: UNDETERMINED',
+      "background-image": GM_getResourceURL("undetermined")
+    },
   };
 
   var installNode = document.evaluate(
@@ -101,8 +106,8 @@
   if (installNode && installNode.singleNodeValue) {
     installNode = installNode.singleNodeValue;
 
-    installNode.setAttribute("title", securityAdvisory["undetermined"]["title"]);
-    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+    installNode.setAttribute("title", securityAdvisory["checking"]["title"]);
+    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["checking"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
   }
   else
     return;
@@ -1164,6 +1169,10 @@
                   var ev = document.createEvent("HTMLEvents");
                   ev.initEvent("change", true, true);
                   selectNode.dispatchEvent(ev);
+              }
+              else {
+                installNode.setAttribute("title", securityAdvisory["undetermined"]["title"]);
+                GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["undetermined"]["background-image"] + ") !important; } #install_script a.userjs:hover { color: black;}");
               }
             }
           });
