@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.1
+// @version       0.4.2
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -147,7 +147,7 @@
           <><![CDATA[
 
             /* USO fixups */
-            div .postactions { clear: both; }
+            /div .postactions { clear: both; }
 
             /* GM_config specific fixups */
             #GM_config {
@@ -159,6 +159,7 @@
               max-width: none !important;
               margin: 0 0 0.6em 0 !important;
               border: 1px solid #ddd !important;
+              clear: right;
             }
 
             #GM_config .config_header {
@@ -258,7 +259,9 @@
                     else
                       header[key] = value;
                   }
-                  headers["licence"] = headers["license"];
+
+                  if (headers["license"])
+                    headers["licence"] = headers["license"];
 
                   var updaters = {
                     "uso": {
@@ -869,6 +872,21 @@
                       "securityAdvisory": {
                         "advisory": "elevated",
                         "title": "Interval vulnerability"
+                      }
+                    },
+                    "zahlii.independent-irc.com": {
+                      "value": "",
+                      "textContent": 'zahlii.independent-irc.com/updater.class.js',
+                      "title": 'by http://zahlii.independent-irc.com/updater.class.js',
+                      "updater": "zahlii.independent-irc.com",
+                      "rex": [
+                        "^https?:\\/\\/zahlii\\.independent-irc\\.com\\/updater\\.class\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "high",
+                        "title": ", Updates to offsite script"
                       }
                     },
                     "usoCheckup": {
