@@ -3,11 +3,11 @@
 // ==UserScript==
 // @name          uso - installWith
 // @namespace     http://userscripts.org/users/37004
-// @description   Adds option to install script with an updater
+// @description   Adds option to install script with an updater. "So easy, a cavemonkey can do it"
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.4
+// @version       0.4.5
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
