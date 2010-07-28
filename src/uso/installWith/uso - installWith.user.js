@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.3
+// @version       0.4.4
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -24,6 +24,12 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
+// @resource undetermined http://usocheckup.dune.net/res/undetermined.png
+// @resource low http://usocheckup.dune.net/res/low.png
+// @resource guarded http://usocheckup.dune.net/res/guarded.png
+// @resource elevated http://usocheckup.dune.net/res/elevated.png
+// @resource high http://usocheckup.dune.net/res/high.png
+// @resource severe http://usocheckup.dune.net/res/severe.png
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // @require http://github.com/sizzlemctwizzle/GM_config/raw/8dbc9a6945455c2cd41852af38abed4b46bb7a02/gm_config.js
@@ -57,31 +63,30 @@
     GM_addStyle("div#details h1.title { max-height: 2.05em; overflow: hidden; }");
   }
 
-
   var securityAdvisory = {
     "undetermined": {
       "title": 'Security Advisory: UNDETERMINED',
-      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFfX19ioqKlJSUmZmZnp6epaWlrKyssbGxt7e3vLy8wsLCysrKz8/P1NTU2NjY29vb4ODgIPqwRwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oEHRInLN89FfMAAABFSURBVCjP1dCLDYAgEIPhioJ4vNx/WprziIQN6Jcu8KOiopisEkQveCjSTYE8XXQqR8dk372TRmuTpMSMKl+Xv8yos6kO+PgEEPaHx4wAAAAASUVORK5CYII='
+      "background-image": GM_getResourceURL("undetermined")
     },
     "low": {
       "title": 'Security Advisory: LOW',
-      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFj8swls5GoNVTpdhbrdpjsN1tsuB4uuN/veWKwuiRyOuaz++l1fCv2vK23fW74PbB5PfKP126HQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUgM+i3vCUAAABFSURBVCjP1dCJDcAgDARB84TwhJD+q+V8khFSKmCng5VXVIeHGlUqkOGGBBdFCeTBLSf3bQbYkb4d0Sftd8XO2Bu9c6gJ9tkEDz54A9sAAAAASUVORK5CYII='
+      "background-image": GM_getResourceURL("low")
     },
     "guarded": {
       "title": 'Security Advisory: GUARDED',
-      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADZQTFRFMEvLRlzOU2jVW2/YY3jabYDdeIfgf4/jipflkZ7omqbrpbDvr7nwtsDyu8T1wcn2ytH30df4OWXj/AAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYqAdjJu3YAAABHSURBVCjP1dCLDYAgFEPRouCHB6j7L2tTIBg3oCdd4KKgIEsi0w1RTjpop40CeVplIfcx7x7czSW9SWrs12RU6WVqm1pnUi/yTQQLN2JVZQAAAABJRU5ErkJggg=='
+      "background-image": GM_getResourceURL("guarded")
     },
     "elevated": {
       "title": 'Security Advisory: ELEVATED',
-      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFycswys5G0tVT1dhb2tpj291t2+B44ON/4eWK5OiR6Oua7O+l7vCv8fK28/W79PbB9ffK6M6iDgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUfLtNv+sAAAABBSURBVCjP1dCLEcAQFETRh/gkJPRfrc0mGDMacE8HVx553ZAowvU7IYAHB5YOMaRJdftWukzzke/J+ko7M95sqwL11wQNX63s2AAAAABJRU5ErkJggg=='
+      "background-image": GM_getResourceURL("elevated")
     },
     "high": {
       "title": 'Security Advisory: HIGH',
-      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAIAAACtkRp8AAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhYrJxPfD8oAAACASURBVDjL7ZKxDsJADEOf/P9/xFcw8QNMbAj1etdregwXAlTAVqYOlhI7zmIznA4CZLUKEKBlLgLUagoO0JyHmG0a3ddvl9I1c6+NvufkP/PTW/tc0u3tf+jXy0d+x2Ygn49qnt0DzTMG1Gz62pN1V1578qsroa86E3xOezb/xx0M5VZRPzRQRQAAAABJRU5ErkJggg=='
+      "background-image": GM_getResourceURL("high")
     },
     "severe": {
       "title": 'Security Advisory: SEVERE',
-      "background-image": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEFCAMAAAAVLX0ZAAAAAXNSR0IArs4c6QAAADNQTFRFyzcwzk9G1VtT2GNb2mhj3XRt4IF444Z/5ZKK6JiR66Ga76ul8LSv8rm29b+79sXB983Kf5TXQQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oDDhUjGoEod4oAAABCSURBVCjP1dCJEQAREADBvdd5DvlHa4qlCMF0BiNRovwqwMMpiw8GLx7cuKoTx7BzeZLQnwTlpyt2udLPtDftzqYK8I4ECjgUovgAAAAASUVORK5CYII='
+      "background-image": GM_getResourceURL("severe")
     }
   };
 
