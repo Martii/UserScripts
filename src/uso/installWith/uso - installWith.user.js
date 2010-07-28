@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.2
+// @version       0.4.3
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -145,9 +145,6 @@
           divNode,
           /* Custom CSS */
           <><![CDATA[
-
-            /* USO fixups */
-            /div .postactions { clear: both; }
 
             /* GM_config specific fixups */
             #GM_config {
@@ -880,13 +877,16 @@
                       "title": 'by http://zahlii.independent-irc.com/updater.class.js',
                       "updater": "zahlii.independent-irc.com",
                       "rex": [
-                        "^https?:\\/\\/zahlii\\.independent-irc\\.com\\/updater\\.class\\.js"
+                        "^https?:\\/\\/zahlii\\.independent-irc\\.com\\/.*",
+                        "^https?:\\/\\/github\\.com\\/Zahlii/.*",
+                        "^https?:\\/\\/dabei\\.kilu\\.de/.*",
+                        "^https?:\\/\\/kuestenpenner\\.ku\\.ohost\\.de/.*"
                       ],
                       "url": "",
                       "qs": "",
                       "securityAdvisory": {
-                        "advisory": "high",
-                        "title": ", Updates to offsite script"
+                        "advisory": "severe",
+                        "title": ", Updates to offsite script; Multiple redirections"
                       }
                     },
                     "usoCheckup": {
