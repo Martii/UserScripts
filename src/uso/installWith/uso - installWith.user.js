@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.6
+// @version       0.4.7
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -33,7 +33,7 @@
 // @resource undetermined http://usocheckup.dune.net/res/undetermined.png
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/8dbc9a6945455c2cd41852af38abed4b46bb7a02/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/a3f29ada9e11610e7b004ee6c74ddcd5cd72f101/gm_config.js
 // ==/UserScript==
 
   var frameless = false;
@@ -132,10 +132,24 @@
 
     if (typeof GM_config != "undefined") {
       var divNode = document.getElementById("full_description");
+
+      /* Nearest fix for a glitch on USO */
+      var scriptNav = document.getElementById("script-nav");
+      if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
+        GM_addStyle("div #full_description { width: 95.84%; }");
+
+      var screenShots =  document.getElementById("screenshots");
+      if (screenShots)
+        GM_addStyle("#full_description { clear: left; }");
+      
+      /* Nearest fix for userscripts.org Alternate CSS */
+      var fullDescription = document.getElementById("full_description");
+      if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.05))
+        GM_addStyle("#screenshots { width: 95.6% !important; }");
+      
       if (divNode && !divNode.firstChild) {
         var newdivNode = document.createElement("div");
         divNode = divNode.appendChild(newdivNode);
-        GM_addStyle("div #full_description { width: 96%; }");
       }
       else {
         var newdivNode = document.createElement("div");
@@ -175,7 +189,7 @@
               text-align: left !important;
               margin: 0 !important;
               padding: 0 0 0 0.5em !important;
-              font-size: 1.5em !important;
+              font-size: 1.57em !important;
             }
 
             #GM_config .config_var {
