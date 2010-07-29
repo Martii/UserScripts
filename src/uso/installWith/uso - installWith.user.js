@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.7
+// @version       0.4.8
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -24,6 +24,10 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
+// @resource usoCheckup http://usocheckup.dune.net/res/usoCheckup.png
+// @resource usoCheckupBeta http://usocheckup.dune.net/res/usoCheckupBeta.png
+// @resource qmark http://usocheckup.dune.net/res/qmark.png
+// @resource script http://usocheckup.dune.net/res/script.png
 // @resource checking http://usocheckup.dune.net/res/checking.png
 // @resource low http://usocheckup.dune.net/res/low.png
 // @resource guarded http://usocheckup.dune.net/res/guarded.png
@@ -107,7 +111,8 @@
     installNode = installNode.singleNodeValue;
 
     installNode.setAttribute("title", securityAdvisory["checking"]["title"]);
-    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["checking"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+        + securityAdvisory["checking"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
   }
   else
     return;
@@ -141,12 +146,12 @@
       var screenShots =  document.getElementById("screenshots");
       if (screenShots)
         GM_addStyle("#full_description { clear: left; }");
-      
+
       /* Nearest fix for userscripts.org Alternate CSS */
       var fullDescription = document.getElementById("full_description");
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.05))
         GM_addStyle("#screenshots { width: 95.6% !important; }");
-      
+
       if (divNode && !divNode.firstChild) {
         var newdivNode = document.createElement("div");
         divNode = divNode.appendChild(newdivNode);
@@ -244,7 +249,8 @@
       onload: function(xhr) {
         if (xhr.status == 403) {
           installNode.setAttribute("title", securityAdvisory["elevated"]["title"] + ", UNLISTED");
-          GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+          GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+              + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
         }
         else { // Assume listed due to a USO rate limiting bug in cache stack
           var scriptid = getScriptid();
@@ -288,7 +294,7 @@
                     "uso": {
                       "value": "uso",
                       "textContent": 'userscripts.org (default)',
-                      "iconUrl": 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKwSURBVHjabJNJTBNRGID/mc5MQYVWVNCGTbEtNZGDBj1ogolEMR5UJA2LBmMoIokxERIj8ehJjx6MYIQoJgq4JIa6gEARkKJFTa2iFFtKWwp2oeDCzNQ+31DQCc5L/nmT/P/3749ACAFBECBxiEPFFds0Ws399DRVhtX2udc97ig0PmgOLBkIbOwjAR8uMRRdvXF7pqv/NfrqnEAOlxsdLas6j3Wk2AEpCRcbKvLydrdu1WUr0lXrITEhAZKUSkhQKvKwXiY2ppbDRzCcv29P/ZZsDaSqUkCJYVJGwKMnHTDlmWgTZ/CvjkW4sKTScP1WC+oZsKAxpwv5gyEUnAkj2xc70p88Y8Y2a8VBxT0gispOGa413UVDb23IMe6OwaEw+jTqQKMOF3pptqBSw7k74hLEPaDUOu0VmpFDV58ZCJIAkiDB5fUBz0eApmjQqbOgrqa69HhVbZO4jKUfmiBJBctysHJFPPiDYbA7J4DjeJDLaWAYGVAyErIy0uDs6RPH9OXVtULWYgfEmN3emJK8BlYrEsHl8cEvloX4ODnEyRlgKGZhV1iOhcz0VNixM7dOCCp2EBkeMF3u6DaNqDasg1U4CzlFxxSRKMyz8xjmsPAQwNmRsc2jxGPkR0esHp7n9RBFrYbyUi1DUzh1GujFG0UBQrNz8P7DR3j+9NklqTEK3VVkbNLkVNZc9AwNW5Hb60PT/gCamg6gEbsT3XvYjvIP6i9gu2ShhOWb+BvLD13O9o3azWrVdy4K3wKhv5HfWW1Q39BY19nechPbzQrVwX9bhU+iIqnyQMF+mPvJQr/FCsHwDJgG30ADhl8Y2wQ4jIUVkpdaZRnPcd6AfxomJ32AIhEwdvaC8XG7JLwwvmXPmVFn52Tu2lvQjN9Crn3M6bWY+6otr3oGpWCB/SPAAJaJRguGUxB0AAAAAElFTkSuQmCC',
+                      "iconUrl": GM_getResourceURL("script"),
                       "title": '',
                       "updater": "",
                       "rex": [],
@@ -916,7 +922,7 @@
                     "usoCheckup": {
                       "value": "usoCheckup",
                       "textContent": 'usoCheckup',
-                      "iconUrl": "http://s3.amazonaws.com/uso_ss/1359/large.png",
+                      "iconUrl": GM_getResourceURL("usoCheckup"),
                       "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                       "updater": "usocheckup",
                       "rex": [
@@ -937,7 +943,7 @@
                       "value": "usoCheckupbeta",
                       "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
                       "derivative": 1,
-                      "iconUrl": "http://s3.amazonaws.com/uso_ss/9785/large.png",
+                      "iconUrl": GM_getResourceURL("usoCheckupBeta"),
                       "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                       "updater": "usocheckup",
                       "rex": [
@@ -1046,8 +1052,11 @@
                       for each (var updater in updaters)
                         for each (var rex in updater["rex"])
                           if (require.match(new RegExp(rex  + ".*", "i"))) {
-                            installNode.setAttribute("title", securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
-                            GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+                            installNode.setAttribute("title",
+                                securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
+                            GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                                + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
+                                + "); } #install_script a.userjs:hover { color: black;}");
                             return;
                           }
                   }
@@ -1070,24 +1079,7 @@
                   thisNode.style.setProperty("font-size", "1.0em", "");
 
                   thisNode = helpNode;
-                  var qmark = "data:image/png;base64,"
-                    + "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A"
-                    + "/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oCBhUpFGSrs1gAAANFSURBVDjL"
-                    + "bZNdTFt1HIaf3/lqz2jlo8CAwYSJorBEJSY2McvGBWZkMZipkUQzP4jezZhwI15qDIkGExNuZkac"
-                    + "mWKUaMQEP4IfmXObxEy8YHW6iatYSqGlh5aWtpxz/t4w44XP1Xvx5L16XxkcHGRmZobJyUkZHh5W"
-                    + "AO+fOdXseao7mcntq5RLiFtKXIldiX0wPZMEGBsbY3R0FAABmJubo7+/nxOPH9WjfY+9tLqefb5Q"
-                    + "LO63vCKe71NwdXzf/XNrc+Pts+9OvgVss4uMj4/LyMiImnrnVTuRjXyxmkwevkO7TNS+6kYC20qM"
-                    + "IOt+g1xwOoyFTCPZrPP1x9Nnh4CMUgpRSiEijL0+8bmzfn3g4c7PiLbFFbaJm0d8D2XVGaA1c/7a"
-                    + "fpma7+C368nZ776ZHVJKbRkiwmtjbz67lkoNPHT3LNHeJYpFU/6Y9lm9KCiFRHrKdJ1Y4tARnaJp"
-                    + "cDrbeKzjQNfTIjKhAWYmk3uqPhSj74FrqhyGtW8Vy2/oBIoQtn21PqWT+NTDtf7mwSMrqq2pQkNj"
-                    + "85NAi/bCyWc6M+lsT8+BRQjdjmYfItQK3c/tcN/pCp3HFI2+hr1t4KktMg607c2g68ZtukaPkc/l"
-                    + "qzfz6pZwME25FJWyNsB29w2M3mVW3jOpnDKkLuoRekSxEgcNT+rDFSplqizLaDCWlxN+RdVXkvGg"
-                    + "mWu6hBcsKbZcKhmT/PcG2kGFdlKkqJuI41O9N0CpsIOzWXB3dlxNW1yMpVKpZOLnX8NEjIIysuel"
-                    + "ipyEfUtqWpHaHo1QrY5d0gibVdTYtrq0UGJjI+24HmltdW0znlxZ/nHmXJGleEjq94SwlIWZM/B/"
-                    + "UvgLCqtoEvAUkch+Lv+i5KsfUjhO5ipwQwcolwrJbLZ8fD7m28d7LVUTssSvCGazTvAug0CtyJ66"
-                    + "FuKJiHr05Zgs/ZXeRLkTwLze3t6O4zgJcCuJ9M7RTy6UpSNscrDVVvatFnZTFeLV89E5ZOiVmCwl"
-                    + "tgDOAB+KSOLmpAnoWMCLwAqgmmt01XdnUB3uCqrG6oACFJASmADuAYx/z/QfqoD7gSeAe4GaXScP"
-                    + "/A58CVzcze7/FQCYQK3APk1oUWD4CgdYB1YBB/Bvyv8Asu15fjeIVHcAAAAASUVORK5CYII=";
+                  var qmark = GM_getResourceURL("qmark")
 
                   thisNode.style.setProperty("width", "16px", "");
                   thisNode.style.setProperty("height", "16px", "");
@@ -1104,7 +1096,9 @@
                   selectNode.style.setProperty("font-size", "0.9em", "");
                   selectNode.addEventListener("change", function(ev) {
                     var thisUpdater = updaters[this.value];
-                    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+                    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                        + securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["background-image"]
+                        + "); } #install_script a.userjs:hover { color: black;}");
                     switch(this.value) {
                       case "uso":
                         GM_deleteValue(":updaterPreference");
@@ -1115,7 +1109,8 @@
                         break;
                       default:
                         GM_setValue(":updaterPreference", this.value);
-                        installNode.setAttribute("title", securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["title"] + thisUpdater["securityAdvisory"]["title"]);
+                        installNode.setAttribute("title",
+                            securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["title"] + thisUpdater["securityAdvisory"]["title"]);
 
                         function appendQSP(qs, qsp) {
                           if (qsp)
@@ -1186,7 +1181,8 @@
               }
               else {
                 installNode.setAttribute("title", securityAdvisory["undetermined"]["title"]);
-                GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url(" + securityAdvisory["undetermined"]["background-image"] + ") !important; } #install_script a.userjs:hover { color: black;}");
+                GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                    + securityAdvisory["undetermined"]["background-image"] + ") !important; } #install_script a.userjs:hover { color: black;}");
               }
             }
           });
