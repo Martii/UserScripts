@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.11
+// @version       0.4.12
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -165,6 +165,25 @@
       }
 
       GM_config.onSave = function() {
+        var write = false;
+        
+        if (parseInt(Math.abs(GM_config.get("updaterMaxage"))) != GM_config.get("updaterMaxage")) {
+          GM_config.set("updaterMaxage", parseInt(Math.abs(GM_config.get("updaterMaxage"))));
+          write = true;
+        }
+
+        if (parseInt(Math.abs(GM_config.get("updaterMinage"))) != GM_config.get("updaterMinage")) {
+          GM_config.set("updaterMinage", parseInt(Math.abs(GM_config.get("updaterMinage"))));
+          write = true;
+        }
+        
+        if (GM_config.get("updaterMinage") > GM_config.get("updaterMaxage") * 24 ) {
+          GM_config.set("updaterMinage", 1);
+          write = true;
+        }
+
+        if (write) { GM_config.write(); GM_config.close(); GM_config.open(); }
+
         var ev = document.createEvent("HTMLEvents");
         ev.initEvent("change", true, true);
         var selectNode = document.getElementById("updater_select");
@@ -1124,9 +1143,9 @@
                         }
                         var qs = "";
                         qs = appendQSP(qs, ((!thisUpdater["value"].match(/usoCheckup.*/i)) ? "updater=" + thisUpdater["value"] : "") );
-                        qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(GM_config.get("updaterMaxage")) : ""));
+                        qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(Math.abs(GM_config.get("updaterMaxage"))) : ""));
                         if (thisUpdater["qsmin"] && GM_config.get("updaterMinage") != 1)
-                          qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(GM_config.get("updaterMinage"))));
+                          qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(Math.abs(GM_config.get("updaterMinage")))));
                         qs = appendQSP(qs, thisUpdater["qs"]);
                         qs = appendQSP(qs, "is=.user.js");
 
