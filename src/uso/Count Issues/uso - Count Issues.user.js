@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.9
+// @version       0.1.10
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -21,7 +21,7 @@
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
-// @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=14&custom=yes&topicid=46434&id=usoCheckup
+// @require http://usocheckup.redirectme.net/69307.js?method=install&open=window&maxage=14&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // ==/UserScript==
 
