@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.9
+// @version       0.4.10
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -1129,7 +1129,7 @@
                         qs = appendQSP(qs, thisUpdater["qs"]);
                         qs = appendQSP(qs, "is=.user.js");
 
-                        var url = "http://" + ((thisUpdater["beta"]) ? "beta." : "") + "usocheckup.redirectme.net/" + scriptid + ".user.js" + qs;
+                        var url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs;
                         installNode.setAttribute("href", url);
 
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
