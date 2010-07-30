@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.8
+// @version       0.4.9
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -24,18 +24,18 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @resource usoCheckup http://usocheckup.dune.net/res/usoCheckup.png
-// @resource usoCheckupBeta http://usocheckup.dune.net/res/usoCheckupBeta.png
-// @resource qmark http://usocheckup.dune.net/res/qmark.png
-// @resource script http://usocheckup.dune.net/res/script.png
-// @resource checking http://usocheckup.dune.net/res/checking.png
-// @resource low http://usocheckup.dune.net/res/low.png
-// @resource guarded http://usocheckup.dune.net/res/guarded.png
-// @resource elevated http://usocheckup.dune.net/res/elevated.png
-// @resource high http://usocheckup.dune.net/res/high.png
-// @resource severe http://usocheckup.dune.net/res/severe.png
-// @resource undetermined http://usocheckup.dune.net/res/undetermined.png
-// @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
+// @resource usoCheckup http://usocheckup.redirectme.net/res/usoCheckup.png
+// @resource usoCheckupBeta http://usocheckup.redirectme.net/res/usoCheckupBeta.png
+// @resource qmark http://usocheckup.redirectme.net/res/qmark.png
+// @resource script http://usocheckup.redirectme.net/res/script.png
+// @resource checking http://usocheckup.redirectme.net/res/checking.png
+// @resource low http://usocheckup.redirectme.net/res/low.png
+// @resource guarded http://usocheckup.redirectme.net/res/guarded.png
+// @resource elevated http://usocheckup.redirectme.net/res/elevated.png
+// @resource high http://usocheckup.redirectme.net/res/high.png
+// @resource severe http://usocheckup.redirectme.net/res/severe.png
+// @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
+// @require http://usocheckup.redirectme.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // @require http://github.com/sizzlemctwizzle/GM_config/raw/a3f29ada9e11610e7b004ee6c74ddcd5cd72f101/gm_config.js
 // ==/UserScript==
@@ -926,10 +926,11 @@
                       "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                       "updater": "usocheckup",
                       "rex": [
-                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
-                      "url": "http://usocheckup.dune.net/" + scriptid + ".js",
+                      "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid,
                       "qsmax": "maxage",
                       "qsmin": "minage",
@@ -967,10 +968,11 @@
                       "title": 'themed by Marti Martz (37004)',
                       "updater": "usocheckup",
                       "rex": [
-                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
-                      "url": "http://usocheckup.dune.net/" + scriptid + ".js",
+                      "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&theme=82206,66530,67771,74732&trim=de,pt&id=usoCheckup",
                       "qsmax": "maxage",
                       "qsmin": "minage",
@@ -987,10 +989,11 @@
                       "title": 'themed by Marti Martz (37004)',
                       "updater": "usocheckup",
                       "rex": [
-                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
-                      "url": "http://usocheckup.dune.net/" + scriptid + ".js",
+                      "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,67771,74732&trim=de,pt&id=usoCheckup",
                       "qsmax": "maxage",
                       "qsmin": "minage",
@@ -1007,10 +1010,11 @@
                       "title": 'themed by Marti Martz (37004)',
                       "updater": "usocheckup",
                       "rex": [
-                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
-                      "url": "http://usocheckup.dune.net/" + scriptid + ".js",
+                      "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
                       "qsmax": "maxage",
                       "qsmin": "minage",
@@ -1027,10 +1031,11 @@
                       "title": 'themed by Marti Martz (37004)',
                       "updater": "usocheckup",
                       "rex": [
-                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
+                        "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
                         "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                       ],
-                      "url": "http://usocheckup.dune.net/" + scriptid + ".js",
+                      "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                       "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
                       "qsmax": "maxage",
                       "qsmin": "minage",
@@ -1124,7 +1129,7 @@
                         qs = appendQSP(qs, thisUpdater["qs"]);
                         qs = appendQSP(qs, "is=.user.js");
 
-                        var url = "http://" + ((thisUpdater["beta"]) ? "beta." : "") + "usocheckup.dune.net/" + scriptid + ".user.js" + qs;
+                        var url = "http://" + ((thisUpdater["beta"]) ? "beta." : "") + "usocheckup.redirectme.net/" + scriptid + ".user.js" + qs;
                         installNode.setAttribute("href", url);
 
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
