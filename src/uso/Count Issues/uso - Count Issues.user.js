@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.0
+// @version       0.2.1
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
@@ -172,8 +172,12 @@
                         liNode.appendChild(anchorNode);
 
                         ulNode.appendChild(liNode);
-                        break;
+                      } else {
+                        liNode.setAttribute("title", key);
+                        liNode.textContent = key;
+                        ulNode.appendChild(liNode);
                       }
+                      break;
                     case "require":
                       var matches = key.match(/^https?:\/\/.*/i);
                       if (matches) {
@@ -211,10 +215,18 @@
                             liNode.appendChild(anchorNode);
 
                             ulNode.appendChild(liNode);
-                            break;
+                          } else {
+                            liNode.setAttribute("title", key);
+                            liNode.textContent = key;
+                            ulNode.appendChild(liNode);
                           }
+                        } else {
+                          liNode.setAttribute("title", key);
+                          liNode.textContent = key;
+                          ulNode.appendChild(liNode);
                         }
                       }
+                      break;
                     case "resource":
                       var matches = key.match(/^([\w\.]+)\s*(https?:\/\/.*)/i);
                       if (matches) {
@@ -261,9 +273,9 @@
                         }
                       }
                     default:
-                        liNode.setAttribute("title", key);
-                        liNode.textContent = key;
-                        ulNode.appendChild(liNode);
+                      liNode.setAttribute("title", key);
+                      liNode.textContent = key;
+                      ulNode.appendChild(liNode);
                       break;
                   }
                 }
