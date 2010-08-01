@@ -8,22 +8,185 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.1
+// @version       0.3.0
+//
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
 // @include   https://userscripts.org/topics/*
 // @include   http://userscripts.org/reviews/*
 // @include   https://userscripts.org/reviews/*
+//
 // @exclude http://userscripts.org/scripts/source/*.meta.js
 // @exclude https://userscripts.org/scripts/source/*.meta.js
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
+//
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=14&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
+//
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/47917e79ae5001c3874725cf6f662c45c62a78eb/gm_config.js
 // ==/UserScript==
+
+  if (typeof GM_config != "undefined") {
+    var divNode = document.getElementById("full_description");
+
+    /* Nearest fix for a glitch on USO */
+    var scriptNav = document.getElementById("script-nav");
+    if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
+      GM_addStyle("div #full_description { width: 95.84%; }");
+
+    var screenShots =  document.getElementById("screenshots");
+    if (screenShots)
+      GM_addStyle("#full_description { clear: left; }");
+
+    /* Nearest fix for userscripts.org Alternate CSS */
+    var fullDescription = document.getElementById("full_description");
+    if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.05))
+      GM_addStyle("#screenshots { width: 95.6% !important; }");
+
+    if (divNode && !divNode.firstChild) {
+      var newdivNode = document.createElement("div");
+      divNode = divNode.appendChild(newdivNode);
+    }
+    else {
+      var newdivNode = document.createElement("div");
+      if (divNode)
+        divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
+      else
+        divNode = document.body.appendChild(newdivNode);
+    }
+
+    GM_config.onSave = function() {
+      var write = false;
+
+      if (write) { GM_config.write(); GM_config.close(); GM_config.open(); }
+    }
+    GM_config.init('Options' /* Script title */,
+        divNode,
+        /* Custom CSS */
+        <><![CDATA[
+
+          /* GM_config specific fixups */
+          #GM_config {
+            position: static !important;
+            z-index: 0 !important;
+            width: auto !important;
+            height: auto !important;
+            max-height: none !important;
+            max-width: none !important;
+            margin: 0 0 0.6em 0 !important;
+            border: 1px solid #ddd !important;
+            clear: right;
+          }
+
+          #GM_config .config_header {
+            color: white !important;
+            background-color: #333 !important;
+            text-align: left !important;
+            margin: 0 !important;
+            padding: 0 0 0 0.5em !important;
+            font-size: 1.57em !important;
+          }
+
+          #GM_config .config_var {
+            margin: 0.1em 1em 0 !important;
+            padding: 0 !important;
+          }
+
+          #GM_config .field_label {
+            color: #333 !important;
+            font-weight: normal !important;
+            font-size: 100% !important;
+          }
+
+          #GM_config_field_showNames,
+          #GM_config_field_showNamespaces,
+          #GM_config_field_showDescriptions,
+          #GM_config_field_showRequires,
+          #GM_config_field_checkAgainstHomepageUSO,
+          #GM_config_field_enableHEAD,
+          #GM_config_field_showResources,
+          #GM_config_field_showIncludes,
+          #GM_config_field_showMatches,
+          #GM_config_field_showExcludes
+          {
+            float: left !important; top: 0 !important;
+          }
+
+          #GM_config_field_checkAgainstHomepageUSO { margin-left: 1.5em !important; }
+          #GM_config_field_enableHEAD { margin-left: 3em !important; }
+
+          #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em !important; }
+          #GM_config_saveBtn { margin: 0 3.0em !important; padding-left: 4.0em; }
+          #GM_config_resetLink { margin-right: 2.5em; }
+          #GM_config_closeBtn { display: none !important; }
+
+        ]]></>.toString(),
+
+        /* Settings object */
+        {
+          'showNames': {
+              "label": 'Show names in sidebar when different (Should normally be 1 count)',
+              "type": 'checkbox',
+              "default": true
+          },
+          'showNamespaces': {
+              "label": 'Show namespaces in sidebar if present (Should normally be 1 count)',
+              "type": 'checkbox',
+              "default": true
+          },
+          'showDescriptions': {
+              "label": 'Show descriptions in sidebar when different and present (Should normally be 1 count)',
+              "type": 'checkbox',
+              "default": true
+          },
+          'showRequires': {
+              "label": 'Show requires in sidebar when present',
+              "type": 'checkbox',
+              "default": true
+          },
+          'checkAgainstHomepageUSO': {
+              "label": 'Check USO script urls against the USO script homepage (Rate and Limiting on USO may prevent accuracy)',
+              "type": 'checkbox',
+              "default": true
+          },
+          'enableHEAD': {
+            "label": 'Check urls with a HTTP HEAD request (NOT CURRENTLY RECOMMENDED DUE TO A BUG WITH USO)',
+            "type": 'checkbox',
+            "default": false
+          },
+          'showResources': {
+              "label": 'Show resources in sidebar when present',
+              "type": 'checkbox',
+              "default": true
+          },
+          'showIncludes': {
+              "label": 'Show includes in sidebar when present',
+              "type": 'checkbox',
+              "default": true
+          },
+          'showMatches': {
+              "label": 'Show matches in sidebar when present',
+              "type": 'checkbox',
+              "default": true
+          },
+          'showExcludes': {
+              "label": 'Show excludes in sidebar when present',
+              "type": 'checkbox',
+              "default": true
+          }
+        }
+    );
+    if (window.location.pathname == "/scripts/show/69307")
+      GM_config.open();
+  }
+  else {
+    if (!window.location.pathname == "/scripts/show/69307")
+      GM_log('Something may have gone wrong in uso - Count Issues. Please let me know how to reproduce');
+  }
 
   function nsResolver(prefix) {
     var ns = {
@@ -110,7 +273,7 @@
 
               GM_addStyle(<><![CDATA[
                 span.metadata { color: #666; font-size: 0.7em; }
-                span.metadataforced { color: red; }
+                .metadataforced, span.metadataforced { color: red; }
                 div.metadata { overflow: auto; max-height: 10em; }
                 ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
                 li.metadata { color: grey; white-space: nowrap; }
@@ -135,26 +298,26 @@
                 if (typeof keys == "string")
                   keys = new Array(keys);
 
-                var headerNode = document.createElement("h6");
+                let headerNode = document.createElement("h6");
                 headerNode.textContent = title + ' ';
                 el.appendChild(headerNode);
 
-                var spanNodeSection = document.createElement("span");
+                let spanNodeSection = document.createElement("span");
                 spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
                 spanNodeSection.textContent = keys.length;
                 headerNode.appendChild(spanNodeSection);
 
-                var divNode = document.createElement("div");
+                let divNode = document.createElement("div");
                 divNode.setAttribute("class", "metadata");
                 el.appendChild(divNode);
 
-                var ulNode = document.createElement("ul");
+                let ulNode = document.createElement("ul");
                 ulNode.setAttribute("class", "metadata");
                 divNode.appendChild(ulNode);
 
-                var namespaceCount = 0;
+                let namespaceCount = 0;
                 for each (let key in keys) {
-                  var liNode = document.createElement("li");
+                  let liNode = document.createElement("li");
                   liNode.setAttribute("class", "metadata");
 
                   switch(filter) {
@@ -164,7 +327,7 @@
 
                       var matches = key.match(/^(https?:\/\/.*)/i);
                       if (matches) {
-                        anchorNode = document.createElement("a");
+                        let anchorNode = document.createElement("a");
                         anchorNode.setAttribute("href", matches[1]);
                         anchorNode.textContent = matches[1];
 
@@ -182,11 +345,22 @@
                       var matches = key.match(/^https?:\/\/.*/i);
                       if (matches) {
                         matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
-                        var anchorNode = document.createElement("a");
-                        anchorNode.setAttribute("href", (matches)
-                            ? window.location.protocol + "//userscripts.org/scripts/show/" + matches[1]
-                                : key);
+                        let showUrl;
+                        if (matches)
+                          showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+
+                        let anchorNode = document.createElement("a");
+                        anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
                         anchorNode.textContent = key;
+                        if (GM_config && GM_config.get("checkAgainstHomepageUSO") && showUrl)
+                          GM_xmlhttpRequest({
+                            method: (GM_config && GM_config.get("enableHEAD") ) ? "HEAD" : "GET",
+                            url: showUrl,
+                            onload: function(xhr) {
+                              if (xhr.status != 200)
+                                anchorNode.setAttribute("class", "metadataforced");
+                          }});
+
                         liNode.setAttribute("title", key);
                         liNode.appendChild(anchorNode);
                         ulNode.appendChild(liNode);
@@ -201,12 +375,12 @@
                           null
                         );
                         if (xpr && xpr.singleNodeValue) {
-                          var thisNode = xpr.singleNodeValue;
-                          var url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                          let thisNode = xpr.singleNodeValue;
+                          let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                           if (url) {
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-                            anchorNode = document.createElement("a");
+                            let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", url[1] + key);
                             anchorNode.style.setProperty("color", "red", "");
                             anchorNode.textContent = key;
@@ -230,12 +404,12 @@
                     case "resource":
                       var matches = key.match(/^([\w\.]+)\s*(https?:\/\/.*)/i);
                       if (matches) {
-                        var spanNode = document.createElement("span");
+                        let spanNode = document.createElement("span");
                         spanNode.setAttribute("class", "resourceName");
                         spanNode.textContent = matches[1];
                         liNode.appendChild(spanNode);
 
-                        anchorNode = document.createElement("a");
+                        let anchorNode = document.createElement("a");
                         anchorNode.setAttribute("href", matches[2]);
                         anchorNode.textContent = matches[2];
 
@@ -254,12 +428,12 @@
                           null
                         );
                         if (xpr && xpr.singleNodeValue) {
-                          var thisNode = xpr.singleNodeValue;
-                          var url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                          let thisNode = xpr.singleNodeValue;
+                          let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                           if (url) {
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-                            anchorNode = document.createElement("a");
+                            let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", url[1] + key);
                             anchorNode.style.setProperty("color", "red", "");
                             anchorNode.textContent = key;
@@ -283,33 +457,35 @@
 
               var mbx = document.createElement("div");
 
-              if (headers["name"] && headers["name"] != titleNode.textContent)
+              if (GM_config && GM_config.get("showNames") && headers["name"] && headers["name"] != titleNode.textContent)
                 display(mbx, headers["name"], "name", "Names", true);
 
-              if (headers["namespace"])
+              if (GM_config && GM_config.get("showNamespaces"))
+                if (headers["namespace"])
                   display(mbx, headers["namespace"], "namespace", "Namespaces");
-              else
-                display(mbx, "userscripts.org", "namespace", "Namespace", true);
+                else
+                  display(mbx, "", "namespace", "Namespace", true);
 
-              if (headers["description"] && summaryNode
+              if (GM_config && GM_config.get("showDescriptions") && headers["description"] && summaryNode
                   && (!summaryNode.textContent.match(/[\r\n](.*)[\r\n]/) || headers["description"] != summaryNode.textContent.match(/[\r\n](.*)[\r\n]/)[1]))
                 display(mbx, headers["description"], "description", "Descriptions", true);
 
-              if (headers["require"])
+              if (GM_config && GM_config.get("showRequires") && headers["require"])
                 display(mbx, headers["require"], "require", "Requires");
 
-              if (headers["resource"])
+              if (GM_config && GM_config.get("showResources") && headers["resource"])
                 display(mbx, headers["resource"], "resource", "Resources");
 
-              if (headers["include"])
-                display(mbx, headers["include"], "include", "Includes");
-              else
-                display(mbx, "*", "include", "Includes", true);
+              if (GM_config && GM_config.get("showIncludes"))
+                if (headers["include"])
+                  display(mbx, headers["include"], "include", "Includes");
+                else
+                  display(mbx, "*", "include", "Includes", true);
 
-              if (headers["match"])
+              if (GM_config && GM_config.get("showMatches") && headers["match"])
                 display(mbx, headers["match"], "match", "Matches");
 
-              if (headers["exclude"])
+              if (GM_config && GM_config.get("showExcludes") && headers["exclude"])
                 display(mbx, headers["exclude"], "exclude", "Excludes");
 
 
@@ -442,7 +618,7 @@
 
       var spanNode = document.createElement("span");
       if (!doc || yesCount > noCount)
-        spanNode.setAttribute("style", "color: red;");
+        spanNode.style.setProperty("color", "red", "");
       if (doc)
         spanNode.textContent = yesCount;
       else
