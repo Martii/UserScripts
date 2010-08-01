@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.6
+// @version       0.3.7
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -94,7 +94,7 @@
             color: white;
             background-color: #333;
             text-align: left;
-            margin: 0 0 0.4em 0;
+            margin: 0 0 0.5em 0;
             padding: 0 0 0 0.5em;
             font-size: 1.57em;
           }
@@ -111,7 +111,7 @@
             font-size: 100%;
           }
 
-          #GM_config_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0 0.25em; float: left; }
+          #GM_config_field_fontSize { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right; }
 
           #GM_config_field_limitMaxHeight,
           #GM_config_field_showNames,
@@ -141,12 +141,12 @@
         /* Settings object */
         {
           'fontSize': {
-              "label": 'em font size for all list entries under the header',
+              "label": 'em font size for all list entries under the header in the sidebar',
               "type": 'float',
               "default": 1
           },
           'limitMaxHeight': {
-              "label": 'Limit maximum height of all headers in the sidebar',
+              "label": 'Limit maximum height of all shown lists in the sidebar',
               "type": 'checkbox',
               "default": false
           },
