@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.1
+// @version       0.3.2
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -61,12 +61,12 @@
 
     GM_config.onSave = function() {
       var write = false;
-      
+
       if (GM_config.get("limitMaxHeight"))
         GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
       else
         GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-        
+
       if (write) { GM_config.write(); GM_config.close(); GM_config.open(); }
     }
     GM_config.init('Options' /* Script title */,
@@ -286,21 +286,25 @@
 
               GM_addStyle(<><![CDATA[
                 span.metadata { color: #666; font-size: 0.7em; }
-                .metadataforced, span.metadataforced { color: red; }
+                .metadataforced { color: red; }
+                .metadataforced:hover { color: orangered; }
+                .metadataunknown { color: black; }
+                .metadataunknown:hover { color: grey; }
+                span.metadataforced { color: red; }
                 div.metadata { overflow: auto; }
                 ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
                 li.metadata { color: grey; white-space: nowrap; }
                 .nameMismatch { color: red !important; }
                 .resourceName { margin-right: 0.5em; }
                 ]]></> + "");
-                
-                
+
+
               if (GM_config)
                 if (GM_config.get("limitMaxHeight"))
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
                 else
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-                
+
 
 
               if (headers["name"] != titleNode.textContent) {
@@ -378,8 +382,12 @@
                             method: (GM_config && GM_config.get("enableHEAD") ) ? "HEAD" : "GET",
                             url: showUrl,
                             onload: function(xhr) {
-                              if (xhr.status != 200)
-                                anchorNode.setAttribute("class", "metadataforced");
+                              if (xhr.status != 200) {
+                                if (xhr.status == 503)
+                                  anchorNode.setAttribute("class", "metadataunknown");
+                                else
+                                  anchorNode.setAttribute("class", "metadataforced");
+                              }
                           }});
 
                         liNode.setAttribute("title", key);
