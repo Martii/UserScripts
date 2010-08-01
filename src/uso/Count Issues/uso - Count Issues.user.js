@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.0
+// @version       0.3.1
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -61,7 +61,12 @@
 
     GM_config.onSave = function() {
       var write = false;
-
+      
+      if (GM_config.get("limitMaxHeight"))
+        GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
+      else
+        GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
+        
       if (write) { GM_config.write(); GM_config.close(); GM_config.open(); }
     }
     GM_config.init('Options' /* Script title */,
@@ -102,6 +107,7 @@
             font-size: 100% !important;
           }
 
+          #GM_config_field_limitMaxHeight,
           #GM_config_field_showNames,
           #GM_config_field_showNamespaces,
           #GM_config_field_showDescriptions,
@@ -128,23 +134,28 @@
 
         /* Settings object */
         {
+          'limitMaxHeight': {
+              "label": 'Limit maximum height of all headers in the sidebar',
+              "type": 'checkbox',
+              "default": false
+          },
           'showNames': {
-              "label": 'Show names in sidebar when different (Should normally be 1 count)',
+              "label": 'Show names header when different (Should normally be 1 count)',
               "type": 'checkbox',
               "default": true
           },
           'showNamespaces': {
-              "label": 'Show namespaces in sidebar if present (Should normally be 1 count)',
+              "label": 'Show namespaces header if present (Should normally be 1 count)',
               "type": 'checkbox',
               "default": true
           },
           'showDescriptions': {
-              "label": 'Show descriptions in sidebar when different and present (Should normally be 1 count)',
+              "label": 'Show descriptions header when different and present (Should normally be 1 count)',
               "type": 'checkbox',
               "default": true
           },
           'showRequires': {
-              "label": 'Show requires in sidebar when present',
+              "label": 'Show requires header when present',
               "type": 'checkbox',
               "default": true
           },
@@ -154,37 +165,39 @@
               "default": true
           },
           'enableHEAD': {
-            "label": 'Check urls with a HTTP HEAD request (NOT CURRENTLY RECOMMENDED DUE TO A BUG WITH USO)',
+            "label": 'Check urls with a HTTP HEAD request (NOT CURRENTLY RECOMMENDED due to a bug with USO)',
             "type": 'checkbox',
             "default": false
           },
           'showResources': {
-              "label": 'Show resources in sidebar when present',
+              "label": 'Show resources header when present',
               "type": 'checkbox',
               "default": true
           },
           'showIncludes': {
-              "label": 'Show includes in sidebar when present',
+              "label": 'Show includes header when present',
               "type": 'checkbox',
               "default": true
           },
           'showMatches': {
-              "label": 'Show matches in sidebar when present',
+              "label": 'Show matches header when present',
               "type": 'checkbox',
               "default": true
           },
           'showExcludes': {
-              "label": 'Show excludes in sidebar when present',
+              "label": 'Show excludes header when present',
               "type": 'checkbox',
               "default": true
           }
         }
     );
-    if (window.location.pathname == "/scripts/show/69307")
+    if (window.location.pathname == "/scripts/show/69307"
+        || window.location.href == "http://userscripts.org/scripts/show/69307/")
       GM_config.open();
   }
   else {
-    if (!window.location.pathname == "/scripts/show/69307")
+    if (!window.location.pathname == "/scripts/show/69307"
+        || window.location.href == "http://userscripts.org/scripts/show/69307/")
       GM_log('Something may have gone wrong in uso - Count Issues. Please let me know how to reproduce');
   }
 
@@ -274,12 +287,20 @@
               GM_addStyle(<><![CDATA[
                 span.metadata { color: #666; font-size: 0.7em; }
                 .metadataforced, span.metadataforced { color: red; }
-                div.metadata { overflow: auto; max-height: 10em; }
+                div.metadata { overflow: auto; }
                 ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
                 li.metadata { color: grey; white-space: nowrap; }
                 .nameMismatch { color: red !important; }
                 .resourceName { margin-right: 0.5em; }
                 ]]></> + "");
+                
+                
+              if (GM_config)
+                if (GM_config.get("limitMaxHeight"))
+                  GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
+                else
+                  GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
+                
 
 
               if (headers["name"] != titleNode.textContent) {
