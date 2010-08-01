@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.13
+// @version       0.4.14
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -202,7 +202,7 @@
               height: auto !important;
               max-height: none !important;
               max-width: none !important;
-              margin: 0 0 0.6em 0 !important;
+              margin: 0 0 0.5em 0 !important;
               border: 1px solid #ddd !important;
               clear: right !important;
             }
@@ -231,7 +231,7 @@
             #GM_config_field_updaterMaxage,
             #GM_config_field_updaterMinage
             {
-              width: 2.5em; height: 0.8em; margin: 0 0.25em; float: left;
+              width: 2.5em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right;
             }
 
             #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em; }
