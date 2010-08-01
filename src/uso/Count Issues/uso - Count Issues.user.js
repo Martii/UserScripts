@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.5
+// @version       0.3.6
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -66,9 +66,9 @@
         GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
       else
         GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-      
+
       GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + GM_config.get("fontSize") + <><![CDATA[em ; } ]]></>);
-      
+
 
       if (write) { GM_config.write(); GM_config.close(); GM_config.open(); }
     }
@@ -111,7 +111,7 @@
             font-size: 100%;
           }
 
-          #GM_config_field_fontSize { margin: 0 0.25em 0 0.25em; width: 2.0em; height: 0.8em; float: left; }
+          #GM_config_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0 0.25em; float: left; }
 
           #GM_config_field_limitMaxHeight,
           #GM_config_field_showNames,
@@ -125,15 +125,14 @@
           #GM_config_field_showMatches,
           #GM_config_field_showExcludes
           {
-            float: left; top: 0;
-            margin-right: 0.5em;
+            float: left; top: 0; margin-right: 0.5em;
           }
 
           #GM_config_field_checkAgainstHomepageUSO { margin-left: 1.5em; }
           #GM_config_field_enableHEAD { margin-left: 3em; }
 
           #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em; }
-          #GM_config_saveBtn { margin: 0 3.0em !important; padding-left: 4.0em; }
+          #GM_config_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
           #GM_config_resetLink { margin-right: 2.5em; }
           #GM_config_closeBtn { display: none; }
 
@@ -318,7 +317,7 @@
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
                 else
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-                
+
                 GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + GM_config.get("fontSize") + <><![CDATA[em ; } ]]></>);
               }
 
