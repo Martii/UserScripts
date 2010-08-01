@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.2
+// @version       0.3.3
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -285,11 +285,13 @@
               }
 
               GM_addStyle(<><![CDATA[
-                span.metadata { color: #666; font-size: 0.7em; }
+                span.metadata { color: #666; font-size: 1.0em; }
                 .metadataforced { color: red; }
                 .metadataforced:hover { color: orangered; }
                 .metadataunknown { color: black; }
-                .metadataunknown:hover { color: grey; }
+                .metadataunknown:hover { color: gray; }
+                .metadatachecked { color: darkgreen; }
+                .metadatachecked:hover { color: green; }
                 span.metadataforced { color: red; }
                 div.metadata { overflow: auto; }
                 ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
@@ -388,6 +390,8 @@
                                 else
                                   anchorNode.setAttribute("class", "metadataforced");
                               }
+                              else
+                                anchorNode.setAttribute("class", "metadatachecked");
                           }});
 
                         liNode.setAttribute("title", key);
