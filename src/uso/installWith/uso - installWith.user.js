@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.12
+// @version       0.4.13
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -166,7 +166,7 @@
 
       GM_config.onSave = function() {
         var write = false;
-        
+
         if (parseInt(Math.abs(GM_config.get("updaterMaxage"))) != GM_config.get("updaterMaxage")) {
           GM_config.set("updaterMaxage", parseInt(Math.abs(GM_config.get("updaterMaxage"))));
           write = true;
@@ -176,7 +176,7 @@
           GM_config.set("updaterMinage", parseInt(Math.abs(GM_config.get("updaterMinage"))));
           write = true;
         }
-        
+
         if (GM_config.get("updaterMinage") > GM_config.get("updaterMaxage") * 24 ) {
           GM_config.set("updaterMinage", 1);
           write = true;
@@ -204,52 +204,52 @@
               max-width: none !important;
               margin: 0 0 0.6em 0 !important;
               border: 1px solid #ddd !important;
-              clear: right;
+              clear: right !important;
             }
 
             #GM_config .config_header {
-              color: white !important;
-              background-color: #333 !important;
-              text-align: left !important;
-              margin: 0 !important;
-              padding: 0 0 0 0.5em !important;
-              font-size: 1.57em !important;
+              color: white;
+              background-color: #333;
+              text-align: left;
+              margin: 0 0 0.4em 0;
+              padding: 0 0 0 0.5em;
+              font-size: 1.57em;
             }
 
             #GM_config .config_var {
-              margin: 0.1em 1em 0 !important;
-              padding: 0 !important;
+              margin: 0.8em 1em;
+              padding: 0;
+              clear: both;
+            }
+
+            #GM_config .field_label {
+              color: #333;
+              font-weight: normal;
+              font-size: 100%;
             }
 
             #GM_config_field_updaterMaxage,
             #GM_config_field_updaterMinage
             {
-              width: 2.5em !important;
-              height: 0.8em !important;
-              margin: 0.1em 0 !important;
-            }
-            #GM_config .field_label {
-              color: #333 !important;
-              font-weight: normal !important;
-              font-size: 100% !important;
+              width: 2.5em; height: 0.8em; margin: 0 0.25em; float: left;
             }
 
-            #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em !important; }
-            #GM_config_saveBtn { margin: 0 3.0em !important; padding-left: 4.0em; }
+            #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em; }
+            #GM_config_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
             #GM_config_resetLink { margin-right: 2.5em; }
-            #GM_config_closeBtn { display: none !important; }
+            #GM_config_closeBtn { display: none; }
 
           ]]></>.toString(),
 
           /* Settings object */
           {
             'updaterMaxage': {
-                "label": 'Maximum age in days between checks for this script using installWith',
+                "label": 'days maximum between checks for this script using installWith',
                 "type": 'int',
                 "default": 30
             },
             'updaterMinage': {
-              "label": 'Minimum age in hours before starting a check for this script using installWith',
+              "label": 'hours minimum before starting a check for this script using installWith (Not all updaters support this)',
               "type": 'int',
               "default": 1
             }
@@ -264,7 +264,7 @@
   if (scriptid) {
     GM_xmlhttpRequest({
       url: "http://userscripts.org/scripts/source/" + scriptid + ".user.js?",
-      method: "HEAD",
+      method: "GET",
       onload: function(xhr) {
         if (xhr.status == 403) {
           installNode.setAttribute("title", securityAdvisory["elevated"]["title"] + ", UNLISTED");
