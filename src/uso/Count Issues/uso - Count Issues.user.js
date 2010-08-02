@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.7
+// @version       0.3.8
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -63,7 +63,7 @@
       var write = false;
 
       if (GM_config.get("limitMaxHeight"))
-        GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
+        GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + GM_config.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
       else
         GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
 
@@ -113,7 +113,11 @@
 
           #GM_config_field_fontSize { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right; }
 
-          #GM_config_field_limitMaxHeight,
+          #GM_config_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
+
+          #GM_config_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
+
+
           #GM_config_field_showNames,
           #GM_config_field_showNamespaces,
           #GM_config_field_showDescriptions,
@@ -149,6 +153,11 @@
               "label": 'Limit maximum height of all shown lists in the sidebar',
               "type": 'checkbox',
               "default": false
+          },
+          'maxHeightList': {
+              "label": 'em maximum height of all shown lists',
+              "type": 'float',
+              "default": 10
           },
           'showNames': {
               "label": 'Show names header when different (Should normally be 1 count)',
@@ -314,10 +323,10 @@
 
               if (GM_config) {
                 if (GM_config.get("limitMaxHeight"))
-                  GM_addStyle(<><![CDATA[ div.metadata { max-height: 10em; } ]]></> + "");
+                  GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + GM_config.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
                 else
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-
+                
                 GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + GM_config.get("fontSize") + <><![CDATA[em ; } ]]></>);
               }
 
