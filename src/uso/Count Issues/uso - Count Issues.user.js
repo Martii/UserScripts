@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.9
+// @version       0.4.0
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -27,10 +27,22 @@
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=7&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/654a022c9c1294edd671df5095dc4611eb5b81ae/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/7b9c49936a80e30834f373390042213beffff4f1/gm_config.js
 // ==/UserScript==
 
-  if (typeof GM_config != "undefined") {
+  if (typeof GM_configStruct != "undefined") {
+      // Save some memory
+      delete GM_config;
+
+      var gmc = new GM_configStruct();
+      gmc.id = "gmc69307";
+
+      // Migrate preferences for a while
+      if (GM_getValue("GM_config")) {
+        GM_setValue("gmc69307", GM_getValue("GM_config", ""));
+        GM_deleteValue("GM_config");
+      }
+
     var divNode = document.getElementById("full_description");
 
     /* Nearest fix for a glitch on USO */
@@ -59,26 +71,26 @@
         divNode = document.body.appendChild(newdivNode);
     }
 
-    GM_config.onSave = function() {
+    gmc.onSave = function() {
       var write = false;
 
-      if (GM_config.get("limitMaxHeight"))
-        GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + GM_config.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
+      if (gmc.get("limitMaxHeight"))
+        GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
       else
         GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
 
-      GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + GM_config.get("fontSize") + <><![CDATA[em ; } ]]></>);
+      GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
 
 
-      if (write) { GM_config.write(); GM_config.close(); GM_config.open(); }
+      if (write) { gmc.write(); gmc.close(); gmc.open(); }
     }
-    GM_config.init('Options' /* Script title */,
+    gmc.init('Options' /* Script title */,
         divNode,
         /* Custom CSS */
         <><![CDATA[
 
           /* GM_config specific fixups */
-          #GM_config {
+          #gmc69307 {
             position: static !important;
             z-index: 0 !important;
             width: auto !important;
@@ -90,7 +102,7 @@
             clear: right !important;
           }
 
-          #GM_config .config_header {
+          #gmc69307 .config_header {
             color: white;
             background-color: #333;
             text-align: left;
@@ -99,46 +111,46 @@
             font-size: 1.57em;
           }
 
-          #GM_config .config_var {
+          #gmc69307 .config_var {
             margin: 0 1em;
             padding: 0;
             clear: both;
           }
 
-          #GM_config .field_label {
+          #gmc69307 .field_label {
             color: #333;
             font-weight: normal;
             font-size: 100%;
           }
 
-          #GM_config_field_fontSize { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right; }
+          #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right; }
 
-          #GM_config_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
+          #gmc69307_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
 
-          #GM_config_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
+          #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
 
 
-          #GM_config_field_showNames,
-          #GM_config_field_showNamespaces,
-          #GM_config_field_showDescriptions,
-          #GM_config_field_showRequires,
-          #GM_config_field_checkAgainstHomepageUSO,
-          #GM_config_field_enableHEAD,
-          #GM_config_field_showResources,
-          #GM_config_field_showIncludes,
-          #GM_config_field_showMatches,
-          #GM_config_field_showExcludes
+          #gmc69307_field_showNames,
+          #gmc69307_field_showNamespaces,
+          #gmc69307_field_showDescriptions,
+          #gmc69307_field_showRequires,
+          #gmc69307_field_checkAgainstHomepageUSO,
+          #gmc69307_field_enableHEAD,
+          #gmc69307_field_showResources,
+          #gmc69307_field_showIncludes,
+          #gmc69307_field_showMatches,
+          #gmc69307_field_showExcludes
           {
             float: left; top: 0; margin-right: 0.5em;
           }
 
-          #GM_config_field_checkAgainstHomepageUSO { margin-left: 1.5em; }
-          #GM_config_field_enableHEAD { margin-left: 3em; }
+          #gmc69307_field_checkAgainstHomepageUSO { margin-left: 1.5em; }
+          #gmc69307_field_enableHEAD { margin-left: 3em; }
 
-          #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em; }
-          #GM_config_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-          #GM_config_resetLink { margin-right: 2.5em; }
-          #GM_config_closeBtn { display: none; }
+          #gmc69307_buttons_holder, #gmc69307 .saveclose_buttons { margin-bottom: 0.25em; }
+          #gmc69307_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+          #gmc69307_resetLink { margin-right: 2.5em; }
+          #gmc69307_closeBtn { display: none; }
 
         ]]></>.toString(),
 
@@ -213,7 +225,7 @@
     );
     if (window.location.pathname == "/scripts/show/69307"
         || window.location.href == "http://userscripts.org/scripts/show/69307/")
-      GM_config.open();
+      gmc.open();
   }
   else {
     if (!window.location.pathname == "/scripts/show/69307"
@@ -321,13 +333,13 @@
                 ]]></> + "");
 
 
-              if (GM_config) {
-                if (GM_config.get("limitMaxHeight"))
-                  GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + GM_config.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
+              if (gmc) {
+                if (gmc.get("limitMaxHeight"))
+                  GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
                 else
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
 
-                GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + GM_config.get("fontSize") + <><![CDATA[em ; } ]]></>);
+                GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
               }
 
               if (headers["name"] != titleNode.textContent) {
@@ -400,9 +412,9 @@
                         let anchorNode = document.createElement("a");
                         anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
                         anchorNode.textContent = key;
-                        if (GM_config && GM_config.get("checkAgainstHomepageUSO") && showUrl)
+                        if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
                           GM_xmlhttpRequest({
-                            method: (GM_config && GM_config.get("enableHEAD") ) ? "HEAD" : "GET",
+                            method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
                             url: showUrl,
                             onload: function(xhr) {
                               if (xhr.status != 200) {
@@ -511,35 +523,35 @@
 
               var mbx = document.createElement("div");
 
-              if (GM_config && GM_config.get("showNames") && headers["name"] && headers["name"] != titleNode.textContent)
+              if (gmc && gmc.get("showNames") && headers["name"] && headers["name"] != titleNode.textContent)
                 display(mbx, headers["name"], "name", "Names", true);
 
-              if (GM_config && GM_config.get("showNamespaces"))
+              if (gmc && gmc.get("showNamespaces"))
                 if (headers["namespace"])
                   display(mbx, headers["namespace"], "namespace", "Namespaces");
                 else
                   display(mbx, "", "namespace", "Namespace", true);
 
-              if (GM_config && GM_config.get("showDescriptions") && headers["description"] && summaryNode
+              if (gmc && gmc.get("showDescriptions") && headers["description"] && summaryNode
                   && (!summaryNode.textContent.match(/[\r\n](.*)[\r\n]/) || headers["description"] != summaryNode.textContent.match(/[\r\n](.*)[\r\n]/)[1]))
                 display(mbx, headers["description"], "description", "Descriptions", true);
 
-              if (GM_config && GM_config.get("showRequires") && headers["require"])
+              if (gmc && gmc.get("showRequires") && headers["require"])
                 display(mbx, headers["require"], "require", "Requires");
 
-              if (GM_config && GM_config.get("showResources") && headers["resource"])
+              if (gmc && gmc.get("showResources") && headers["resource"])
                 display(mbx, headers["resource"], "resource", "Resources");
 
-              if (GM_config && GM_config.get("showIncludes"))
+              if (gmc && gmc.get("showIncludes"))
                 if (headers["include"])
                   display(mbx, headers["include"], "include", "Includes");
                 else
                   display(mbx, "*", "include", "Includes", true);
 
-              if (GM_config && GM_config.get("showMatches") && headers["match"])
+              if (gmc && gmc.get("showMatches") && headers["match"])
                 display(mbx, headers["match"], "match", "Matches");
 
-              if (GM_config && GM_config.get("showExcludes") && headers["exclude"])
+              if (gmc && gmc.get("showExcludes") && headers["exclude"])
                 display(mbx, headers["exclude"], "exclude", "Excludes");
 
 
