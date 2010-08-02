@@ -7,8 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.15
-//
+// @version       0.5.0
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -38,8 +37,7 @@
 // @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
 // @require http://usocheckup.redirectme.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
-//
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/654a022c9c1294edd671df5095dc4611eb5b81ae/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/7b9c49936a80e30834f373390042213beffff4f1/gm_config.js
 // ==/UserScript==
 
   var frameless = false;
@@ -137,7 +135,19 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
-    if (typeof GM_config != "undefined") {
+    if (typeof GM_configStruct != "undefined") {
+      // Save some memory
+      delete GM_config;
+      
+      var gmc = new GM_configStruct();
+      gmc.id = "gmc68219";
+
+      // Migrate preferences for a while
+      if (GM_getValue("GM_config")) {
+        GM_setValue("gmc68219", GM_getValue("GM_config", ""));
+        GM_deleteValue("GM_config");
+      }
+      
       var divNode = document.getElementById("full_description");
 
       /* Nearest fix for a glitch on USO */
@@ -166,38 +176,38 @@
           divNode = document.body.appendChild(newdivNode);
       }
 
-      GM_config.onSave = function() {
+      gmc.onSave = function() {
         var write = false;
 
-        if (parseInt(Math.abs(GM_config.get("updaterMaxage"))) != GM_config.get("updaterMaxage")) {
-          GM_config.set("updaterMaxage", parseInt(Math.abs(GM_config.get("updaterMaxage"))));
+        if (Math.abs(gmc.get("updaterMaxage")) != gmc.get("updaterMaxage")) {
+          gmc.set("updaterMaxage", Math.abs(gmc.get("updaterMaxage")));
           write = true;
         }
 
-        if (parseInt(Math.abs(GM_config.get("updaterMinage"))) != GM_config.get("updaterMinage")) {
-          GM_config.set("updaterMinage", parseInt(Math.abs(GM_config.get("updaterMinage"))));
+        if (Math.abs(gmc.get("updaterMinage")) != gmc.get("updaterMinage")) {
+          gmc.set("updaterMinage", Math.abs(gmc.get("updaterMinage")));
           write = true;
         }
 
-        if (GM_config.get("updaterMinage") > GM_config.get("updaterMaxage") * 24 ) {
-          GM_config.set("updaterMinage", 1);
+        if (gmc.get("updaterMinage") > gmc.get("updaterMaxage") * 24 ) {
+          gmc.set("updaterMinage", 1);
           write = true;
         }
 
-        if (write) { GM_config.write(); GM_config.close(); GM_config.open(); }
+        if (write) { gmc.write(); gmc.close(); gmc.open(); }
 
         var ev = document.createEvent("HTMLEvents");
         ev.initEvent("change", true, true);
         var selectNode = document.getElementById("updater_select");
         selectNode.dispatchEvent(ev);
       }
-      GM_config.init('Options' /* Script title */,
+      gmc.init('Options' /* Script title */,
           divNode,
           /* Custom CSS */
           <><![CDATA[
 
             /* GM_config specific fixups */
-            #GM_config {
+            #gmc68219 {
               position: static !important;
               z-index: 0 !important;
               width: auto !important;
@@ -209,7 +219,7 @@
               clear: right !important;
             }
 
-            #GM_config .config_header {
+            #gmc68219 .config_header {
               color: white;
               background-color: #333;
               text-align: left;
@@ -218,28 +228,28 @@
               font-size: 1.57em;
             }
 
-            #GM_config .config_var {
+            #gmc68219 .config_var {
               margin: 0.8em 1em;
               padding: 0;
               clear: both;
             }
 
-            #GM_config .field_label {
+            #gmc68219 .field_label {
               color: #333;
               font-weight: normal;
               font-size: 100%;
             }
 
-            #GM_config_field_updaterMaxage,
-            #GM_config_field_updaterMinage
+            #gmc68219_field_updaterMaxage,
+            #gmc68219_field_updaterMinage
             {
               width: 2.5em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right;
             }
 
-            #GM_config_buttons_holder, #GM_config .saveclose_buttons { margin-bottom: 0.25em; }
-            #GM_config_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-            #GM_config_resetLink { margin-right: 2.5em; }
-            #GM_config_closeBtn { display: none; }
+            #gmc68219_buttons_holder, #gmc68219 .saveclose_buttons { margin-bottom: 0.25em; }
+            #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+            #gmc68219_resetLink { margin-right: 2.5em; }
+            #gmc68219_closeBtn { display: none; }
 
           ]]></>.toString(),
 
@@ -1131,7 +1141,7 @@
                         installNode.setAttribute("title", "");
                         installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
-                          GM_config.close();
+                          gmc.close();
                         break;
                       default:
                         GM_setValue(":updaterPreference", this.value);
@@ -1145,9 +1155,9 @@
                         }
                         var qs = "";
                         qs = appendQSP(qs, ((!thisUpdater["value"].match(/usoCheckup.*/i)) ? "updater=" + thisUpdater["value"] : "") );
-                        qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(Math.abs(GM_config.get("updaterMaxage"))) : ""));
-                        if (thisUpdater["qsmin"] && GM_config.get("updaterMinage") != 1)
-                          qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(Math.abs(GM_config.get("updaterMinage")))));
+                        qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(Math.abs(gmc.get("updaterMaxage"))) : ""));
+                        if (thisUpdater["qsmin"] && gmc.get("updaterMinage") != 1)
+                          qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(Math.abs(gmc.get("updaterMinage")))));
                         qs = appendQSP(qs, thisUpdater["qs"]);
                         qs = appendQSP(qs, "is=.user.js");
 
@@ -1155,7 +1165,7 @@
                         installNode.setAttribute("href", url);
 
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
-                          GM_config.open();
+                          gmc.open();
                       break;
                     }
                   }, true);
