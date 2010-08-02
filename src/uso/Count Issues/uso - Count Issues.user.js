@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.8
+// @version       0.3.9
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -27,7 +27,7 @@
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=7&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/47917e79ae5001c3874725cf6f662c45c62a78eb/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/654a022c9c1294edd671df5095dc4611eb5b81ae/gm_config.js
 // ==/UserScript==
 
   if (typeof GM_config != "undefined") {
@@ -326,7 +326,7 @@
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + GM_config.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
                 else
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-                
+
                 GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + GM_config.get("fontSize") + <><![CDATA[em ; } ]]></>);
               }
 
