@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.0
+// @version       0.5.1
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -37,7 +37,7 @@
 // @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
 // @require http://usocheckup.redirectme.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/7b9c49936a80e30834f373390042213beffff4f1/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/fa194bc0ffdd65dfd7bbda0beea2832cf32e021e/gm_config.js
 // ==/UserScript==
 
   var frameless = false;
@@ -138,7 +138,7 @@
     if (typeof GM_configStruct != "undefined") {
       // Save some memory
       delete GM_config;
-      
+
       var gmc = new GM_configStruct();
       gmc.id = "gmc68219";
 
@@ -147,7 +147,7 @@
         GM_setValue("gmc68219", GM_getValue("GM_config", ""));
         GM_deleteValue("GM_config");
       }
-      
+
       var divNode = document.getElementById("full_description");
 
       /* Nearest fix for a glitch on USO */
