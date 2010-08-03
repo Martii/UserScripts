@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.3
+// @version       0.4.4
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -497,7 +497,7 @@
                 var keys = gmc.get("showKeysString").split(",");
                 for (let i = 0; i < keys.length; ++i) {
                   var key = keys[i];
-
+                  
                   switch (key) {
                     case "name":
                       if (headers[key] && headers[key] != titleNode.textContent)
@@ -522,8 +522,11 @@
                         display(mbx, "*", key, key, true);
                       break;
                     default:
-                      if (headers[key])
+                      [key, prefix] = key.split(/:/).reverse();
+                      if (!prefix && headers[key])
                         display(mbx, headers[key], key, key.substr(0, 1).toUpperCase() + key.substr(1) + "s");
+                      else if (prefix && headers[prefix][key])
+                        display(mbx, headers[prefix][key], key, prefix + ":" + key.substr(0, 1).toUpperCase() + key.substr(1) + "s");
                       break;
                   }
                 }
