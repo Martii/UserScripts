@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.8
+// @version       0.4.9
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -182,7 +182,7 @@
               "default": 10
           },
           'checkAgainstHomepageUSO': {
-              "label": 'Check USO require urls against USO script homepage (Rate and Limiting on USO may limit accuracy)',
+              "label": 'Check USO require urls against USO script homepage (Rate and Limiting may limit accuracy)',
               "type": 'checkbox',
               "default": true
           },
