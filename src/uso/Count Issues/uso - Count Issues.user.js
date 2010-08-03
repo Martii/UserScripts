@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.5
+// @version       0.4.6
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -334,7 +334,7 @@
 
                 let spanNodeSection = document.createElement("span");
                 spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
-                spanNodeSection.textContent = keys.length;
+                spanNodeSection.textContent = (keys[0] == "") ? "0" : keys.length;
                 headerNode.appendChild(spanNodeSection);
 
                 let divNode = document.createElement("div");
@@ -507,7 +507,7 @@
                       if (headers[key])
                         display(mbx, headers[key], key, "@namespace");
                       else
-                        display(mbx, "userscripts.org", key, "@namespace", true);
+                        display(mbx, "", key, "@namespace", true);
                       break;
                     case "description":
                       if (headers[key] && summaryNode
@@ -519,7 +519,7 @@
                       if (headers[key])
                         display(mbx, headers[key], key, "@include");
                       else
-                        display(mbx, "*", key, key, true);
+                        display(mbx, "", key, key, true);
                       break;
                     default:
                       [key, prefix] = key.split(/:/).reverse();
