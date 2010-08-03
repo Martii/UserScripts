@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.1
+// @version       0.4.2
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -81,6 +81,16 @@
 
       GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
 
+      var keys = gmc.get("showKeysString").split(",");
+      for (let i = 0; i < keys.length; ++i) {
+        keys[i] = keys[i].replace(/^\s*/, "").replace(/\s*$/, "");
+      }
+      keys = keys.join(",");
+
+      if (keys != gmc.get("showKeysString")) {
+        gmc.set("showKeysString", keys);
+        write = true;
+      }
 
       if (write) { gmc.write(); gmc.close(); gmc.open(); }
     }
@@ -123,29 +133,19 @@
             font-size: 100%;
           }
 
-          #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right; }
-
+          #gmc69307_field_showKeys { float: left; top: 0; margin-right: 0.5em; }
+          #gmc69307_field_showKeysString { margin: 0 0 0.25em 0.3em; width: 96%; }
+          #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0.25em 0.3em; float: left; text-align: right; }
           #gmc69307_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
-
           #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
 
-
-          #gmc69307_field_showNames,
-          #gmc69307_field_showNamespaces,
-          #gmc69307_field_showDescriptions,
-          #gmc69307_field_showRequires,
           #gmc69307_field_checkAgainstHomepageUSO,
-          #gmc69307_field_enableHEAD,
-          #gmc69307_field_showResources,
-          #gmc69307_field_showIncludes,
-          #gmc69307_field_showMatches,
-          #gmc69307_field_showExcludes
+          #gmc69307_field_enableHEAD
           {
             float: left; top: 0; margin-right: 0.5em;
           }
 
-          #gmc69307_field_checkAgainstHomepageUSO { margin-left: 1.5em; }
-          #gmc69307_field_enableHEAD { margin-left: 3em; }
+          #gmc69307_field_enableHEAD { margin-left: 1.5em; }
 
           #gmc69307_buttons_holder, #gmc69307 .saveclose_buttons { margin-bottom: 0.25em; }
           #gmc69307_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
@@ -156,70 +156,40 @@
 
         /* Settings object */
         {
+          'showKeys': {
+              "label": 'Show these keys when present or different then USO in the sidebar (use commas to separate keys)',
+              "type": 'checkbox',
+              "default": true
+          },
+          'showKeysString': {
+              "label": '',
+              "type": 'text',
+              "default": "name,namespace,description,require,resource,include,match,exclude"
+          },
           'fontSize': {
-              "label": 'em font size for all list entries under the header in the sidebar',
+              "label": 'em font size for all keys found under the specified key type',
               "type": 'float',
               "default": 1
           },
           'limitMaxHeight': {
-              "label": 'Limit maximum height of all shown lists in the sidebar',
+              "label": 'Limit maximum height of all shown key types',
               "type": 'checkbox',
               "default": false
           },
           'maxHeightList': {
-              "label": 'em maximum height of all shown lists',
+              "label": 'em maximum height of all shown key types',
               "type": 'float',
               "default": 10
           },
-          'showNames': {
-              "label": 'Show names header when different (Should normally be 1 count)',
-              "type": 'checkbox',
-              "default": true
-          },
-          'showNamespaces': {
-              "label": 'Show namespaces header if present (Should normally be 1 count)',
-              "type": 'checkbox',
-              "default": true
-          },
-          'showDescriptions': {
-              "label": 'Show descriptions header when different and present (Should normally be 1 count)',
-              "type": 'checkbox',
-              "default": true
-          },
-          'showRequires': {
-              "label": 'Show requires header when present',
-              "type": 'checkbox',
-              "default": true
-          },
           'checkAgainstHomepageUSO': {
-              "label": 'Check USO script urls against the USO script homepage (Rate and Limiting on USO may prevent accuracy)',
+              "label": 'Check USO script require urls against the USO script homepage (Rate and Limiting on USO may prevent accuracy)',
               "type": 'checkbox',
               "default": true
           },
           'enableHEAD': {
-            "label": 'Check urls with a HTTP HEAD request (NOT CURRENTLY RECOMMENDED due to a bug with USO)',
+            "label": 'Check urls with a HTTP HEAD request (Not currently recommended due to a bug with USO)',
             "type": 'checkbox',
             "default": false
-          },
-          'showResources': {
-              "label": 'Show resources header when present',
-              "type": 'checkbox',
-              "default": true
-          },
-          'showIncludes': {
-              "label": 'Show includes header when present',
-              "type": 'checkbox',
-              "default": true
-          },
-          'showMatches': {
-              "label": 'Show matches header when present',
-              "type": 'checkbox',
-              "default": true
-          },
-          'showExcludes': {
-              "label": 'Show excludes header when present',
-              "type": 'checkbox',
-              "default": true
           }
         }
     );
@@ -521,44 +491,48 @@
                 }
               }
 
-              var mbx = document.createElement("div");
+              if (gmc && gmc.get("showKeys")) {
+                var mbx = document.createElement("div");
 
-              if (gmc && gmc.get("showNames") && headers["name"] && headers["name"] != titleNode.textContent)
-                display(mbx, headers["name"], "name", "Names", true);
+                var keys = gmc.get("showKeysString").split(",");
+                for (let i = 0; i < keys.length; ++i) {
+                  var key = keys[i];
 
-              if (gmc && gmc.get("showNamespaces"))
-                if (headers["namespace"])
-                  display(mbx, headers["namespace"], "namespace", "Namespaces");
+                  switch (key) {
+                    case "name":
+                      if (headers[key] && headers[key] != titleNode.textContent)
+                        display(mbx, headers[key], key, "Names", true);
+                      break;
+                    case "namespace":
+                      if (headers[key])
+                        display(mbx, headers[key], key, "Namespaces");
+                      else
+                        display(mbx, "", key, "Namespace", true);
+                      break;
+                    case "description":
+                      if (headers[key] && summaryNode
+                          && (!summaryNode.textContent.match(/[\r\n](.*)[\r\n]/)
+                              || headers[key] != summaryNode.textContent.match(/[\r\n](.*)[\r\n]/)[1]))
+                        display(mbx, headers[key], key, "Descriptions", true);
+                      break;
+                    case "include":
+                      if (headers[key])
+                        display(mbx, headers[key], key, "Includes");
+                      else
+                        display(mbx, "*", key, key, true);
+                      break;
+                    default:
+                      if (headers[key])
+                        display(mbx, headers[key], key, key.substr(0, 1).toUpperCase() + key.substr(1) + "s");
+                      break;
+                  }
+                }
+
+                if (window.location.pathname.match(/scripts\/show\/.*/i))
+                  sidebarNode.insertBefore(mbx, sidebarNode.firstChild);
                 else
-                  display(mbx, "", "namespace", "Namespace", true);
-
-              if (gmc && gmc.get("showDescriptions") && headers["description"] && summaryNode
-                  && (!summaryNode.textContent.match(/[\r\n](.*)[\r\n]/) || headers["description"] != summaryNode.textContent.match(/[\r\n](.*)[\r\n]/)[1]))
-                display(mbx, headers["description"], "description", "Descriptions", true);
-
-              if (gmc && gmc.get("showRequires") && headers["require"])
-                display(mbx, headers["require"], "require", "Requires");
-
-              if (gmc && gmc.get("showResources") && headers["resource"])
-                display(mbx, headers["resource"], "resource", "Resources");
-
-              if (gmc && gmc.get("showIncludes"))
-                if (headers["include"])
-                  display(mbx, headers["include"], "include", "Includes");
-                else
-                  display(mbx, "*", "include", "Includes", true);
-
-              if (gmc && gmc.get("showMatches") && headers["match"])
-                display(mbx, headers["match"], "match", "Matches");
-
-              if (gmc && gmc.get("showExcludes") && headers["exclude"])
-                display(mbx, headers["exclude"], "exclude", "Excludes");
-
-
-              if (window.location.pathname.match(/scripts\/show\/.*/i))
-                sidebarNode.insertBefore(mbx, sidebarNode.firstChild);
-              else
-                sidebarNode.appendChild(mbx);
+                  sidebarNode.appendChild(mbx);
+              }
           }
         }
       });
