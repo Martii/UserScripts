@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.2
+// @version       0.4.3
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -507,7 +507,7 @@
                       if (headers[key])
                         display(mbx, headers[key], key, "Namespaces");
                       else
-                        display(mbx, "", key, "Namespace", true);
+                        display(mbx, "userscripts.org", key, "Namespaces", true);
                       break;
                     case "description":
                       if (headers[key] && summaryNode
