@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.7
+// @version       0.4.8
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -157,7 +157,7 @@
         /* Settings object */
         {
           'showKeys': {
-              "label": 'Show these keys when present or different then USO in the sidebar (use commas to separate keys)',
+              "label": 'Show these keys if present or different then USO in sidebar (use commas to separate)',
               "type": 'checkbox',
               "default": true
           },
@@ -182,12 +182,12 @@
               "default": 10
           },
           'checkAgainstHomepageUSO': {
-              "label": 'Check USO script require urls against the USO script homepage (Rate and Limiting on USO may prevent accuracy)',
+              "label": 'Check USO require urls against USO script homepage (Rate and Limiting on USO may limit accuracy)',
               "type": 'checkbox',
               "default": true
           },
           'enableHEAD': {
-            "label": 'Check urls with a HTTP HEAD request (Not currently recommended due to a bug with USO)',
+            "label": 'Check urls with a HTTP HEAD request (Not currently recommended)',
             "type": 'checkbox',
             "default": false
           }
