@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.10
+// @version       0.4.11
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -251,9 +251,10 @@
             var metadataBlock = xhr.responseText.toString();
             var headers = {};
             var line, name, prefix, header, key, value;
-              var lines = metadataBlock.split(/\n/).filter(/\/\/ @/);
+              var lines = metadataBlock.split(/\n/).filter(/^\/\/ @\S+/);
               for each (line in lines) {
-                [, name, value] = line.match(/\/\/ @(\S*)\s*(.*)/);
+                [, name, value] = line.match(/^\/\/ @(\S+)\s*(.*)/);
+                value = value.replace(/\s*$/, "");
                 [key, prefix] = name.split(/:/).reverse();
                 if (prefix) {
                   if (!headers[prefix])
@@ -501,11 +502,17 @@
                       else
                         display(mbx, "", key, "@namespace");
                       break;
-                    case "description":
-                      if (headers[key] && summaryNode
-                          && (!summaryNode.textContent.match(/[\r\n](.*)[\r\n]/)
-                              || headers[key] != summaryNode.textContent.match(/[\r\n](.*)[\r\n]/)[1]))
-                        display(mbx, headers[key], key, "@description", true);
+                   case "description":
+                     if (headers[key]) {
+                       if (summaryNode) {
+                         let summary = summaryNode.textContent.replace(/^\s*/, "").replace(/\s*$/, "");
+                         if (!summary.match(/[\r\n](.*)[\r\n]/) && summary != headers[key]) {
+                           display(mbx, headers[key], key, "@description", true);
+                           break;
+                         }
+                       }
+                       display(mbx, headers[key], key, "@description");
+                     }
                       break;
                     case "include":
                       if (headers[key])
