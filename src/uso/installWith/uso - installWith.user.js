@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.2
+// @version       0.5.3
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -284,6 +284,10 @@
               + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
         }
         else { // Assume listed due to a USO rate limiting bug in cache stack
+					var possibleEmbedded;
+					if(xhr.responseText.match(/\.meta\.js/gm))
+						possibleEmbedded = true;
+					
           var scriptid = getScriptid();
           GM_xmlhttpRequest({
             url: "http://userscripts.org/scripts/source/" + scriptid + ".meta.js",
@@ -864,8 +868,8 @@
                       "url": "",
                       "qs": "",
                       "securityAdvisory": {
-                        "advisory": "low",
-                        "title": ""
+                        "advisory": "high",
+                        "title": "Doesn't use meta.js routine - Bandwidth waster"
                       }
                     },
                     "39678": {
@@ -1138,7 +1142,7 @@
                     switch(this.value) {
                       case "uso":
                         GM_deleteValue(":updaterPreference");
-                        installNode.setAttribute("title", "");
+												installNode.setAttribute("title", "");
                         installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                           gmc.close();
@@ -1164,6 +1168,12 @@
                         var url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs;
                         installNode.setAttribute("href", url);
 
+												if (possibleEmbedded) {
+													installNode.setAttribute("title", "POSSIBLE EMBEDDED UPDATER FOUND: Please check source");
+													GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+															+ securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+												}
+												
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                           gmc.open();
                       break;
