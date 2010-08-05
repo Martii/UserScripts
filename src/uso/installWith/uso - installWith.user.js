@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.6
+// @version       0.5.7
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -501,8 +501,8 @@
                       "url": "",
                       "qs": "",
                       "securityAdvisory": {
-                        "advisory": "guarded",
-                        "title": ", Top-level script may have update check init for this lib"
+                        "advisory": "elevated",
+                        "title": ", Top-level script may have update check init for this lib, User is also hiding versions of this lib in other scripts"
                       }
                     },
                     "88773": {
@@ -513,13 +513,14 @@
                       "updater": "88773",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/88773\\.user\\.js",
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/\\d+\\/88773\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/\\d+\\/88773\\.user\\.js",
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/33024\\/45103\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
                       "securityAdvisory": {
                         "advisory": "severe",
-                        "title": ", Script homepage is currently missing for peer review"
+                        "title": ", Script homepage for 88773 is currently missing for peer review, tucked away library in 45103"
                       }
                     },
 										"47852": {
@@ -535,8 +536,8 @@
                       "url": "",
                       "qs": "",
                       "securityAdvisory": {
-                        "advisory": "guarded",
-                        "title": ", Top-level script may have update check init for this lib"
+                        "advisory": "elevated",
+                        "title": ", Top-level script may have update check init for this lib, Derivative of Aquilax lib"
                       }
                     },
                     "mekan.dreamhosters.com": {
