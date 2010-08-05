@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.11
+// @version       0.4.12
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -367,10 +367,15 @@
                     case "require":
                       var matches = key.match(/^https?:\/\/.*/i);
                       if (matches) {
-                        matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                         let showUrl;
+                        matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                         if (matches)
                           showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+												else {
+													matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
+													if (matches)
+														showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+												}
 
                         let anchorNode = document.createElement("a");
                         anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
