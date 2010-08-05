@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.4
+// @version       0.5.5
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -486,6 +486,40 @@
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
+                      }
+                    },
+                    "33024": {
+                      "value": "",
+                      "textContent": 'Javascript Library 1',
+                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=c1eeac01273ee6125e79b2948f184c8b&r=PG&s=16&default=identicon',
+                      "title": 'by Aquilax (28612)',
+                      "updater": "33024",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/33024\\.user\\.js",
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/\d+\\/33024\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", Top-level script may have update check init for this lib"
+                      }
+                    },
+										"47852": {
+                      "value": "",
+                      "textContent": 'Javascript Library+',
+                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=2c0ccbb35186e3ccfb59c9bb49fcde76&r=PG&s=16&default=identicon',
+                      "title": 'by BlackDiamond (75873)',
+                      "updater": "47852",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/47852\\.user\\.js",
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/\d+\\/47852\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", Top-level script may have update check init for this lib"
                       }
                     },
                     "mekan.dreamhosters.com": {
