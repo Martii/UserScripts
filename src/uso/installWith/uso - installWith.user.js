@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.3
+// @version       0.5.4
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -287,7 +287,7 @@
 					var possibleEmbedded;
 					if(xhr.responseText.match(/\.meta\.js/gm))
 						possibleEmbedded = true;
-					
+
           var scriptid = getScriptid();
           GM_xmlhttpRequest({
             url: "http://userscripts.org/scripts/source/" + scriptid + ".meta.js",
@@ -596,6 +596,22 @@
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
+                      }
+                    },
+                    "66255": {
+                      "value": "",
+                      "textContent": 'Script Updater RU (userscripts.org)',
+                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9e36c9af86d922678ac91b037201d5f&r=PG&s=16&default=identicon',
+                      "title": 'by liquid ghost (126462)',
+                      "updater": "66255",
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/66255\\.user\\.js"
+                      ],
+                      "url": "",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", RU Derivative of PhasmaExMachinas, May also not be in sync"
                       }
                     },
                     "ika-info.ucoz.ru": {
@@ -1173,7 +1189,7 @@
 													GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
 															+ securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
 												}
-												
+
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                           gmc.open();
                       break;
