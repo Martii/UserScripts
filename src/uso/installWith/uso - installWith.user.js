@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.7
+// @version       0.5.8
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -496,31 +496,13 @@
                       "updater": "33024",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/33024\\.user\\.js",
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/\\d+\\/33024\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/33024\\/\\d+\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
                       "securityAdvisory": {
-                        "advisory": "elevated",
-                        "title": ", Top-level script may have update check init for this lib, User is also hiding versions of this lib in other scripts"
-                      }
-                    },
-                    "88773": {
-                      "value": "",
-                      "textContent": 'Javascript Library 1',
-                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=c1eeac01273ee6125e79b2948f184c8b&r=PG&s=16&default=identicon',
-                      "title": 'by Aquilax (28612)',
-                      "updater": "88773",
-                      "rex": [
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/88773\\.user\\.js",
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/\\d+\\/88773\\.user\\.js",
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/33024\\/45103\\.user\\.js"
-                      ],
-                      "url": "",
-                      "qs": "",
-                      "securityAdvisory": {
-                        "advisory": "severe",
-                        "title": ", Script homepage for 88773 is currently missing for peer review, tucked away library in 45103"
+                        "advisory": "guarded",
+                        "title": ", Top-level script may have update check init for this lib"
                       }
                     },
 										"47852": {
@@ -530,13 +512,12 @@
                       "title": 'by BlackDiamond (75873)',
                       "updater": "47852",
                       "rex": [
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/47852\\.user\\.js",
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/\\d+\\/47852\\.user\\.js"
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/47852\\.user\\.js"
                       ],
                       "url": "",
                       "qs": "",
                       "securityAdvisory": {
-                        "advisory": "elevated",
+                        "advisory": "guarded",
                         "title": ", Top-level script may have update check init for this lib, Derivative of Aquilax lib"
                       }
                     },
