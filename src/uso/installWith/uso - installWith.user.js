@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.8
+// @version       0.5.9
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -357,6 +357,23 @@
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
+                      },
+                      "border-bottom": "thin dotted #666"
+                    },
+                    "crea7or.spb.ru": {
+                      "value": "crea7or.spb.ru",
+                      "textContent": 'Another Auto Updater derivative',
+                      "iconUrl": "",
+                      "title": 'Unknown derivative of AAU',
+                      "updater": "crea7or.spb.ru",
+                      "rex": [
+                        "^http:\\/\\/crea7or\\.spb\\.ru\\/scripts\\/user\\.js\\.updater\\.php\\?id=\\d+",
+                      ],
+                      "url": "http://crea7or.spb.ru/scripts/user.js.updater.php?id=" + scriptid,
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", Derivative of Another Auto Updater"
                       },
                       "border-bottom": "thin dotted #666"
                     },
