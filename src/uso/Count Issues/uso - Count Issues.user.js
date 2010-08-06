@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.12
+// @version       0.4.13
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -133,8 +133,11 @@
             font-size: 100%;
           }
 
-          #gmc69307_field_showKeys { float: left; top: 0; margin-right: 0.5em; }
-          #gmc69307_field_showKeysString { margin: 0 0 0.25em 0.3em; width: 96%; }
+          #gmc69307_field_showKeys,	#gmc69307_field_showStrings { float: left; top: 0; margin-right: 0.5em; }
+          #gmc69307_field_showKeysString,
+					#gmc69307_field_showStringsString {
+						margin: 0 0 0.25em 0.3em; width: 96%; max-height: 5em; font-weight: normal; font-size: 1.0em;
+					}
           #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0.25em 0.3em; float: left; text-align: right; }
           #gmc69307_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
           #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
@@ -156,28 +159,38 @@
 
         /* Settings object */
         {
+          'showStrings': {
+              "label": 'Show "Lost and Found" strings if present in sidebar (use commas to separate)',
+              "type": 'checkbox',
+              "default": false
+          },
+          'showStringsString': {
+              "label": '',
+              "type": 'textarea',
+              "default": "cookie,GM_xmlhttpRequest,XMLHttpRequest"
+          },
           'showKeys': {
-              "label": 'Show these keys if present or different then USO in sidebar (use commas to separate)',
+              "label": 'Show metadata block keys if present or different then USO in sidebar (use commas to separate)',
               "type": 'checkbox',
               "default": true
           },
           'showKeysString': {
               "label": '',
-              "type": 'text',
+              "type": 'textarea',
               "default": "name,namespace,description,require,resource,include,match,exclude"
           },
           'fontSize': {
-              "label": 'em font size for all keys found under the specified key type',
+              "label": 'em font size for all items found under the specified item type',
               "type": 'float',
               "default": 1
           },
           'limitMaxHeight': {
-              "label": 'Limit maximum height of all shown key types',
+              "label": 'Limit maximum height of all shown item types',
               "type": 'checkbox',
               "default": false
           },
           'maxHeightList': {
-              "label": 'em maximum height of all shown key types',
+              "label": 'em maximum height of all shown item types',
               "type": 'float',
               "default": 10
           },
@@ -244,7 +257,7 @@
     var hookNode = document.getElementById("right");
     if (hookNode) {
       GM_xmlhttpRequest({
-        url: "http://userscripts.org/scripts/source/" + scriptid + ".meta.js",
+        url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("showStrings")) ? ".user.js?" : ".meta.js"),
         method: "GET",
         onload: function(xhr) {
           if (xhr.status == 200) {
@@ -489,9 +502,20 @@
                 }
               }
 
-              if (gmc && gmc.get("showKeys")) {
-                var mbx = document.createElement("div");
+							var mbx = document.createElement("div");
 
+							if (gmc && gmc.get("showStrings")) {
+
+								var keywords = gmc.get("showStringsString").split(",");
+								var found = [];
+								for each (keyword in keywords)
+									if (xhr.responseText.match(new RegExp(keyword, "")))
+										found.push(keyword);
+								if (found.length > 0)
+									display(mbx, found, "", "Lost and Found");
+							}
+
+              if (gmc && gmc.get("showKeys")) {
                 var keys = gmc.get("showKeysString").split(",");
                 for (let i = 0; i < keys.length; ++i) {
                   var key = keys[i];
@@ -534,12 +558,12 @@
                       break;
                   }
                 }
-
-                if (window.location.pathname.match(/scripts\/show\/.*/i))
-                  sidebarNode.insertBefore(mbx, sidebarNode.firstChild);
-                else
-                  sidebarNode.appendChild(mbx);
               }
+
+							if (window.location.pathname.match(/scripts\/show\/.*/i))
+								sidebarNode.insertBefore(mbx, sidebarNode.firstChild);
+							else
+								sidebarNode.appendChild(mbx);
           }
         }
       });
