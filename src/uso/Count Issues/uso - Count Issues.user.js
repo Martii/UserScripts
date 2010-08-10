@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.14
+// @version       0.5.0
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -132,10 +132,17 @@
           }
 
           #gmc69307_field_showKeys,	#gmc69307_field_showStrings { float: left; top: 0; margin-right: 0.5em; }
-          #gmc69307_field_showKeysString,
-          #gmc69307_field_showStringsString {
+
+          #gmc69307_field_showStringsString
+          {
+            margin: 0 0 0.25em 0.3em; width: 96%; max-height: 15em; font-weight: normal; font-size: 1.0em;
+          }
+
+          #gmc69307_field_showKeysString
+          {
             margin: 0 0 0.25em 0.3em; width: 96%; max-height: 5em; font-weight: normal; font-size: 1.0em;
           }
+
           #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0.25em 0.3em; float: left; text-align: right; }
           #gmc69307_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
           #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
@@ -158,14 +165,14 @@
         /* Settings object */
         {
           'showStrings': {
-              "label": 'Show "Lost and Found" strings if present in sidebar (use commas to separate)',
+              "label": 'Show "Lost and Found" strings if present in sidebar (use newlines to separate)',
               "type": 'checkbox',
               "default": false
           },
           'showStringsString': {
               "label": '',
               "type": 'textarea',
-              "default": "cookie,GM_xmlhttpRequest,XMLHttpRequest"
+              "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest"
           },
           'showKeys': {
               "label": 'Show metadata block keys if present or different then USO in sidebar (use commas to separate)',
@@ -504,11 +511,13 @@
 
               if (gmc && gmc.get("showStrings")) {
 
-                var keywords = gmc.get("showStringsString").split(",");
+                var keywords = gmc.get("showStringsString").split("\n");
                 var found = [];
-                for each (keyword in keywords)
-                  if (xhr.responseText.match(new RegExp(keyword, "")))
-                    found.push(keyword);
+                for each (keyword in keywords) {
+                  let matches = xhr.responseText.match(new RegExp(keyword, ""));
+                  if (matches)
+                    found.push(matches[0]);
+                }
                 if (found.length > 0)
                   display(mbx, found, "", "Lost and Found");
               }
