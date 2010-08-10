@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.10
+// @version       0.5.11
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -37,7 +37,7 @@
 // @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
 // @require http://usocheckup.redirectme.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/fa194bc0ffdd65dfd7bbda0beea2832cf32e021e/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/715460b0649825cdb70fdd1f48f48e2d54af536d/gm_config.js
 // ==/UserScript==
 
   var frameless = false;
@@ -178,22 +178,10 @@
 
       gmc.onSave = function() {
         var write = false;
-
-        if (Math.abs(gmc.get("updaterMaxage")) != gmc.get("updaterMaxage")) {
-          gmc.set("updaterMaxage", Math.abs(gmc.get("updaterMaxage")));
-          write = true;
-        }
-
-        if (Math.abs(gmc.get("updaterMinage")) != gmc.get("updaterMinage")) {
-          gmc.set("updaterMinage", Math.abs(gmc.get("updaterMinage")));
-          write = true;
-        }
-
-        if (gmc.get("updaterMinage") > gmc.get("updaterMaxage") * 24 ) {
-          gmc.set("updaterMinage", 1);
-          write = true;
-        }
-
+          if (gmc.get("updaterMinage") > gmc.get("updaterMaxage") * 24 ) {
+            gmc.set("updaterMinage", 1);
+            write = true;
+          }
         if (write) { gmc.write(); gmc.close(); gmc.open(); }
 
         var ev = document.createEvent("HTMLEvents");
@@ -257,12 +245,12 @@
           {
             'updaterMaxage': {
                 "label": 'days maximum between checks for this script using installWith',
-                "type": 'int',
+                "type": 'unsigned integer',
                 "default": 30
             },
             'updaterMinage': {
               "label": 'hours minimum before starting a check for this script using installWith',
-              "type": 'int',
+              "type": 'unsigned integer',
               "default": 1
             }
           }
