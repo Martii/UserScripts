@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.1
+// @version       0.5.2
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -81,7 +81,7 @@
         GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
 
         var keys = gmc.get("showKeysString").split(",");
-        for (let i = 0; i < keys.length; ++i) {
+        for (let i = 0, len = keys.length; i < len; ++i) {
           keys[i] = keys[i].replace(/^\s*/, "").replace(/\s*$/, "");
         }
         keys = keys.join(",");
@@ -512,19 +512,25 @@
               if (gmc && gmc.get("showStrings")) {
 
                 var keywords = gmc.get("showStringsString").split("\n");
-                var found = [];
+                var finds = {};
                 for each (keyword in keywords) {
-                  let matches = xhr.responseText.match(new RegExp(keyword, ""));
+                  let matches = xhr.responseText.match(new RegExp(keyword, "gm"));
                   if (matches)
-                    found.push(matches[0]);
+                    for (let i = 0, len = matches.length; i < len; ++i)
+                      if (!finds[matches[i]])
+                        finds[matches[i]] = matches[i];
                 }
+                var found = [];
+                for each (find in finds)
+                  found.push(find);
+                
                 if (found.length > 0)
                   display(mbx, found, "", "Lost and Found");
               }
 
               if (gmc && gmc.get("showKeys")) {
                 var keys = gmc.get("showKeysString").split(",");
-                for (let i = 0; i < keys.length; ++i) {
+                for (let i = 0, len = keys.length; i < len; ++i) {
                   var key = keys[i];
 
                   switch (key) {
@@ -614,7 +620,7 @@
             var doctype = document.implementation.createDocumentType(d.doctype.name, d.doctype.publicId, d.doctype.systemId);
             var doc = document.implementation.createDocument(d.documentElement.namespaceURI, "html", doctype);
 
-            for (var i = d.documentElement.attributes.length - 1; i >= 0; i--)
+            for (let i = d.documentElement.attributes.length - 1; i >= 0; i--)
               doc.documentElement.setAttribute(d.documentElement.attributes.item(i).nodeName, d.documentElement.attributes.item(i).nodeValue);
 
             doc.documentElement.appendChild(hf);
