@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.13
+// @version       0.4.14
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -27,7 +27,7 @@
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=7&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/fa194bc0ffdd65dfd7bbda0beea2832cf32e021e/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/715460b0649825cdb70fdd1f48f48e2d54af536d/gm_config.js
 // ==/UserScript==
 
   if (typeof GM_configStruct != "undefined") {
@@ -73,25 +73,23 @@
 
     gmc.onSave = function() {
       var write = false;
+        if (gmc.get("limitMaxHeight"))
+          GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
+        else
+          GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
 
-      if (gmc.get("limitMaxHeight"))
-        GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
-      else
-        GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
+        GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
 
-      GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
+        var keys = gmc.get("showKeysString").split(",");
+        for (let i = 0; i < keys.length; ++i) {
+          keys[i] = keys[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        keys = keys.join(",");
 
-      var keys = gmc.get("showKeysString").split(",");
-      for (let i = 0; i < keys.length; ++i) {
-        keys[i] = keys[i].replace(/^\s*/, "").replace(/\s*$/, "");
-      }
-      keys = keys.join(",");
-
-      if (keys != gmc.get("showKeysString")) {
-        gmc.set("showKeysString", keys);
-        write = true;
-      }
-
+        if (keys != gmc.get("showKeysString")) {
+          gmc.set("showKeysString", keys);
+          write = true;
+        }
       if (write) { gmc.write(); gmc.close(); gmc.open(); }
     }
     gmc.init('Options' /* Script title */,
@@ -135,9 +133,9 @@
 
           #gmc69307_field_showKeys,	#gmc69307_field_showStrings { float: left; top: 0; margin-right: 0.5em; }
           #gmc69307_field_showKeysString,
-					#gmc69307_field_showStringsString {
-						margin: 0 0 0.25em 0.3em; width: 96%; max-height: 5em; font-weight: normal; font-size: 1.0em;
-					}
+          #gmc69307_field_showStringsString {
+            margin: 0 0 0.25em 0.3em; width: 96%; max-height: 5em; font-weight: normal; font-size: 1.0em;
+          }
           #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0.25em 0.3em; float: left; text-align: right; }
           #gmc69307_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
           #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
@@ -181,7 +179,7 @@
           },
           'fontSize': {
               "label": 'em font size for all items found under the specified item type',
-              "type": 'float',
+              "type": 'unsigned number',
               "default": 1
           },
           'limitMaxHeight': {
@@ -191,7 +189,7 @@
           },
           'maxHeightList': {
               "label": 'em maximum height of all shown item types',
-              "type": 'float',
+              "type": 'unsigned number',
               "default": 10
           },
           'checkAgainstHomepageUSO': {
@@ -384,11 +382,11 @@
                         matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                         if (matches)
                           showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
-												else {
-													matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
-													if (matches)
-														showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
-												}
+                        else {
+                          matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
+                          if (matches)
+                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+                        }
 
                         let anchorNode = document.createElement("a");
                         anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
@@ -502,18 +500,18 @@
                 }
               }
 
-							var mbx = document.createElement("div");
+              var mbx = document.createElement("div");
 
-							if (gmc && gmc.get("showStrings")) {
+              if (gmc && gmc.get("showStrings")) {
 
-								var keywords = gmc.get("showStringsString").split(",");
-								var found = [];
-								for each (keyword in keywords)
-									if (xhr.responseText.match(new RegExp(keyword, "")))
-										found.push(keyword);
-								if (found.length > 0)
-									display(mbx, found, "", "Lost and Found");
-							}
+                var keywords = gmc.get("showStringsString").split(",");
+                var found = [];
+                for each (keyword in keywords)
+                  if (xhr.responseText.match(new RegExp(keyword, "")))
+                    found.push(keyword);
+                if (found.length > 0)
+                  display(mbx, found, "", "Lost and Found");
+              }
 
               if (gmc && gmc.get("showKeys")) {
                 var keys = gmc.get("showKeysString").split(",");
@@ -560,10 +558,10 @@
                 }
               }
 
-							if (window.location.pathname.match(/scripts\/show\/.*/i))
-								sidebarNode.insertBefore(mbx, sidebarNode.firstChild);
-							else
-								sidebarNode.appendChild(mbx);
+              if (window.location.pathname.match(/scripts\/show\/.*/i))
+                sidebarNode.insertBefore(mbx, sidebarNode.firstChild);
+              else
+                sidebarNode.appendChild(mbx);
           }
         }
       });
