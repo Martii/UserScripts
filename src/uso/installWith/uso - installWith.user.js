@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.12
+// @version       0.5.13
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -362,8 +362,23 @@
                       "securityAdvisory": {
                         "advisory": "guarded",
                         "title": ", Derivative of Another Auto Updater"
-                      },
-                      "border-bottom": "thin dotted #666"
+                      }
+                    },
+                    "www.nodeka411.net": {
+                      "value": "",
+                      "textContent": 'Another Auto Updater derivative',
+                      "iconUrl": "",
+                      "title": 'Unknown derivative of AAU',
+                      "updater": "www.nodeka411.net",
+                      "rex": [
+                        "^http:\\/\\/www\\.nodeka411\\.net\\/public\\/gmupdater\\/\\d+\\.js",
+                      ],
+                      "url": "http://www.nodeka411.net/public/gmupdater/" + scriptid + ".js",
+                      "qs": "",
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", Derivative of Another Auto Updater"
+                      }
                     },
                     "75442": {
                       "value": "",
