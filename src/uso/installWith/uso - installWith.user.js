@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.15
+// @version       0.5.16
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -274,7 +274,7 @@
         else { // Assume listed due to a USO rate limiting bug in cache stack
           var possibleEmbedded;
           var scriptid = getScriptid();
-          if(xhr.responseText.match(new RegExp("(\\.meta\\.js|" + scriptid + "\\.user\\.js)", "gm")))
+          if(xhr.responseText.match(new RegExp("(\\.meta\\.js|" + scriptid + "\\.user\\.js|http:\\/\\/www\\.monkeyupdater\\.com)", "gm")))
             possibleEmbedded = true;
 
           var scriptid = getScriptid();
