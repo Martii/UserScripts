@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.14
+// @version       0.5.15
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -272,9 +272,10 @@
               + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
         }
         else { // Assume listed due to a USO rate limiting bug in cache stack
-					var possibleEmbedded;
-					if(xhr.responseText.match(/\.meta\.js/gm))
-						possibleEmbedded = true;
+          var possibleEmbedded;
+          var scriptid = getScriptid();
+          if(xhr.responseText.match(new RegExp("(\\.meta\\.js|" + scriptid + "\\.user\\.js)", "gm")))
+            possibleEmbedded = true;
 
           var scriptid = getScriptid();
           GM_xmlhttpRequest({
