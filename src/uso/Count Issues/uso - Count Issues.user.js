@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.2
+// @version       0.5.3
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -523,7 +523,7 @@
                 var found = [];
                 for each (find in finds)
                   found.push(find);
-                
+
                 if (found.length > 0)
                   display(mbx, found, "", "Lost and Found");
               }
@@ -573,8 +573,15 @@
                 }
               }
 
-              if (window.location.pathname.match(/scripts\/show\/.*/i))
-                sidebarNode.insertBefore(mbx, sidebarNode.firstChild);
+              if (window.location.pathname.match(/scripts\/show\/.*/i)) {
+                let fansNode = document.getElementById("fans");
+                if (fansNode) {
+                  mbx.style.setProperty("margin-bottom", "0.75em", "");
+                  sidebarNode.insertBefore(mbx, fansNode);
+                }
+                else
+                  sidebarNode.appendChild(mbx);
+              }
               else
                 sidebarNode.appendChild(mbx);
           }
