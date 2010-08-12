@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.13
+// @version       0.5.14
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -349,609 +349,461 @@
                       "border-bottom": "thin dotted #666"
                     },
                     "crea7or.spb.ru": {
-                      "value": "",
-                      "textContent": 'Another Auto Updater derivative',
-                      "iconUrl": "",
-                      "title": 'Unknown derivative of AAU',
-                      "updater": "crea7or.spb.ru",
+                      "derivative": 1,
+                      "textContent": 'Another Auto Updater',
+                      "title": 'by (crea7or.spb.ru)',
                       "rex": [
                         "^http:\\/\\/crea7or\\.spb\\.ru\\/scripts\\/user\\.js\\.updater\\.php\\?id=\\d+",
                       ],
-                      "url": "http://crea7or.spb.ru/scripts/user.js.updater.php?id=" + scriptid,
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
-                        "title": ", Derivative of Another Auto Updater"
+                        "title": ", Derivative of Another Auto Updater (crea7or.spb.ru)"
+                      }
+                    },
+                    "mekan.dreamhosters.com": {
+                      "derivative": 1,
+                      "textContent": 'Another Auto Updater',
+                      "title": 'by (mekan.dreamhosters.com)',
+                      "rex": [
+                        "^https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/updater\\.js\\?id=\\d+"
+                      ],
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", Derivative of Another Auto Updater (mekan.dreamhosters.com)"
                       }
                     },
                     "www.nodeka411.net": {
-                      "value": "",
-                      "textContent": 'Another Auto Updater derivative',
-                      "iconUrl": "",
-                      "title": 'Unknown derivative of AAU',
-                      "updater": "www.nodeka411.net",
+                      "derivative": 1,
+                      "textContent": 'Another Auto Updater',
+                      "title": 'by (www.nodeka411.net)',
                       "rex": [
                         "^http:\\/\\/www\\.nodeka411\\.net\\/public\\/gmupdater\\/\\d+\\.js",
                       ],
-                      "url": "http://www.nodeka411.net/public/gmupdater/" + scriptid + ".js",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
-                        "title": ", Derivative of Another Auto Updater"
+                        "title": ", Derivative of Another Auto Updater (www.nodeka411.net)"
                       }
                     },
                     "75442": {
-                      "value": "",
                       "textContent": 'AEG Userscript AutoUpdater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=df1c1d7d1c968bc8ea4324d1d4d3f557&r=PG&s=16&default=identicon',
                       "title": 'by ArmEagle (111132)',
-                      "updater": "75442",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/75442\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "high",
                         "title": ", i/frame vulnerability"
                       }
                     },
                     "16338": {
-                      "value": "",
                       "textContent": 'AutoUpdate Test',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=b4f3c9552954780fb7b2eb68bb043297&r=PG&s=16&default=identicon',
                       "title": 'by TastyFlySoup (39661)',
-                      "updater": "16338",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16338\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "45904": {
-                      "value": "",
                       "textContent": 'Easy Update Code',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=2d5c92476e067787fc7e06f5970dda22&r=PG&s=16&default=identicon',
                       "title": 'by shoecream (74855)',
-                      "updater": "45904",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45904\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "45266": {
-                      "value": "",
                       "textContent": 'easy userscript updater snippet',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=9fffdbad0ef6d1493ed098c9ae5b619a&r=PG&s=16&default=identicon',
                       "title": 'by thomd (43919)',
-                      "updater": "45266",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45266\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "35611": {
-                      "value": "",
                       "textContent": 'GM Script Update Control',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=0b7d633463490424d235837976a4f915&r=PG&s=16&default=identicon',
                       "title": 'by Sylvain Comte (21175)',
-                      "updater": "35611",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/35611\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "51513": {
-                      "value": "",
                       "textContent": 'GM_ScriptUpdater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=e2b29bd68eb03763a0e18c691ecf9fa5&r=PG&s=16&default=identicon',
                       "title": 'by IzzySoft (89585)',
-                      "updater": "51513",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "ikariamscriptresources.googlecode.com": {
-                      "value": "",
-                      "textContent": 'ikariamscriptresources.googlecode.com AutoUpdater',
-                      "iconUrl": "",
+                      "textContent": 'AutoUpdater.js',
                       "title": 'by MartynT0 (http://code.google.com/u/MartynT0/)',
-                      "updater": "ikariamscriptresources.googlecode.com",
                       "rex": [
                         "^http:\\/\\/ikariamscriptresources\\.googlecode\\.com\\/svn\\/tags\\/Latest\\/AutoUpdater\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
                         "title": ", i/frame vulnerability"
                       }
                     },
                     "38788": {
-                      "value": "",
                       "textContent": 'Includes : CheckForUpdate',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=81269f79d21e612f9f307d16b09ee82b&r=PG&s=16&default=identicon',
                       "title": 'by w35l3y (55607)',
-                      "updater": "38788",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "33024": {
-                      "value": "",
                       "textContent": 'Javascript Library 1',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=c1eeac01273ee6125e79b2948f184c8b&r=PG&s=16&default=identicon',
                       "title": 'by Aquilax (28612)',
-                      "updater": "33024",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/33024\\.user\\.js",
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/33024\\/\\d+\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
                         "title": ", Top-level script may have update check init for this lib"
                       }
                     },
-										"47852": {
-                      "value": "",
+                    "47852": {
+                      "derivative": 1,
                       "textContent": 'Javascript Library+',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=2c0ccbb35186e3ccfb59c9bb49fcde76&r=PG&s=16&default=identicon',
                       "title": 'by BlackDiamond (75873)',
-                      "updater": "47852",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/47852\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
                         "title": ", Top-level script may have update check init for this lib, Derivative of Aquilax lib"
                       }
                     },
-                    "mekan.dreamhosters.com": {
-                      "value": "",
-                      "textContent": 'mekan.dreamhosters.com',
-                      "title": 'by mekan.dreamhosters.com (external derivative of sizzlemctwizzles)',
-                      "updater": "mekan.dreamhosters.com",
-                      "rex": [
-                        "^https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/updater\\.js\\?id=\\d+"
-                      ],
-                      "url": "",
-                      "qs": "",
-                      "securityAdvisory": {
-                        "advisory": "elevated",
-                        "title": ", Possible Security Risk"
-                      }
-                    },
                     "pennerstore.de": {
-                      "value": "",
                       "textContent": 'pennerstore.de',
-                      "title": 'by pennerstore.de (external)',
-                      "updater": "pennerstore.de",
+                      "title": 'by (pennerstore.de)',
                       "rex": [
                         "^https?:\\/\\/scripte\\.pennerstore\\.de\\/JS\\/updater\\.class\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "high",
                         "title": ", Possible Security Risk"
                       }
                     },
-                    "60663": {
-                      "value": "",
-                      "textContent": 'Script actualizador',
-                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=335a5b24fbf27c9e20989a053e42f11c&r=PG&s=16&default=identicon',
-                      "title": 'by Juampi_yoel (99372) es derivative of PhasmaExMachina (106144)',
-                      "updater": "60663",
-                      "rex": [
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60663\\.user\\.js"
-                      ],
-                      "url": "",
-                      "qs": "",
-                      "securityAdvisory": {
-                        "advisory": "low",
-                        "title": ""
-                      }
-                    },
                     "36259": {
-                      "value": "",
                       "textContent": 'Script AutoUpdater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=bb3f204908e461a17a0efebbe8907ad8&r=PG&s=16&default=identicon',
                       "title": 'by Eyal Soha (8105)',
-                      "updater": "36259",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/36259\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "20145": {
-                      "value": "",
                       "textContent": 'Script Update Checker',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=bee96081cd4a9e03a60d362c48da7f04&r=PG&s=16&default=identicon',
                       "title": 'by Jarett (38602)',
-                      "updater": "20145",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/20145\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "8857": {
-                      "value": "",
                       "textContent": 'Script Updater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=1fbd08e29b195146539a4e2c04746cbc&r=PG&s=16&default=identicon',
                       "title": 'by alien scum (8158)',
-                      "updater": "8857",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/8857\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "high",
                         "title": ", BROKEN"
                       }
                     },
-                    "57756": {
-                      "value": "",
-                      "textContent": 'Script Updater (userscripts.org)',
-                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
-                      "title": 'by PhasmaExMachina (106144)',
-                      "updater": "57756",
-                      "rex": [
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
-                      ],
-                      "url": "",
-                      "qs": "",
-                      "securityAdvisory": {
-                        "advisory": "low",
-                        "title": ""
-                      }
-                    },
-                    "66255": {
-                      "value": "",
-                      "textContent": 'Script Updater RU (userscripts.org)',
-                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9e36c9af86d922678ac91b037201d5f&r=PG&s=16&default=identicon',
-                      "title": 'by liquid ghost (126462)',
-                      "updater": "66255",
-                      "rex": [
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/66255\\.user\\.js"
-                      ],
-                      "url": "",
-                      "qs": "",
-                      "securityAdvisory": {
-                        "advisory": "guarded",
-                        "title": ", RU Derivative of PhasmaExMachinas, May also not be in sync"
-                      }
-                    },
-                    "ika-info.ucoz.ru": {
-                      "value": "",
-                      "textContent": 'Script Updater (userscripts.org)',
-                      "iconUrl": '',
-                      "title": 'static derivative of PhasmaExMachina (106144)',
-                      "updater": "ika-info.ucoz.ru",
-                      "rex": [
-                        "^http:\\/\\/ika-info.ucoz.ru\\/scripts\\/Script_updater\\/script_updater.user\\.js"
-                      ],
-                      "url": "",
-                      "qs": "",
-                      "securityAdvisory": {
-                        "advisory": "elevated",
-                        "title": ", Offsite static derivative of PhasmaExMachinas"
-                      }
-                    },
-                    "74144": {
-                      "value": "",
-                      "textContent": 'Script Updater (userscripts.org)',
-                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=6eb8cf6b5065df1306ea572147ac11c7&r=PG&s=16&default=identicon',
-                      "title": 'by TheSpy (106188)',
-                      "updater": "74144",
-                      "rex": [
-                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
-                      ],
-                      "url": "",
-                      "qs": "",
-                      "securityAdvisory": {
-                        "advisory": "guarded",
-                        "title": ", localStorage vulnerability"
-                      }
-                    },
                     "41075": {
-                      "value": "",
                       "textContent": 'Script Version Checker',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=ba841339fac46cbddd6e571550500946&r=PG&s=16&default=identicon',
                       "title": 'by littlespark (75320)',
-                      "updater": "41075",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "29878": {
-                      "value": "",
                       "textContent": 'SelfUpdaterExample',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9695e2508d5064bb5fb781416913759&r=PG&s=16&default=identicon',
                       "title": 'by ScroogeMcPump (51934)',
-                      "updater": "29878",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29878\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "29880": {
-                      "value": "",
                       "textContent": 'SelfUpdaterExampleOpera',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9695e2508d5064bb5fb781416913759&r=PG&s=16&default=identicon',
                       "title": 'by ScroogeMcPump (51934)',
-                      "updater": "29880",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29880\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "45989": {
-                      "value": "",
                       "textContent": 'SVC Script Version Checker',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=8c298802a4b4aa3d68217b3dc7ccd529&r=PG&s=16&default=identicon',
                       "title": 'by devnull69 (75950)',
-                      "updater": "45989",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45989\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "42456": {
-                      "value": "",
                       "textContent": 'Tester',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=4c2fe87eefaf73fb1c12e7d2ea09c2f5&r=PG&s=16&default=identicon',
                       "title": 'by realfree (77866)',
-                      "updater": "42456",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/42456\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": ",Multiple search hosts,Interval vulnerability"
+                        "title": ", Multiple search hosts, Interval vulnerability"
                       }
                     },
                     "62036": {
-                      "value": "",
                       "textContent": 'update Test',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=e112ac971d83dd545268142bc2320a3c&r=PG&s=16&default=identicon',
                       "title": 'by hirak99 (36905)',
-                      "updater": "62036",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/62036\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
                         "title": ", Interval vulnerability"
                       }
                     },
                     "22372": {
-                      "value": "",
                       "textContent": 'Userscript Auto-Update Add-in',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=7f3bb64a80ac40cfb3eeb72aca9ab4c3&r=PG&s=16&default=identicon',
                       "title": 'by psycadelik (41688)',
-                      "updater": "22372",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "UserscriptAutoupdateHelper": {
-                      "value": "",
                       "textContent": 'userscript-autoupdate-helper',
-                      "iconUrl": '',
                       "title": 'by ch.null (http://code.google.com/u/ch.null/)',
-                      "updater": "UserscriptAutoupdateHelper",
                       "rex": [
                         "^https?:\\/\\/userscript-autoupdate-helper\\.googlecode\\.com\\/svn\\/trunk\\/autoupdatehelper\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "guarded",
                         "title": ", i/frame vulnerability"
                       }
                     },
                     "50390": {
-                      "value": "",
                       "textContent": 'Userscripts Updater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=5e6ac8007e5f74f23bc55815ac4092ee&r=PG&s=16&default=identicon',
                       "title": 'by oneweirdkid90 (73205)',
-                      "updater": "50390",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/50390\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": ",Outdated copy of local checker"
+                        "title": ", Outdated copy of local checker"
                       }
                     },
                     "UserscriptUpdaterGenerator": {
-                      "value": "",
                       "textContent": 'Userscript Updater Generator',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=780eb60a65688584794bd832b7bde567&r=PG&s=16&default=identicon',
                       "title": 'by ΙδεΠÐ (136989)',
-                      "updater": "userscriptupdatergenerator",
                       "rex": [
                         "^http:\\/\\/userscript-updater-generator\\.appspot\\.com\\/\\?id=\\d+"
                       ],
-                      "url": "http://userscript-updater-generator.appspot.com/?" + scriptid,
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": ",Closed-Source"
+                        "title": ", Closed-Source"
                       }
                     },
                     "52251": {
-                      "value": "",
                       "textContent": 'Userscripts - AutoUpdater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=af235ccf4ed8ed97b021b7c2d2501e83&r=PG&s=16&default=identicon',
                       "title": 'by Buzzy (57340)',
-                      "updater": "52251",
                       "rex": [
                         "^http:\\/\\/buzzy\\.260mb\\.com\\/AutoUpdater\\.js",
                         "^http:\\/\\/buzzy\\.hostoi\\.com\\/AutoUpdater\\.js",
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
+                    "57756": {
+                      "derivative": 1,
+                      "textContent": 'Script Updater (userscripts.org)',
+                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
+                      "title": 'by PhasmaExMachina (106144)',
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
+                      ],
+                      "securityAdvisory": {
+                        "advisory": "low",
+                        "title": ""
+                      }
+                    },
+                    "60663": {
+                      "derivative": 2,
+                      "textContent": 'Script actualizador',
+                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=335a5b24fbf27c9e20989a053e42f11c&r=PG&s=16&default=identicon',
+                      "title": 'by Juampi_yoel (99372) es-ES',
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60663\\.user\\.js"
+                      ],
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", es-ES derivative of Script Updater (userscripts.org)"
+                      }
+                    },
+                    "74144": {
+                      "derivative": 2,
+                      "textContent": 'Script Updater (userscripts.org)',
+                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=6eb8cf6b5065df1306ea572147ac11c7&r=PG&s=16&default=identicon',
+                      "title": 'by TheSpy (106188)',
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
+                      ],
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", localStorage vulnerability, derivative of Script Updater (userscripts.org)"
+                      }
+                    },
+                    "66255": {
+                      "derivative": 2,
+                      "textContent": 'Script Updater RU (userscripts.org)',
+                      "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9e36c9af86d922678ac91b037201d5f&r=PG&s=16&default=identicon',
+                      "title": 'by liquid ghost (126462) ru-RU',
+                      "rex": [
+                        "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/66255\\.user\\.js"
+                      ],
+                      "securityAdvisory": {
+                        "advisory": "guarded",
+                        "title": ", ru-RU derivative of Script Updater (userscripts.org)"
+                      }
+                    },
+                    "ika-info.ucoz.ru": {
+                      "derivative": 2,
+                      "textContent": 'Script Updater (userscripts.org)',
+                      "title": 'by (ika-info.ucoz.ru)',
+                      "rex": [
+                        "^http:\\/\\/ika-info.ucoz.ru\\/scripts\\/Script_updater\\/script_updater.user\\.js"
+                      ],
+                      "securityAdvisory": {
+                        "advisory": "elevated",
+                        "title": ", Offsite derivative of Script Updater (userscripts.org)"
+                      }
+                    },
                     "37853": {
-                      "value": "",
                       "textContent": 'Userscripts.org Timed Updater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=620d4d8ec857b915057847eeb7f248b9&r=PG&s=16&default=identicon',
                       "title": 'by jerone (31497)',
-                      "updater": "37853",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/37853\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "26062": {
-                      "value": "",
                       "textContent": 'Userscripts Updater',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=068b7fb5725f061512446cf09aa0599e&r=PG&s=16&default=identicon',
                       "title": 'by lazyttrick (20871)',
-                      "updater": "26062",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/26062\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "12193": {
-                      "value": "",
                       "textContent": 'UserScript Update Notification',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=0796a8386f0889176a443c8ddeef113c&r=PG&s=16&default=identicon',
                       "title": 'by Seifer (33118)',
-                      "updater": "12193",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/12193\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "2296": {
-                      "value": "",
                       "textContent": 'User Script Updates',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f16d4602c1c90646438a0b534ff61889&r=PG&s=16&default=identicon',
                       "title": 'by Richard Gibson (336)',
-                      "updater": "2296",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/2296\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "high",
-                        "title": "Doesn't use meta.js routine - Bandwidth waster"
+                        "title": ", Doesn't use meta.js routine - Bandwidth waster"
                       }
                     },
                     "39678": {
-                      "value": "",
                       "textContent": 'US Framework',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=620d4d8ec857b915057847eeb7f248b9&r=PG&s=16&default=identicon',
                       "title": 'by jerone (31497)',
-                      "updater": "39678",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/39678\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
@@ -967,7 +819,6 @@
                         "^http:\\/\\/updater\\.usotools\\.co\\.cc\\/\\d+\\.js"
                       ],
                       "url": "http://updater.usotools.co.cc/" + scriptid + ".js",
-                      "qs": "",
                       "qsmax": "interval",
                       "securityAdvisory": {
                         "advisory": "guarded",
@@ -975,50 +826,38 @@
                       }
                     },
                     "16144": {
-                      "value": "",
                       "textContent": 'US Update',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=620d4d8ec857b915057847eeb7f248b9&r=PG&s=16&default=identicon',
                       "title": 'by jerone (31497)',
-                      "updater": "16144",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "low",
                         "title": ""
                       }
                     },
                     "46384": {
-                      "value": "",
                       "textContent": 'VeriVersion (module)',
                       "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=ad95a3d96cd1986fafe1bbff032bfe1d&r=PG&s=16&default=identicon',
                       "title": 'by bluflonalgul (75209)',
-                      "updater": "46384",
                       "rex": [
                         "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/46384\\.user\\.js"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "elevated",
-                        "title": "Interval vulnerability"
+                        "title": ", Interval vulnerability"
                       }
                     },
                     "zahlii.independent-irc.com": {
-                      "value": "",
-                      "textContent": 'zahlii.independent-irc.com/updater.class.js',
-                      "title": 'by http://zahlii.independent-irc.com/updater.class.js',
-                      "updater": "zahlii.independent-irc.com",
+                      "textContent": 'updater.class.js',
+                      "title": 'by (http://zahlii.independent-irc.com/)',
                       "rex": [
                         "^https?:\\/\\/zahlii\\.independent-irc\\.com\\/.*",
                         "^https?:\\/\\/github\\.com\\/Zahlii/.*",
                         "^https?:\\/\\/dabei\\.kilu\\.de/.*",
                         "^https?:\\/\\/kuestenpenner\\.ku\\.ohost\\.de/.*"
                       ],
-                      "url": "",
-                      "qs": "",
                       "securityAdvisory": {
                         "advisory": "severe",
                         "title": ", Updates to offsite script; Multiple redirections"
@@ -1212,7 +1051,7 @@
                     switch(this.value) {
                       case "uso":
                         GM_deleteValue(":updaterPreference");
-												installNode.setAttribute("title", "");
+                        installNode.setAttribute("title", "");
                         installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                           gmc.close();
@@ -1238,11 +1077,11 @@
                         var url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs;
                         installNode.setAttribute("href", url);
 
-												if (possibleEmbedded) {
-													installNode.setAttribute("title", "POSSIBLE EMBEDDED UPDATER FOUND: Please check source");
-													GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-															+ securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
-												}
+                        if (possibleEmbedded) {
+                          installNode.setAttribute("title", "POSSIBLE EMBEDDED UPDATER FOUND: Please check source");
+                          GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                              + securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+                        }
 
                         if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                           gmc.open();
@@ -1254,7 +1093,7 @@
 
                   var updaterNode, iconNode, textNode;
                   for each (var updater in updaters)
-                    if (updater["value"] != "") {
+                    if (updater["value"]) {
 
                       updaterNode = document.createElement("option");
                       updaterNode.setAttribute("value", updater["value"]);
