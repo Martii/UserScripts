@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.17
+// @version       0.5.18
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -244,13 +244,13 @@
           /* Settings object */
           {
             'updaterMaxage': {
-                "label": 'days maximum between checks for this script using installWith',
                 "type": 'unsigned integer',
+                "label": 'days maximum between checks for this script using installWith',
                 "default": 30
             },
             'updaterMinage': {
-              "label": 'hours minimum before starting a check for this script using installWith',
               "type": 'unsigned integer',
+              "label": 'hours minimum before starting a check for this script using installWith (Not all updaters support this)',
               "default": 1
             }
           }
