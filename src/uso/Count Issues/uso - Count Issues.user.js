@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.5
+// @version       0.5.6
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -27,7 +27,7 @@
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=7&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/715460b0649825cdb70fdd1f48f48e2d54af536d/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/8c87e209d3aab54db790957302eb4743f49641ff/gm_config.js
 // ==/UserScript==
 
   if (typeof GM_configStruct != "undefined") {
