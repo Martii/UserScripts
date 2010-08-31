@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.6
+// @version       0.5.8
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -165,48 +165,48 @@
         /* Settings object */
         {
           'showStrings': {
-              "label": 'Show "Lost and Found" strings if present in sidebar (use newlines to separate)',
               "type": 'checkbox',
+              "label": 'Show "Lost and Found" strings if present in sidebar (use newlines to separate)',
               "default": false
           },
           'showStringsString': {
-              "label": '',
               "type": 'textarea',
+              "label": '',
               "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest"
           },
           'showKeys': {
-              "label": 'Show metadata block keys if present or different then USO in sidebar (use commas to separate)',
               "type": 'checkbox',
+              "label": 'Show metadata block keys if present or different then USO in sidebar (use commas to separate)',
               "default": true
           },
           'showKeysString': {
-              "label": '',
               "type": 'textarea',
+              "label": '',
               "default": "name,namespace,description,require,resource,include,match,exclude"
           },
           'fontSize': {
-              "label": 'em font size for all items found under the specified item type',
               "type": 'unsigned number',
+              "label": 'em font size for all items found under the specified item type',
               "default": 1
           },
           'limitMaxHeight': {
-              "label": 'Limit maximum height of all shown item types',
               "type": 'checkbox',
+              "label": 'Limit maximum height of all shown item types',
               "default": false
           },
           'maxHeightList': {
-              "label": 'em maximum height of all shown item types',
               "type": 'unsigned number',
+              "label": 'em maximum height of all shown item types',
               "default": 10
           },
           'checkAgainstHomepageUSO': {
-              "label": 'Check USO require urls against USO script homepage (Rate and Limiting may limit accuracy)',
               "type": 'checkbox',
+              "label": 'Check USO require urls against USO script homepage (Rate and Limiting may limit accuracy)',
               "default": true
           },
           'enableHEAD': {
-            "label": 'Check urls with a HTTP HEAD request (Not currently recommended)',
             "type": 'checkbox',
+            "label": 'Check urls with a HTTP HEAD request (Not currently recommended)',
             "default": false
           }
         }
