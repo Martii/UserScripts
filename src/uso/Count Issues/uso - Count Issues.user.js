@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.3
+// @version       0.5.4
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -78,7 +78,7 @@
         else
           GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
 
-        GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
+        GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
 
         var keys = gmc.get("showKeysString").split(",");
         for (let i = 0, len = keys.length; i < len; ++i) {
@@ -135,7 +135,7 @@
 
           #gmc69307_field_showStringsString
           {
-            margin: 0 0 0.25em 0.3em; width: 96%; max-height: 15em; font-weight: normal; font-size: 1.0em;
+            margin: 0 0 0.25em 0.3em; width: 96%; height: 30em; font-weight: normal; font-size: 1.0em;
           }
 
           #gmc69307_field_showKeysString
@@ -298,7 +298,8 @@
               }
 
               GM_addStyle(<><![CDATA[
-                span.metadata { color: #666; font-size: 0.7em; }
+
+                
                 .metadataforced { color: red; }
                 .metadataforced:hover { color: orangered; }
                 .metadataunknown { color: black; }
@@ -309,6 +310,11 @@
                 div.metadata { overflow: auto; }
                 ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
                 li.metadata { color: grey; white-space: nowrap; }
+                span.metadata { color: #666; font-size: 0.7em; }
+                ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
+                li.count { color: #666; padding-left: 0.5em; }
+                span.count { color: grey; font-size: 0.9em; float: right; margin-right: 0.5em; }
+                li.bar { background-color: #EEE; }
                 .nameMismatch { color: red !important; }
                 .resourceName { margin-right: 0.5em; }
                 ]]></> + "");
@@ -320,7 +326,7 @@
                 else
                   GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
 
-                GM_addStyle(<><![CDATA[ li.metadata { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
+                GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
               }
 
               if (headers["name"] != titleNode.textContent) {
@@ -334,6 +340,41 @@
                   titleNode.setAttribute("title", "@uso:name " + headers["name"]);
               }
 
+              function display2(el, obj, filter, title, forced) {
+                let headerNode = document.createElement("h6");
+                headerNode.textContent = title + ' ';
+                el.appendChild(headerNode);
+
+                let spanNodeSection = document.createElement("span");
+                spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
+                headerNode.appendChild(spanNodeSection);
+
+                let divNode = document.createElement("div");
+                divNode.setAttribute("class", "metadata");
+                el.appendChild(divNode);
+
+                let ulNode = document.createElement("ul");
+                ulNode.setAttribute("class", "count");
+                divNode.appendChild(ulNode);
+
+                let objCount = 0;
+                for (let [name, value] in Iterator(obj)) {
+                  let liNode = document.createElement("li");
+                  liNode.setAttribute("class", "count" + ((objCount % 2) ? " bar" : ""));
+                  liNode.setAttribute("title", name);
+                  liNode.textContent = name;
+
+                  let spanNode = document.createElement("span");
+                  spanNode.setAttribute("class", "count");
+                  spanNode.textContent = " " + value;
+
+                  liNode.appendChild(spanNode);
+                  ulNode.appendChild(liNode);
+
+                  objCount++;
+                }
+                spanNodeSection.textContent = objCount;
+              }
 
               function display(el, keys, filter, title, forced) {
                 if (typeof keys == "string")
@@ -510,22 +551,13 @@
               var mbx = document.createElement("div");
 
               if (gmc && gmc.get("showStrings")) {
+                let finds = {};
+                for each (rex in gmc.get("showStringsString").split("\n"))
+                  for each (let match in xhr.responseText.match(new RegExp(rex, "gm")))
+                    finds[match] = (match in finds) ? finds[match] + 1 : 1;
 
-                var keywords = gmc.get("showStringsString").split("\n");
-                var finds = {};
-                for each (keyword in keywords) {
-                  let matches = xhr.responseText.match(new RegExp(keyword, "gm"));
-                  if (matches)
-                    for (let i = 0, len = matches.length; i < len; ++i)
-                      if (!finds[matches[i]])
-                        finds[matches[i]] = matches[i];
-                }
-                var found = [];
-                for each (find in finds)
-                  found.push(find);
-
-                if (found.length > 0)
-                  display(mbx, found, "", "Lost and Found");
+                if (finds.toSource() != "({})")
+                  display2(mbx, finds, "", "Lost and Found");
               }
 
               if (gmc && gmc.get("showKeys")) {
