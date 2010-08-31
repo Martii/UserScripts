@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.4
+// @version       0.5.5
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -299,9 +299,9 @@
 
               GM_addStyle(<><![CDATA[
 
-                
-                .metadataforced { color: red; }
-                .metadataforced:hover { color: orangered; }
+
+                .metadataforced { color: red !important; }
+                .metadataforced:hover { color: orangered !important; }
                 .metadataunknown { color: black; }
                 .metadataunknown:hover { color: gray; }
                 .metadatachecked { color: darkgreen; }
