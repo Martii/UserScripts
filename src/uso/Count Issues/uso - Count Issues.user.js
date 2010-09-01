@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.8
+// @version       0.5.9
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -104,7 +104,7 @@
             width: auto !important;
             height: auto !important;
             max-height: none !important;
-            max-width: none !important;
+            max-width: 100% !important;
             margin: 0 0 0.6em 0 !important;
             border: 1px solid #ddd !important;
             clear: right !important;
@@ -131,26 +131,26 @@
             font-size: 100%;
           }
 
-          #gmc69307_field_showKeys,	#gmc69307_field_showStrings { float: left; top: 0; margin-right: 0.5em; }
+          #gmc69307_field_showKeys,	#gmc69307_field_showStrings { top: 0; margin-right: 0.5em; }
 
           #gmc69307_field_showStringsString
           {
-            margin: 0 0 0.25em 0.3em; width: 96%; height: 30em; font-weight: normal; font-size: 1.0em;
+            margin: 0 0.3em 0.25em; min-width: 96.3%; max-width: 96.3%; min-height: 4em; height: 4em; font-weight: normal; font-size: 1.0em;
           }
 
           #gmc69307_field_showKeysString
           {
-            margin: 0 0 0.25em 0.3em; width: 96%; max-height: 5em; font-weight: normal; font-size: 1.0em;
+            margin: 0 0 0.25em 0.3em; min-width: 96.3%; max-width: 96.3%; max-height: 5em; min-height: 1.2em; height: 1.2em; font-weight: normal; font-size: 1.0em;
           }
 
-          #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0.25em 0.3em; float: left; text-align: right; }
-          #gmc69307_field_limitMaxHeight { float: left; top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
-          #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; float: left; text-align: right; }
+          #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0.25em 0.3em; text-align: right; }
+          #gmc69307_field_limitMaxHeight { top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
+          #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; text-align: right; }
 
           #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_enableHEAD
           {
-            float: left; top: 0; margin-right: 0.5em;
+            top: 0; margin-right: 0.5em;
           }
 
           #gmc69307_field_enableHEAD { margin-left: 1.5em; }
