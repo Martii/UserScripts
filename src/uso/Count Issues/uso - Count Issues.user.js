@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.9
+// @version       0.5.10
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -27,7 +27,7 @@
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=7&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/8c87e209d3aab54db790957302eb4743f49641ff/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/7064fbe963061eb1843863579ec7476eea859b8a/gm_config.js
 // ==/UserScript==
 
   if (typeof GM_configStruct != "undefined") {
@@ -72,7 +72,9 @@
     }
 
     gmc.onSave = function() {
-      var write = false;
+      let write = false;
+      let open = false;
+
         if (gmc.get("limitMaxHeight"))
           GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
         else
@@ -80,7 +82,7 @@
 
         GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
 
-        var keys = gmc.get("showKeysString").split(",");
+        let keys = gmc.get("showKeysString").split(",");
         for (let i = 0, len = keys.length; i < len; ++i) {
           keys[i] = keys[i].replace(/^\s*/, "").replace(/\s*$/, "");
         }
@@ -88,9 +90,26 @@
 
         if (keys != gmc.get("showKeysString")) {
           gmc.set("showKeysString", keys);
+          write = open = true;
+        }
+
+      let height;
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["showStringsString"].node.clientHeight + "px";
+        if (height != gmc.get("showStringsStringHeight")) {
+          gmc.set("showStringsStringHeight", height);
           write = true;
         }
-      if (write) { gmc.write(); gmc.close(); gmc.open(); }
+
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["showKeysString"].node.clientHeight + "px";
+        if (height != gmc.get("showKeysStringHeight")) {
+          gmc.set("showKeysStringHeight", height);
+          write = true;
+        }
+
+      if (write) gmc.write();
+      if (open) { gmc.close(); gmc.open(); }
     }
     gmc.init('Options' /* Script title */,
         divNode,
@@ -131,7 +150,7 @@
             font-size: 100%;
           }
 
-          #gmc69307_field_showKeys,	#gmc69307_field_showStrings { top: 0; margin-right: 0.5em; }
+          #gmc69307_field_showKeys, #gmc69307_field_showStrings { top: 0; margin-right: 0.5em; }
 
           #gmc69307_field_showStringsString
           {
@@ -208,12 +227,24 @@
             "type": 'checkbox',
             "label": 'Check urls with a HTTP HEAD request (Not currently recommended)',
             "default": false
+          },
+          'showStringsStringHeight': {
+            "type": 'hidden',
+            "default": "4em"
+          },
+          'showKeysStringHeight': {
+              "type": 'hidden',
+              "default": "1em"
           }
         }
     );
     if (window.location.pathname == "/scripts/show/69307"
-        || window.location.href == "http://userscripts.org/scripts/show/69307/")
+        || window.location.href == "http://userscripts.org/scripts/show/69307/") {
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
+
       gmc.open();
+    }
   }
   else {
     if (!window.location.pathname == "/scripts/show/69307"
