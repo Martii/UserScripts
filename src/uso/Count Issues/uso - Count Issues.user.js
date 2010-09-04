@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.11
+// @version       0.5.12
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -589,28 +589,31 @@
 
               var mbx = document.createElement("div");
 
-              function simpleTranscodeHex(source) {
+              function simpleTranscodeHex(source, counter) {
                 let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/m);
                 if (matched)
-                  source = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "gm"));
+                  [source, counter] = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "m"), counter + 1);
 
-                return source;
+                return [source, counter];
               }
 
               if (gmc && gmc.get("showStrings")) {
-                let finds = {};
+                let finds = {}, responseText, hexCount;
 
-                for each (rex in gmc.get("showStringsString").split("\n")) {
-                  for each (let match in xhr.responseText.match(new RegExp(rex, "gm")))
+                if (gmc.get("checkSimpleHexTranscode"))
+                  [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
+                else
+                  responseText = xhr.responseText;
+
+                for each (rex in gmc.get("showStringsString").split("\n"))
+                  for each (let match in responseText.match(new RegExp(rex, "gm")))
                     finds[match] = (match in finds) ? finds[match] + 1 : 1;
-
-                  if (gmc.get("checkSimpleHexTranscode"))
-                    for each (let match in simpleTranscodeHex(xhr.responseText).match(new RegExp(rex, "gm")))
-                      finds[match] = (match in finds) ? finds[match] + 1 : 1;
-                }
 
                 if (finds.toSource() != "({})")
                   display2(mbx, finds, "", "Lost and Found");
+
+                if (gmc.get("checkSimpleHexTranscode") && hexCount)
+                  display2(mbx, { "Hex": hexCount }, "", "Encoding");
               }
 
               if (gmc && gmc.get("showKeys")) {
