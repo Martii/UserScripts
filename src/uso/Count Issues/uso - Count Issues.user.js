@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.10
+// @version       0.5.11
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -157,6 +157,8 @@
             margin: 0 0.3em 0.25em; min-width: 96.3%; max-width: 96.3%; min-height: 4em; height: 4em; font-weight: normal; font-size: 1.0em;
           }
 
+          #gmc69307_field_checkSimpleHexTranscode { margin-left: 1.5em; }
+
           #gmc69307_field_showKeysString
           {
             margin: 0 0 0.25em 0.3em; min-width: 96.3%; max-width: 96.3%; max-height: 5em; min-height: 1.2em; height: 1.2em; font-weight: normal; font-size: 1.0em;
@@ -166,6 +168,7 @@
           #gmc69307_field_limitMaxHeight { top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
           #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; text-align: right; }
 
+          #gmc69307_field_checkSimpleHexTranscode,
           #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_enableHEAD
           {
@@ -192,6 +195,11 @@
               "type": 'textarea',
               "label": '',
               "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest"
+          },
+          'checkSimpleHexTranscode': {
+              "type": 'checkbox',
+              "label": 'Use simple hex transcode (quick and dirty partial unpack)',
+              "default": true
           },
           'showKeys': {
               "type": 'checkbox',
@@ -581,11 +589,25 @@
 
               var mbx = document.createElement("div");
 
+              function simpleTranscodeHex(source) {
+                let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/m);
+                if (matched)
+                  source = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "gm"));
+
+                return source;
+              }
+
               if (gmc && gmc.get("showStrings")) {
                 let finds = {};
-                for each (rex in gmc.get("showStringsString").split("\n"))
+
+                for each (rex in gmc.get("showStringsString").split("\n")) {
                   for each (let match in xhr.responseText.match(new RegExp(rex, "gm")))
                     finds[match] = (match in finds) ? finds[match] + 1 : 1;
+
+                  if (gmc.get("checkSimpleHexTranscode"))
+                    for each (let match in simpleTranscodeHex(xhr.responseText).match(new RegExp(rex, "gm")))
+                      finds[match] = (match in finds) ? finds[match] + 1 : 1;
+                }
 
                 if (finds.toSource() != "({})")
                   display2(mbx, finds, "", "Lost and Found");
