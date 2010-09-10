@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.12
+// @version       0.5.13
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -150,36 +150,79 @@
             font-size: 100%;
           }
 
-          #gmc69307_field_showKeys, #gmc69307_field_showStrings { top: 0; margin-right: 0.5em; }
+          #gmc69307_field_showStringsString,
+          #gmc69307_field_showKeysString
+          {
+            font-size: 1.0em;
+            margin-left: 1.7em;
+            min-width: 95.1%;
+            max-width: 95.1%;
+          }
 
           #gmc69307_field_showStringsString
           {
-            margin: 0 0.3em 0.25em; min-width: 96.3%; max-width: 96.3%; min-height: 4em; height: 4em; font-weight: normal; font-size: 1.0em;
+            min-height: 4em;
+            height: 4em;
           }
-
-          #gmc69307_field_checkSimpleHexTranscode { margin-left: 1.5em; }
 
           #gmc69307_field_showKeysString
           {
-            margin: 0 0 0.25em 0.3em; min-width: 96.3%; max-width: 96.3%; max-height: 5em; min-height: 1.2em; height: 1.2em; font-weight: normal; font-size: 1.0em;
+            min-height: 1.2em;
+            height: 1.2em;
+            max-height: 5em;
           }
 
-          #gmc69307_field_fontSize { width: 2.0em; height: 0.8em; margin: 0 0.25em 0.25em 0.3em; text-align: right; }
-          #gmc69307_field_limitMaxHeight { top: 0; margin-right: 0.5em; margin-bottom: 0.7em; }
-          #gmc69307_field_maxHeightList { width: 2.0em; height: 0.8em; margin: -0.35em 0.25em 0.25em 1.75em; text-align: right; }
-
+          #gmc69307_field_showStrings,
           #gmc69307_field_checkSimpleHexTranscode,
+          #gmc69307_field_checkShowSize,
+          #gmc69307_field_checkTrimSourceCode,
+          #gmc69307_field_showKeys,
+          #gmc69307_field_limitMaxHeight,
           #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_enableHEAD
           {
-            top: 0; margin-right: 0.5em;
+            top: 0.075em;
           }
 
-          #gmc69307_field_enableHEAD { margin-left: 1.5em; }
+          #gmc69307_field_showStrings,
+          #gmc69307_field_showKeys,
+          #gmc69307_field_limitMaxHeight,
+          #gmc69307_field_checkAgainstHomepageUSO
+          {
+            margin-left: 0;
+          }
 
-          #gmc69307_buttons_holder, #gmc69307 .saveclose_buttons { margin-bottom: 0.25em; }
-          #gmc69307_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-          #gmc69307_resetLink { margin-right: 2.5em; }
+          #gmc69307_field_fontSize,
+          #gmc69307_field_maxHeightList
+          {
+            min-width: 2em;
+            max-width: 4em;
+            width: 2em;
+            min-height: 0.8em;
+            max-height: 1em;
+            height: 0.8em;
+            text-align: right;
+          }
+
+          #gmc69307_field_checkSimpleHexTranscode,
+          #gmc69307_field_checkShowSize,
+          #gmc69307_field_maxHeightList,
+          #gmc69307_field_enableHEAD
+          {
+            margin-left: 1.5em;
+          }
+
+          #gmc69307_field_checkTrimSourceCode { margin-left: 3.0em; }
+
+          #gmc69307_showKeys_var,
+          #gmc69307_fontSize_var
+          {
+            margin-top: 0.5em !important;
+          }
+
+          #gmc69307_buttons_holder { margin: 0.5em 1em; }
+          #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
+          #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
           #gmc69307_closeBtn { display: none; }
 
         ]]></>.toString(),
@@ -200,6 +243,16 @@
               "type": 'checkbox',
               "label": 'Use simple hex transcode (quick and dirty partial unpack)',
               "default": true
+          },
+          'checkShowSize': {
+              "type": 'checkbox',
+              "label": 'Show approximate file size in script navigation bar',
+              "default": false
+          },
+          'checkTrimSourceCode': {
+              "type": 'checkbox',
+              "label": 'Trim " Code" from "Source Code" tab (useful for more real estate)',
+              "default": false
           },
           'showKeys': {
               "type": 'checkbox',
@@ -337,7 +390,6 @@
               }
 
               GM_addStyle(<><![CDATA[
-
 
                 .metadataforced { color: red !important; }
                 .metadataforced:hover { color: orangered !important; }
@@ -614,6 +666,28 @@
 
                 if (gmc.get("checkSimpleHexTranscode") && hexCount)
                   display2(mbx, { "Hex": hexCount }, "", "Encoding");
+
+                if (gmc.get("checkShowSize")) {
+                  let sourceNode = document.evaluate(
+                  "//li/a[contains(., 'Source Code')]",
+                    document.body,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                  );
+                  if (sourceNode && sourceNode.singleNodeValue) {
+                    let thisNode = sourceNode.singleNodeValue;
+
+                    if (gmc.get("checkTrimSourceCode"))
+                      thisNode.textContent = thisNode.textContent.replace(" Code", "");
+                    thisNode.textContent += " ";
+                    let spanNode = document.createElement("span");
+                    spanNode.textContent = (xhr.responseText.length > 1024)
+                      ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
+                      : xhr.responseText.length;
+                    thisNode.appendChild(spanNode);
+                  }
+                }
               }
 
               if (gmc && gmc.get("showKeys")) {
@@ -675,6 +749,39 @@
           }
         }
       });
+    }
+    else {
+      if (gmc.get("checkShowSize")) {
+        let sourceNode = document.evaluate(
+        "//li[contains(., 'Source Code')]",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (sourceNode && sourceNode.singleNodeValue) {
+          let thisNode = sourceNode.singleNodeValue;
+
+          thisNode.textContent += " ";
+          let spanNode = document.createElement("span");
+          spanNode.style.setProperty("color", "red", "");
+
+          GM_xmlhttpRequest({
+            url: "http://userscripts.org/scripts/source/" + scriptid + ".user.js?",
+            method: "GET",
+            onload: function(xhr) {
+              if (xhr.status == 200) {
+                spanNode.style.setProperty("color", "#666", "");
+                spanNode.textContent = (xhr.responseText.length > 1024)
+                  ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
+                  : xhr.responseText.length;
+              }
+            }
+          });
+          spanNode.textContent = "0";
+          thisNode.appendChild(spanNode);
+        }
+      }
     }
 
     function getDocument(url, callback) {
