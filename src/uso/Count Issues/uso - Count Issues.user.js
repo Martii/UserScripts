@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.13
+// @version       0.5.14
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -762,6 +762,8 @@
         if (sourceNode && sourceNode.singleNodeValue) {
           let thisNode = sourceNode.singleNodeValue;
 
+          if (gmc.get("checkTrimSourceCode"))
+            thisNode.textContent = thisNode.textContent.replace(" Code", "");
           thisNode.textContent += " ";
           let spanNode = document.createElement("span");
           spanNode.style.setProperty("color", "red", "");
