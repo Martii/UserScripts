@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.14
+// @version       0.5.15
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -753,7 +753,7 @@
     else {
       if (gmc.get("checkShowSize")) {
         let sourceNode = document.evaluate(
-        "//li[contains(., 'Source Code')]",
+        "//li[contains(@class, 'current')][contains(., 'Source Code')] | //li/a[contains(., 'Source Code')]",
           document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
