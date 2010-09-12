@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.16
+// @version       0.5.17
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -657,12 +657,14 @@
                 else
                   responseText = xhr.responseText;
 
-                for each (rex in gmc.get("showStringsString").split("\n"))
-                  for each (let match in responseText.match(new RegExp(rex, "gm")))
-                    finds[match] = (match in finds) ? finds[match] + 1 : 1;
+                if (gmc.get("showStringsString")) {
+                  for each (rex in gmc.get("showStringsString").split("\n"))
+                    for each (let match in responseText.match(new RegExp(rex, "gm")))
+                      finds[match] = (match in finds) ? finds[match] + 1 : 1;
 
-                if (finds.toSource() != "({})")
-                  display2(mbx, finds, "", "Lost and Found");
+                  if (finds.toSource() != "({})")
+                    display2(mbx, finds, "", "Lost and Found");
+                }
 
                 if (gmc.get("checkSimpleHexTranscode") && hexCount)
                   display2(mbx, { "Hex": hexCount }, "", "Encoding");
@@ -725,6 +727,9 @@
                       else
                         display(mbx, "", key, "@include", true);
                       break;
+                    case "version":
+                       if (window.location.pathname.match(/\/scripts\/show\/.+/i))
+                         break;
                     default:
                       [key, prefix] = key.split(/:/).reverse();
                       if (!prefix && headers[key])
