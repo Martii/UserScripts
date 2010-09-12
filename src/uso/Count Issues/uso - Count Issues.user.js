@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.19
+// @version       0.5.20
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -365,6 +365,11 @@
               for each (line in lines) {
                 [, name, value] = line.match(/\/\/ @(\S+)\s*(.*)/);
                 value = value.replace(/\s*$/, "");
+                switch (name) {
+                  case "licence":
+                    name = "license";
+                    break;
+                }
                 [key, prefix] = name.split(/:/).reverse();
                 if (prefix) {
                   if (!headers[prefix])
@@ -381,6 +386,8 @@
                 else
                   header[key] = value;
               }
+              if (headers["license"])
+                headers["licence"] = headers["license"];
 
               var sidebarNode = document.getElementById("script_sidebar");
               if (!sidebarNode) {
