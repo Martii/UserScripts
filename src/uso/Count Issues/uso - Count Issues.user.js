@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.15
+// @version       0.5.16
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -24,7 +24,7 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=7&custom=yes&topicid=46434&id=usoCheckup
+// @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
 // @require http://github.com/sizzlemctwizzle/GM_config/raw/7064fbe963061eb1843863579ec7476eea859b8a/gm_config.js
@@ -715,7 +715,8 @@
                            break;
                          }
                        }
-                       display(mbx, headers[key], key, "@description");
+                       if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
+                         display(mbx, headers[key], key, "@description");
                      }
                       break;
                     case "include":
