@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.20
+// @version       0.5.21
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -262,7 +262,7 @@
           'showKeysString': {
               "type": 'textarea',
               "label": '',
-              "default": "name,namespace,description,require,resource,include,match,exclude"
+              "default": "name,description,version,copyright,license,namespace,require,resource,include,match,exclude"
           },
           'fontSize': {
               "type": 'unsigned number',
@@ -736,7 +736,7 @@
                       break;
                     default:
                       if (window.location.pathname.match(/\/scripts\/show\/.+/i) &&
-                          typeof headers[key] == "string" && (key == "version" || key == "license" || key == "licence"))
+                          typeof headers[key] == "string" && (key == "version" || key == "copyright" || key == "license" || key == "licence"))
                         break;
 
                       [key, prefix] = key.split(/:/).reverse();
