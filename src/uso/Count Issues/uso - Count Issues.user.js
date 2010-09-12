@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.17
+// @version       0.5.18
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -728,7 +728,7 @@
                         display(mbx, "", key, "@include", true);
                       break;
                     case "version":
-                       if (window.location.pathname.match(/\/scripts\/show\/.+/i))
+                       if (window.location.pathname.match(/\/scripts\/show\/.+/i) && typeof headers["version"] == "string")
                          break;
                     default:
                       [key, prefix] = key.split(/:/).reverse();
