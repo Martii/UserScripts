@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.22
+// @version       0.5.23
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -281,7 +281,7 @@
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
-              "label": 'Check USO require urls against USO script homepage (Rate and Limiting may limit accuracy)',
+              "label": 'Check USO require and resource urls against USO script homepage (Rate and Limiting may limit accuracy)',
               "default": true
           },
           'enableHEAD': {
@@ -595,15 +595,40 @@
                     case "resource":
                       var matches = key.match(/^([\w\.]+)\s*(https?:\/\/.*)/i);
                       if (matches) {
+                        let showUrl;
+                        let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
+                        if (matches2)
+                          showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                        else {
+                          matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
+                          if (matches2)
+                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                        }
+
                         let spanNode = document.createElement("span");
                         spanNode.setAttribute("class", "resourceName");
                         spanNode.textContent = matches[1];
                         liNode.appendChild(spanNode);
 
                         let anchorNode = document.createElement("a");
-                        anchorNode.setAttribute("href", matches[2]);
+                        anchorNode.setAttribute("href", (showUrl) ? showUrl : matches[2]);
                         anchorNode.textContent = matches[2];
 
+                        if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
+                          GM_xmlhttpRequest({
+                            method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
+                            url: showUrl,
+                            onload: function(xhr) {
+                              if (xhr.status != 200) {
+                                if (xhr.status == 503)
+                                  anchorNode.setAttribute("class", "metadataunknown");
+                                else
+                                  anchorNode.setAttribute("class", "metadataforced");
+                              }
+                              else
+                                anchorNode.setAttribute("class", "metadatachecked");
+                          }});
+                        
                         liNode.setAttribute("title", matches[2]);
                         liNode.appendChild(anchorNode);
 
