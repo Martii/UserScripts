@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.23
+// @version       0.6.0
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -628,7 +628,7 @@
                               else
                                 anchorNode.setAttribute("class", "metadatachecked");
                           }});
-                        
+
                         liNode.setAttribute("title", matches[2]);
                         liNode.appendChild(anchorNode);
 
@@ -832,46 +832,60 @@
         callback(document);
       }
       else {
-        GM_xmlhttpRequest({
-          method: "GET",
-          url: url,
-          onload: function (xhr) {
+        let trycount = 0, retryit = true;
+        function tryit() {
+          GM_xmlhttpRequest({
+            method: "GET",
+            url: url,
+            onload: function (xhr) {
+              switch(xhr.status) {
+                case 200:
+                  // Attempt(s) to fix XHTML error(s) on USO
+                  var usoTitle = titleNode.textContent;
 
-            // Attempt(s) to fix XHTML error(s) on USO
-            var usoTitle = titleNode.textContent;
+                  var matches = usoTitle.match(/&/ig);
+                  if (matches)
+                    xhr.responseText = xhr.responseText.replace(usoTitle, usoTitle.replace(/&/gi, "&amp;"), "gmi" );
 
-            var matches = usoTitle.match(/&/ig);
-            if (matches)
-              xhr.responseText = xhr.responseText.replace(usoTitle, usoTitle.replace(/&/gi, "&amp;"), "gmi" );
+                  var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
+                  if ( d.documentElement.firstChild == "[object XPCNativeWrapper [object Text]]"
+                    && d.documentElement.firstChild.textContent.match(/XML Parsing Error:.*/i)
+                  ) {
+                    GM_log(d.documentElement.firstChild.textContent);
+                    callback(null);
+                      return;
+                  }
+                  var h = d.getElementsByTagName("head")[0];
+                  var hf = document.createDocumentFragment();
+                  hf.appendChild(h);
 
-            var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
-            if ( d.documentElement.firstChild == "[object XPCNativeWrapper [object Text]]"
-              && d.documentElement.firstChild.textContent.match(/XML Parsing Error:.*/i)
-            ) {
-              GM_log(d.documentElement.firstChild.textContent);
-              callback(null);
-                return;
+                  var b = d.getElementsByTagName("body")[0];
+                  var bf = document.createDocumentFragment();
+                  bf.appendChild(b);
+
+                  var doctype = document.implementation.createDocumentType(d.doctype.name, d.doctype.publicId, d.doctype.systemId);
+                  var doc = document.implementation.createDocument(d.documentElement.namespaceURI, "html", doctype);
+
+                  for (let i = d.documentElement.attributes.length - 1; i >= 0; i--)
+                    doc.documentElement.setAttribute(d.documentElement.attributes.item(i).nodeName, d.documentElement.attributes.item(i).nodeValue);
+
+                  doc.documentElement.appendChild(hf);
+                  doc.documentElement.appendChild(bf);
+
+                  callback(doc);
+                  break;
+                case 503:
+                  if (++trycount > 5)
+                    retryit = false;
+                  else
+                    setTimeout(tryit, 2300);
+                  break;
+              }
             }
-            var h = d.getElementsByTagName("head")[0];
-            var hf = document.createDocumentFragment();
-            hf.appendChild(h);
-
-            var b = d.getElementsByTagName("body")[0];
-            var bf = document.createDocumentFragment();
-            bf.appendChild(b);
-
-            var doctype = document.implementation.createDocumentType(d.doctype.name, d.doctype.publicId, d.doctype.systemId);
-            var doc = document.implementation.createDocument(d.documentElement.namespaceURI, "html", doctype);
-
-            for (let i = d.documentElement.attributes.length - 1; i >= 0; i--)
-              doc.documentElement.setAttribute(d.documentElement.attributes.item(i).nodeName, d.documentElement.attributes.item(i).nodeValue);
-
-            doc.documentElement.appendChild(hf);
-            doc.documentElement.appendChild(bf);
-
-            callback(doc);
-          }
-        });
+          });
+        }
+        if (retryit)
+          tryit();
       }
     }
 
@@ -954,4 +968,5 @@
       thisNode.appendChild(spanNode);
     });
   }
+  
 })();
