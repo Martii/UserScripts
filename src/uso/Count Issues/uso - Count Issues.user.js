@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.6.0
+// @version       0.6.1
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -353,165 +353,252 @@
 
     var hookNode = document.getElementById("right");
     if (hookNode) {
-      GM_xmlhttpRequest({
-        url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("showStrings")) ? ".user.js?" : ".meta.js"),
-        method: "GET",
-        onload: function(xhr) {
-          if (xhr.status == 200) {
-            var metadataBlock = xhr.responseText.toString();
-            var headers = {};
-            var line, name, prefix, header, key, value;
-              var lines = metadataBlock.split(/\n/).filter(/\/\/ @\S+/);
-              for each (line in lines) {
-                [, name, value] = line.match(/\/\/ @(\S*)\s*(.*)/);
-                value = value.replace(/\s*$/, "");
-                switch (name) {
-                  case "licence":
-                    name = "license";
+      let trycount = 0, retryit = true;
+
+      function tryit() {
+        GM_xmlhttpRequest({
+          url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("showStrings")) ? ".user.js?" : ".meta.js"),
+          method: "GET",
+          onload: function(xhr) {
+            switch(xhr.status) {
+              case 200:
+                retryit = false;
+                scanSource(xhr);
+                break;
+              case 503:
+                if (++trycount > 5)
+                  retryit = false;
+                else
+                  setTimeout(tryit, 2100);
+                break;
+              default:
+                retryit = false;
+                break;
+            }
+          }
+        });
+      }
+
+      function scanSource(xhr) {
+        var metadataBlock = xhr.responseText.toString();
+        var headers = {};
+        var line, name, prefix, header, key, value;
+          var lines = metadataBlock.split(/\n/).filter(/\/\/ @\S+/);
+          for each (line in lines) {
+            [, name, value] = line.match(/\/\/ @(\S*)\s*(.*)/);
+            value = value.replace(/\s*$/, "");
+            switch (name) {
+              case "licence":
+                name = "license";
+                break;
+            }
+            [key, prefix] = name.split(/:/).reverse();
+            if (prefix) {
+              if (!headers[prefix])
+                headers[prefix] = new Object;
+              header = headers[prefix];
+            }
+            else
+              header = headers;
+            if (header[key]) {
+              if (!(header[key] instanceof Array))
+                header[key] = new Array(header[key]);
+              header[key].push(value);
+            }
+            else
+              header[key] = value;
+          }
+          if (headers["license"])
+            headers["licence"] = headers["license"];
+
+          var sidebarNode = document.getElementById("script_sidebar");
+          if (!sidebarNode) {
+            sidebarNode = document.createElement("div");
+            sidebarNode.setAttribute("id", "script_sidebar");
+            hookNode.appendChild(sidebarNode);
+          }
+
+          GM_addStyle(<><![CDATA[
+
+            .metadataforced { color: red !important; }
+            .metadataforced:hover { color: orangered !important; }
+            .metadataunknown { color: black; }
+            .metadataunknown:hover { color: gray; }
+            .metadatachecked { color: darkgreen; }
+            .metadatachecked:hover { color: green; }
+            span.metadataforced { color: red; }
+            div.metadata { overflow: auto; }
+            ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
+            li.metadata { color: grey; white-space: nowrap; }
+            span.metadata { color: #666; font-size: 0.7em; }
+            ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
+            li.count { color: #666; padding-left: 0.5em; }
+            span.count { color: grey; font-size: 0.9em; float: right; margin-right: 0.5em; }
+            li.bar { background-color: #EEE; }
+            .nameMismatch { color: red !important; }
+            .resourceName { margin-right: 0.5em; }
+            ]]></> + "");
+
+
+          if (gmc) {
+            if (gmc.get("limitMaxHeight"))
+              GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
+            else
+              GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
+
+            GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
+          }
+
+          if (headers["name"] != titleNode.textContent) {
+            titleNode.setAttribute("class", titleNode.getAttribute("class") + " titleWarn");
+
+            if (name.toLowerCase() != titleNode.textContent.toLowerCase()) {
+              titleNode.setAttribute("class", titleNode.getAttribute("class") + " nameMismatch");
+              titleNode.setAttribute("title", "@name " + headers["name"]);
+            }
+            else
+              titleNode.setAttribute("title", "@uso:name " + headers["name"]);
+          }
+
+          function display2(el, obj, filter, title, forced) {
+            let headerNode = document.createElement("h6");
+            headerNode.textContent = title + ' ';
+            el.appendChild(headerNode);
+
+            let spanNodeSection = document.createElement("span");
+            spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
+            headerNode.appendChild(spanNodeSection);
+
+            let divNode = document.createElement("div");
+            divNode.setAttribute("class", "metadata");
+            el.appendChild(divNode);
+
+            let ulNode = document.createElement("ul");
+            ulNode.setAttribute("class", "count");
+            divNode.appendChild(ulNode);
+
+            let objCount = 0;
+            for (let [name, value] in Iterator(obj)) {
+              let liNode = document.createElement("li");
+              liNode.setAttribute("class", "count" + ((objCount % 2) ? " bar" : ""));
+              liNode.setAttribute("title", name);
+              liNode.textContent = name;
+
+              let spanNode = document.createElement("span");
+              spanNode.setAttribute("class", "count");
+              spanNode.textContent = " " + value;
+
+              liNode.appendChild(spanNode);
+              ulNode.appendChild(liNode);
+
+              objCount++;
+            }
+            spanNodeSection.textContent = objCount;
+          }
+
+          function display(el, keys, filter, title, forced) {
+            if (typeof keys == "string")
+              keys = new Array(keys);
+
+            let headerNode = document.createElement("h6");
+            headerNode.textContent = title + ' ';
+            el.appendChild(headerNode);
+
+            let spanNodeSection = document.createElement("span");
+            spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
+            spanNodeSection.textContent = (keys[0] == "") ? "0" : keys.length;
+            headerNode.appendChild(spanNodeSection);
+
+            let divNode = document.createElement("div");
+            divNode.setAttribute("class", "metadata");
+            el.appendChild(divNode);
+
+            let ulNode = document.createElement("ul");
+            ulNode.setAttribute("class", "metadata");
+            divNode.appendChild(ulNode);
+
+            let namespaceCount = 0;
+            for each (let key in keys) {
+              let liNode = document.createElement("li");
+              liNode.setAttribute("class", "metadata");
+
+              switch(filter) {
+                case "namespace":
+                  if (++namespaceCount > 1)
+                    spanNodeSection.setAttribute("class", "metadata metadataforced");
+
+                  var matches = key.match(/^(https?:\/\/.*)/i);
+                  if (matches) {
+                    let anchorNode = document.createElement("a");
+                    anchorNode.setAttribute("href", matches[1]);
+                    anchorNode.textContent = matches[1];
+
+                    liNode.setAttribute("title", matches[1]);
+                    liNode.appendChild(anchorNode);
+
+                    ulNode.appendChild(liNode);
+                  } else {
+                    liNode.setAttribute("title", key);
+                    liNode.textContent = key;
+                    ulNode.appendChild(liNode);
+                  }
+                  break;
+                case "require":
+                  var matches = key.match(/^https?:\/\/.*/i);
+                  if (matches) {
+                    let showUrl;
+                    matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
+                    if (matches)
+                      showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+                    else {
+                      matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
+                      if (matches)
+                        showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+                    }
+
+                    let anchorNode = document.createElement("a");
+                    anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
+                    anchorNode.textContent = key;
+                    if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
+                      GM_xmlhttpRequest({
+                        method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
+                        url: showUrl,
+                        onload: function(xhr) {
+                          if (xhr.status != 200) {
+                            if (xhr.status == 503)
+                              anchorNode.setAttribute("class", "metadataunknown");
+                            else
+                              anchorNode.setAttribute("class", "metadataforced");
+                          }
+                          else
+                            anchorNode.setAttribute("class", "metadatachecked");
+                      }});
+
+                    liNode.setAttribute("title", key);
+                    liNode.appendChild(anchorNode);
+                    ulNode.appendChild(liNode);
                     break;
-                }
-                [key, prefix] = name.split(/:/).reverse();
-                if (prefix) {
-                  if (!headers[prefix])
-                    headers[prefix] = new Object;
-                  header = headers[prefix];
-                }
-                else
-                  header = headers;
-                if (header[key]) {
-                  if (!(header[key] instanceof Array))
-                    header[key] = new Array(header[key]);
-                  header[key].push(value);
-                }
-                else
-                  header[key] = value;
-              }
-              if (headers["license"])
-                headers["licence"] = headers["license"];
-
-              var sidebarNode = document.getElementById("script_sidebar");
-              if (!sidebarNode) {
-                sidebarNode = document.createElement("div");
-                sidebarNode.setAttribute("id", "script_sidebar");
-                hookNode.appendChild(sidebarNode);
-              }
-
-              GM_addStyle(<><![CDATA[
-
-                .metadataforced { color: red !important; }
-                .metadataforced:hover { color: orangered !important; }
-                .metadataunknown { color: black; }
-                .metadataunknown:hover { color: gray; }
-                .metadatachecked { color: darkgreen; }
-                .metadatachecked:hover { color: green; }
-                span.metadataforced { color: red; }
-                div.metadata { overflow: auto; }
-                ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
-                li.metadata { color: grey; white-space: nowrap; }
-                span.metadata { color: #666; font-size: 0.7em; }
-                ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
-                li.count { color: #666; padding-left: 0.5em; }
-                span.count { color: grey; font-size: 0.9em; float: right; margin-right: 0.5em; }
-                li.bar { background-color: #EEE; }
-                .nameMismatch { color: red !important; }
-                .resourceName { margin-right: 0.5em; }
-                ]]></> + "");
-
-
-              if (gmc) {
-                if (gmc.get("limitMaxHeight"))
-                  GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
-                else
-                  GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-
-                GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
-              }
-
-              if (headers["name"] != titleNode.textContent) {
-                titleNode.setAttribute("class", titleNode.getAttribute("class") + " titleWarn");
-
-                if (name.toLowerCase() != titleNode.textContent.toLowerCase()) {
-                  titleNode.setAttribute("class", titleNode.getAttribute("class") + " nameMismatch");
-                  titleNode.setAttribute("title", "@name " + headers["name"]);
-                }
-                else
-                  titleNode.setAttribute("title", "@uso:name " + headers["name"]);
-              }
-
-              function display2(el, obj, filter, title, forced) {
-                let headerNode = document.createElement("h6");
-                headerNode.textContent = title + ' ';
-                el.appendChild(headerNode);
-
-                let spanNodeSection = document.createElement("span");
-                spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
-                headerNode.appendChild(spanNodeSection);
-
-                let divNode = document.createElement("div");
-                divNode.setAttribute("class", "metadata");
-                el.appendChild(divNode);
-
-                let ulNode = document.createElement("ul");
-                ulNode.setAttribute("class", "count");
-                divNode.appendChild(ulNode);
-
-                let objCount = 0;
-                for (let [name, value] in Iterator(obj)) {
-                  let liNode = document.createElement("li");
-                  liNode.setAttribute("class", "count" + ((objCount % 2) ? " bar" : ""));
-                  liNode.setAttribute("title", name);
-                  liNode.textContent = name;
-
-                  let spanNode = document.createElement("span");
-                  spanNode.setAttribute("class", "count");
-                  spanNode.textContent = " " + value;
-
-                  liNode.appendChild(spanNode);
-                  ulNode.appendChild(liNode);
-
-                  objCount++;
-                }
-                spanNodeSection.textContent = objCount;
-              }
-
-              function display(el, keys, filter, title, forced) {
-                if (typeof keys == "string")
-                  keys = new Array(keys);
-
-                let headerNode = document.createElement("h6");
-                headerNode.textContent = title + ' ';
-                el.appendChild(headerNode);
-
-                let spanNodeSection = document.createElement("span");
-                spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
-                spanNodeSection.textContent = (keys[0] == "") ? "0" : keys.length;
-                headerNode.appendChild(spanNodeSection);
-
-                let divNode = document.createElement("div");
-                divNode.setAttribute("class", "metadata");
-                el.appendChild(divNode);
-
-                let ulNode = document.createElement("ul");
-                ulNode.setAttribute("class", "metadata");
-                divNode.appendChild(ulNode);
-
-                let namespaceCount = 0;
-                for each (let key in keys) {
-                  let liNode = document.createElement("li");
-                  liNode.setAttribute("class", "metadata");
-
-                  switch(filter) {
-                    case "namespace":
-                      if (++namespaceCount > 1)
+                  }
+                  else {
+                    var xpr = document.evaluate(
+                      "//div[@id='summary']/p/a[.='Remotely hosted version']",
+                      document.documentElement,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      null
+                    );
+                    if (xpr && xpr.singleNodeValue) {
+                      let thisNode = xpr.singleNodeValue;
+                      let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                      if (url) {
                         spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-                      var matches = key.match(/^(https?:\/\/.*)/i);
-                      if (matches) {
                         let anchorNode = document.createElement("a");
-                        anchorNode.setAttribute("href", matches[1]);
-                        anchorNode.textContent = matches[1];
+                        anchorNode.setAttribute("href", url[1] + key);
+                        anchorNode.style.setProperty("color", "red", "");
+                        anchorNode.textContent = key;
 
-                        liNode.setAttribute("title", matches[1]);
+                        liNode.setAttribute("title", url[1]);
                         liNode.appendChild(anchorNode);
 
                         ulNode.appendChild(liNode);
@@ -520,274 +607,211 @@
                         liNode.textContent = key;
                         ulNode.appendChild(liNode);
                       }
-                      break;
-                    case "require":
-                      var matches = key.match(/^https?:\/\/.*/i);
-                      if (matches) {
-                        let showUrl;
-                        matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
-                        if (matches)
-                          showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
-                        else {
-                          matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
-                          if (matches)
-                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
-                        }
-
-                        let anchorNode = document.createElement("a");
-                        anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
-                        anchorNode.textContent = key;
-                        if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
-                          GM_xmlhttpRequest({
-                            method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
-                            url: showUrl,
-                            onload: function(xhr) {
-                              if (xhr.status != 200) {
-                                if (xhr.status == 503)
-                                  anchorNode.setAttribute("class", "metadataunknown");
-                                else
-                                  anchorNode.setAttribute("class", "metadataforced");
-                              }
-                              else
-                                anchorNode.setAttribute("class", "metadatachecked");
-                          }});
-
-                        liNode.setAttribute("title", key);
-                        liNode.appendChild(anchorNode);
-                        ulNode.appendChild(liNode);
-                        break;
-                      }
-                      else {
-                        var xpr = document.evaluate(
-                          "//div[@id='summary']/p/a[.='Remotely hosted version']",
-                          document.documentElement,
-                          null,
-                          XPathResult.FIRST_ORDERED_NODE_TYPE,
-                          null
-                        );
-                        if (xpr && xpr.singleNodeValue) {
-                          let thisNode = xpr.singleNodeValue;
-                          let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
-                          if (url) {
-                            spanNodeSection.setAttribute("class", "metadata metadataforced");
-
-                            let anchorNode = document.createElement("a");
-                            anchorNode.setAttribute("href", url[1] + key);
-                            anchorNode.style.setProperty("color", "red", "");
-                            anchorNode.textContent = key;
-
-                            liNode.setAttribute("title", url[1]);
-                            liNode.appendChild(anchorNode);
-
-                            ulNode.appendChild(liNode);
-                          } else {
-                            liNode.setAttribute("title", key);
-                            liNode.textContent = key;
-                            ulNode.appendChild(liNode);
-                          }
-                        } else {
-                          liNode.setAttribute("title", key);
-                          liNode.textContent = key;
-                          ulNode.appendChild(liNode);
-                        }
-                      }
-                      break;
-                    case "resource":
-                      var matches = key.match(/^([\w\.]+)\s*(https?:\/\/.*)/i);
-                      if (matches) {
-                        let showUrl;
-                        let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
-                        if (matches2)
-                          showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
-                        else {
-                          matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
-                          if (matches2)
-                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
-                        }
-
-                        let spanNode = document.createElement("span");
-                        spanNode.setAttribute("class", "resourceName");
-                        spanNode.textContent = matches[1];
-                        liNode.appendChild(spanNode);
-
-                        let anchorNode = document.createElement("a");
-                        anchorNode.setAttribute("href", (showUrl) ? showUrl : matches[2]);
-                        anchorNode.textContent = matches[2];
-
-                        if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
-                          GM_xmlhttpRequest({
-                            method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
-                            url: showUrl,
-                            onload: function(xhr) {
-                              if (xhr.status != 200) {
-                                if (xhr.status == 503)
-                                  anchorNode.setAttribute("class", "metadataunknown");
-                                else
-                                  anchorNode.setAttribute("class", "metadataforced");
-                              }
-                              else
-                                anchorNode.setAttribute("class", "metadatachecked");
-                          }});
-
-                        liNode.setAttribute("title", matches[2]);
-                        liNode.appendChild(anchorNode);
-
-                        ulNode.appendChild(liNode);
-                        break;
-                      }
-                      else {
-                        var xpr = document.evaluate(
-                          "//div[@id='summary']/p/a[.='Remotely hosted version']",
-                          document.documentElement,
-                          null,
-                          XPathResult.FIRST_ORDERED_NODE_TYPE,
-                          null
-                        );
-                        if (xpr && xpr.singleNodeValue) {
-                          let thisNode = xpr.singleNodeValue;
-                          let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
-                          if (url) {
-                            spanNodeSection.setAttribute("class", "metadata metadataforced");
-
-                            let anchorNode = document.createElement("a");
-                            anchorNode.setAttribute("href", url[1] + key);
-                            anchorNode.style.setProperty("color", "red", "");
-                            anchorNode.textContent = key;
-
-                            liNode.setAttribute("title", url[1]);
-                            liNode.appendChild(anchorNode);
-
-                            ulNode.appendChild(liNode);
-                            break;
-                          }
-                        }
-                      }
-                    default:
+                    } else {
                       liNode.setAttribute("title", key);
                       liNode.textContent = key;
                       ulNode.appendChild(liNode);
-                      break;
+                    }
                   }
-                }
-              }
+                  break;
+                case "resource":
+                  var matches = key.match(/^([\w\.]+)\s*(https?:\/\/.*)/i);
+                  if (matches) {
+                    let showUrl;
+                    let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
+                    if (matches2)
+                      showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                    else {
+                      matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
+                      if (matches2)
+                        showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                    }
 
-              var mbx = document.createElement("div");
-
-              function simpleTranscodeHex(source, counter) {
-                let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/m);
-                if (matched)
-                  [source, counter] = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "m"), counter + 1);
-
-                return [source, counter];
-              }
-
-              if (gmc && gmc.get("showStrings")) {
-                let finds = {}, responseText, hexCount;
-
-                if (gmc.get("checkSimpleHexTranscode"))
-                  [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
-                else
-                  responseText = xhr.responseText;
-
-                if (gmc.get("showStringsString")) {
-                  for each (rex in gmc.get("showStringsString").split("\n"))
-                    for each (let match in responseText.match(new RegExp(rex, "gm")))
-                      finds[match] = (match in finds) ? finds[match] + 1 : 1;
-
-                  if (finds.toSource() != "({})")
-                    display2(mbx, finds, "", "Lost and Found");
-                }
-
-                if (gmc.get("checkSimpleHexTranscode") && hexCount)
-                  display2(mbx, { "Hex": hexCount }, "", "Encoding");
-
-                if (gmc.get("checkShowSize")) {
-                  let sourceNode = document.evaluate(
-                  "//li/a[contains(., 'Source Code')]",
-                    document.body,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    null
-                  );
-                  if (sourceNode && sourceNode.singleNodeValue) {
-                    let thisNode = sourceNode.singleNodeValue;
-
-                    if (gmc.get("checkTrimSourceCode"))
-                      thisNode.textContent = thisNode.textContent.replace(" Code", "");
-                    thisNode.textContent += " ";
                     let spanNode = document.createElement("span");
-                    spanNode.textContent = (xhr.responseText.length > 1024)
-                      ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
-                      : xhr.responseText.length;
-                    thisNode.appendChild(spanNode);
+                    spanNode.setAttribute("class", "resourceName");
+                    spanNode.textContent = matches[1];
+                    liNode.appendChild(spanNode);
+
+                    let anchorNode = document.createElement("a");
+                    anchorNode.setAttribute("href", (showUrl) ? showUrl : matches[2]);
+                    anchorNode.textContent = matches[2];
+
+                    if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
+                      GM_xmlhttpRequest({
+                        method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
+                        url: showUrl,
+                        onload: function(xhr) {
+                          if (xhr.status != 200) {
+                            if (xhr.status == 503)
+                              anchorNode.setAttribute("class", "metadataunknown");
+                            else
+                              anchorNode.setAttribute("class", "metadataforced");
+                          }
+                          else
+                            anchorNode.setAttribute("class", "metadatachecked");
+                      }});
+
+                    liNode.setAttribute("title", matches[2]);
+                    liNode.appendChild(anchorNode);
+
+                    ulNode.appendChild(liNode);
+                    break;
                   }
-                }
-              }
+                  else {
+                    var xpr = document.evaluate(
+                      "//div[@id='summary']/p/a[.='Remotely hosted version']",
+                      document.documentElement,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      null
+                    );
+                    if (xpr && xpr.singleNodeValue) {
+                      let thisNode = xpr.singleNodeValue;
+                      let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                      if (url) {
+                        spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-              if (gmc && gmc.get("showKeys")) {
-                var keys = gmc.get("showKeysString").split(",");
-                for (let i = 0, len = keys.length; i < len; ++i) {
-                  var key = keys[i];
+                        let anchorNode = document.createElement("a");
+                        anchorNode.setAttribute("href", url[1] + key);
+                        anchorNode.style.setProperty("color", "red", "");
+                        anchorNode.textContent = key;
 
-                  switch (key) {
-                    case "name":
-                      if (headers[key] && headers[key] != titleNode.textContent)
-                        display(mbx, headers[key], key, "@name", true);
-                      break;
-                    case "namespace":
-                      if (headers[key])
-                        display(mbx, headers[key], key, "@namespace");
-                      else
-                        display(mbx, "", key, "@namespace");
-                      break;
-                   case "description":
-                     if (headers[key]) {
-                       if (summaryNode) {
-                         let summary = summaryNode.textContent.replace(/^\s*/, "").replace(/\s*$/, "");
-                         if (!summary.match(/[\r\n](.*)[\r\n]/) && summary != headers[key]) {
-                           display(mbx, headers[key], key, "@description", true);
-                           break;
-                         }
-                       }
-                       if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
-                         display(mbx, headers[key], key, "@description");
-                     }
-                      break;
-                    case "include":
-                      if (headers[key])
-                        display(mbx, headers[key], key, "@include");
-                      else
-                        display(mbx, "", key, "@include", true);
-                      break;
-                    default:
-                      if (window.location.pathname.match(/\/scripts\/show\/.+/i) &&
-                          typeof headers[key] == "string" && (key == "version" || key == "copyright" || key == "license" || key == "licence"))
+                        liNode.setAttribute("title", url[1]);
+                        liNode.appendChild(anchorNode);
+
+                        ulNode.appendChild(liNode);
                         break;
-
-                      [key, prefix] = key.split(/:/).reverse();
-                      if (!prefix && headers[key])
-                        display(mbx, headers[key], key, "@" + key);
-                      else if (prefix && headers[prefix][key])
-                        display(mbx, headers[prefix][key], key, "@" + prefix + ":" + key);
-                      break;
+                      }
+                    }
                   }
-                }
+                default:
+                  liNode.setAttribute("title", key);
+                  liNode.textContent = key;
+                  ulNode.appendChild(liNode);
+                  break;
               }
-
-              if (window.location.pathname.match(/scripts\/show\/.*/i)) {
-                let fansNode = document.getElementById("fans");
-                if (fansNode) {
-                  mbx.style.setProperty("margin-bottom", "0.75em", "");
-                  sidebarNode.insertBefore(mbx, fansNode);
-                }
-                else
-                  sidebarNode.appendChild(mbx);
-              }
-              else
-                sidebarNode.appendChild(mbx);
+            }
           }
-        }
-      });
+
+          var mbx = document.createElement("div");
+
+          function simpleTranscodeHex(source, counter) {
+            let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/m);
+            if (matched)
+              [source, counter] = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "m"), counter + 1);
+
+            return [source, counter];
+          }
+
+          if (gmc && gmc.get("showStrings")) {
+            let finds = {}, responseText, hexCount;
+
+            if (gmc.get("checkSimpleHexTranscode"))
+              [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
+            else
+              responseText = xhr.responseText;
+
+            if (gmc.get("showStringsString")) {
+              for each (rex in gmc.get("showStringsString").split("\n"))
+                for each (let match in responseText.match(new RegExp(rex, "gm")))
+                  finds[match] = (match in finds) ? finds[match] + 1 : 1;
+
+              if (finds.toSource() != "({})")
+                display2(mbx, finds, "", "Lost and Found");
+            }
+
+            if (gmc.get("checkSimpleHexTranscode") && hexCount)
+              display2(mbx, { "Hex": hexCount }, "", "Encoding");
+
+            if (gmc.get("checkShowSize")) {
+              let sourceNode = document.evaluate(
+              "//li/a[contains(., 'Source Code')]",
+                document.body,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+              );
+              if (sourceNode && sourceNode.singleNodeValue) {
+                let thisNode = sourceNode.singleNodeValue;
+
+                if (gmc.get("checkTrimSourceCode"))
+                  thisNode.textContent = thisNode.textContent.replace(" Code", "");
+                thisNode.textContent += " ";
+                let spanNode = document.createElement("span");
+                spanNode.textContent = (xhr.responseText.length > 1024)
+                  ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
+                  : xhr.responseText.length;
+                thisNode.appendChild(spanNode);
+              }
+            }
+          }
+
+          if (gmc && gmc.get("showKeys")) {
+            var keys = gmc.get("showKeysString").split(",");
+            for (let i = 0, len = keys.length; i < len; ++i) {
+              var key = keys[i];
+
+              switch (key) {
+                case "name":
+                  if (headers[key] && headers[key] != titleNode.textContent)
+                    display(mbx, headers[key], key, "@name", true);
+                  break;
+                case "namespace":
+                  if (headers[key])
+                    display(mbx, headers[key], key, "@namespace");
+                  else
+                    display(mbx, "", key, "@namespace");
+                  break;
+                case "description":
+                  if (headers[key]) {
+                    if (summaryNode) {
+                      let summary = summaryNode.textContent.replace(/^\s*/, "").replace(/\s*$/, "");
+                      if (!summary.match(/[\r\n](.*)[\r\n]/) && summary != headers[key]) {
+                        display(mbx, headers[key], key, "@description", true);
+                        break;
+                      }
+                    }
+                    if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
+                      display(mbx, headers[key], key, "@description");
+                  }
+                  break;
+                case "include":
+                  if (headers[key])
+                    display(mbx, headers[key], key, "@include");
+                  else
+                    display(mbx, "", key, "@include", true);
+                  break;
+                default:
+                  if (window.location.pathname.match(/\/scripts\/show\/.+/i) &&
+                      typeof headers[key] == "string" && (key == "version" || key == "copyright" || key == "license" || key == "licence"))
+                    break;
+
+                  [key, prefix] = key.split(/:/).reverse();
+                  if (!prefix && headers[key])
+                    display(mbx, headers[key], key, "@" + key);
+                  else if (prefix && headers[prefix][key])
+                    display(mbx, headers[prefix][key], key, "@" + prefix + ":" + key);
+                  break;
+              }
+            }
+          }
+
+          if (window.location.pathname.match(/scripts\/show\/.*/i)) {
+            let fansNode = document.getElementById("fans");
+            if (fansNode) {
+              mbx.style.setProperty("margin-bottom", "0.75em", "");
+              sidebarNode.insertBefore(mbx, fansNode);
+            }
+            else
+              sidebarNode.appendChild(mbx);
+          }
+          else
+            sidebarNode.appendChild(mbx);
+      }
+
+      if (retryit)
+        tryit();
+      
     }
     else {
       if (gmc.get("checkShowSize")) {
@@ -968,5 +992,5 @@
       thisNode.appendChild(spanNode);
     });
   }
-  
+
 })();
