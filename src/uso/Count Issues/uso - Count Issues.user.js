@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.6.2
+// @version       0.6.3
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -29,6 +29,18 @@
 //
 // @require http://github.com/sizzlemctwizzle/GM_config/raw/7064fbe963061eb1843863579ec7476eea859b8a/gm_config.js
 // ==/UserScript==
+
+  let throbber = "data:image/gif;base64,"
+    + 'R0lGODlhAQABAOMKAMTExMnJyc3NzdLS0tfX19vb2+Dg4OXl5enp6e7u7v//////////////////'
+    + '/////yH/C05FVFNDQVBFMi4wAwEAAAAh+QQICgD/ACwAAAAAAQABAAAEAjBFACH5BAgKAP8ALAAA'
+    + 'AAABAAEAAAQCEEUAIfkECAoA/wAsAAAAAAEAAQAABALwRAAh+QQICgD/ACwAAAAAAQABAAAEAtBE'
+    + 'ACH5BAgKAP8ALAAAAAABAAEAAAQCsEQAIfkECAoA/wAsAAAAAAEAAQAABAKQRAAh+QQICgD/ACwA'
+    + 'AAAAAQABAAAEAnBEACH5BAgKAP8ALAAAAAABAAEAAAQCUEQAIfkECAoA/wAsAAAAAAEAAQAABAIw'
+    + 'RAAh+QQICgD/ACwAAAAAAQABAAAEAhBEACH5BAgKAP8ALAAAAAABAAEAAAQCMEQAIfkECAoA/wAs'
+    + 'AAAAAAEAAQAABAJQRAAh+QQICgD/ACwAAAAAAQABAAAEAnBEACH5BAgKAP8ALAAAAAABAAEAAAQC'
+    + 'kEQAIfkECAoA/wAsAAAAAAEAAQAABAKwRAAh+QQICgD/ACwAAAAAAQABAAAEAtBEACH5BAgKAP8A'
+    + 'LAAAAAABAAEAAAQC8EQAIfkEAAoA/wAsAAAAAAEAAQAABAIQRQA7'
+  ;
 
   if (typeof GM_configStruct != "undefined") {
       // Save some memory
@@ -404,7 +416,7 @@
 
                 GM_addStyle(<><![CDATA[
 
-                  .metadataforced { color: red !important; }
+                  .metadataforced, .alert { color: red !important; }
                   .metadataforced:hover { color: orangered !important; }
                   .metadataunknown { color: black; }
                   .metadataunknown:hover { color: gray; }
@@ -853,57 +865,121 @@
       }
     }
 
-    function getDocument(url, callback) {
-      var rex = new RegExp(url + ".*", "i");
-      var uri = "http://" + window.location.host + window.location.pathname + window.location.search + window.location.hash;
-      if (uri.match(rex)) {
-        callback(document);
+
+    let xpr = document.evaluate(
+      "//ul[@id='script-nav']/li[contains(., 'Issues')]",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+    if (xpr && xpr.singleNodeValue) {
+      let issuesNode = xpr.singleNodeValue;
+
+      let spanNode = document.createElement("span");
+      spanNode.textContent = "?";
+
+      function countIssues(doc) {
+        if (issuesNode.firstChild.nodeType == 1)
+          issuesNode.firstChild.textContent += " ";
+        else
+          issuesNode.textContent += " ";
+
+          if (doc) {
+
+            let
+              yesCount = 0,
+              noCount = 0,
+              votes = [
+                "broken_votes",
+                "copy_votes",
+                "harmful_votes",
+                "spam_votes",
+                "vague_votes"
+              ]
+            ;
+
+            for (let i = 0, vote; vote = votes[i++];) {
+              let xpr = doc.evaluate(
+                "//a[contains(@href,'/scripts/issues/" + scriptid + "#" + vote + "')]",
+                doc.body,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+              );
+              if (xpr && xpr.singleNodeValue) {
+                let thisNode = xpr.singleNodeValue;
+
+                let matches = thisNode.textContent.match(/(\d+) of (\d+) voted yes/i);
+                if (matches) {
+                  yesCount += parseInt(matches[1]);
+                  noCount += parseInt(matches[2]) - parseInt(matches[1]);
+                }
+              }
+            }
+
+            spanNode.textContent = yesCount;
+            if (yesCount > noCount)
+              spanNode.setAttribute("class", "alert");
+          }
+
+        if (issuesNode.firstChild.nodeType == 1)
+          issuesNode.firstChild.appendChild(spanNode);
+        else
+          issuesNode.appendChild(spanNode);
       }
+
+      if (window.location.pathname == ("/scripts/issues/" + scriptid))
+        countIssues(document);
       else {
+        issuesNode.style.setProperty("background-image", "url(" + throbber + ")", "");
+
         GM_xmlhttpRequest({
           retry: 5,
           method: "GET",
-          url: url,
+          url: "http://userscripts.org/scripts/issues/" + scriptid,
           onload: function (xhr) {
             switch (xhr.status) {
               case 503:
                 if (--this.retry > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                else {
+                  issuesNode.style.removeProperty("background-image");
+                  spanNode.setAttribute("class", "alert");
+                  countIssues();
+                }
                 break;
               case 200:
-                // Attempt(s) to fix XHTML error(s) on USO
-                var usoTitle = titleNode.textContent;
+                issuesNode.style.removeProperty("background-image");
 
-                var matches = usoTitle.match(/&/ig);
-                if (matches)
-                  xhr.responseText = xhr.responseText.replace(usoTitle, usoTitle.replace(/&/gi, "&amp;"), "gmi" );
+                let
+                  dt = document.implementation.createDocumentType(
+                    "html",
+                    "-//W3C//DTD HTML 4.01 Transitional//EN",
+                    "http://www.w3.org/TR/html4/loose.dtd"
+                  ),
+                  doc = document.implementation.createDocument("", "", dt),
+                  documentElement = doc.createElement("html")
+                ;
 
-                var d = new DOMParser().parseFromString(xhr.responseText, "text/xml");
-                if ( d.documentElement.firstChild == "[object XPCNativeWrapper [object Text]]"
-                  && d.documentElement.firstChild.textContent.match(/XML Parsing Error:.*/i)
-                ) {
-                  GM_log(d.documentElement.firstChild.textContent);
-                  callback(null);
-                    return;
-                }
-                var h = d.getElementsByTagName("head")[0];
-                var hf = document.createDocumentFragment();
-                hf.appendChild(h);
+                documentElement.innerHTML = xhr.responseText;
+                doc.appendChild(documentElement);
 
-                var b = d.getElementsByTagName("body")[0];
-                var bf = document.createDocumentFragment();
-                bf.appendChild(b);
+                let html = doc.documentElement.innerHTML;
+                doc.documentElement.innerHTML = "";
 
-                var doctype = document.implementation.createDocumentType(d.doctype.name, d.doctype.publicId, d.doctype.systemId);
-                var doc = document.implementation.createDocument(d.documentElement.namespaceURI, "html", doctype);
+                let body = doc.createElement("body");
+                body.innerHTML = html;
+                doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
 
-                for (let i = d.documentElement.attributes.length - 1; i >= 0; i--)
-                  doc.documentElement.setAttribute(d.documentElement.attributes.item(i).nodeName, d.documentElement.attributes.item(i).nodeValue);
+                let head = doc.createElement("head");
+                doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
 
-                doc.documentElement.appendChild(hf);
-                doc.documentElement.appendChild(bf);
-
-                callback(doc);
+                countIssues(doc);
+                break;
+              default:
+                issuesNode.style.removeProperty("background-image");
+                countIssues();
                 break;
             }
           }
@@ -911,83 +987,6 @@
       }
     }
 
-    getDocument("http://userscripts.org/scripts/issues/" + scriptid, function(doc) {
-      if (doc) {
-        var votes = {
-          "broken":  "broken_votes",
-          "copy":    "copy_votes",
-          "harmful": "harmful_votes",
-          "spam":    "spam_votes",
-          "vague":   "vague_votes"
-        };
-
-        var thisNode, xpr, matches,
-          yesCount = 0,
-          noCount = 0;
-
-        for each (var vote in votes) {
-          xpr = doc.evaluate(
-            "//" + ((doc == document) ? "" : "xhtml:") + "a[contains(@href,'/scripts/issues/" + scriptid + "#" + vote + "')]",
-            doc.documentElement,
-            nsResolver,
-            XPathResult.ANY_UNORDERED_NODE_TYPE,
-            null
-          );
-
-          if (xpr && xpr.singleNodeValue) {
-            thisNode = xpr.singleNodeValue;
-
-            matches = thisNode.textContent.match(/(\d+) of (\d+) voted yes/i);
-            if (matches) {
-              yesCount += parseInt(matches[1]);
-              noCount += parseInt(matches[2]) - parseInt(matches[1]);
-            }
-          }
-        }
-      }
-
-
-      var issuesNode;
-      if (doc == document) {
-        issuesNode = document.evaluate(
-          "//li/text()['Issues']",
-          document.documentElement,
-          null,
-          XPathResult.ANY_UNORDERED_NODE_TYPE,
-          null
-        );
-
-        if (issuesNode && issuesNode.singleNodeValue) {
-          thisNode = issuesNode.singleNodeValue;
-          thisNode.textContent += " ";
-
-          thisNode = thisNode.parentNode;
-        }
-      }
-      else {
-        issuesNode = document.evaluate(
-          "//li/a[contains(@href,'/scripts/issues/" + scriptid + "')]",
-          document.documentElement,
-          null,
-          XPathResult.ANY_UNORDERED_NODE_TYPE,
-          null
-        );
-
-        if (issuesNode && issuesNode.singleNodeValue) {
-          thisNode = issuesNode.singleNodeValue;
-          thisNode.textContent += " ";
-        }
-      }
-
-      var spanNode = document.createElement("span");
-      if (!doc || yesCount > noCount)
-        spanNode.style.setProperty("color", "red", "");
-      if (doc)
-        spanNode.textContent = yesCount;
-      else
-        spanNode.textContent = "0";
-
-      thisNode.appendChild(spanNode);
-    });
   }
+
 })();
