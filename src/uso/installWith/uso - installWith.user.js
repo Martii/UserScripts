@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.1beta
+// @version       0.7.2
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -197,7 +197,12 @@
               "type": "unsigned integer",
               "label": 'hours minimum before starting a check for this script using installWith (Not all updaters support this)',
               "default": 1
-            }
+            },
+            "skipEmbeddedScan": {
+              "type": "checkbox",
+              "label": 'Skip the embedded updater scan (WARNING: This will produce undesired effects when other embedded updaters are present and wrapping it in a @required updater but at the same time USO Rate and Limiting also has undesired effects)',
+              "default": false
+            },
           },
           <><![CDATA[
             #gmc68219 {
@@ -252,7 +257,7 @@
   if ((scriptid = getScriptid()))
     GM_xmlhttpRequest({
       retry: 5,
-      url: "http://userscripts.org/scripts/source/" + scriptid + ".user.js?",
+      url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
       method: "GET",
       onload: function(xhr) {
         let possibleEmbedded;
