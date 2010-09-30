@@ -6,6 +6,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @version       0.0.5
 // @include       http://userscripts.org/*
+//
 // @require       http://usocheckup.redirectme.net/48071.js
 // ==/UserScript==
 
