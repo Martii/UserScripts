@@ -28,6 +28,7 @@
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
 // @require http://github.com/sizzlemctwizzle/GM_config/raw/7064fbe963061eb1843863579ec7476eea859b8a/gm_config.js
+//
 // ==/UserScript==
 
   let throbber = "data:image/gif;base64,"
