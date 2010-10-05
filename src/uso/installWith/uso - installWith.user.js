@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.4
+// @version       0.7.5
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -991,6 +991,118 @@
                   "advisory": "low",
                   "title": ""
                 }
+              },
+              "PotentialSpammer": {
+                "textContent": 'PotentialSpammer',
+                "title": 'by potential spammer',
+                "rex": [
+                  "http:\\/\\/0rz\\.tw",
+                  "http:\\/\\/2tu\\.us",
+                  "http:\\/\\/3\\.ly",
+                  "http:\\/\\/55c\\.cc",
+                  "http:\\/\\/6url\\.com",
+                  "http:\\/\\/alturl\\.com",
+                  "http:\\/\\/arm\\.in",
+                  "http:\\/\\/awe\\.sm",
+                  "http:\\/\\/b23\\.ru",
+                  "http:\\/\\/bacn\\.me",
+                  "http:\\/\\/bit\\.ly",
+                  "http:\\/\\/bitly\\.com",
+                  "http:\\/\\/budurl\\.com",
+                  "http:\\/\\/chilp\\.it",
+                  "http:\\/\\/cli\\.gs",
+                  "http:\\/\\/cuthut\\.com",
+                  "http:\\/\\/digg\\.com",
+                  "http:\\/\\/doiop\\.com",
+                  "http:\\/\\/elfurl\\.com",
+                  "http:\\/\\/fat\\.ly",
+                  "http:\\/\\/ff\\.im",
+                  "http:\\/\\/fur\\.ly",
+                  "http:\\/\\/fwd4\\.me",
+                  "http:\\/\\/gol\\.ly",
+                  "http:\\/\\/good\\.ly",
+                  "http:\\/\\/goo\\.gl",
+                  "http:\\/\\/i5\\.be",
+                  "http:\\/\\/icanhaz\\.com",
+                  "http:\\/\\/idek\\.net",
+                  "http:\\/\\/is\\.gd",
+                  "http:\\/\\/kl\\.am",
+                  "http:\\/\\/korta\\.nu",
+                  "http:\\/\\/linkbee\\.com",
+                  "http:\\/\\/liurl\\.cn",
+                  "http:\\/\\/lnk\\.by",
+                  "http:\\/\\/lnk\\.in",
+                  "http:\\/\\/ln-s\\.net",
+                  "http:\\/\\/m2lb\\.info",
+                  "http:\\/\\/merky\\.de",
+                  "http:\\/\\/migre\\.me",
+                  "http:\\/\\/minify\\.me",
+                  "http:\\/\\/minurl\\.org",
+                  "http:\\/\\/moourl\\.com",
+                  "http:\\/\\/myurl\\.in",
+                  "http:\\/\\/ninjalink\\.com",
+                  "http:\\/\\/no1\\.in",
+                  "http:\\/\\/nsfw\\.in",
+                  "http:\\/\\/oneclip\\.jp",
+                  "http:\\/\\/ow\\.ly",
+                  "http:\\/\\/ping\\.fm",
+                  "http:\\/\\/p\\.ly",
+                  "http:\\/\\/pnt\\.me",
+                  "http:\\/\\/ponyurl\\.com",
+                  "http:\\/\\/p\\.zurl\\.ws",
+                  "http:\\/\\/reallytinyurl\\.com",
+                  "http:\\/\\/retwt\\.me",
+                  "http:\\/\\/r\\.im",
+                  "http:\\/\\/ri\\.ms",
+                  "http:\\/\\/rubyurl\\.com",
+                  "http:\\/\\/sexyurl\\.to",
+                  "http:\\/\\/short\\.ie",
+                  "http:\\/\\/short\\.to",
+                  "http:\\/\\/shorturl\\.com",
+                  "http:\\/\\/simurl\\.com",
+                  "http:\\/\\/slnk\\.me",
+                  "http:\\/\\/sn\\.im",
+                  "http:\\/\\/snipr\\.com",
+                  "http:\\/\\/snipurl\\.com",
+                  "http:\\/\\/snurl\\.com",
+                  "http:\\/\\/su\\.ly",
+                  "http:\\/\\/su\\.pr",
+                  "http:\\/\\/tcrn\\.ch",
+                  "http:\\/\\/thecow\\.me",
+                  "http:\\/\\/tighturl\\.com",
+                  "http:\\/\\/tiny\\.cc",
+                  "http:\\/\\/tinyftw\\.com",
+                  "http:\\/\\/tinyurl\\.com",
+                  "http:\\/\\/togoto\\.us",
+                  "http:\\/\\/to\\.ly",
+                  "http:\\/\\/traceurl\\.com",
+                  "http:\\/\\/tra\\.kz",
+                  "http:\\/\\/tr\\.im",
+                  "http:\\/\\/tweetburner\\.com",
+                  "http:\\/\\/twurl\\.nl",
+                  "http:\\/\\/unhub\\.com",
+                  "http:\\/\\/u\\.nu",
+                  "http:\\/\\/ur1\\.ca",
+                  "http:\\/\\/url\\.az",
+                  "http:\\/\\/urlcut\\.com",
+                  "http:\\/\\/urlenco\\.de",
+                  "http:\\/\\/url\\.ie",
+                  "http:\\/\\/urlpass\\.com\\/",
+                  "http:\\/\\/viigo\\.im",
+                  "http:\\/\\/w3t\\.org",
+                  "http:\\/\\/wurl\\.ws",
+                  "http:\\/\\/www\\.cloakreferer\\.com",
+                  "http:\\/\\/www\\.x\\.se",
+                  "http:\\/\\/xr\\.com",
+                  "http:\\/\\/xrl\\.us",
+                  "http:\\/\\/yatuc\\.com",
+                  "http:\\/\\/yep\\.it",
+                  "http:\\/\\/zurl\\.ws"
+                ],
+                "securityAdvisory": {
+                  "advisory": "severe",
+                  "title": ", POSSIBLE SPAM SCRIPT (Check source)"
+                }
               }
             }
 
@@ -1000,6 +1112,19 @@
                 for each (let updater in updaters)
                   for each (let rex in updater["rex"])
                     if (require.match(new RegExp(rex  + ".*", "i"))) {
+                      installNode.setAttribute("title",
+                          securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
+                      GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                          + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
+                          + "); } #install_script a.userjs:hover { color: black;}");
+                      return;
+                    }
+
+            if (headers["include"])
+              for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
+                for each (let updater in updaters)
+                  for each (let rex in updater["rex"])
+                    if (include.match(new RegExp(rex  + ".*", "i"))) {
                       installNode.setAttribute("title",
                           securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
                       GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
