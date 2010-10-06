@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.6.3
+// @version       0.6.4
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -28,6 +28,8 @@
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
 // @require http://github.com/sizzlemctwizzle/GM_config/raw/7064fbe963061eb1843863579ec7476eea859b8a/gm_config.js
+// @require http://github.com/einars/js-beautify/raw/master/beautify.js
+// @require http://userscripts.org/scripts/source/87269.user.js
 //
 // ==/UserScript==
 
@@ -186,7 +188,7 @@
           }
 
           #gmc69307_field_showStrings,
-          #gmc69307_field_checkSimpleHexTranscode,
+          #gmc69307_field_checkDeobfuscate,
           #gmc69307_field_checkShowSize,
           #gmc69307_field_checkTrimSourceCode,
           #gmc69307_field_showKeys,
@@ -217,7 +219,7 @@
             text-align: right;
           }
 
-          #gmc69307_field_checkSimpleHexTranscode,
+          #gmc69307_field_checkDeobfuscate,
           #gmc69307_field_checkShowSize,
           #gmc69307_field_maxHeightList,
           #gmc69307_field_enableHEAD
@@ -225,7 +227,16 @@
             margin-left: 1.5em;
           }
 
-          #gmc69307_field_checkTrimSourceCode { margin-left: 3.0em; }
+          #gmc69307_field_checkTrimSourceCode,
+          #gmc69307_field_deobMethod
+          {
+            margin-left: 3.0em;
+          }
+
+          #gmc69307 input[type="radio"]
+          {
+            top: 0.1em;
+          }
 
           #gmc69307_showKeys_var,
           #gmc69307_fontSize_var
@@ -252,10 +263,15 @@
               "label": '',
               "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest"
           },
-          'checkSimpleHexTranscode': {
+          'checkDeobfuscate': {
               "type": 'checkbox',
-              "label": 'Use simple hex transcode (quick and dirty partial unpack)',
+              "label": 'Deobfuscate',
               "default": true
+          },
+          'deobMethod': {
+              'type': 'radio',
+              'options': ['Simple Transcode', 'JsCode'],
+              'default': 'Simple Transcode'
           },
           'checkShowSize': {
               "type": 'checkbox',
@@ -717,8 +733,16 @@
                 if (gmc && gmc.get("showStrings")) {
                   let finds = {}, responseText, hexCount;
 
-                  if (gmc.get("checkSimpleHexTranscode"))
-                    [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
+                  if (gmc.get("checkDeobfuscate")) {
+                    switch (gmc.get("deobMethod")) {
+                      case 'Simple Transcode':
+                        [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
+                        break;
+                      case 'JsCode':
+                        responseText = JsCode.deobfuscate(xhr.responseText);
+                        break;
+                    }
+                  }
                   else
                     responseText = xhr.responseText;
 
@@ -731,7 +755,7 @@
                       display2(mbx, finds, "", "Lost and Found");
                   }
 
-                  if (gmc.get("checkSimpleHexTranscode") && hexCount)
+                  if (gmc.get("checkDeobfuscate") && hexCount)
                     display2(mbx, { "Hex": hexCount }, "", "Encoding");
 
                   if (gmc.get("checkShowSize")) {
