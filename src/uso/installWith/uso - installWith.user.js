@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.5
+// @version       0.7.6
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -260,20 +260,21 @@
       url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
       method: "GET",
       onload: function(xhr) {
-        let possibleEmbedded;
-
         switch(xhr.status) {
           case 503:
             if (--this.retry > 0)
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             break;
           case 200:
+            let possibleEmbedded;
+
             if (xhr.responseText.match(
                 "("
               +   "\\.meta\\.js"
               +   "|" + scriptid + "\\.user\\.js"
               +   "|http:\\/\\/www\\.monkeyupdater\\.com"
               +   "|http:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
+              +   "|\\/version\\.xml"
               + ")", "gm"))
 
               possibleEmbedded = true;
