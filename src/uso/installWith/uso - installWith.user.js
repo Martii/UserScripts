@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.6
+// @version       0.7.7
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -1018,6 +1018,7 @@
                   "http:\\/\\/elfurl\\.com",
                   "http:\\/\\/fat\\.ly",
                   "http:\\/\\/ff\\.im",
+                  "http:\\/\\/fileups\\.net",
                   "http:\\/\\/fur\\.ly",
                   "http:\\/\\/fwd4\\.me",
                   "http:\\/\\/gol\\.ly",
@@ -1098,11 +1099,12 @@
                   "http:\\/\\/xrl\\.us",
                   "http:\\/\\/yatuc\\.com",
                   "http:\\/\\/yep\\.it",
-                  "http:\\/\\/zurl\\.ws"
+                  "http:\\/\\/zurl\\.ws",
+                  "http:\\/\\/sharecash.org"
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", POSSIBLE SPAM SCRIPT (Check source)"
+                  "title": ", POSSIBLE SPAM SCRIPT"
                 }
               }
             }
