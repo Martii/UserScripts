@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.7
+// @version       0.7.8
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -288,6 +288,7 @@
 
             for each (let line in lines) {
               [, name, value] = line.match(/\/\/ @(\S*)\s*(.*)/);
+              value = value.trim().replace(/\s+/g, " ");
               [key, prefix] = name.split(/:/).reverse();
               if (prefix) {
                 if (!headers[prefix])
@@ -997,6 +998,7 @@
                 "textContent": 'PotentialSpammer',
                 "title": 'by potential spammer',
                 "rex": [
+                  " ",
                   "http:\\/\\/0rz\\.tw",
                   "http:\\/\\/2tu\\.us",
                   "http:\\/\\/3\\.ly",
@@ -1104,7 +1106,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", POSSIBLE SPAM SCRIPT"
+                  "title": ", POSSIBLE SPAMMER SCRIPT"
                 }
               }
             }
