@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.8
+// @version       0.7.9
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -227,7 +227,7 @@
             }
 
             #gmc68219 .config_var {
-              margin: 0.8em 1em;
+              margin: 0.5em 1em;
               padding: 0;
               clear: both;
             }
@@ -241,7 +241,12 @@
             #gmc68219_field_updaterMaxage,
             #gmc68219_field_updaterMinage
             {
-              width: 2.5em; height: 0.8em; margin: -0.35em 0.25em 0.25em; float: left; text-align: right;
+              width: 2.5em; height: 0.8em; margin: -0.35em 0.25em 0.25em; text-align: right;
+            }
+
+            #gmc68219_field_skipEmbeddedScan
+            {
+              top: 0.1em;
             }
 
             #gmc68219_buttons_holder, #gmc68219 .saveclose_buttons { margin-bottom: 0.25em; }
@@ -398,7 +403,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/75442\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "high",
+                  "advisory": "guarded",
                   "title": ", i/frame vulnerability"
                 }
               },
@@ -687,8 +692,21 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "low",
-                  "title": ""
+                  "advisory": "guarded",
+                  "title": ", i/frame vulnerability"
+                }
+              },
+              "87942": {
+                "derivative": 1,
+                "textContent": 'Includes : Updater',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
+                "title": 'by w35l3y (55607)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/87942\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater"
                 }
               },
               "57756": {
@@ -700,8 +718,8 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "low",
-                  "title": ""
+                  "advisory": "guarded",
+                  "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater"
                 }
               },
               "60663": {
@@ -714,7 +732,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", es-ES derivative of Script Updater (userscripts.org)"
+                  "title": ", i/frame vulnerability, es-ES derivative of Script Updater (userscripts.org)"
                 }
               },
               "74144": {
@@ -727,7 +745,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", localStorage vulnerability, derivative of Script Updater (userscripts.org)"
+                  "title": ", localStorage vulnerability, i/frame vulnerability, derivative of Script Updater (userscripts.org)"
                 }
               },
               "66255": {
@@ -740,7 +758,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", ru-RU derivative of Script Updater (userscripts.org)"
+                  "title": ", i/frame vulnerability, ru-RU derivative of Script Updater (userscripts.org)"
                 }
               },
               "ika-info.ucoz.ru": {
@@ -752,7 +770,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", Offsite derivative of Script Updater (userscripts.org)"
+                  "title": ", i/frame vulnerability, Offsite derivative of Script Updater (userscripts.org)"
                 }
               },
               "37853": {
