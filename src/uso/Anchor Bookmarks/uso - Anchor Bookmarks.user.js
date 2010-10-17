@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.0
+// @version       0.3.1
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -51,8 +51,9 @@
   if (xpr)
     for (var i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
       var imgNode = document.createElement("img");
-      imgNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
       imgNode.setAttribute("class", "bookmark");
+      imgNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+      imgNode.setAttribute("title", "link");
       thisNode.appendChild(imgNode);
       thisNode.setAttribute("href", window.location.pathname + "#" + thisNode.name);
     }
