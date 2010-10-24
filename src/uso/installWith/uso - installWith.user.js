@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.9
+// @version       0.7.10
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -277,10 +277,14 @@
                 "("
               +   "\\.meta\\.js"
               +   "|" + scriptid + "\\.user\\.js"
+              +   "|(\"|')http:\\/\\/userscripts\\.org\\/scripts\\/show\\/" + scriptid
               +   "|http:\\/\\/www\\.monkeyupdater\\.com"
               +   "|http:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
               +   "|\\/version\\.xml"
-              + ")", "gm"))
+              +   "|http:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
+              +   "|http:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
+              
+              + ")", "gmi"))
 
               possibleEmbedded = true;
 
@@ -357,6 +361,18 @@
                 "securityAdvisory": {
                   "advisory": "guarded",
                   "title": ", Derivative of Another Auto Updater (crea7or.spb.ru)"
+                }
+              },
+              "bsm.oldtu.com": {
+                "derivative": 1,
+                "textContent": 'Another Auto Updater',
+                "title": 'by (bsm.oldtu.com)',
+                "rex": [
+                  "^http:\\/\\/bsm\\.oldtu\\.com\\/updater\\.php\\?id=\\d+",
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", Derivative of Another Auto Updater (bsm.oldtu.com)"
                 }
               },
               "mekan.dreamhosters.com": {
@@ -759,6 +775,19 @@
                 "securityAdvisory": {
                   "advisory": "guarded",
                   "title": ", i/frame vulnerability, ru-RU derivative of Script Updater (userscripts.org)"
+                }
+              },
+              "88544": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org) ua-UA',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=09f914766759c13acf6b88d093e0ef27&r=PG&s=16&default=identicon',
+                "title": 'by ibobalo (237833) ua-UA',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/88544\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", i/frame vulnerability, ua-UA derivative of Script Updater (userscripts.org)"
                 }
               },
               "ika-info.ucoz.ru": {
