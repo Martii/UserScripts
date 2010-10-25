@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.6.5
+// @version       0.6.6
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -745,10 +745,22 @@
                   if (gmc.get("checkDeobfuscate")) {
                     switch (gmc.get("deobMethod")) {
                       case 'Simple Transcode':
-                        [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
+                        try {
+                          [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
+                        }
+                        catch(e) {
+                          GM_log('Too much recursion error encountered. Aborting transcode');
+                          responseText = xhr.responseText;
+                        }
                         break;
                       case 'JsCode':
-                        responseText = JsCode.deobfuscate(xhr.responseText);
+                        try {
+                          responseText = JsCode.deobfuscate(xhr.responseText);
+                        }
+                        catch(e) {
+                          GM_log('Too much recursion error encountered. Aborting JsCode');
+                          responseText = xhr.responseText;
+                        }
                         break;
                     }
                   }
