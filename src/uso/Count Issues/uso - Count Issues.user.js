@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.6.4
+// @version       0.6.5
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -556,6 +556,15 @@
                           ulNode.appendChild(liNode);
                         }
                         break;
+                      case "include":
+                        if (key.match(/^\/.*/) || key.match(/ /)) {
+                          spanNodeSection.setAttribute("class", "metadata metadataforced");
+                          liNode.setAttribute("class", "metadata metadataforced");
+                        }
+                        liNode.setAttribute("title", key);
+                        liNode.textContent = key;
+                        ulNode.appendChild(liNode);
+                        break;
                       case "require":
                         var matches = key.match(/^https?:\/\/.*/i);
                         if (matches) {
@@ -618,7 +627,7 @@
                               anchorNode.style.setProperty("color", "red", "");
                               anchorNode.textContent = key;
 
-                              liNode.setAttribute("title", url[1]);
+                              liNode.setAttribute("title", url[1] + key);
                               liNode.appendChild(anchorNode);
 
                               ulNode.appendChild(liNode);
