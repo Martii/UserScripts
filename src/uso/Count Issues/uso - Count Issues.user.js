@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.1
+// @version       0.7.2
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -149,6 +149,7 @@
 
           #gmc69307_wrapper {
             background-color: #eee;
+            padding-bottom: 0.25em;
           }
 
           #gmc69307 .config_header {
@@ -251,7 +252,7 @@
             margin-top: 0.5em !important;
           }
 
-          #gmc69307_buttons_holder { margin: 0.5em 1em; }
+          #gmc69307_buttons_holder { margin-right: 1.0em; }
           #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
           #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
           #gmc69307_closeBtn { display: none; }
