@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.0
+// @version       0.8.1
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -223,6 +223,7 @@
 
             #gmc68219_wrapper {
               background-color: #eee;
+              padding-bottom: 0.25em;
             }
 
             #gmc68219 .config_header {
@@ -258,7 +259,6 @@
               margin-right: 0.5em;
             }
 
-            #gmc68219_buttons_holder, #gmc68219 .saveclose_buttons { margin-bottom: 0.25em; }
             #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
             #gmc68219_resetLink { margin-right: 2.5em; }
             #gmc68219_closeBtn { display: none; }
