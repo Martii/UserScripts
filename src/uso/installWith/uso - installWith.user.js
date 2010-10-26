@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.10
+// @version       0.8.0
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -37,7 +37,7 @@
 // @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
 // @require http://usocheckup.redirectme.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/7064fbe963061eb1843863579ec7476eea859b8a/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/1bdf4c3c63f57b82c73003218016894f77d89204/gm_config.js
 // ==/UserScript==
 
   var frameless = false;
@@ -186,21 +186,25 @@
         selectNode.dispatchEvent(ev);
       }
 
-      gmc.init(divNode, 'Options',
+      gmc.init(divNode,
+          <><![CDATA[
+            <a href="/scripts/show/68219"><img src="http://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> Options
+            <span style="float: right; margin: 0.4em 0.5em;"><a href="http://github.com/sizzlemctwizzle/GM_config"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+          ]]></>.toString(),
           {
             "updaterMaxage": {
                 "type": "unsigned integer",
-                "label": 'days maximum between checks for this script using installWith',
+                "label": 'days maximum between checks for this script.',
                 "default": 30
             },
             "updaterMinage": {
               "type": "unsigned integer",
-              "label": 'hours minimum before starting a check for this script using installWith (Not all updaters support this)',
+              "label": 'hours minimum before starting a check for this script. <em>(Not all updaters support this)</em>',
               "default": 1
             },
             "skipEmbeddedScan": {
               "type": "checkbox",
-              "label": 'Skip the embedded updater scan (WARNING: This will produce undesired effects when other embedded updaters are present and wrapping it in a @required updater but at the same time USO Rate and Limiting also has undesired effects)',
+              "label": 'Skip the embedded updater scan. <em>(<strong>WARNING</strong>: This will produce undesired effects when other embedded updaters are present and wrapping it in a <a href="http://github.com/Martii/greasemonkey/wiki/greasemonkey-manual-metadata-block#.40require">@require</a>d updater but at the same time USO Rate and Limiting may also have undesired effects)</em>',
               "default": false
             },
           },
@@ -215,6 +219,10 @@
               margin: 0 0 0.5em 0 !important;
               border: 1px solid #ddd !important;
               clear: right !important;
+            }
+
+            #gmc68219_wrapper {
+              background-color: #eee;
             }
 
             #gmc68219 .config_header {
@@ -246,7 +254,8 @@
 
             #gmc68219_field_skipEmbeddedScan
             {
-              top: 0.1em;
+              top: 0.05em;
+              margin-right: 0.5em;
             }
 
             #gmc68219_buttons_holder, #gmc68219 .saveclose_buttons { margin-bottom: 0.25em; }
@@ -283,7 +292,7 @@
               +   "|\\/version\\.xml"
               +   "|http:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
               +   "|http:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
-              
+
               + ")", "gmi"))
 
               possibleEmbedded = true;
@@ -1153,7 +1162,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", POSSIBLE SPAMMER SCRIPT"
+                  "title": ", POSSIBLE DANGEROUS SCRIPT"
                 }
               }
             }
