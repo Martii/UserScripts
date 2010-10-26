@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.6.6
+// @version       0.7.0
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -27,7 +27,7 @@
 // @require http://usocheckup.dune.net/69307.js?method=install&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
-// @require http://github.com/sizzlemctwizzle/GM_config/raw/7064fbe963061eb1843863579ec7476eea859b8a/gm_config.js
+// @require http://github.com/sizzlemctwizzle/GM_config/raw/1bdf4c3c63f57b82c73003218016894f77d89204/gm_config.js
 // @require http://github.com/einars/js-beautify/raw/master/beautify.js
 // @require http://userscripts.org/scripts/source/87269.user.js
 //
@@ -126,8 +126,11 @@
       if (write) gmc.write();
       if (open) { gmc.close(); gmc.open(); }
     }
-    gmc.init('Options' /* Script title */,
-        divNode,
+    gmc.init(divNode,
+        <><![CDATA[
+          <img src="http://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - Count Issues"/> Options
+          <span style="float: right; margin: 0.4em 0.5em;"><a href="http://github.com/sizzlemctwizzle/GM_config"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+        ]]></>.toString(),
         /* Custom CSS */
         <><![CDATA[
 
@@ -144,11 +147,15 @@
             clear: right !important;
           }
 
+          #gmc69307_wrapper {
+            background-color: #eee;
+          }
+
           #gmc69307 .config_header {
             color: white;
             background-color: #333;
             text-align: left;
-            margin: 0 0 0.5em 0;
+            margin: 0;
             padding: 0 0 0 0.5em;
             font-size: 1.57em;
           }
@@ -255,7 +262,7 @@
         {
           'showStrings': {
               "type": 'checkbox',
-              "label": 'Show "Lost and Found" strings if present in sidebar (use newlines to separate)',
+              "label": 'Show "Lost and Found" strings if present in sidebar <em>(use newlines to separate)</em>',
               "default": false
           },
           'showStringsString': {
@@ -269,9 +276,9 @@
               "default": true
           },
           'deobMethod': {
-              'type': 'radio',
-              'options': ['Simple Transcode', 'JsCode'],
-              'default': 'Simple Transcode'
+              "type": 'radio',
+              "options": ['Simple Transcode', 'JsCode'],
+              "default": 'Simple Transcode'
           },
           'checkShowSize': {
               "type": 'checkbox',
@@ -280,12 +287,12 @@
           },
           'checkTrimSourceCode': {
               "type": 'checkbox',
-              "label": 'Trim " Code" from "Source Code" tab (useful for more real estate)',
+              "label": 'Trim " Code" from "Source Code" tab <em>(useful for more real estate)</em>',
               "default": false
           },
           'showKeys': {
               "type": 'checkbox',
-              "label": 'Show metadata block keys if present or different then USO in sidebar (use commas to separate)',
+              "label": 'Show metadata block keys if present or different then USO in sidebar <em>(use commas to separate)</em>',
               "default": true
           },
           'showKeysString': {
@@ -310,12 +317,12 @@
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
-              "label": 'Check USO require and resource urls against USO script homepage (Rate and Limiting may limit accuracy)',
+              "label": 'Check USO require and resource urls against USO script homepage <em>(Rate and Limiting may limit accuracy)</em>',
               "default": false
           },
           'enableHEAD': {
             "type": 'checkbox',
-            "label": 'Check urls with a HTTP HEAD request (Not currently recommended)',
+            "label": 'Check urls with a HTTP HEAD request <em>(Not currently recommended)</em>',
             "default": false
           },
           'showStringsStringHeight': {
