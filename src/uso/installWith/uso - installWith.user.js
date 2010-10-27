@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.1
+// @version       0.8.2
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -194,17 +194,17 @@
           {
             "updaterMaxage": {
                 "type": "unsigned integer",
-                "label": 'days maximum between checks for this script.',
+                "label": 'days maximum between checks for this script',
                 "default": 30
             },
             "updaterMinage": {
               "type": "unsigned integer",
-              "label": 'hours minimum before starting a check for this script. <em>(Not all updaters support this)</em>',
+              "label": 'hours minimum before starting a check for this script <em class="gmc68219-yellownote">Not all updaters support this</em>',
               "default": 1
             },
             "skipEmbeddedScan": {
               "type": "checkbox",
-              "label": 'Skip the embedded updater scan. <em>(<strong>WARNING</strong>: This will produce undesired effects when other embedded updaters are present and wrapping it in a <a href="http://github.com/Martii/greasemonkey/wiki/greasemonkey-manual-metadata-block#.40require">@require</a>d updater but at the same time USO Rate and Limiting may also have undesired effects)</em>',
+              "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
               "default": false
             },
           },
@@ -251,6 +251,12 @@
             #gmc68219_field_updaterMinage
             {
               width: 2.5em; height: 0.8em; margin: -0.35em 0.25em 0.25em; text-align: right;
+            }
+
+            .gmc68219-yellownote
+            {
+              background-color: #FFD;
+              font-size: 0.66em !important;
             }
 
             #gmc68219_field_skipEmbeddedScan
