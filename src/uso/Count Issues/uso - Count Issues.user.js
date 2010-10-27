@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.2
+// @version       0.7.3
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -252,6 +252,18 @@
             margin-top: 0.5em !important;
           }
 
+          .gmc69307-yellownote
+          {
+            background-color: #FFD;
+            font-size: 0.66em !important;
+          }
+
+          #gmc69307_showStringsString_field_label,
+          #gmc69307_showKeysString_field_label
+          {
+            margin: 0 0 0 1.75em;
+          }
+
           #gmc69307_buttons_holder { margin-right: 1.0em; }
           #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
           #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
@@ -263,12 +275,12 @@
         {
           'showStrings': {
               "type": 'checkbox',
-              "label": 'Show "Lost and Found" strings if present in sidebar <em>(use newlines to separate)</em>',
+              "label": 'Show "Lost and Found" string(s) if present in sidebar',
               "default": false
           },
           'showStringsString': {
               "type": 'textarea',
-              "label": '',
+              "label": '<em class="gmc69307-yellownote">use newlines to separate regular expression strings</em>',
               "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest"
           },
           'checkDeobfuscate': {
@@ -288,17 +300,17 @@
           },
           'checkTrimSourceCode': {
               "type": 'checkbox',
-              "label": 'Trim " Code" from "Source Code" tab <em>(useful for more real estate)</em>',
+              "label": 'Trim " Code" from "Source Code" tab <em class="gmc69307-yellownote">useful for more screen real estate</em>',
               "default": false
           },
           'showKeys': {
               "type": 'checkbox',
-              "label": 'Show metadata block keys if present or different then USO in sidebar <em>(use commas to separate)</em>',
+              "label": 'Show metadata block key(s) if present or different then USO in sidebar',
               "default": true
           },
           'showKeysString': {
               "type": 'textarea',
-              "label": '',
+              "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
               "default": "name,description,version,copyright,license,namespace,require,resource,include,match,exclude"
           },
           'fontSize': {
@@ -318,12 +330,12 @@
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
-              "label": 'Check USO require and resource urls against USO script homepage <em>(Rate and Limiting may limit accuracy)</em>',
+              "label": 'Check USO require and resource urls against USO script homepage <em class="gmc69307-yellownote">Rate and Limiting may limit accuracy</em>',
               "default": false
           },
           'enableHEAD': {
             "type": 'checkbox',
-            "label": 'Check urls with a HTTP HEAD request <em>(Not currently recommended)</em>',
+            "label": 'Check urls with a HTTP HEAD request <em class="gmc69307-yellownote">Not currently recommended</em>',
             "default": false
           },
           'showStringsStringHeight': {
@@ -342,6 +354,8 @@
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
 
       gmc.open();
+      gmc.fields["showStringsString"].node.setAttribute("spellcheck", "false");
+      gmc.fields["showKeysString"].node.setAttribute("spellcheck", "false");
     }
   }
   else {
