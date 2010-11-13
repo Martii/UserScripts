@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.3
+// @version       0.8.4
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -37,7 +37,7 @@
 // @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
 // @require http://usocheckup.redirectme.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
-// @require https://github.com/sizzlemctwizzle/GM_config/raw/1bdf4c3c63f57b82c73003218016894f77d89204/gm_config.js
+// @require https://github.com/sizzlemctwizzle/GM_config/raw/050978c9d41245b135404a3692ac42418a09be24/gm_config.js
 // ==/UserScript==
 
   var frameless = false;
