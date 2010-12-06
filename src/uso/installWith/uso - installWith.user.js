@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.5
+// @version       0.8.6
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -548,6 +548,17 @@
                   "title": ", Top-level script may have update check init for this lib, Derivative of Aquilax lib"
                 }
               },
+              "js-addon.googlecode.com": {
+                "textContent": 'js-addon.googlecode.com',
+                "title": 'by DuoHuZai (http://code.google.com/u/DuoHuZai/)',
+                "rex": [
+                  "^https?:\\/\\/js-addon\\.googlecode\\.com\\/files\\/autoupdatehelper\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "high",
+                  "title": ", Possible Security/Privacy Risk"
+                }
+              },
               "pennerstore.de": {
                 "textContent": 'pennerstore.de',
                 "title": 'by (pennerstore.de)',
@@ -1067,6 +1078,7 @@
                   "http:\\/\\/3\\.ly",
                   "http:\\/\\/55c\\.cc",
                   "http:\\/\\/6url\\.com",
+                  "http:\\/\\/adf\\.ly",
                   "http:\\/\\/alturl\\.com",
                   "http:\\/\\/arm\\.in",
                   "http:\\/\\/awe\\.sm",
