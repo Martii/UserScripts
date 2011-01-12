@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.7
+// @version       0.7.8
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -410,8 +410,9 @@
         method: "GET",
         onload: function(xhr) {
           switch (xhr.status) {
-            case 503:
             case 404:
+            case 502:
+            case 503:
               if (--this.retry > 0)
                 setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
               break;
@@ -611,8 +612,9 @@
                               url: showUrl,
                               onload: function(xhr) {
                                 switch (xhr.status) {
-                                  case 503:
                                   case 404:
+                                  case 502:
+                                  case 503:
                                     if (--this.retry > 0)
                                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                     else
@@ -696,8 +698,9 @@
                               url: showUrl,
                               onload: function(xhr) {
                                 switch (xhr.status) {
-                                  case 503:
                                   case 404:
+                                  case 502:
+                                  case 503:
                                     if (--this.retry > 0)
                                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                     else
@@ -917,8 +920,9 @@
             method: "GET",
             onload: function(xhr) {
               switch (xhr.status) {
-                case 503:
                 case 404:
+                case 502:
+                case 503:
                   if (--this.retry > 0)
                     setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                   break;
@@ -1012,8 +1016,9 @@
           url: "http://userscripts.org/scripts/issues/" + scriptid,
           onload: function (xhr) {
             switch (xhr.status) {
-              case 503:
               case 404:
+              case 502:
+              case 503:
                 if (--this.retry > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                 else {
