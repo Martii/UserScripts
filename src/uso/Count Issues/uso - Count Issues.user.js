@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.6
+// @version       0.7.7
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -411,6 +411,7 @@
         onload: function(xhr) {
           switch (xhr.status) {
             case 503:
+            case 404:
               if (--this.retry > 0)
                 setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
               break;
@@ -611,6 +612,7 @@
                               onload: function(xhr) {
                                 switch (xhr.status) {
                                   case 503:
+                                  case 404:
                                     if (--this.retry > 0)
                                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                     else
@@ -695,6 +697,7 @@
                               onload: function(xhr) {
                                 switch (xhr.status) {
                                   case 503:
+                                  case 404:
                                     if (--this.retry > 0)
                                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                     else
@@ -915,6 +918,7 @@
             onload: function(xhr) {
               switch (xhr.status) {
                 case 503:
+                case 404:
                   if (--this.retry > 0)
                     setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                   break;
@@ -1009,6 +1013,7 @@
           onload: function (xhr) {
             switch (xhr.status) {
               case 503:
+              case 404:
                 if (--this.retry > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                 else {
