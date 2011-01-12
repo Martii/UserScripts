@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.8
+// @version       0.8.9
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -283,6 +283,7 @@
       onload: function(xhr) {
         switch(xhr.status) {
           case 503:
+          case 404:
             if (--this.retry > 0)
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             break;
