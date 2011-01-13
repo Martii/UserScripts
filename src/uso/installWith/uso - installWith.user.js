@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.10
+// @version       0.8.11
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -642,6 +642,18 @@
                 "securityAdvisory": {
                   "advisory": "low",
                   "title": ""
+                }
+              },
+              "94511": {
+                "textContent": 'Simpler Script Auto-Updater',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f93d3a59adb946dad69f577531cb5701&r=PG&s=64&default=identicon',
+                "title": 'by Karandaras (265255)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94511\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "high",
+                  "title": ", iframe vulnerability, Possible non-use of meta.js routine"
                 }
               },
               "45989": {
