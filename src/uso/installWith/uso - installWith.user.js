@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.11
+// @version       0.8.12
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -775,8 +775,21 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater"
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater, Possible malicious code"
+                }
+              },
+              "www.betawarriors.com": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d0b4b33ed5ac937609ab837d7d525486&r=PG&s=64&default=identicon',
+                "title": 'by holyschmidt (93493)',
+                "rex": [
+                  "^https?:\\/\\/www\\.betawarriors\\.com\\/bin\\/gm\\/57756user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "60663": {
@@ -788,8 +801,8 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60663\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", i/frame vulnerability, es-ES derivative of Script Updater (userscripts.org)"
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, es-ES derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "74144": {
@@ -801,8 +814,8 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", localStorage vulnerability, i/frame vulnerability, derivative of Script Updater (userscripts.org)"
+                  "advisory": "elevated",
+                  "title": ", localStorage vulnerability, i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "66255": {
@@ -814,8 +827,8 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/66255\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", i/frame vulnerability, ru-RU derivative of Script Updater (userscripts.org)"
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, ru-RU derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "88544": {
@@ -827,8 +840,8 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/88544\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", i/frame vulnerability, ua-UA derivative of Script Updater (userscripts.org)"
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, ua-UA derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "ika-info.ucoz.ru": {
@@ -840,7 +853,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, Offsite derivative of Script Updater (userscripts.org)"
+                  "title": ", i/frame vulnerability, Offsite derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "91400": {
@@ -852,7 +865,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, Onsite Better Loopy derivative of Script Updater (userscripts.org)"
+                  "title": ", i/frame vulnerability, Onsite Better Loopy derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "37853": {
