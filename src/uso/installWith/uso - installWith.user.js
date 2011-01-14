@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.12
+// @version       0.8.13
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -777,6 +777,19 @@
                 "securityAdvisory": {
                   "advisory": "elevated",
                   "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater, Possible malicious code"
+                }
+              },
+              "94662": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=a5716130c063f76ddb42c9e93d33f5f6&r=PG&s=80&default=identicon',
+                "title": 'by AubergineAnodyne (127662)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94662\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "www.betawarriors.com": {
