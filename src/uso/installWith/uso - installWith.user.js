@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.13
+// @version       0.8.14
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -548,6 +548,17 @@
                 "securityAdvisory": {
                   "advisory": "guarded",
                   "title": ", Top-level script may have update check init for this lib, Derivative of Aquilax lib"
+                }
+              },
+              "jobmine-plus.googlecode.com": {
+                "textContent": 'jobmine_plus_core.js (http://code.google.com/p/jobmine-plus/)',
+                "title": 'by matthewn4444 (http://code.google.com/u/@VhdUQlFZDhNNXgh4/)',
+                "rex": [
+                  "https?:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts\\/js\\/jobmine_plus_core\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", References another script to install (80771), Uses cookies"
                 }
               },
               "js-addon.googlecode.com": {
