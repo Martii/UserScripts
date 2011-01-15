@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.14
+// @version       0.8.15
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -301,6 +301,7 @@
               +   "|\\/version\\.xml"
               +   "|http:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
               +   "|http:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
+              +   "|https:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts"
 
               + ")", "gmi"))
 
@@ -814,6 +815,18 @@
                 "securityAdvisory": {
                   "advisory": "elevated",
                   "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "home.arcor.de": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "title": 'by Multiple Authors',
+                "rex": [
+                  "^https?:\\/\\/home\\.arcor\\.de\\/.*\\/577user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code, hashed download url"
                 }
               },
               "60663": {
