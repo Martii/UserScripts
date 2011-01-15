@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.15
+// @version       0.8.16
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -295,13 +295,13 @@
                 "("
               +   "\\.meta\\.js"
               +   "|" + scriptid + "\\.user\\.js"
-              +   "|(\"|')http:\\/\\/userscripts\\.org\\/scripts\\/show\\/" + scriptid
-              +   "|http:\\/\\/www\\.monkeyupdater\\.com"
-              +   "|http:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
+              +   "|(\"|')https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/" + scriptid
+              +   "|https?:\\/\\/www\\.monkeyupdater\\.com"
+              +   "|https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
               +   "|\\/version\\.xml"
-              +   "|http:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
-              +   "|http:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
-              +   "|https:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts"
+              +   "|https?:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
+              +   "|https?:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
+              +   "|https?:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts"
 
               + ")", "gmi"))
 
@@ -692,6 +692,30 @@
                   "title": ", Multiple search hosts, Interval vulnerability"
                 }
               },
+              "94712": {
+                "textContent": 'update',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=9aca9fe2994da1a9ddd5ebd8aa23d4f0&r=PG&s=16&default=identicon',
+                "title": 'by abcdefgh (151532)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94712\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "severe",
+                  "title": ", Currently obfuscated, Abstraction of URL to meta.js routine, offsite xhr"
+                }
+              },
+              "94713": {
+                "textContent": 'updater',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=9aca9fe2994da1a9ddd5ebd8aa23d4f0&r=PG&s=16&default=identicon',
+                "title": 'by abcdefgh (151532)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94713\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "high",
+                  "title": ", Currently obfuscated, VAGUE and possible risk"
+                }
+              },
               "62036": {
                 "textContent": 'update Test',
                 "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=e112ac971d83dd545268142bc2320a3c&r=PG&s=16&default=identicon',
@@ -794,7 +818,7 @@
               "94662": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=a5716130c063f76ddb42c9e93d33f5f6&r=PG&s=80&default=identicon',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=a5716130c063f76ddb42c9e93d33f5f6&r=PG&s=16&default=identicon',
                 "title": 'by AubergineAnodyne (127662)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94662\\.user\\.js"
@@ -804,13 +828,39 @@
                   "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
+              "94703": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=5922688ad6ad825fe6f4ed612f220c43&r=PG&s=16&default=identicon',
+                "title": 'by MaiD450 (130846)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94703\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
               "www.betawarriors.com": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d0b4b33ed5ac937609ab837d7d525486&r=PG&s=64&default=identicon',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d0b4b33ed5ac937609ab837d7d525486&r=PG&s=16&default=identicon',
                 "title": 'by holyschmidt (93493)',
                 "rex": [
                   "^https?:\\/\\/www\\.betawarriors\\.com\\/bin\\/gm\\/57756user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "thogamerscripts.webs.com": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=ae864b7167d901766892a665632d75e4&r=PG&s=16&default=identicon',
+                "title": 'by thogamer (138765)',
+                "rex": [
+                  "^https?:\\/\\/thogamerscripts\\.webs\\.com\\/scriptupdater\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -822,7 +872,7 @@
                 "textContent": 'Script Updater (userscripts.org)',
                 "title": 'by Multiple Authors',
                 "rex": [
-                  "^https?:\\/\\/home\\.arcor\\.de\\/.*\\/577user\\.js"
+                  "^https?:\\/\\/home\\.arcor\\.de\\/.+\\/577user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
