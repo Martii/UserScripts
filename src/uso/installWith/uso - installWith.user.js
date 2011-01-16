@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.17
+// @version       0.8.18
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -852,6 +852,19 @@
                 "securityAdvisory": {
                   "advisory": "elevated",
                   "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "pc-expert.pl": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=8d5ff205fe5b06d82a7fe2ef3597e0c6&r=PG&s=16&default=identicon',
+                "title": 'used by ircdirk (214722)',
+                "rex": [
+                  "^http:\\/\\/pc\\-expert\\.pl\\/sb\\/us\\/57756\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "www.betawarriors.com": {
