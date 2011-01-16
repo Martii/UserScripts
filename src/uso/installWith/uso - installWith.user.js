@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.18
+// @version       0.8.19
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -666,6 +666,17 @@
                 "securityAdvisory": {
                   "advisory": "high",
                   "title": ", iframe vulnerability, Possible non-use of meta.js routine"
+                }
+              },
+              "street-kicker-eu": {
+                "textContent": 'street-kicker-eu',
+                "title": 'by (street-kicker-eu)',
+                "rex": [
+                  "^https?:\\/\\/street\\-kicker\\.eu\\/js\\/updater\\.class\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "high",
+                  "title": ", Possible Security Risk"
                 }
               },
               "45989": {
