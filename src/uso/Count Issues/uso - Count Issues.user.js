@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.9
+// @version       0.7.10
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -184,8 +184,8 @@
 
           #gmc69307_field_showStringsString
           {
-            min-height: 4em;
-            height: 4em;
+            min-height: 5em;
+            height: 5em;
           }
 
           #gmc69307_field_showKeysString
@@ -281,7 +281,7 @@
           'showStringsString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use newlines to separate regular expression strings</em>',
-              "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest\nlocation.href"
+              "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest\nlocation\\.href"
           },
           'checkDeobfuscate': {
               "type": 'checkbox',
@@ -340,7 +340,7 @@
           },
           'showStringsStringHeight': {
             "type": 'hidden',
-            "default": "4em"
+            "default": "5em"
           },
           'showKeysStringHeight': {
               "type": 'hidden',
