@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.8
+// @version       0.7.9
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -281,7 +281,7 @@
           'showStringsString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use newlines to separate regular expression strings</em>',
-              "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest"
+              "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest\nlocation.href"
           },
           'checkDeobfuscate': {
               "type": 'checkbox',
@@ -612,7 +612,6 @@
                               url: showUrl,
                               onload: function(xhr) {
                                 switch (xhr.status) {
-                                  case 404:
                                   case 502:
                                   case 503:
                                     if (--this.retry > 0)
@@ -698,7 +697,6 @@
                               url: showUrl,
                               onload: function(xhr) {
                                 switch (xhr.status) {
-                                  case 404:
                                   case 502:
                                   case 503:
                                     if (--this.retry > 0)
