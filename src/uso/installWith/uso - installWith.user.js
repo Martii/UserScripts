@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.16
+// @version       0.8.17
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -658,7 +658,7 @@
               },
               "94511": {
                 "textContent": 'Simpler Script Auto-Updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f93d3a59adb946dad69f577531cb5701&r=PG&s=64&default=identicon',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f93d3a59adb946dad69f577531cb5701&r=PG&s=16&default=identicon',
                 "title": 'by Karandaras (265255)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94511\\.user\\.js"
@@ -811,8 +811,21 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "elevated",
+                  "advisory": "high",
                   "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater, Possible malicious code"
+                }
+              },
+              "94724": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=5f2c16e2998a1b3c470697a791d3ad54&r=PG&s=16&default=identicon',
+                "title": 'by hachichin (128042)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94724\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "94662": {
@@ -848,6 +861,19 @@
                 "title": 'by holyschmidt (93493)',
                 "rex": [
                   "^https?:\\/\\/www\\.betawarriors\\.com\\/bin\\/gm\\/57756user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "xavier.hinfray.free.fr": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=8740f823c9eadfc4cffb853115a84f05&r=PG&s=16&default=identicon',
+                "title": 'used by Fregate (126058)',
+                "rex": [
+                  "^https?:\\/\\/xavier\\.hinfray\\.free\\.fr\\/ikariam\\/57756\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
