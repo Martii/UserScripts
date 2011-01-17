@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.0
+// @version       0.8.1
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -837,7 +837,6 @@
                   for (let i = 0, len = keys.length; i < len; ++i) {
                     var key = keys[i];
 
-                    //GM_log(key);
                     switch (key) {
                       case "name":
                         if (headers[key] && headers[key] != titleNode.textContent)
