@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.7.10
+// @version       0.8.0
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -424,6 +424,7 @@
                 for each (line in lines) {
                   [, name, value] = line.match(/\/\/ @(\S*)\s*(.*)/);
                   value = value.replace(/\s*$/, "");
+
                   switch (name) {
                     case "licence":
                       name = "license";
@@ -448,6 +449,7 @@
                 if (headers["license"])
                   headers["licence"] = headers["license"];
 
+                
                 var sidebarNode = document.getElementById("script_sidebar");
                 if (!sidebarNode) {
                   sidebarNode = document.createElement("div");
@@ -747,6 +749,8 @@
                           }
                         }
                       default:
+                        if (key == "")
+                          spanNodeSection.textContent = parseInt(spanNodeSection.textContent) + 1;
                         liNode.setAttribute("title", key);
                         liNode.textContent = key;
                         ulNode.appendChild(liNode);
@@ -833,6 +837,7 @@
                   for (let i = 0, len = keys.length; i < len; ++i) {
                     var key = keys[i];
 
+                    //GM_log(key);
                     switch (key) {
                       case "name":
                         if (headers[key] && headers[key] != titleNode.textContent)
@@ -869,7 +874,8 @@
                           break;
 
                         [key, prefix] = key.split(/:/).reverse();
-                        if (!prefix && headers[key])
+
+                        if (!prefix && typeof headers[key] != "undefined")
                           display(mbx, headers[key], key, "@" + key);
                         else if (prefix && headers[prefix][key])
                           display(mbx, headers[prefix][key], key, "@" + prefix + ":" + key);
