@@ -4,7 +4,7 @@
 // @description   Corrects any discovered issues with screen.css that come into my scope until uso gets around to fixing and sometimes it will do nothing.
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.0.6
+// @version       0.0.7
 // @include       http://userscripts.org/*
 //
 // @require       http://usocheckup.redirectme.net/48071.js
@@ -50,8 +50,17 @@
     if (name.getAttribute("size") == 31)
       name.setAttribute("size", "21");
 
-    GM_addStyle("#header #script_search { margin-top: -6px; padding: 0; }");
-    GM_addStyle('input.text, input.title, input[type="text"] { padding: 3px; }');
+    CSS = <><![CDATA[
+
+      #header #script_search { margin-top: -6px; padding: 0; }
+      input.text, input.title, input[type="text"] { padding: 3px; }
+    ]]></> + "";
+    GM_addStyle(CSS);
+
+    var iframeNode = document.getElementsByName("googleSearchFrame");
+    for each (var frame in iframeNode) {
+      frame.setAttribute("width", "100%");
+    }
   }
 
 })();
