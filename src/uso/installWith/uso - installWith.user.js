@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.20
+// @version       0.8.21
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -824,6 +824,18 @@
                 "securityAdvisory": {
                   "advisory": "severe",
                   "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater, Possible malicious code and no script homepage."
+                }
+              },
+              "PhasmaExMachina": {
+                "textContent": 'Known PhasmaExMachina Scripts',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
+                "title": 'by PhasmaExMachina (106144)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(56757|56765|56817|56869|57148|57197|57377|57786|57849|57995|58160|58179|58191|58203|58205|58710|58855|59008|59720|59879|59936|60601|62718|67294|80545)\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "severe",
+                  "title": ", Possible malicious code and no script homepage."
                 }
               },
               "94724": {
