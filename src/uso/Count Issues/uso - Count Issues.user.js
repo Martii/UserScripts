@@ -8,7 +8,8 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.2
+// @version       0.8.3
+// @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -671,7 +672,7 @@
                         }
                         break;
                       case "resource":
-                        var matches = key.match(/^([\w\.]+)\s*(https?:\/\/.*)/i);
+                        var matches = key.match(/^([\w\.\_\-]+)\s*(https?:\/\/.*)/i);
                         if (matches) {
                           let showUrl;
                           let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
@@ -902,7 +903,7 @@
     else {
       if (gmc.get("checkShowSize")) {
         let sourceNode = document.evaluate(
-        "//li[contains(@class, 'current')][contains(., 'Source Code')] | //li/a[contains(., 'Source Code')]",
+        "//li[contains(@class, 'current')][contains(., 'Source Code')]",
           document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
