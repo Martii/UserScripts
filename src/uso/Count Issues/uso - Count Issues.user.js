@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.4
+// @version       0.8.5
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -312,7 +312,7 @@
           'showKeysString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
-              "default": "name,description,version,copyright,license,namespace,require,resource,include,match,exclude"
+              "default": "name,icon,description,version,copyright,license,namespace,require,resource,include,match,exclude"
           },
           'fontSize': {
               "type": 'unsigned number',
