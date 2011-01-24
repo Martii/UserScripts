@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.23
+// @version       0.8.24
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1404,9 +1404,9 @@
                       }
                       else {
                         installNode.setAttribute("title",
-                            "Security Advisory: SEVERE, Malformed updater syntax, Possible Security Risk");
+                            "Security Advisory: GUARDED, Possible malformed updater syntax, Possible Security Risk");
                         GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                            + securityAdvisory["severe"]["background-image"]
+                            + securityAdvisory["guarded"]["background-image"]
                             + "); } #install_script a.userjs:hover { color: black;}");
                       }
                       return;
