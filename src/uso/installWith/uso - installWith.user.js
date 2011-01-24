@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.22
+// @version       0.8.23
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -358,8 +358,8 @@
                 "title": 'by sizzlemctwizzle (27715)',
                 "updater": "anotherautoupdater",
                 "rex": [
-                  "^http:\\/\\/sizzlemctwizzle\\.com\\/updater\\.php\\?id=\\d+",
-                  "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/\\d+\\.js"
+                  "^http:\\/\\/sizzlemctwizzle\\.com\\/updater\\.php\\?id=(\\d+)",
+                  "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/(\\d+)\\.js"
                 ],
                 "url": "http://sizzlemctwizzle.com/updater.php?id=" + scriptid,
                 "qs": "show&uso",
@@ -375,7 +375,7 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by (crea7or.spb.ru)',
                 "rex": [
-                  "^http:\\/\\/crea7or\\.spb\\.ru\\/scripts\\/user\\.js\\.updater\\.php\\?id=\\d+",
+                  "^http:\\/\\/crea7or\\.spb\\.ru\\/scripts\\/user\\.js\\.updater\\.php\\?id=(\\d+)",
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -387,7 +387,7 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by (bsm.oldtu.com)',
                 "rex": [
-                  "^http:\\/\\/bsm\\.oldtu\\.com\\/updater\\.php\\?id=\\d+",
+                  "^http:\\/\\/bsm\\.oldtu\\.com\\/updater\\.php\\?id=(\\d+)",
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -399,7 +399,7 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by (mekan.dreamhosters.com)',
                 "rex": [
-                  "^https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/updater\\.js\\?id=\\d+"
+                  "^https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/updater\\.js\\?id=(\\d+)"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -411,7 +411,7 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by (http://www.hitotext.com/mh/ff)',
                 "rex": [
-                  "^http:\\/\\/www\\.hitotext\\.com\\/mh\\/ff\\/updater\\.php\\?id=\\d+"
+                  "^http:\\/\\/www\\.hitotext\\.com\\/mh\\/ff\\/updater\\.php\\?id=(\\d+)"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -423,7 +423,7 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by (www.nodeka411.net)',
                 "rex": [
-                  "^http:\\/\\/www\\.nodeka411\\.net\\/public\\/gmupdater\\/\\d+\\.js",
+                  "^http:\\/\\/www\\.nodeka411\\.net\\/public\\/gmupdater\\/(\\d+)\\.js",
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -531,7 +531,7 @@
                 "title": 'by Aquilax (28612)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/33024\\.user\\.js",
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/33024\\/\\d+\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/33024\\/(\\d+)\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -779,7 +779,7 @@
                 "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=780eb60a65688584794bd832b7bde567&r=PG&s=16&default=identicon',
                 "title": 'by ΙδεΠÐ (136989)',
                 "rex": [
-                  "^http:\\/\\/userscript-updater-generator\\.appspot\\.com\\/\\?id=\\d+"
+                  "^http:\\/\\/userscript-updater-generator\\.appspot\\.com\\/\\?id=(\\d+)"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -831,7 +831,7 @@
                 "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
                 "title": 'by PhasmaExMachina (106144)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(56757|56765|56817|56869|57148|57197|57377|57786|57849|57995|58160|58179|58191|58203|58205|58710|58855|59008|59720|59879|59936|60601|62718|67294|80545)\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(?:56757|56765|56817|56869|57148|57197|57377|57786|57849|57995|58160|58179|58191|58203|58205|58710|58855|59008|59720|59879|59936|60601|62718|67294|80545)\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
@@ -1098,7 +1098,7 @@
                 "title": 'by Tim Smart (63868)',
                 "updater": "usoupdater",
                 "rex": [
-                  "^http:\\/\\/updater\\.usotools\\.co\\.cc\\/\\d+\\.js"
+                  "^http:\\/\\/updater\\.usotools\\.co\\.cc\\/(\\d+)\\.js"
                 ],
                 "url": "http://updater.usotools.co.cc/" + scriptid + ".js",
                 "qsmax": "interval",
@@ -1152,8 +1152,8 @@
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
+                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
                   "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
@@ -1174,7 +1174,7 @@
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/beta\\.usocheckup\\.dune\\.net\\/\\d+\\.js"
+                  "^http:\\/\\/beta\\.usocheckup\\.dune\\.net\\/(\\d+)\\.js"
                 ],
                 "url": "http://beta.usocheckup.dune.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid,
@@ -1194,8 +1194,8 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
+                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
                   "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
@@ -1215,8 +1215,8 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
+                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
                   "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
@@ -1236,8 +1236,8 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
+                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
                   "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
@@ -1257,8 +1257,8 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/\\d+\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/\\d+\\.js",  // This is deprecated DO NOT USE
+                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
                   "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
@@ -1392,15 +1392,26 @@
             if (headers["require"])
               for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
                 for each (let updater in updaters)
-                  for each (let rex in updater["rex"])
-                    if (require.match(new RegExp(rex  + ".*", "i"))) {
-                      installNode.setAttribute("title",
-                          securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
-                      GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                          + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
-                          + "); } #install_script a.userjs:hover { color: black;}");
+                  for each (let rex in updater["rex"]) {
+                    let sid = require.match(new RegExp(rex  + ".*", "i"));
+                    if (sid) {
+                      if (sid[1] == scriptid || sid[1] == null) {
+                        installNode.setAttribute("title",
+                            securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
+                        GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                            + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
+                            + "); } #install_script a.userjs:hover { color: black;}");
+                      }
+                      else {
+                        installNode.setAttribute("title",
+                            "Security Advisory: SEVERE, Malformed updater syntax, Possible Security Risk");
+                        GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                            + securityAdvisory["severe"]["background-image"]
+                            + "); } #install_script a.userjs:hover { color: black;}");
+                      }
                       return;
                     }
+                  }
 
             if (headers["include"])
               for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
