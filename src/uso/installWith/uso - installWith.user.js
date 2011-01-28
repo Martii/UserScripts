@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.24
+// @version       0.8.25
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -302,6 +302,7 @@
               +   "|https?:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
               +   "|https?:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
               +   "|https?:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts"
+              +   "|https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
 
               + ")", "gmi"))
 
