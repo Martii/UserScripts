@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.25
+// @version       0.8.26
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1490,9 +1490,9 @@
                   if (thisUpdater["qsmin"] && gmc.get("updaterMinage") != 1)
                     qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(Math.abs(gmc.get("updaterMinage")))));
                   qs = appendQSP(qs, thisUpdater["qs"]);
-                  qs = appendQSP(qs, "is=.user.js");
+                  let frag = "#.user.js";
 
-                  let url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs;
+                  let url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs + frag;
                   installNode.setAttribute("href", url);
 
                   if (possibleEmbedded) {
