@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.7
+// @version       0.9.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -47,17 +47,11 @@
   ;
 
   if (typeof GM_configStruct != "undefined") {
-      // Save some memory
-      delete GM_config;
+    // Save some memory
+    delete GM_config;
 
-      var gmc = new GM_configStruct();
-      gmc.id = "gmc69307";
-
-      // Migrate preferences for a while
-      if (GM_getValue("GM_config")) {
-        GM_setValue("gmc69307", GM_getValue("GM_config", ""));
-        GM_deleteValue("GM_config");
-      }
+    var gmc = new GM_configStruct();
+    gmc.id = "gmc69307";
 
     var divNode = document.getElementById("full_description");
 
@@ -203,7 +197,8 @@
           #gmc69307_field_showKeys,
           #gmc69307_field_limitMaxHeight,
           #gmc69307_field_checkAgainstHomepageUSO,
-          #gmc69307_field_enableHEAD
+          #gmc69307_field_enableHEAD,
+          #gmc69307_field_checkShowVersionsSource
           {
             top: 0.075em;
           }
@@ -211,7 +206,8 @@
           #gmc69307_field_showStrings,
           #gmc69307_field_showKeys,
           #gmc69307_field_limitMaxHeight,
-          #gmc69307_field_checkAgainstHomepageUSO
+          #gmc69307_field_checkAgainstHomepageUSO,
+          #gmc69307_field_checkShowVersionsSource
           {
             margin-left: 0;
           }
@@ -346,6 +342,11 @@
           'showKeysStringHeight': {
               "type": 'hidden',
               "default": "1em"
+          },
+          'checkShowVersionsSource': {
+              "type": 'checkbox',
+              "label": 'Show recent Versions on Source Code page <em class="gmc69307-yellownote">ALPHA PRERELEASE</em>',
+              "default": false
           }
         }
     );
@@ -1072,4 +1073,362 @@
 
   }
 
+  if (gmc.get("checkShowVersionsSource")) {
+    if (location.pathname.match(/\/scripts\/review\//)) {
+
+      // Only nab if a contains href to versions pages
+      let xpr = document.evaluate(
+        "//a[@href='/scripts/versions/" + scriptid + "']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      if (xpr && xpr.singleNodeValue) {
+        let thisNode = xpr.singleNodeValue;
+        if (thisNode.textContent.match(/\d+ previous version/)) {
+
+          let hookP = thisNode.parentNode;
+
+          let source = document.getElementById("source");
+          if (source) {
+            source.style.setProperty("margin-top", "0", "");
+
+            let subcontainer = document.createElement("div");
+            subcontainer.setAttribute("id", "subcontainer");
+            subcontainer.style.setProperty("margin", "0", "");
+            subcontainer.style.setProperty("clear", "both", "");
+
+            let versionsNodes = document.createElement("div");
+            versionsNodes.setAttribute("id", "versions");
+            versionsNodes.style.setProperty("width", "18em", "");
+            versionsNodes.style.setProperty("padding", "0 0.5em", "");
+            versionsNodes.style.setProperty("margin", "0", "");
+            versionsNodes.style.setProperty("float", "left", "");
+
+            let sourcesNodes = document.createElement("div");
+            sourcesNodes.setAttribute("id", "sources");
+            sourcesNodes.style.setProperty("margin-left", "19em", "");
+
+            subcontainer.appendChild(versionsNodes);
+            subcontainer.appendChild(sourcesNodes);
+
+            source.parentNode.insertBefore(subcontainer, source);
+            sourcesNodes.appendChild(source);
+
+            // Find GIJoes buttons and move them
+            let xpr = document.evaluate(
+              "//button[.='Change Tabs to Spaces']",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              null
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              sourcesNodes.insertBefore(thisNode.nextSibling, sourcesNodes.firstChild);
+              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
+            }
+
+            document.evaluate(
+              "//button[@id='wrap-button1']",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              xpr
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
+            }
+
+            document.evaluate(
+              "//button[@id='wrap-button2']",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              xpr
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              sourcesNodes.appendChild(thisNode);
+            }
+
+
+            GM_xmlhttpRequest({
+              retry: 5,
+              method: "GET",
+              url: location.protocol + "//" + location.host + "/scripts/versions/" + scriptid,
+              onload: function(xhr) {
+                switch (xhr.status) {
+                  case 502:
+                  case 503:
+                    if (--this.retry > 0)
+                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                    break;
+                  case 200:
+                    let
+                      dt = document.implementation.createDocumentType(
+                        "html",
+                        "-//W3C//DTD HTML 4.01 Transitional//EN",
+                        "http://www.w3.org/TR/html4/loose.dtd"
+                      ),
+                      doc = document.implementation.createDocument("", "", dt),
+                      documentElement = doc.createElement("html")
+                    ;
+
+                    documentElement.innerHTML = xhr.responseText;
+                    doc.appendChild(documentElement);
+
+                    let html = doc.documentElement.innerHTML;
+                    doc.documentElement.innerHTML = "";
+
+                    let body = doc.createElement("body");
+                    body.innerHTML = html;
+                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+
+                    let head = doc.createElement("head");
+                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+
+                    // doc has been created... start twiddling
+
+                      // TODO: Nab pagination
+                    let xpr = doc.evaluate(
+                      "//div[@class='pagination']",
+                      doc.body,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      null
+                    );
+                    if (xpr && xpr.singleNodeValue) {
+                      let thisNode = xpr.singleNodeValue;
+
+  //                       let paginationTop = thisNode.cloneNode(true);
+  //                       let paginationBottom = thisNode.cloneNode(true);
+  //                       paginationBottom.style.setProperty("clear", "left", "");
+
+                      // TODO: Add eventlisteners to pagination
+
+  //                       versionsNodes.parentNode.insertBefore(paginationTop, versionsNodes);
+  //                       subcontainer.appendChild(paginationBottom);
+                    }
+
+
+                    doc.evaluate(
+                      "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
+                      doc.body,
+                      null,
+                      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                      xpr
+                    );
+
+                    let ulNode = document.createElement("ul");
+                    ulNode.style.setProperty("list-style", "none outside none", "");
+                    ulNode.style.setProperty("padding", "0", "");
+                    ulNode.style.setProperty("margin", "0.25em", "");
+                    ulNode.style.setProperty("font-size", "1.0em", "");
+
+                    if (xpr)
+                      for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                        let dateNode = thisNode.firstChild;
+                        let diffNode = thisNode.firstChild.nextSibling;
+
+                        let dateid = dateNode.textContent.replace(/\n\[/, "");
+                        let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
+
+
+                        let aInstallNode = document.createElement("a");
+                        aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
+                        aInstallNode.style.setProperty("text-decoration", "none", "");
+                        aInstallNode.style.setProperty("color", "black", "");
+
+                        aInstallNode.textContent = dateid;
+
+
+                        let spanNode = document.createElement("span");
+                        spanNode.style.setProperty("float", "right", "");
+
+                        let leftText = document.createTextNode(" [ ")
+
+                        let aViewNode = document.createElement("a");
+                        aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
+                        aViewNode.textContent = "view";
+                        aViewNode.addEventListener("click", function(ev) {
+                          ev.preventDefault();
+
+                          let aNode = ev.target;
+                          GM_xmlhttpRequest({
+                            method: "GET",
+                            url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                            onload: function(xhr) {
+                              switch (xhr.status) {
+                                case 200:
+                                  let preNode = document.getElementById("source");
+                                  preNode.textContent = xhr.responseText;
+
+                                  // Clear all Selection markers
+                                  let ulNode = aNode.parentNode.parentNode.parentNode;
+
+                                  let thisNode = ulNode.firstChild;
+                                  while(thisNode) {
+                                    thisNode.style.removeProperty("background-color");
+                                    thisNode = thisNode.nextSibling;
+                                  }
+
+                                  // Set current selection marker
+                                  let liNode = aNode.parentNode.parentNode;
+                                  liNode.style.setProperty("background-color", "#ccc", "");
+
+                                  // Remove GIJoes disabling if present
+                                  let xpr = document.evaluate(
+                                    "//button[.='Change Tabs to Spaces']",
+                                    document.body,
+                                    null,
+                                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                    null
+                                  );
+                                  if (xpr && xpr.singleNodeValue) {
+                                    let thisNode = xpr.singleNodeValue;
+                                    thisNode.removeAttribute("disabled");
+
+                                    thisNode = thisNode.nextSibling;
+                                    thisNode.removeAttribute("disabled");
+                                  }
+
+                                  // If source is < 20KB then autohighlight just like USO does
+                                  if (xhr.responseText.length < 20480) {
+                                    let win = window.wrappedJSObject || window;
+                                    win.sh_highlightDocument();
+                                  }
+                                  break;
+                              }
+                            }
+                          });
+                        }, false);
+
+
+                        let middleText = document.createTextNode(" | ")
+
+
+                        let aDiffNode = document.createElement("a");
+                        aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
+                        aDiffNode.textContent = "changes";
+
+                        aDiffNode.addEventListener("click", function(ev) {
+                          ev.preventDefault();
+
+                          let aNode = ev.target;
+                          GM_xmlhttpRequest({
+                            method: "GET",
+                            url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                            onload: function(xhr) {
+                              switch (xhr.status) {
+                                case 200:
+
+                                  let
+                                    dt = document.implementation.createDocumentType(
+                                      "html",
+                                      "-//W3C//DTD HTML 4.01 Transitional//EN",
+                                      "http://www.w3.org/TR/html4/loose.dtd"
+                                    ),
+                                    doc = document.implementation.createDocument("", "", dt),
+                                    documentElement = doc.createElement("html")
+                                  ;
+
+                                  documentElement.innerHTML = xhr.responseText;
+                                  doc.appendChild(documentElement);
+
+                                  let html = doc.documentElement.innerHTML;
+                                  doc.documentElement.innerHTML = "";
+
+                                  let body = doc.createElement("body");
+                                  body.innerHTML = html;
+                                  doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+
+                                  let head = doc.createElement("head");
+                                  doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+
+
+                                  let xpr = doc.evaluate(
+                                    "//pre",
+                                    doc.body,
+                                    null,
+                                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                    null
+                                  );
+                                  if (xpr && xpr.singleNodeValue) {
+                                    let preNode = document.getElementById("source");
+                                    preNode.innerHTML = xpr.singleNodeValue.innerHTML;
+
+
+                                    // Clear all Selection markers
+                                    let ulNode = aNode.parentNode.parentNode.parentNode;
+
+                                    let thisNode = ulNode.firstChild;
+                                    while(thisNode) {
+                                      thisNode.style.removeProperty("background-color");
+                                      thisNode = thisNode.nextSibling;
+                                    }
+
+                                    // Set current selection marker
+                                    let liNode = aNode.parentNode.parentNode;
+                                    liNode.style.setProperty("background-color", "#ccc", "");
+
+                                    // Remove GIJoes disabling
+                                    let xpr2 = document.evaluate(
+                                      "//button[.='Change Tabs to Spaces']",
+                                      document.body,
+                                      null,
+                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                      null
+                                    );
+                                    if (xpr2 && xpr2.singleNodeValue) {
+                                      let thisNode = xpr2.singleNodeValue;
+                                      thisNode.removeAttribute("disabled");
+
+                                      thisNode = thisNode.nextSibling;
+                                      thisNode.removeAttribute("disabled");
+                                    }
+                                  }
+                                  break;
+                              }
+                            }
+                          });
+                        }, false);
+
+
+                        let rightText = document.createTextNode(" ]")
+
+                        let liNode = document.createElement("li");
+
+                        liNode.appendChild(aInstallNode);
+
+                        spanNode.appendChild(leftText);
+                        spanNode.appendChild(aViewNode);
+                        spanNode.appendChild(middleText);
+                        spanNode.appendChild(aDiffNode);
+                        spanNode.appendChild(rightText);
+
+                        liNode.appendChild(spanNode);
+
+                        ulNode.appendChild(liNode);
+                      }
+
+                    versionsNodes.appendChild(ulNode);
+                    break;
+                  default:
+                    GM_log('failure code ' + xhr.status);
+                    break;
+                }
+            }});
+          }
+        }
+      }
+    }
+
+  }
+  
 })();
