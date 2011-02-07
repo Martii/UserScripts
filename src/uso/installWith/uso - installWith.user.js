@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.26
+// @version       0.8.27
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -629,8 +629,8 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "low",
-                  "title": ""
+                  "advisory": "high",
+                  "title": ", Ability to use non-meta.js routine"
                 }
               },
               "29878": {
@@ -837,6 +837,32 @@
                 "securityAdvisory": {
                   "advisory": "severe",
                   "title": ", Possible malicious code and no script homepage."
+                }
+              },
+              "95997": {
+                "derivative": 3,
+                "textContent": 'Script Updater (userscripts.org) BY HAKAN -MM-',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d5dc66cdb6f419bfeb3a04ee5e9190c1&r=PG&s=16&default=identicon',
+                "title": 'by deniz-1 (287110)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95997\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "95992": {
+                "derivative": 2,
+                "textContent": 'Script Updater**',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=fc8c1777adb39ee3002a31e448afeaba&r=PG&s=16&default=identicon',
+                "title": 'by Sathington Willoughby (281685)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95992\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "94724": {
