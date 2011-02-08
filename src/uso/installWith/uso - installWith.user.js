@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.8.27
+// @version       0.9.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -123,9 +123,9 @@
     if (!scriptid) {
       let titleNode = document.evaluate(
         "//h1[@class='title']/a",
-        document,
+        document.body,
         null,
-        XPathResult.ANY_UNORDERED_NODE_TYPE,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
         null
       );
 
@@ -136,8 +136,42 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
+  function getAvatarid() {
+    let xpr = document.evaluate(
+      "//span[@class='author']/a",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+
+    if (xpr && xpr.singleNodeValue) {
+      let matches = xpr.singleNodeValue.getAttribute("gravatar").match(/^.+gravatar_id\=(.+?)\&/, "");
+      if (matches && matches[1])
+        return matches[1];
+    }
+    return undefined;
+  }
+
+  function getIcontype() {
+    let xpr = document.evaluate(
+      "//a[@id='icon']",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+
+    if (xpr && xpr.singleNodeValue) {
+      let matches = xpr.singleNodeValue.getAttribute("href").match(/^http:\/\/s3.amazonaws.com\/uso_ss\/icon\/\d+\/(?:thumb|large)\.(\w+)\?\d+/, "");
+      if (matches && matches[1])
+        return matches[1];
+    }
+    return undefined;
+  }
+
     if (typeof GM_configStruct != "undefined") {
-      // Save some memory
+      // Reclaim some memory
       delete GM_config;
 
       var gmc = new GM_configStruct();
@@ -195,19 +229,31 @@
           {
             "updaterMaxage": {
                 "type": "unsigned integer",
-                "label": 'days maximum between checks for this script',
+                "label": 'day(s) maximum between checks for this script',
                 "default": 30
             },
             "updaterMinage": {
               "type": "unsigned integer",
-              "label": 'hours minimum before starting a check for this script <em class="gmc68219-yellownote">Not all updaters support this</em>',
+              "label": 'hour(s) minimum before starting a check for this script <em class="gmc68219-yellownote">Not all updaters support this</em>',
               "default": 1
             },
+            "useGravatarIcon": {
+//               "section": [, ""],
+              "type": "checkbox",
+              "label": '',
+              "default": false
+            },
+            "useScriptIcon": {
+              "type": "checkbox",
+              "label": '',
+              "default": false
+            },
             "skipEmbeddedScan": {
+              "section": [, ""],
               "type": "checkbox",
               "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
               "default": false
-            },
+            }
           },
           <><![CDATA[
             #gmc68219 {
@@ -260,10 +306,29 @@
               font-size: 0.66em !important;
             }
 
+            #gmc68219_field_useGravatarIcon,
+            #gmc68219_field_useScriptIcon,
             #gmc68219_field_skipEmbeddedScan
             {
               top: 0.05em;
               margin-right: 0.5em;
+            }
+
+            #gmc68219_useGravatarIcon_var,
+            #gmc68219_useScriptIcon_var
+            {
+              margin-right: 0 !important;
+              display: inline !important;
+            }
+
+            #gmc68219_useScriptIcon_var
+            {
+              margin-left: 0 !important;
+            }
+
+            .section_desc
+            {
+              margin: 0.25em 1.5em !important;
             }
 
             #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
@@ -1510,12 +1575,49 @@
                       qs += (!qs) ? "?" + qsp : "&" + qsp;
                     return qs;
                   }
+
+                  function appendListItem(list, item) {
+                    if (item)
+                      list += (!list) ? item : "," + item;
+                    return list;
+                  }
+
                   let qs = "";
                   qs = appendQSP(qs, ((!thisUpdater["value"].match(/usoCheckup.*/i)) ? "updater=" + thisUpdater["value"] : "") );
                   qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(Math.abs(gmc.get("updaterMaxage"))) : ""));
                   if (thisUpdater["qsmin"] && gmc.get("updaterMinage") != 1)
                     qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(Math.abs(gmc.get("updaterMinage")))));
                   qs = appendQSP(qs, thisUpdater["qs"]);
+
+                  let gravatar = getAvatarid();
+                  let icontype = getIcontype();
+
+                  if (gravatar)
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='http://www.gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=PG&s=32&default=identicon' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
+                  else
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
+
+
+                  if (icontype)
+                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/thumb." + icontype + "'  alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
+                  else
+                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
+
+
+
+
+                  let icon = "";
+                  if (gmc.get("useGravatarIcon") && gravatar)
+                    icon = appendListItem(icon, gravatar);
+
+                  if (gmc.get("useScriptIcon") && icontype)
+                    icon = appendListItem(icon, icontype);
+
+
+                  if (icon)
+                    qs = appendQSP(qs, "icon=" + icon);
+
+
                   let frag = "#.user.js";
 
                   let url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs + frag;
