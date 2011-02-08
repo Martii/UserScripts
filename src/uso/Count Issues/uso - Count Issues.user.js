@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.0
+// @version       0.9.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -865,10 +865,18 @@
                       }
                         break;
                       case "include":
+                        let notify = true;
+                        if (headers["exclude"])
+                          for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"])
+                            if (exclude == "*") {
+                              notify = false;
+                              break;
+                            }
+
                         if (headers[key])
                           display(mbx, headers[key], key, "@include");
                         else
-                          display(mbx, "", key, "@include", true);
+                          display(mbx, "", key, "@include", notify);
                         break;
                       default:
                         if (window.location.pathname.match(/\/scripts\/show\/.+/i) &&
@@ -1430,5 +1438,5 @@
     }
 
   }
-  
+
 })();
