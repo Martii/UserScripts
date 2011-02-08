@@ -5,7 +5,7 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.1
+// @version       0.1.2
 // @icon    http://s3.amazonaws.com/uso_ss/icon/48071/thumb.jpg
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -55,7 +55,7 @@
   if (xpr && xpr.singleNodeValue) {
     thisNode = xpr.singleNodeValue;
 
-    thisNode.setAttribute("size", "21");
+    thisNode.setAttribute("size", "20");
 //     GM_addStyle(<><![CDATA[
 //
 //       #header #script_search { margin-top: -6px; padding: 0; }
