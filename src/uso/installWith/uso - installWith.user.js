@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.0
+// @version       0.9.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -400,6 +400,25 @@
                 header[key] = value;
             }
 
+            if (headers["exclude"])
+              for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"])
+                if (exclude == "*") {
+                  installNode.setAttribute("title", "Security Advisory: Library file detected");
+                  function nag(ev) {
+                    ev.preventDefault();
+                    if (confirm('This script won\'t execute on any page.\n\nAre you sure?'))
+                      if (confirm('Some might even say this request is crazy!\n\nAre you really sure?')) {
+                        if(confirm('Are you really, really sure?\n\nIf okay then next Install button click will work.\nThank you for using Nag\u2122 Version One point Ohhh'))
+                          ev.target.removeEventListener("click", nag, true);
+                      }
+                  }
+                  installNode.addEventListener("click", nag, true);
+                  GM_addStyle(<><![CDATA[
+                    #install_script a.userjs, #install_script a.userjs:hover { background: #FFF none repeat scroll 0 0; }
+                    #install_script a.userjs:hover { color: black; }
+                  ]]></> + "");
+                  return;
+                }
 
             let updaters = {
               "uso": {
