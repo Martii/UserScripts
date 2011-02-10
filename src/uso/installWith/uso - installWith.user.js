@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.1
+// @version       0.9.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -71,34 +71,41 @@
 
   var securityAdvisory = {
     "checking": {
+      "index": 0,
       "title": 'Security Advisory: CHECKING, Please Wait',
       "background-image": GM_getResourceURL("checking")
     },
     "low": {
+      "index": 1,
       "title": 'Security Advisory: LOW',
       "background-image": GM_getResourceURL("low")
     },
     "guarded": {
+      "index": 2,
       "title": 'Security Advisory: GUARDED',
       "background-image": GM_getResourceURL("guarded")
     },
     "elevated": {
+      "index": 3,
       "title": 'Security Advisory: ELEVATED',
       "background-image": GM_getResourceURL("elevated")
     },
     "high": {
+      "index": 4,
       "title": 'Security Advisory: HIGH',
       "background-image": GM_getResourceURL("high")
     },
     "severe": {
+      "index": 5,
       "title": 'Security Advisory: SEVERE',
       "background-image": GM_getResourceURL("severe")
     },
     "undetermined": {
+      "index": 6,
       "title": 'Security Advisory: UNDETERMINED',
       "background-image": GM_getResourceURL("undetermined")
-    },
-  };
+    }
+};
 
   var installNode = document.evaluate(
     "//div[@id='install_script']/a[@class='userjs']",
@@ -403,14 +410,13 @@
             if (headers["exclude"])
               for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"])
                 if (exclude == "*") {
-                  installNode.setAttribute("title", "Security Advisory: Library file detected");
+                  installNode.setAttribute("title", "Security Advisory: NON-RUNNING, Possible library support file detected");
                   function nag(ev) {
                     ev.preventDefault();
                     if (confirm('This script won\'t execute on any page.\n\nAre you sure?'))
-                      if (confirm('Some might even say this request is crazy!\n\nAre you really sure?')) {
-                        if(confirm('Are you really, really sure?\n\nIf okay then next Install button click will work.\nThank you for using Nag\u2122 Version One point Ohhh'))
+                      if (confirm('This script is a library file and won\'t run by itself.\n\nAre you really sure?'))
+                        if(confirm('Are you really, really sure?\n\nIf you continue then the next Install button click will work.'))
                           ev.target.removeEventListener("click", nag, true);
-                      }
                   }
                   installNode.addEventListener("click", nag, true);
                   GM_addStyle(<><![CDATA[
@@ -1305,9 +1311,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/82206"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&theme=82206,66530,67771,74732&trim=de,pt&id=usoCheckup",
@@ -1326,9 +1330,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/60926"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,67771,74732&trim=de,pt&id=usoCheckup",
@@ -1347,9 +1349,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/68506"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
@@ -1368,9 +1368,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                  "^http:\\/\\/userscripts\\.org\\/scripts\\/show\\/61794"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
@@ -1499,7 +1497,8 @@
               }
             }
 
-
+            let lastAdvisory = 0;
+            let lastUpdater = {};
             if (headers["require"])
               for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
                 for each (let updater in updaters)
@@ -1507,22 +1506,35 @@
                     let sid = require.match(new RegExp(rex  + ".*", "i"));
                     if (sid) {
                       if (sid[1] == scriptid || sid[1] == null) {
-                        installNode.setAttribute("title",
-                            securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
-                        GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                            + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
-                            + "); } #install_script a.userjs:hover { color: black;}");
+                        if (lastAdvisory < securityAdvisory[updater["securityAdvisory"]["advisory"]]["index"]) {
+                          lastAdvisory = securityAdvisory[updater["securityAdvisory"]["advisory"]]["index"];
+                          lastUpdater = updater;
+                        }
+                        installNode.setAttribute("title", securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
+                        GM_addStyle(
+                            "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                          + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
+                          + "); } #install_script a.userjs:hover { color: black;}"
+                        );
                       }
                       else {
-                        installNode.setAttribute("title",
-                            "Security Advisory: GUARDED, Possible malformed updater syntax, Possible Security Risk");
-                        GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                            + securityAdvisory["guarded"]["background-image"]
-                            + "); } #install_script a.userjs:hover { color: black;}");
+                        installNode.setAttribute("title", "Security Advisory: GUARDED, Possible malformed updater syntax, Possible Security Risk");
+                        GM_addStyle(
+                            "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                          + securityAdvisory["guarded"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
+                        );
+                        return;
                       }
-                      return;
                     }
                   }
+            if (lastAdvisory > 0) {
+              installNode.setAttribute("title", securityAdvisory[lastUpdater["securityAdvisory"]["advisory"]]["title"] + lastUpdater["securityAdvisory"]["title"]);
+              GM_addStyle(
+                  "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                + securityAdvisory[lastUpdater["securityAdvisory"]["advisory"]]["background-image"]
+                + "); } #install_script a.userjs:hover { color: black;}");
+              return;
+            }
 
             if (headers["include"])
               for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
@@ -1530,10 +1542,11 @@
                   for each (let rex in updater["rex"])
                     if (include.match(new RegExp(rex  + ".*", "i"))) {
                       installNode.setAttribute("title",
-                          securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
-                      GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                          + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
-                          + "); } #install_script a.userjs:hover { color: black;}");
+                        securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
+                      GM_addStyle(
+                          "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                        + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
+                        + "); } #install_script a.userjs:hover { color: black;}");
                       return;
                     }
 
