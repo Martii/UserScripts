@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.1
+// @version       0.9.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -422,9 +422,9 @@
               var metadataBlock = xhr.responseText.toString();
               var headers = {};
               var line, name, prefix, header, key, value;
-                var lines = metadataBlock.split(/[\r\n]+/).filter(/\/\/ @\S+/);
+                var lines = metadataBlock.split(/[\r\n]+/).filter(/^\s*\/\/ @\S+/);
                 for each (line in lines) {
-                  [, name, value] = line.match(/\/\/ @(\S*)\s*(.*)/);
+                  [, name, value] = line.match(/^\s*\/\/ @(\S*)\s*(.*)/);
                   value = value.replace(/\s*$/, "");
 
                   switch (name) {
