@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.2
+// @version       0.9.3
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -168,6 +168,11 @@
             font-size: 100%;
           }
 
+          .section_desc
+          {
+            margin: 0.25em 1em !important;
+          }
+
           #gmc69307_field_showStringsString,
           #gmc69307_field_showKeysString
           {
@@ -179,7 +184,7 @@
 
           #gmc69307_field_showStringsString
           {
-            min-height: 5em;
+            min-height: 7em;
             height: 5em;
           }
 
@@ -190,6 +195,7 @@
             max-height: 5em;
           }
 
+          #gmc69307_field_useGreasefireUrl,
           #gmc69307_field_showStrings,
           #gmc69307_field_checkDeobfuscate,
           #gmc69307_field_checkShowSize,
@@ -203,7 +209,8 @@
             top: 0.075em;
           }
 
-          #gmc69307_field_showStrings,
+          #gmc69307_field_useGreasefireUrl,
+					#gmc69307_field_showStrings,
           #gmc69307_field_showKeys,
           #gmc69307_field_limitMaxHeight,
           #gmc69307_field_checkAgainstHomepageUSO,
@@ -270,7 +277,7 @@
 
         /* Settings object */
         {
-          'showStrings': {
+					'showStrings': {
               "type": 'checkbox',
               "label": 'Show "Lost and Found" string(s) if present in sidebar',
               "default": false
@@ -278,7 +285,7 @@
           'showStringsString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use newlines to separate regular expression strings</em>',
-              "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest\nlocation\\.href"
+              "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest\nlocation\nexport\n\\b(?:un)?eval\\b"
           },
           'checkDeobfuscate': {
               "type": 'checkbox',
@@ -325,6 +332,12 @@
               "label": 'em maximum height of all shown item types',
               "default": 10
           },
+          'useGreasefireUrl': {
+              "section": [, ""],
+              "type": 'checkbox',
+              "label": 'Use greasefire USO urls whenever possible <em class="gmc69307-yellownote">useful for bandwidth conservation</em>',
+              "default": true
+          },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
               "label": 'Check USO require and resource urls against USO script homepage <em class="gmc69307-yellownote">Rate and Limiting may limit accuracy</em>',
@@ -337,7 +350,7 @@
           },
           'showStringsStringHeight': {
             "type": 'hidden',
-            "default": "5em"
+            "default": "7em"
           },
           'showKeysStringHeight': {
               "type": 'hidden',
@@ -600,11 +613,11 @@
                           let showUrl;
                           matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                           if (matches)
-                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+                            showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches[1];
                           else {
                             matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                             if (matches)
-                              showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+                              showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches[1];
                           }
 
                           let anchorNode = document.createElement("a");
@@ -679,11 +692,11 @@
                           let showUrl;
                           let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                           if (matches2)
-                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                            showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches2[1];
                           else {
                             matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                             if (matches2)
-                              showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                              showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches2[1];
                           }
 
                           let spanNode = document.createElement("span");
@@ -1027,7 +1040,7 @@
         GM_xmlhttpRequest({
           retry: 5,
           method: "GET",
-          url: "http://userscripts.org/scripts/issues/" + scriptid,
+          url: "http://" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,
           onload: function (xhr) {
             switch (xhr.status) {
               case 404:
@@ -1169,7 +1182,7 @@
             GM_xmlhttpRequest({
               retry: 5,
               method: "GET",
-              url: location.protocol + "//" + location.host + "/scripts/versions/" + scriptid,
+              url: location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/versions/" + scriptid,
               onload: function(xhr) {
                 switch (xhr.status) {
                   case 502:
