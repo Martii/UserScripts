@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.3
+// @version       0.9.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -613,11 +613,11 @@
                           let showUrl;
                           matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                           if (matches)
-                            showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches[1];
+                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
                           else {
                             matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                             if (matches)
-                              showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches[1];
+                              showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
                           }
 
                           let anchorNode = document.createElement("a");
@@ -692,11 +692,11 @@
                           let showUrl;
                           let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                           if (matches2)
-                            showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches2[1];
+                            showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
                           else {
                             matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                             if (matches2)
-                              showUrl = window.location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/show/" + matches2[1];
+                              showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
                           }
 
                           let spanNode = document.createElement("span");
