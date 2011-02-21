@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.5
+// @version       0.9.6
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -421,9 +421,9 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
-  if (gmc && gmc.get("showOnAboutOnly") && window.location.pathname.match(/\/show\//i) || gmc && !gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i)) {
-    var scriptid = getScriptid();
-    if (scriptid) {
+  var scriptid = getScriptid();
+  if (scriptid) {
+    if (gmc && gmc.get("showOnAboutOnly") && window.location.pathname.match(/\/show\//i) || gmc && !gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i)) {
 
       var hookNode = document.getElementById("right");
       if (hookNode) {
