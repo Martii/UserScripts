@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.6
+// @version       0.9.7
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -997,6 +997,9 @@
           issuesNode.textContent += " ";
 
           if (doc) {
+            GM_addStyle(<><![CDATA[
+              .alert { color: red !important; }
+            ]]></> + "");
 
             let
               yesCount = 0,
