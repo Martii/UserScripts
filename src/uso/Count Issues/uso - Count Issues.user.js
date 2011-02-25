@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.7
+// @version       0.9.8
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -33,6 +33,32 @@
 // @require http://userscripts.org/scripts/version/87269/296168.user.js
 //
 // ==/UserScript==
+
+  function simpleTranscodeHex(source, counter) {
+    let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/m);
+    if (matched)
+      [source, counter] = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "m"), counter + 1);
+
+    return [source, counter];
+  }
+
+  function enableCTTS() {
+    let xpr = document.evaluate(
+      "//button[.='Change Tabs to Spaces']",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+    if (xpr && xpr.singleNodeValue) {
+      let thisNode = xpr.singleNodeValue;
+      thisNode.removeAttribute("disabled");
+
+      thisNode = thisNode.nextSibling;
+      thisNode.removeAttribute("disabled");
+    }
+  }
+
 
   let throbber = "data:image/gif;base64,"
     + 'R0lGODlhAQABAOMKAMTExMnJyc3NzdLS0tfX19vb2+Dg4OXl5enp6e7u7v//////////////////'
@@ -291,7 +317,7 @@
           },
           'checkDeobfuscate': {
               "type": 'checkbox',
-              "label": 'Deobfuscate',
+              "label": 'Deobfuscate <em class="gmc69307-yellownote">recommend Simple Transcode in Firefox 4.x and JsCode in Firefox 3.x to reduce potential failure on large scripts</em>',
               "default": true
           },
           'deobMethod': {
@@ -785,14 +811,6 @@
 
                   var mbx = document.createElement("div");
 
-                  function simpleTranscodeHex(source, counter) {
-                    let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/m);
-                    if (matched)
-                      [source, counter] = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "m"), counter + 1);
-
-                    return [source, counter];
-                  }
-
                   if (gmc && gmc.get("showStrings")) {
                     let finds = {}, responseText, hexCount;
 
@@ -1108,13 +1126,89 @@
   if (gmc.get("checkShowVersionsSource")) {
     if (location.pathname.match(/\/scripts\/review\//)) {
 
-      // Only nab if a contains href to versions pages
+      GM_addStyle(<><![CDATA[
+        .deobfuscate { margin-left: 0.5em }
+        .beautify { margin-left: 1.4em }
+      ]]></> + '');
+
       let xpr = document.evaluate(
-        "//a[@href='/scripts/versions/" + scriptid + "']",
+        "//pre[@id='source']",
         document.body,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
         null
+      );
+      if (xpr && xpr.singleNodeValue) {
+        let hookNode = xpr.singleNodeValue;
+
+        let buttonDeobfNode = document.createElement("button");
+        buttonDeobfNode.setAttribute("id", "deobfuscate-button");
+        buttonDeobfNode.setAttribute("class", "deobfuscate");
+        buttonDeobfNode.textContent = 'Deobfuscate';
+        buttonDeobfNode.addEventListener("click", function(ev) {
+          switch (gmc.get("deobMethod")) {
+            case 'Simple Transcode':
+              try {
+                [hookNode.textContent] = simpleTranscodeHex(hookNode.textContent, 0);
+
+                // If source is < 20KB then autohighlight just like USO does
+                if (hookNode.textContent.length < 20480) {
+                  let win = window.wrappedJSObject || window;
+                  win.sh_highlightDocument();
+                }
+              }
+              catch(e) {
+                GM_log('Too much recursion error encountered. Aborting transcode');
+              }
+              break;
+            case 'JsCode':
+              try {
+                hookNode.textContent = JsCode.deobfuscate(hookNode.textContent);
+
+                // If source is < 20KB then autohighlight just like USO does
+                if (hookNode.textContent.length < 20480) {
+                  let win = window.wrappedJSObject || window;
+                  win.sh_highlightDocument();
+                }
+              }
+              catch(e) {
+                GM_log('Too much recursion error encountered. Aborting JsCode');
+              }
+              break;
+          }
+          enableCTTS();
+          ev.target.blur();
+        }, false);
+
+        let buttonBeautNode = document.createElement("button");
+        buttonBeautNode.setAttribute("id", "beautify-button");
+        buttonBeautNode.setAttribute("class", "beautify");
+        buttonBeautNode.textContent = 'Beautify';
+        buttonBeautNode.addEventListener("click", function(ev) {
+          hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
+
+          // If source is < 20KB then autohighlight just like USO does
+          if (hookNode.textContent.length < 20480) {
+            let win = window.wrappedJSObject || window;
+            win.sh_highlightDocument();
+          }
+
+          enableCTTS();
+          ev.target.blur();
+        }, false);
+
+        hookNode.parentNode.insertBefore(buttonBeautNode, hookNode);
+        hookNode.parentNode.insertBefore(buttonDeobfNode, hookNode);
+      }
+
+
+      // Only nab if a contains href to versions pages
+      document.evaluate(
+        "//a[@href='/scripts/versions/" + scriptid + "']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        xpr
       );
       if (xpr && xpr.singleNodeValue) {
         let thisNode = xpr.singleNodeValue;
@@ -1148,9 +1242,15 @@
             source.parentNode.insertBefore(subcontainer, source);
             sourcesNodes.appendChild(source);
 
-            // Find GIJoes buttons and move them
+            GM_addStyle(<><![CDATA[
+              #syntax-highlight-select { margin-left: 0.6em; }
+              #syntax-highlight-button { margin-left: 0.25em; }
+              .deobfuscate, .beautify { margin-left: 0.5em }
+            ]]></> + '');
+
+            // Move beat and deobf buttons
             let xpr = document.evaluate(
-              "//button[.='Change Tabs to Spaces']",
+              "//button[@id='deobfuscate-button']",
               document.body,
               null,
               XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -1158,6 +1258,34 @@
             );
             if (xpr && xpr.singleNodeValue) {
               let thisNode = xpr.singleNodeValue;
+
+              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
+            }
+
+            document.evaluate(
+              "//button[@id='beautify-button']",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              xpr
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
+            }
+
+            // Find GIJoes buttons and move them
+            document.evaluate(
+              "//button[.='Change Tabs to Spaces']",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              xpr
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+              thisNode.style.setProperty("margin-left", "0.6em", "");
 
               sourcesNodes.insertBefore(thisNode.nextSibling, sourcesNodes.firstChild);
               sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
@@ -1172,6 +1300,7 @@
             );
             if (xpr && xpr.singleNodeValue) {
               let thisNode = xpr.singleNodeValue;
+              thisNode.style.setProperty("width", "150px", "");
 
               sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
             }
@@ -1185,10 +1314,10 @@
             );
             if (xpr && xpr.singleNodeValue) {
               let thisNode = xpr.singleNodeValue;
+              thisNode.style.setProperty("width", "150px", "");
 
               sourcesNodes.appendChild(thisNode);
             }
-
 
             GM_xmlhttpRequest({
               retry: 5,
@@ -1227,7 +1356,7 @@
 
                     // doc has been created... start twiddling
 
-                      // TODO: Nab pagination
+                    // TODO: Nab pagination
                     let xpr = doc.evaluate(
                       "//div[@class='pagination']",
                       doc.body,
@@ -1238,14 +1367,14 @@
                     if (xpr && xpr.singleNodeValue) {
                       let thisNode = xpr.singleNodeValue;
 
-  //                       let paginationTop = thisNode.cloneNode(true);
-  //                       let paginationBottom = thisNode.cloneNode(true);
-  //                       paginationBottom.style.setProperty("clear", "left", "");
+//                         let paginationTop = thisNode.cloneNode(true);
+//                         let paginationBottom = thisNode.cloneNode(true);
+//                         paginationBottom.style.setProperty("clear", "left", "");
 
                       // TODO: Add eventlisteners to pagination
 
-  //                       versionsNodes.parentNode.insertBefore(paginationTop, versionsNodes);
-  //                       subcontainer.appendChild(paginationBottom);
+//                         versionsNodes.parentNode.insertBefore(paginationTop, versionsNodes);
+//                         subcontainer.appendChild(paginationBottom);
                     }
 
 
@@ -1314,21 +1443,8 @@
                                   let liNode = aNode.parentNode.parentNode;
                                   liNode.style.setProperty("background-color", "#ccc", "");
 
-                                  // Remove GIJoes disabling if present
-                                  let xpr = document.evaluate(
-                                    "//button[.='Change Tabs to Spaces']",
-                                    document.body,
-                                    null,
-                                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                                    null
-                                  );
-                                  if (xpr && xpr.singleNodeValue) {
-                                    let thisNode = xpr.singleNodeValue;
-                                    thisNode.removeAttribute("disabled");
-
-                                    thisNode = thisNode.nextSibling;
-                                    thisNode.removeAttribute("disabled");
-                                  }
+                                  // Remove GIJoes disabling
+                                  enableCTTS();
 
                                   // If source is < 20KB then autohighlight just like USO does
                                   if (xhr.responseText.length < 20480) {
@@ -1410,20 +1526,7 @@
                                     liNode.style.setProperty("background-color", "#ccc", "");
 
                                     // Remove GIJoes disabling
-                                    let xpr2 = document.evaluate(
-                                      "//button[.='Change Tabs to Spaces']",
-                                      document.body,
-                                      null,
-                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                                      null
-                                    );
-                                    if (xpr2 && xpr2.singleNodeValue) {
-                                      let thisNode = xpr2.singleNodeValue;
-                                      thisNode.removeAttribute("disabled");
-
-                                      thisNode = thisNode.nextSibling;
-                                      thisNode.removeAttribute("disabled");
-                                    }
+                                    enableCTTS();
                                   }
                                   break;
                               }
