@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.3
+// @version       0.9.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1005,6 +1005,19 @@
                 "securityAdvisory": {
                   "advisory": "elevated",
                   "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "files.kkhweb.com": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=c63ef58d11993cfc0f8ca5c832650b68&r=PG&s=16&default=identicon',
+                "title": 'used by Empty_Soul (100960)',
+                "rex": [
+                  "^https?:\\/\\/files\\.kkhweb\\.com\\/greasemonkey\\/57756\\.safe\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "pc-expert.pl": {
