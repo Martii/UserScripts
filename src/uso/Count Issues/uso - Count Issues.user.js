@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.10
+// @version       0.9.11
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -34,30 +34,38 @@
 //
 // ==/UserScript==
 
-  function simpleTranscodeHex(source, counter) {
-    let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/);
+  function simpleTranscodeDotNotation(line, counter) { // NOTE: Fuzzy
+    let matched =  line.match(/\[\"(\w+)\"\]/);
     if (matched) {
-      source = source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "");
-      [source, counter] = simpleTranscodeHex(source, counter + 1);
+      line = line.replace(matched[0], "." + matched[1]);
+      [line, counter] = simpleTranscodeDotNotation(line, counter + 1);
     }
-    return [source, counter];
+    return [line, counter];
+  }
+
+  function simpleTranscodeHex(line, counter) {
+    let matched = line.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/);
+    if (matched) {
+      line = line.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "");
+      [line, counter] = simpleTranscodeHex(line, counter + 1);
+    }
+    return [line, counter];
   }
 
   function simpleTranscode(source, counter) {
     source = js_beautify(source.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
 
+    let dummy = 0;
+
     let lines = source.split(/[\r\n]/);
     for (let i = 0; i < lines.length; i++) {
-      let matched = lines[i].match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/);
-      if (matched) {
-        [lines[i], counter] = simpleTranscodeHex(lines[i].replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), ""), counter + 1);
-      }
+      [lines[i], counter] = simpleTranscodeHex(lines[i], counter);
+      [lines[i], dummy] = simpleTranscodeDotNotation(lines[i], dummy);
     }
     source = lines.join("\n");
 
     return [source, counter];
   }
-
 
   function enableCTTS() {
     let xpr = document.evaluate(
