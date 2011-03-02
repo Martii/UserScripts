@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.9
+// @version       0.9.10
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -35,12 +35,29 @@
 // ==/UserScript==
 
   function simpleTranscodeHex(source, counter) {
-    let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/m);
-    if (matched)
-      [source, counter] = simpleTranscodeHex(source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "m"), counter + 1);
+    let matched = source.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/);
+    if (matched) {
+      source = source.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "");
+      [source, counter] = simpleTranscodeHex(source, counter + 1);
+    }
+    return [source, counter];
+  }
+
+  function simpleTranscode(source, counter) {
+    source = js_beautify(source.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
+
+    let lines = source.split(/[\r\n]/);
+    for (let i = 0; i < lines.length; i++) {
+      let matched = lines[i].match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/);
+      if (matched) {
+        [lines[i], counter] = simpleTranscodeHex(lines[i].replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), ""), counter + 1);
+      }
+    }
+    source = lines.join("\n");
 
     return [source, counter];
   }
+
 
   function enableCTTS() {
     let xpr = document.evaluate(
@@ -818,7 +835,7 @@
                       switch (gmc.get("deobMethod")) {
                         case 'Simple Transcode':
                           try {
-                            [responseText, hexCount] = simpleTranscodeHex(xhr.responseText, 0);
+                            [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
                           }
                           catch(e) {
                             GM_log('Too much recursion error encountered. Aborting transcode');
@@ -1149,7 +1166,7 @@
           switch (gmc.get("deobMethod")) {
             case 'Simple Transcode':
               try {
-                [hookNode.textContent] = simpleTranscodeHex(hookNode.textContent, 0);
+                [hookNode.textContent] = simpleTranscode(hookNode.textContent, 0);
 
                 // If source is < 20KB then autohighlight just like USO does
                 if (hookNode.textContent.length < 20480) {
