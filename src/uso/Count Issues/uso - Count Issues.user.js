@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.8
+// @version       0.9.9
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -391,7 +391,7 @@
           },
           'checkShowVersionsSource': {
               "type": 'checkbox',
-              "label": 'Show recent Versions on Source Code page <em class="gmc69307-yellownote">ALPHA PRERELEASE</em>',
+              "label": 'Show recent Versions on Source Code page <em class="gmc69307-yellownote">BETA</em>',
               "default": false
           }
         }
@@ -1319,198 +1319,128 @@
               sourcesNodes.appendChild(thisNode);
             }
 
-            GM_xmlhttpRequest({
-              retry: 5,
-              method: "GET",
-              url: location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/versions/" + scriptid,
-              onload: function(xhr) {
-                switch (xhr.status) {
-                  case 502:
-                  case 503:
-                    if (--this.retry > 0)
-                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                    break;
-                  case 200:
-                    let
-                      dt = document.implementation.createDocumentType(
-                        "html",
-                        "-//W3C//DTD HTML 4.01 Transitional//EN",
-                        "http://www.w3.org/TR/html4/loose.dtd"
-                      ),
-                      doc = document.implementation.createDocument("", "", dt),
-                      documentElement = doc.createElement("html")
-                    ;
+            function loadVersions(url) {
+              GM_xmlhttpRequest({
+                retry: 5,
+                method: "GET",
+                url: url,
+                onload: function(xhr) {
+                  switch (xhr.status) {
+                    case 502:
+                    case 503:
+                      if (--this.retry > 0)
+                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      break;
+                    case 200:
+                      let
+                        dt = document.implementation.createDocumentType(
+                          "html",
+                          "-//W3C//DTD HTML 4.01 Transitional//EN",
+                          "http://www.w3.org/TR/html4/loose.dtd"
+                        ),
+                        doc = document.implementation.createDocument("", "", dt),
+                        documentElement = doc.createElement("html")
+                      ;
 
-                    documentElement.innerHTML = xhr.responseText;
-                    doc.appendChild(documentElement);
+                      documentElement.innerHTML = xhr.responseText;
+                      doc.appendChild(documentElement);
 
-                    let html = doc.documentElement.innerHTML;
-                    doc.documentElement.innerHTML = "";
+                      let html = doc.documentElement.innerHTML;
+                      doc.documentElement.innerHTML = "";
 
-                    let body = doc.createElement("body");
-                    body.innerHTML = html;
-                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+                      let body = doc.createElement("body");
+                      body.innerHTML = html;
+                      doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
 
-                    let head = doc.createElement("head");
-                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+                      let head = doc.createElement("head");
+                      doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
 
-                    // doc has been created... start twiddling
+                      // doc has been created... start twiddling
 
-                    // TODO: Nab pagination
-                    let xpr = doc.evaluate(
-                      "//div[@class='pagination']",
-                      doc.body,
-                      null,
-                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                      null
-                    );
-                    if (xpr && xpr.singleNodeValue) {
-                      let thisNode = xpr.singleNodeValue;
+                      // Nab pagination
+                      let xpr = doc.evaluate(
+                        "//div[@class='pagination']",
+                        doc.body,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                      );
+                      if (xpr && xpr.singleNodeValue) {
+                        let thisNode = xpr.singleNodeValue;
 
-//                         let paginationTop = thisNode.cloneNode(true);
-//                         let paginationBottom = thisNode.cloneNode(true);
-//                         paginationBottom.style.setProperty("clear", "left", "");
+                          let pagination = thisNode.cloneNode(true);
+                          versionsNodes.parentNode.insertBefore(pagination, versionsNodes);
 
-                      // TODO: Add eventlisteners to pagination
+                          document.evaluate(
+                            "//div[@class='pagination']/a",
+                            document.body,
+                            null,
+                            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                            xpr
+                          );
+                          if (xpr)
+                            for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                              thisNode.addEventListener("click", function(ev) {
+                                ev.preventDefault();
 
-//                         versionsNodes.parentNode.insertBefore(paginationTop, versionsNodes);
-//                         subcontainer.appendChild(paginationBottom);
-                    }
-
-
-                    doc.evaluate(
-                      "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
-                      doc.body,
-                      null,
-                      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                      xpr
-                    );
-
-                    let ulNode = document.createElement("ul");
-                    ulNode.style.setProperty("list-style", "none outside none", "");
-                    ulNode.style.setProperty("padding", "0", "");
-                    ulNode.style.setProperty("margin", "0.25em", "");
-                    ulNode.style.setProperty("font-size", "1.0em", "");
-
-                    if (xpr)
-                      for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
-                        let dateNode = thisNode.firstChild;
-                        let diffNode = thisNode.firstChild.nextSibling;
-
-                        let dateid = dateNode.textContent.replace(/\n\[/, "");
-                        let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
-
-
-                        let aInstallNode = document.createElement("a");
-                        aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
-                        aInstallNode.style.setProperty("text-decoration", "none", "");
-                        aInstallNode.style.setProperty("color", "black", "");
-
-                        aInstallNode.textContent = dateid;
-
-
-                        let spanNode = document.createElement("span");
-                        spanNode.style.setProperty("float", "right", "");
-
-                        let leftText = document.createTextNode(" [ ")
-
-                        let aViewNode = document.createElement("a");
-                        aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
-                        aViewNode.textContent = "view";
-                        aViewNode.addEventListener("click", function(ev) {
-                          ev.preventDefault();
-
-                          let aNode = ev.target;
-                          GM_xmlhttpRequest({
-                            method: "GET",
-                            url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
-                            onload: function(xhr) {
-                              switch (xhr.status) {
-                                case 200:
-                                  let preNode = document.getElementById("source");
-                                  preNode.textContent = xhr.responseText;
-
-                                  // Clear all Selection markers
-                                  let ulNode = aNode.parentNode.parentNode.parentNode;
-
-                                  let thisNode = ulNode.firstChild;
-                                  while(thisNode) {
-                                    thisNode.style.removeProperty("background-color");
-                                    thisNode = thisNode.nextSibling;
-                                  }
-
-                                  // Set current selection marker
-                                  let liNode = aNode.parentNode.parentNode;
-                                  liNode.style.setProperty("background-color", "#ccc", "");
-
-                                  // Remove GIJoes disabling
-                                  enableCTTS();
-
-                                  // If source is < 20KB then autohighlight just like USO does
-                                  if (xhr.responseText.length < 20480) {
-                                    let win = window.wrappedJSObject || window;
-                                    win.sh_highlightDocument();
-                                  }
-                                  break;
-                              }
+                                versionsNodes.parentNode.removeChild(pagination);
+                                versionsNodes.removeChild(versionsNodes.firstChild)
+                                loadVersions(location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search);
+                              }, false);
                             }
-                          });
-                        }, false);
+                      }
+
+                      doc.evaluate(
+                        "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
+                        doc.body,
+                        null,
+                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                        xpr
+                      );
+
+                      let ulNode = document.createElement("ul");
+                      ulNode.style.setProperty("list-style", "none outside none", "");
+                      ulNode.style.setProperty("padding", "0", "");
+                      ulNode.style.setProperty("margin", "0.25em", "");
+                      ulNode.style.setProperty("font-size", "1.0em", "");
+
+                      if (xpr)
+                        for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                          let dateNode = thisNode.firstChild;
+                          let diffNode = thisNode.firstChild.nextSibling;
+
+                          let dateid = dateNode.textContent.replace(/\n\[/, "");
+                          let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
 
 
-                        let middleText = document.createTextNode(" | ")
+                          let aInstallNode = document.createElement("a");
+                          aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
+                          aInstallNode.style.setProperty("text-decoration", "none", "");
+                          aInstallNode.style.setProperty("color", "black", "");
+
+                          aInstallNode.textContent = dateid;
 
 
-                        let aDiffNode = document.createElement("a");
-                        aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
-                        aDiffNode.textContent = "changes";
+                          let spanNode = document.createElement("span");
+                          spanNode.style.setProperty("float", "right", "");
 
-                        aDiffNode.addEventListener("click", function(ev) {
-                          ev.preventDefault();
+                          let leftText = document.createTextNode(" [ ")
 
-                          let aNode = ev.target;
-                          GM_xmlhttpRequest({
-                            method: "GET",
-                            url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
-                            onload: function(xhr) {
-                              switch (xhr.status) {
-                                case 200:
+                          let aViewNode = document.createElement("a");
+                          aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
+                          aViewNode.textContent = "view";
+                          aViewNode.addEventListener("click", function(ev) {
+                            ev.preventDefault();
 
-                                  let
-                                    dt = document.implementation.createDocumentType(
-                                      "html",
-                                      "-//W3C//DTD HTML 4.01 Transitional//EN",
-                                      "http://www.w3.org/TR/html4/loose.dtd"
-                                    ),
-                                    doc = document.implementation.createDocument("", "", dt),
-                                    documentElement = doc.createElement("html")
-                                  ;
-
-                                  documentElement.innerHTML = xhr.responseText;
-                                  doc.appendChild(documentElement);
-
-                                  let html = doc.documentElement.innerHTML;
-                                  doc.documentElement.innerHTML = "";
-
-                                  let body = doc.createElement("body");
-                                  body.innerHTML = html;
-                                  doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
-
-                                  let head = doc.createElement("head");
-                                  doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
-
-
-                                  let xpr = doc.evaluate(
-                                    "//pre",
-                                    doc.body,
-                                    null,
-                                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                                    null
-                                  );
-                                  if (xpr && xpr.singleNodeValue) {
+                            let aNode = ev.target;
+                            GM_xmlhttpRequest({
+                              method: "GET",
+                              url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                              onload: function(xhr) {
+                                switch (xhr.status) {
+                                  case 200:
                                     let preNode = document.getElementById("source");
-                                    preNode.innerHTML = xpr.singleNodeValue.innerHTML;
-
+                                    preNode.textContent = xhr.responseText;
 
                                     // Clear all Selection markers
                                     let ulNode = aNode.parentNode.parentNode.parentNode;
@@ -1527,38 +1457,123 @@
 
                                     // Remove GIJoes disabling
                                     enableCTTS();
-                                  }
-                                  break;
+
+                                    // If source is < 20KB then autohighlight just like USO does
+                                    if (xhr.responseText.length < 20480) {
+                                      let win = window.wrappedJSObject || window;
+                                      win.sh_highlightDocument();
+                                    }
+                                    break;
+                                }
                               }
-                            }
-                          });
-                        }, false);
+                            });
+                          }, false);
 
 
-                        let rightText = document.createTextNode(" ]")
+                          let middleText = document.createTextNode(" | ")
 
-                        let liNode = document.createElement("li");
 
-                        liNode.appendChild(aInstallNode);
+                          let aDiffNode = document.createElement("a");
+                          aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
+                          aDiffNode.textContent = "changes";
 
-                        spanNode.appendChild(leftText);
-                        spanNode.appendChild(aViewNode);
-                        spanNode.appendChild(middleText);
-                        spanNode.appendChild(aDiffNode);
-                        spanNode.appendChild(rightText);
+                          aDiffNode.addEventListener("click", function(ev) {
+                            ev.preventDefault();
 
-                        liNode.appendChild(spanNode);
+                            let aNode = ev.target;
+                            GM_xmlhttpRequest({
+                              method: "GET",
+                              url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                              onload: function(xhr) {
+                                switch (xhr.status) {
+                                  case 200:
 
-                        ulNode.appendChild(liNode);
-                      }
+                                    let
+                                      dt = document.implementation.createDocumentType(
+                                        "html",
+                                        "-//W3C//DTD HTML 4.01 Transitional//EN",
+                                        "http://www.w3.org/TR/html4/loose.dtd"
+                                      ),
+                                      doc = document.implementation.createDocument("", "", dt),
+                                      documentElement = doc.createElement("html")
+                                    ;
 
-                    versionsNodes.appendChild(ulNode);
-                    break;
-                  default:
-                    GM_log('failure code ' + xhr.status);
-                    break;
+                                    documentElement.innerHTML = xhr.responseText;
+                                    doc.appendChild(documentElement);
+
+                                    let html = doc.documentElement.innerHTML;
+                                    doc.documentElement.innerHTML = "";
+
+                                    let body = doc.createElement("body");
+                                    body.innerHTML = html;
+                                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+
+                                    let head = doc.createElement("head");
+                                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+
+
+                                    let xpr = doc.evaluate(
+                                      "//pre",
+                                      doc.body,
+                                      null,
+                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                      null
+                                    );
+                                    if (xpr && xpr.singleNodeValue) {
+                                      let preNode = document.getElementById("source");
+                                      preNode.innerHTML = xpr.singleNodeValue.innerHTML;
+
+
+                                      // Clear all Selection markers
+                                      let ulNode = aNode.parentNode.parentNode.parentNode;
+
+                                      let thisNode = ulNode.firstChild;
+                                      while(thisNode) {
+                                        thisNode.style.removeProperty("background-color");
+                                        thisNode = thisNode.nextSibling;
+                                      }
+
+                                      // Set current selection marker
+                                      let liNode = aNode.parentNode.parentNode;
+                                      liNode.style.setProperty("background-color", "#ccc", "");
+
+                                      // Remove GIJoes disabling
+                                      enableCTTS();
+                                    }
+                                    break;
+                                }
+                              }
+                            });
+                          }, false);
+
+
+                          let rightText = document.createTextNode(" ]")
+
+                          let liNode = document.createElement("li");
+
+                          liNode.appendChild(aInstallNode);
+
+                          spanNode.appendChild(leftText);
+                          spanNode.appendChild(aViewNode);
+                          spanNode.appendChild(middleText);
+                          spanNode.appendChild(aDiffNode);
+                          spanNode.appendChild(rightText);
+
+                          liNode.appendChild(spanNode);
+
+                          ulNode.appendChild(liNode);
+                        }
+
+                      versionsNodes.appendChild(ulNode);
+                      break;
+                    default:
+                      GM_log('failure code ' + xhr.status);
+                      break;
+                  }
                 }
-            }});
+              });
+            }
+            loadVersions(location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/versions/" + scriptid);
           }
         }
       }
