@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.11
+// @version       0.9.12
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -34,22 +34,26 @@
 //
 // ==/UserScript==
 
-  function simpleTranscodeDotNotation(line, counter) { // NOTE: Fuzzy
+  function simpleTranscodeDotNotation(line, counter, loop) { // NOTE: Fuzzy
     let matched =  line.match(/\[\"(\w+)\"\]/);
     if (matched) {
       line = line.replace(matched[0], "." + matched[1]);
-      [line, counter] = simpleTranscodeDotNotation(line, counter + 1);
+      ++counter;
+      return [line, counter, true];
     }
-    return [line, counter];
+    else
+      return [line, counter, false];
   }
 
-  function simpleTranscodeHex(line, counter) {
-    let matched = line.match(/\\x([0-9(?:A-F|a-f)][0-9(?:A-F|a-f)])/);
+  function simpleTranscodeHex(line, counter, loop) {
+    let matched = line.match(/\\x([\d(?:A-F|a-f)]{2})/);
     if (matched) {
       line = line.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "");
-      [line, counter] = simpleTranscodeHex(line, counter + 1);
+      ++counter;
+      return [line, counter, true];
     }
-    return [line, counter];
+    else
+      return [line, counter, false];
   }
 
   function simpleTranscode(source, counter) {
@@ -58,9 +62,14 @@
     let dummy = 0;
 
     let lines = source.split(/[\r\n]/);
-    for (let i = 0; i < lines.length; i++) {
-      [lines[i], counter] = simpleTranscodeHex(lines[i], counter);
-      [lines[i], dummy] = simpleTranscodeDotNotation(lines[i], dummy);
+    for (let i = 0, loop; i < lines.length; i++) {
+      loop = true;
+      while (loop)
+        [lines[i], counter, loop] = simpleTranscodeHex(lines[i], counter, loop);
+
+      loop = true;
+      while (loop)
+        [lines[i], dummy, loop] = simpleTranscodeDotNotation(lines[i], dummy, loop);
     }
     source = lines.join("\n");
 
@@ -342,7 +351,7 @@
           },
           'checkDeobfuscate': {
               "type": 'checkbox',
-              "label": 'Deobfuscate <em class="gmc69307-yellownote">recommend Simple Transcode in Firefox 4.x and JsCode in Firefox 3.x to reduce potential failure on large scripts</em>',
+              "label": 'Deobfuscate <em class="gmc69307-yellownote">currently recommend JsCode in Firefox 3.x only</em>',
               "default": true
           },
           'deobMethod': {
