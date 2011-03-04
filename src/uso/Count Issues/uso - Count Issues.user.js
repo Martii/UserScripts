@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.12
+// @version       0.9.13
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -45,7 +45,18 @@
       return [line, counter, false];
   }
 
-  function simpleTranscodeHex(line, counter, loop) {
+  function simpleTranscodeURLdecode(line, counter, loop) { // NOTE: Fuzzy
+    let matched = line.match(/\%([\d(?:A-F|a-f)]{2})/);
+    if (matched) {
+      line = line.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "");
+      ++counter;
+      return [line, counter, true];
+    }
+    else
+      return [line, counter, false];
+  }
+
+  function simpleTranscodeHex(line, counter, loop) { // NOTE: Fuzzy
     let matched = line.match(/\\x([\d(?:A-F|a-f)]{2})/);
     if (matched) {
       line = line.replace(matched[0], String.fromCharCode(parseInt("0x" + matched[1], 16)), "");
@@ -70,6 +81,10 @@
       loop = true;
       while (loop)
         [lines[i], dummy, loop] = simpleTranscodeDotNotation(lines[i], dummy, loop);
+
+      loop = true;
+      while (loop)
+        [lines[i], dummy, loop] = simpleTranscodeURLdecode(lines[i], dummy, loop);
     }
     source = lines.join("\n");
 
