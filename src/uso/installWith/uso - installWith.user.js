@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.4
+// @version       0.9.5
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -368,6 +368,7 @@
               +   "\\.meta\\.js"
               +   "|" + scriptid + "\\.user\\.js"
               +   "|(\"|')https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/" + scriptid
+              +   "|(\"|')(?:https?:\\/\\/userscripts\\.org\\/)?scripts\\/source\\/.+\\.user\\.js"
               +   "|https?:\\/\\/www\\.monkeyupdater\\.com"
               +   "|https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
               +   "|\\/version\\.xml"
