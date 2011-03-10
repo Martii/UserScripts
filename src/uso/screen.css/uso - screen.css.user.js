@@ -5,7 +5,7 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.2
+// @version       0.1.3
 // @icon    http://s3.amazonaws.com/uso_ss/icon/48071/thumb.jpg
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -49,19 +49,13 @@
     document.body,
     null,
     XPathResult.FIRST_ORDERED_NODE_TYPE,
-    xpr
+    null
   );
 
   if (xpr && xpr.singleNodeValue) {
     thisNode = xpr.singleNodeValue;
 
     thisNode.setAttribute("size", "20");
-//     GM_addStyle(<><![CDATA[
-//
-//       #header #script_search { margin-top: -6px; padding: 0; }
-//       input.text, input.title, input[type="text"] { padding: 3px; }
-//
-//     ]]></> + "");
 
     if (window.location.pathname == "/search") {
       document.evaluate(
@@ -79,5 +73,33 @@
       }
     }
   }
+
+  // Play nice with Better Search Preferences
+  function resizeOnceSearch() {
+    let xpr = document.evaluate(
+      "//a[@title='Better Search Preferences']",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+
+    if (xpr && xpr.singleNodeValue) {
+      document.evaluate(
+        "//input[@name='q']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        xpr
+      );
+
+      if (xpr && xpr.singleNodeValue) {
+        let thisNode = xpr.singleNodeValue;
+
+        thisNode.setAttribute("size", "24");
+      }
+    }
+  }
+  window.setTimeout(resizeOnceSearch, 50); // Increase delay if not resizing
 
 })();
