@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.6
+// @version       0.9.7
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -508,6 +508,18 @@
                 "securityAdvisory": {
                   "advisory": "guarded",
                   "title": ", Derivative of Another Auto Updater (www.hitotext.com/mh/ff)"
+                }
+              },
+              "www.jeffersonscher.com": {
+                "derivative": 1,
+                "textContent": 'Another Auto Updater',
+                "title": 'by Jefferson Scher (281305)',
+                "rex": [
+                  "^http:\\/\\/www\\.jeffersonscher\\.com\\/gm\\/AnotherAutoUpdater\\.php\\?id=(\\d+)"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", Derivative of Another Auto Updater (www.jeffersonscher.com)"
                 }
               },
               "www.nodeka411.net": {
