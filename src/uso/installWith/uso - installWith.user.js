@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.7
+// @version       0.9.8
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -73,37 +73,37 @@
     "checking": {
       "index": 0,
       "title": 'Security Advisory: CHECKING, Please Wait',
-      "background-image": GM_getResourceURL("checking")
+      "background-image": decodeURIComponent(GM_getResourceURL("checking"))
     },
     "low": {
       "index": 1,
       "title": 'Security Advisory: LOW',
-      "background-image": GM_getResourceURL("low")
+      "background-image": decodeURIComponent(GM_getResourceURL("low"))
     },
     "guarded": {
       "index": 2,
       "title": 'Security Advisory: GUARDED',
-      "background-image": GM_getResourceURL("guarded")
+      "background-image": decodeURIComponent(GM_getResourceURL("guarded"))
     },
     "elevated": {
       "index": 3,
       "title": 'Security Advisory: ELEVATED',
-      "background-image": GM_getResourceURL("elevated")
+      "background-image": decodeURIComponent(GM_getResourceURL("elevated"))
     },
     "high": {
       "index": 4,
       "title": 'Security Advisory: HIGH',
-      "background-image": GM_getResourceURL("high")
+      "background-image": decodeURIComponent(GM_getResourceURL("high"))
     },
     "severe": {
       "index": 5,
       "title": 'Security Advisory: SEVERE',
-      "background-image": GM_getResourceURL("severe")
+      "background-image": decodeURIComponent(GM_getResourceURL("severe"))
     },
     "undetermined": {
       "index": 6,
       "title": 'Security Advisory: UNDETERMINED',
-      "background-image": GM_getResourceURL("undetermined")
+      "background-image": decodeURIComponent(GM_getResourceURL("undetermined"))
     }
 };
 
@@ -245,7 +245,6 @@
               "default": 1
             },
             "useGravatarIcon": {
-//               "section": [, ""],
               "type": "checkbox",
               "label": '',
               "default": false
@@ -431,14 +430,10 @@
               "uso": {
                 "value": "uso",
                 "textContent": 'userscripts.org (default)',
-                "iconUrl": GM_getResourceURL("script"),
-                "title": '',
-                "updater": "",
-                "rex": [],
-                "url": "",
-                "qs": "",
+                "iconUrl": decodeURIComponent(GM_getResourceURL("script")),
+                "title": 'Use native meta.js',
                 "securityAdvisory": {
-                  "advisory": "low",
+                  "advisory": "undetermined",
                   "title": ""
                 },
                 "border-bottom": "thin dotted #666"
@@ -446,7 +441,7 @@
               "AnotherAutoUpdater": {
                 "value": "AnotherAutoUpdater",
                 "textContent": 'Another Auto Updater',
-                "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=8603ded5ba12590f2231b13d5c07c45b&r=PG&s=16&default=identicon",
+                "iconUrl": "8603ded5ba12590f2231b13d5c07c45b",
                 "title": 'by sizzlemctwizzle (27715)',
                 "updater": "anotherautoupdater",
                 "rex": [
@@ -513,6 +508,7 @@
               "www.jeffersonscher.com": {
                 "derivative": 1,
                 "textContent": 'Another Auto Updater',
+                "iconUrl": 'b171e9282909b6a1f7030411674f0058',
                 "title": 'by Jefferson Scher (281305)',
                 "rex": [
                   "^http:\\/\\/www\\.jeffersonscher\\.com\\/gm\\/AnotherAutoUpdater\\.php\\?id=(\\d+)"
@@ -536,7 +532,7 @@
               },
               "75442": {
                 "textContent": 'AEG Userscript AutoUpdater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=df1c1d7d1c968bc8ea4324d1d4d3f557&r=PG&s=16&default=identicon',
+                "iconUrl": 'df1c1d7d1c968bc8ea4324d1d4d3f557',
                 "title": 'by ArmEagle (111132)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/75442\\.user\\.js"
@@ -548,7 +544,7 @@
               },
               "16338": {
                 "textContent": 'AutoUpdate Test',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=b4f3c9552954780fb7b2eb68bb043297&r=PG&s=16&default=identicon',
+                "iconUrl": 'b4f3c9552954780fb7b2eb68bb043297',
                 "title": 'by TastyFlySoup (39661)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16338\\.user\\.js"
@@ -560,7 +556,7 @@
               },
               "45904": {
                 "textContent": 'Easy Update Code',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=2d5c92476e067787fc7e06f5970dda22&r=PG&s=16&default=identicon',
+                "iconUrl": '2d5c92476e067787fc7e06f5970dda22',
                 "title": 'by shoecream (74855)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45904\\.user\\.js"
@@ -572,7 +568,7 @@
               },
               "45266": {
                 "textContent": 'easy userscript updater snippet',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=9fffdbad0ef6d1493ed098c9ae5b619a&r=PG&s=16&default=identicon',
+                "iconUrl": '9fffdbad0ef6d1493ed098c9ae5b619a',
                 "title": 'by thomd (43919)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45266\\.user\\.js"
@@ -584,7 +580,7 @@
               },
               "35611": {
                 "textContent": 'GM Script Update Control',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=0b7d633463490424d235837976a4f915&r=PG&s=16&default=identicon',
+                "iconUrl": '0b7d633463490424d235837976a4f915',
                 "title": 'by Sylvain Comte (21175)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/35611\\.user\\.js"
@@ -596,7 +592,7 @@
               },
               "51513": {
                 "textContent": 'GM_ScriptUpdater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=e2b29bd68eb03763a0e18c691ecf9fa5&r=PG&s=16&default=identicon',
+                "iconUrl": 'e2b29bd68eb03763a0e18c691ecf9fa5',
                 "title": 'by IzzySoft (89585)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
@@ -619,7 +615,7 @@
               },
               "38788": {
                 "textContent": 'Includes : CheckForUpdate',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=81269f79d21e612f9f307d16b09ee82b&r=PG&s=16&default=identicon',
+                "iconUrl": '81269f79d21e612f9f307d16b09ee82b',
                 "title": 'by w35l3y (55607)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
@@ -631,7 +627,7 @@
               },
               "33024": {
                 "textContent": 'Javascript Library 1',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=c1eeac01273ee6125e79b2948f184c8b&r=PG&s=16&default=identicon',
+                "iconUrl": 'c1eeac01273ee6125e79b2948f184c8b',
                 "title": 'by Aquilax (28612)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/33024\\.user\\.js",
@@ -645,7 +641,7 @@
               "47852": {
                 "derivative": 1,
                 "textContent": 'Javascript Library+',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=2c0ccbb35186e3ccfb59c9bb49fcde76&r=PG&s=16&default=identicon',
+                "iconUrl": '2c0ccbb35186e3ccfb59c9bb49fcde76',
                 "title": 'by BlackDiamond (75873)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/47852\\.user\\.js"
@@ -690,7 +686,7 @@
               },
               "36259": {
                 "textContent": 'Script AutoUpdater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=bb3f204908e461a17a0efebbe8907ad8&r=PG&s=16&default=identicon',
+                "iconUrl": 'bb3f204908e461a17a0efebbe8907ad8',
                 "title": 'by Eyal Soha (8105)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/36259\\.user\\.js"
@@ -702,7 +698,7 @@
               },
               "20145": {
                 "textContent": 'Script Update Checker',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=bee96081cd4a9e03a60d362c48da7f04&r=PG&s=16&default=identicon',
+                "iconUrl": 'bee96081cd4a9e03a60d362c48da7f04',
                 "title": 'by Jarett (38602)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/20145\\.user\\.js"
@@ -714,7 +710,7 @@
               },
               "8857": {
                 "textContent": 'Script Updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=1fbd08e29b195146539a4e2c04746cbc&r=PG&s=16&default=identicon',
+                "iconUrl": '1fbd08e29b195146539a4e2c04746cbc',
                 "title": 'by alien scum (8158)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/8857\\.user\\.js"
@@ -726,7 +722,7 @@
               },
               "41075": {
                 "textContent": 'Script Version Checker',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=ba841339fac46cbddd6e571550500946&r=PG&s=16&default=identicon',
+                "iconUrl": 'ba841339fac46cbddd6e571550500946',
                 "title": 'by littlespark (75320)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
@@ -738,7 +734,7 @@
               },
               "29878": {
                 "textContent": 'SelfUpdaterExample',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9695e2508d5064bb5fb781416913759&r=PG&s=16&default=identicon',
+                "iconUrl": 'f9695e2508d5064bb5fb781416913759',
                 "title": 'by ScroogeMcPump (51934)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29878\\.user\\.js"
@@ -750,7 +746,7 @@
               },
               "29880": {
                 "textContent": 'SelfUpdaterExampleOpera',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9695e2508d5064bb5fb781416913759&r=PG&s=16&default=identicon',
+                "iconUrl": 'f9695e2508d5064bb5fb781416913759',
                 "title": 'by ScroogeMcPump (51934)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29880\\.user\\.js"
@@ -762,7 +758,7 @@
               },
               "94511": {
                 "textContent": 'Simpler Script Auto-Updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f93d3a59adb946dad69f577531cb5701&r=PG&s=16&default=identicon',
+                "iconUrl": 'f93d3a59adb946dad69f577531cb5701',
                 "title": 'by Karandaras (265255)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94511\\.user\\.js"
@@ -785,7 +781,7 @@
               },
               "45989": {
                 "textContent": 'SVC Script Version Checker',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=8c298802a4b4aa3d68217b3dc7ccd529&r=PG&s=16&default=identicon',
+                "iconUrl": '8c298802a4b4aa3d68217b3dc7ccd529',
                 "title": 'by devnull69 (75950)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45989\\.user\\.js"
@@ -797,7 +793,7 @@
               },
               "42456": {
                 "textContent": 'Tester',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=4c2fe87eefaf73fb1c12e7d2ea09c2f5&r=PG&s=16&default=identicon',
+                "iconUrl": '4c2fe87eefaf73fb1c12e7d2ea09c2f5',
                 "title": 'by realfree (77866)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/42456\\.user\\.js"
@@ -809,7 +805,7 @@
               },
               "94712": {
                 "textContent": 'update',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=9aca9fe2994da1a9ddd5ebd8aa23d4f0&r=PG&s=16&default=identicon',
+                "iconUrl": '9aca9fe2994da1a9ddd5ebd8aa23d4f0',
                 "title": 'by abcdefgh (151532)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94712\\.user\\.js"
@@ -821,7 +817,7 @@
               },
               "94713": {
                 "textContent": 'updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=9aca9fe2994da1a9ddd5ebd8aa23d4f0&r=PG&s=16&default=identicon',
+                "iconUrl": '9aca9fe2994da1a9ddd5ebd8aa23d4f0',
                 "title": 'by abcdefgh (151532)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94713\\.user\\.js"
@@ -833,7 +829,7 @@
               },
               "62036": {
                 "textContent": 'update Test',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=e112ac971d83dd545268142bc2320a3c&r=PG&s=16&default=identicon',
+                "iconUrl": 'e112ac971d83dd545268142bc2320a3c',
                 "title": 'by hirak99 (36905)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/62036\\.user\\.js"
@@ -845,7 +841,7 @@
               },
               "22372": {
                 "textContent": 'Userscript Auto-Update Add-in',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=7f3bb64a80ac40cfb3eeb72aca9ab4c3&r=PG&s=16&default=identicon',
+                "iconUrl": '7f3bb64a80ac40cfb3eeb72aca9ab4c3',
                 "title": 'by psycadelik (41688)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
@@ -868,7 +864,7 @@
               },
               "50390": {
                 "textContent": 'Userscripts Updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=5e6ac8007e5f74f23bc55815ac4092ee&r=PG&s=16&default=identicon',
+                "iconUrl": '5e6ac8007e5f74f23bc55815ac4092ee',
                 "title": 'by oneweirdkid90 (73205)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/50390\\.user\\.js"
@@ -880,7 +876,7 @@
               },
               "UserscriptUpdaterGenerator": {
                 "textContent": 'Userscript Updater Generator',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=780eb60a65688584794bd832b7bde567&r=PG&s=16&default=identicon',
+                "iconUrl": '780eb60a65688584794bd832b7bde567',
                 "title": 'by ΙδεΠÐ (136989)',
                 "rex": [
                   "^http:\\/\\/userscript-updater-generator\\.appspot\\.com\\/\\?id=(\\d+)"
@@ -892,7 +888,7 @@
               },
               "52251": {
                 "textContent": 'Userscripts - AutoUpdater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=af235ccf4ed8ed97b021b7c2d2501e83&r=PG&s=16&default=identicon',
+                "iconUrl": 'af235ccf4ed8ed97b021b7c2d2501e83',
                 "title": 'by Buzzy (57340)',
                 "rex": [
                   "^http:\\/\\/buzzy\\.260mb\\.com\\/AutoUpdater\\.js",
@@ -907,7 +903,7 @@
               "87942": {
                 "derivative": 1,
                 "textContent": 'Includes : Updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
+                "iconUrl": 'd1591dc87321de30c9504e7793779db1',
                 "title": 'by w35l3y (55607)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/87942\\.user\\.js"
@@ -920,7 +916,7 @@
               "57756": {
                 "derivative": 1,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
+                "iconUrl": 'd1591dc87321de30c9504e7793779db1',
                 "title": 'by PhasmaExMachina (106144)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
@@ -932,7 +928,7 @@
               },
               "PhasmaExMachina": {
                 "textContent": 'Known PhasmaExMachina Scripts',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d1591dc87321de30c9504e7793779db1&r=PG&s=16&default=identicon',
+                "iconUrl": 'd1591dc87321de30c9504e7793779db1',
                 "title": 'by PhasmaExMachina (106144)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(?:56757|56765|56817|56869|57148|57197|57377|57786|57849|57995|58160|58179|58191|58203|58205|58710|58855|59008|59720|59879|59936|60601|62718|67294|80545)\\.user\\.js"
@@ -945,7 +941,7 @@
               "98729": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=5abb7219be469df175c3da5f6c3d1257&r=PG&s=16&default=identicon',
+                "iconUrl": '5abb7219be469df175c3da5f6c3d1257',
                 "title": 'by pitmm (278057)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/98729\\.user\\.js"
@@ -958,7 +954,7 @@
               "95997": {
                 "derivative": 3,
                 "textContent": 'Script Updater (userscripts.org) BY HAKAN -MM-',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d5dc66cdb6f419bfeb3a04ee5e9190c1&r=PG&s=16&default=identicon',
+                "iconUrl": 'd5dc66cdb6f419bfeb3a04ee5e9190c1',
                 "title": 'by deniz-1 (287110)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95997\\.user\\.js"
@@ -971,7 +967,7 @@
               "95992": {
                 "derivative": 2,
                 "textContent": 'Script Updater**',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=fc8c1777adb39ee3002a31e448afeaba&r=PG&s=16&default=identicon',
+                "iconUrl": 'fc8c1777adb39ee3002a31e448afeaba',
                 "title": 'by Sathington Willoughby (281685)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95992\\.user\\.js"
@@ -984,7 +980,7 @@
               "94724": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=5f2c16e2998a1b3c470697a791d3ad54&r=PG&s=16&default=identicon',
+                "iconUrl": '5f2c16e2998a1b3c470697a791d3ad54',
                 "title": 'by hachichin (128042)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94724\\.user\\.js"
@@ -997,7 +993,7 @@
               "94662": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=a5716130c063f76ddb42c9e93d33f5f6&r=PG&s=16&default=identicon',
+                "iconUrl": 'a5716130c063f76ddb42c9e93d33f5f6',
                 "title": 'by AubergineAnodyne (127662)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94662\\.user\\.js"
@@ -1010,7 +1006,7 @@
               "94703": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=5922688ad6ad825fe6f4ed612f220c43&r=PG&s=16&default=identicon',
+                "iconUrl": '5922688ad6ad825fe6f4ed612f220c43',
                 "title": 'by MaiD450 (130846)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94703\\.user\\.js"
@@ -1023,7 +1019,7 @@
               "95007": {
                 "derivative": 2,
                 "textContent": 'Script Updater -SAFE-(userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=8f6a0c6feceb4a71de649d89e31c5776&r=PG&s=16&default=identicon',
+                "iconUrl": '8f6a0c6feceb4a71de649d89e31c5776',
                 "title": 'by mindfox (69388)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95007\\.user\\.js"
@@ -1036,7 +1032,7 @@
               "files.kkhweb.com": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=c63ef58d11993cfc0f8ca5c832650b68&r=PG&s=16&default=identicon',
+                "iconUrl": 'c63ef58d11993cfc0f8ca5c832650b68',
                 "title": 'used by Empty_Soul (100960)',
                 "rex": [
                   "^https?:\\/\\/files\\.kkhweb\\.com\\/greasemonkey\\/57756\\.safe\\.js"
@@ -1049,7 +1045,7 @@
               "pc-expert.pl": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=8d5ff205fe5b06d82a7fe2ef3597e0c6&r=PG&s=16&default=identicon',
+                "iconUrl": '8d5ff205fe5b06d82a7fe2ef3597e0c6',
                 "title": 'used by ircdirk (214722)',
                 "rex": [
                   "^https?:\\/\\/pc\\-expert\\.pl\\/sb\\/us\\/57756\\.user\\.js",
@@ -1063,7 +1059,7 @@
               "www.betawarriors.com": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=d0b4b33ed5ac937609ab837d7d525486&r=PG&s=16&default=identicon',
+                "iconUrl": 'd0b4b33ed5ac937609ab837d7d525486',
                 "title": 'by holyschmidt (93493)',
                 "rex": [
                   "^https?:\\/\\/www\\.betawarriors\\.com\\/bin\\/gm\\/57756user\\.js"
@@ -1076,7 +1072,7 @@
               "xavier.hinfray.free.fr": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=8740f823c9eadfc4cffb853115a84f05&r=PG&s=16&default=identicon',
+                "iconUrl": '8740f823c9eadfc4cffb853115a84f05',
                 "title": 'used by Fregate (126058)',
                 "rex": [
                   "^https?:\\/\\/xavier\\.hinfray\\.free\\.fr\\/ikariam\\/57756\\.js"
@@ -1089,7 +1085,7 @@
               "thogamerscripts.webs.com": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=ae864b7167d901766892a665632d75e4&r=PG&s=16&default=identicon',
+                "iconUrl": 'ae864b7167d901766892a665632d75e4',
                 "title": 'by thogamer (138765)',
                 "rex": [
                   "^https?:\\/\\/thogamerscripts\\.webs\\.com\\/scriptupdater\\.user\\.js"
@@ -1114,7 +1110,7 @@
               "60663": {
                 "derivative": 2,
                 "textContent": 'Script actualizador',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=335a5b24fbf27c9e20989a053e42f11c&r=PG&s=16&default=identicon',
+                "iconUrl": '335a5b24fbf27c9e20989a053e42f11c',
                 "title": 'by Juampi_yoel (99372) es-ES',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60663\\.user\\.js"
@@ -1127,7 +1123,7 @@
               "74144": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=6eb8cf6b5065df1306ea572147ac11c7&r=PG&s=16&default=identicon',
+                "iconUrl": '6eb8cf6b5065df1306ea572147ac11c7',
                 "title": 'by TheSpy (106188)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
@@ -1140,7 +1136,7 @@
               "66255": {
                 "derivative": 2,
                 "textContent": 'Script Updater RU (userscripts.org)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f9e36c9af86d922678ac91b037201d5f&r=PG&s=16&default=identicon',
+                "iconUrl": 'f9e36c9af86d922678ac91b037201d5f',
                 "title": 'by liquid ghost (126462) ru-RU',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/66255\\.user\\.js"
@@ -1153,7 +1149,7 @@
               "88544": {
                 "derivative": 2,
                 "textContent": 'Script Updater (userscripts.org) ua-UA',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=09f914766759c13acf6b88d093e0ef27&r=PG&s=16&default=identicon',
+                "iconUrl": '09f914766759c13acf6b88d093e0ef27',
                 "title": 'by ibobalo (237833) ua-UA',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/88544\\.user\\.js"
@@ -1189,7 +1185,7 @@
               },
               "37853": {
                 "textContent": 'Userscripts.org Timed Updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=620d4d8ec857b915057847eeb7f248b9&r=PG&s=16&default=identicon',
+                "iconUrl": '620d4d8ec857b915057847eeb7f248b9',
                 "title": 'by jerone (31497)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/37853\\.user\\.js"
@@ -1201,7 +1197,7 @@
               },
               "26062": {
                 "textContent": 'Userscripts Updater',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=068b7fb5725f061512446cf09aa0599e&r=PG&s=16&default=identicon',
+                "iconUrl": '068b7fb5725f061512446cf09aa0599e',
                 "title": 'by lazyttrick (20871)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/26062\\.user\\.js"
@@ -1213,7 +1209,7 @@
               },
               "12193": {
                 "textContent": 'UserScript Update Notification',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=0796a8386f0889176a443c8ddeef113c&r=PG&s=16&default=identicon',
+                "iconUrl": '0796a8386f0889176a443c8ddeef113c',
                 "title": 'by Seifer (33118)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/12193\\.user\\.js"
@@ -1225,7 +1221,7 @@
               },
               "2296": {
                 "textContent": 'User Script Updates',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=f16d4602c1c90646438a0b534ff61889&r=PG&s=16&default=identicon',
+                "iconUrl": 'f16d4602c1c90646438a0b534ff61889',
                 "title": 'by Richard Gibson (336)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/2296\\.user\\.js"
@@ -1237,7 +1233,7 @@
               },
               "39678": {
                 "textContent": 'US Framework',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=620d4d8ec857b915057847eeb7f248b9&r=PG&s=16&default=identicon',
+                "iconUrl": '620d4d8ec857b915057847eeb7f248b9',
                 "title": 'by jerone (31497)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/39678\\.user\\.js"
@@ -1250,7 +1246,7 @@
               "USOUpdater": {
                 "value": "USOUpdater",
                 "textContent": 'USO Updater',
-                "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=05f6e5c5e440e8513c86538ddb834096&r=PG&s=16&default=identicon",
+                "iconUrl": "05f6e5c5e440e8513c86538ddb834096",
                 "title": 'by Tim Smart (63868)',
                 "updater": "usoupdater",
                 "rex": [
@@ -1260,12 +1256,12 @@
                 "qsmax": "interval",
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Possible Security Risk"
+                  "title": ", Possible security risk"
                 }
               },
               "16144": {
                 "textContent": 'US Update',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=620d4d8ec857b915057847eeb7f248b9&r=PG&s=16&default=identicon',
+                "iconUrl": '620d4d8ec857b915057847eeb7f248b9',
                 "title": 'by jerone (31497)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
@@ -1277,7 +1273,7 @@
               },
               "46384": {
                 "textContent": 'VeriVersion (module)',
-                "iconUrl": 'http://www.gravatar.com/avatar.php?gravatar_id=ad95a3d96cd1986fafe1bbff032bfe1d&r=PG&s=16&default=identicon',
+                "iconUrl": 'ad95a3d96cd1986fafe1bbff032bfe1d',
                 "title": 'by bluflonalgul (75209)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/46384\\.user\\.js"
@@ -1304,7 +1300,7 @@
               "usoCheckup": {
                 "value": "usoCheckup",
                 "textContent": 'usoCheckup',
-                "iconUrl": GM_getResourceURL("usoCheckup"),
+                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckup")),
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1326,7 +1322,7 @@
                 "value": "usoCheckupbeta",
                 "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
                 "derivative": 1,
-                "iconUrl": GM_getResourceURL("usoCheckupBeta"),
+                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckupBeta")),
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1346,7 +1342,7 @@
                 "value": "usoCheckupOttoShow",
                 "textContent": 'usoCheckup + Otto Show',
                 "derivative": 1,
-                "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
+                "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1365,7 +1361,7 @@
                 "value": "usoCheckupOttoInstall",
                 "textContent": 'usoCheckup + Otto Install',
                 "derivative": 1,
-                "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
+                "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1384,7 +1380,7 @@
                 "value": "usoCheckupbottomsUp",
                 "textContent": 'usoCheckup + bottomsUp',
                 "derivative": 1,
-                "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
+                "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1403,7 +1399,7 @@
                 "value": "usoCheckupDOMNotify",
                 "textContent": 'usoCheckup + DOMNotify',
                 "derivative": 1,
-                "iconUrl": "http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=16&default=identicon",
+                "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1608,7 +1604,7 @@
             thisNode.style.setProperty("font-size", "1.0em", "");
 
             thisNode = helpNode;
-            let qmark = GM_getResourceURL("qmark")
+            let qmark = decodeURIComponent(GM_getResourceURL("qmark"));
 
             thisNode.style.setProperty("width", "16px", "");
             thisNode.style.setProperty("height", "16px", "");
@@ -1730,7 +1726,7 @@
                 iconNode.style.setProperty("margin", "0.25em 0.25em 0.25em " + ((updater["derivative"]) ? updater["derivative"] * 0.6 + "em" : "0"), "");
                 iconNode.style.setProperty("width", "16px", "");
                 iconNode.style.setProperty("height", "16px", "");
-                iconNode.style.setProperty("background", "transparent url(" + ((updater["iconUrl"]) ? updater["iconUrl"] : "") + ") no-repeat center center", "");
+                iconNode.style.setProperty("background", "transparent url(" + ((updater["iconUrl"]) ? (updater["iconUrl"].match(/^(?:http:|data:)/) ? updater["iconUrl"] : "http://www.gravatar.com/avatar.php?gravatar_id=" + updater["iconUrl"] + "&r=PG&s=16&default=identicon") : "") + ") no-repeat center center", "");
 
                 updaterNode.appendChild(iconNode);
                 iconNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
