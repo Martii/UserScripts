@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.15
+// @version       0.9.16
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -303,8 +303,8 @@
             max-width: 4em;
             width: 2em;
             min-height: 0.8em;
-            max-height: 1em;
-            height: 0.8em;
+            max-height: 2em;
+            height: 1em;
             text-align: right;
           }
 
