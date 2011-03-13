@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.8
+// @version       0.9.9
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -303,7 +303,7 @@
             #gmc68219_field_updaterMaxage,
             #gmc68219_field_updaterMinage
             {
-              width: 2.5em; height: 0.8em; margin: -0.35em 0.25em 0.25em; text-align: right;
+              width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right;
             }
 
             .gmc68219-yellownote
