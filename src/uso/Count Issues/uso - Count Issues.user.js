@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.16
+// @version       0.9.17
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -193,6 +193,20 @@
           write = true;
         }
 
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["hideH6String"].node.clientHeight + "px";
+        if (height != gmc.get("hideH6StringHeight")) {
+          gmc.set("hideH6StringHeight", height);
+          write = true;
+        }
+
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["hideNavTabString"].node.clientHeight + "px";
+        if (height != gmc.get("hideNavTabStringHeight")) {
+          gmc.set("hideNavTabStringHeight", height);
+          write = true;
+        }
+
       if (write) gmc.write();
       if (open) { gmc.close(); gmc.open(); }
     }
@@ -249,7 +263,9 @@
           }
 
           #gmc69307_field_showStringsString,
-          #gmc69307_field_showKeysString
+          #gmc69307_field_showKeysString,
+          #gmc69307_field_hideH6String,
+          #gmc69307_field_hideNavTabString
           {
             font-size: 1.0em;
             margin-left: 1.7em;
@@ -263,7 +279,9 @@
             height: 5em;
           }
 
-          #gmc69307_field_showKeysString
+          #gmc69307_field_showKeysString,
+          #gmc69307_field_hideH6String,
+          #gmc69307_field_hideNavTabString
           {
             min-height: 1.2em;
             height: 1.2em;
@@ -280,7 +298,9 @@
           #gmc69307_field_showOnAboutOnly,
           #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_enableHEAD,
-          #gmc69307_field_checkShowVersionsSource
+          #gmc69307_field_checkShowVersionsSource,
+          #gmc69307_field_hideH6,
+          #gmc69307_field_hideNavTab
           {
             top: 0.075em;
           }
@@ -291,7 +311,9 @@
           #gmc69307_field_limitMaxHeight,
           #gmc69307_field_showOnAboutOnly,
           #gmc69307_field_checkAgainstHomepageUSO,
-          #gmc69307_field_checkShowVersionsSource
+          #gmc69307_field_checkShowVersionsSource,
+          #gmc69307_field_hideH6,
+          #gmc69307_field_hideNavTab
           {
             margin-left: 0;
           }
@@ -327,6 +349,8 @@
             top: 0.1em;
           }
 
+          #gmc69307_hideNavTab_var,
+          #gmc69307_showStrings_var,
           #gmc69307_showKeys_var,
           #gmc69307_fontSize_var
           {
@@ -340,7 +364,9 @@
           }
 
           #gmc69307_showStringsString_field_label,
-          #gmc69307_showKeysString_field_label
+          #gmc69307_showKeysString_field_label,
+          #gmc69307_hideH6String_field_label,
+          #gmc69307_hideNavTabString_field_label
           {
             margin: 0 0 0 1.75em;
           }
@@ -354,6 +380,26 @@
 
         /* Settings object */
         {
+          'hideNavTab': {
+              "type": 'checkbox',
+              "label": 'Hide navigation tab(s) if present',
+              "default": false
+          },
+          'hideNavTabString': {
+              "type": 'textarea',
+              "label": '<em class="gmc69307-yellownote">use commas to separate tabs</em>',
+              "default": "Share"
+          },
+          'hideH6': {
+              "type": 'checkbox',
+              "label": 'Hide header(s) if present in sidebar',
+              "default": false
+          },
+          'hideH6String': {
+              "type": 'textarea',
+              "label": '<em class="gmc69307-yellownote">use commas to separate headers</em>',
+              "default": "Share"
+          },
           'showStrings': {
               "type": 'checkbox',
               "label": 'Show "Lost and Found" string(s) if present in sidebar',
@@ -438,6 +484,14 @@
               "type": 'hidden',
               "default": "1em"
           },
+          'hideH6StringHeight': {
+              "type": 'hidden',
+              "default": "1em"
+          },
+          'hideNavTabStringHeight': {
+              "type": 'hidden',
+              "default": "1em"
+          },
           'checkShowVersionsSource': {
               "type": 'checkbox',
               "label": 'Show recent Versions on Source Code page <em class="gmc69307-yellownote">BETA</em>',
@@ -449,6 +503,8 @@
         || window.location.href == "http://userscripts.org/scripts/show/69307/") {
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; } ]]></>);
 
       gmc.open();
       gmc.fields["showStringsString"].node.setAttribute("spellcheck", "false");
@@ -458,7 +514,7 @@
   else {
     if (!window.location.pathname == "/scripts/show/69307"
         || window.location.href == "http://userscripts.org/scripts/show/69307/")
-      GM_log('Something may have gone wrong in uso - Count Issues. Please let me know how to reproduce');
+      GM_log('Something may have gone wrong in uso - Count Issues. Please let me know steps to reproduce');
   }
 
   function nsResolver(prefix) {
@@ -496,8 +552,80 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
+  function addClass(thisNode, thisValue) {
+    let class = thisNode.getAttribute("class");
+    let re = new RegExp("\\b" + thisValue + "\\b");
+    if (!class)
+      thisNode.setAttribute("class", thisValue);
+    else if (!class.match(re))
+      thisNode.setAttribute("class", class + " " + thisValue);
+  }
+
   var scriptid = getScriptid();
   if (scriptid) {
+
+    if (gmc && gmc.get("hideNavTab")) {
+      GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
+      let tabNodes = document.evaluate(
+      "//ul[@id='script-nav']/li",
+        document.documentElement,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+      );
+      if (tabNodes)
+        for (let i = 0, thisNode; thisNode = tabNodes.snapshotItem(i++);) {
+          let tabs = gmc.get("hideNavTabString").split(",");
+          for each (let tab in tabs) {
+            let rex = "\\s*" + tab;
+            if (thisNode.textContent.match(new RegExp(rex, "")))
+              addClass(thisNode, "hidden");
+          }
+        }
+    }
+
+    if (gmc && gmc.get("hideH6")) {
+      GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
+      let headerNodes = document.evaluate(
+      "//h6",
+        document.documentElement,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+      );
+      if (headerNodes)
+        for (let i = 0, thisNode; thisNode = headerNodes.snapshotItem(i++);) {
+          let headers = gmc.get("hideH6String").split(",");
+          for each (let header in headers) {
+            let rex = "\\s*" + header;
+            if (thisNode.textContent.match(new RegExp(rex, ""))) {
+              addClass(thisNode, "hidden");
+
+              let thatNode = thisNode.nextSibling;
+              let loop = true;
+              while(loop) {
+                if (thatNode.tagName)
+                  if (thatNode.tagName.toLowerCase() != "h6")
+                    switch (thatNode.tagName.toLowerCase()) {
+                      case "script":
+                        break;
+                      default:
+                        if (thatNode.id != "fans")
+                          addClass(thatNode, "hidden");
+                        break;
+                    }
+                  else
+                    loop = false;
+               thatNode = thatNode.nextSibling;
+               if (!thatNode)
+                 loop = false;
+              }
+
+            }
+          }
+        }
+    }
+
     if (gmc && gmc.get("showOnAboutOnly") && window.location.pathname.match(/\/show\//i) || gmc && !gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i)) {
 
       var hookNode = document.getElementById("right");
