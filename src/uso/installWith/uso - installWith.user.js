@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.9
+// @version       0.9.10
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1295,6 +1295,18 @@
                 "securityAdvisory": {
                   "advisory": "severe",
                   "title": ", Updates to offsite script; Multiple redirections"
+                }
+              },
+              "github.com-justan-gmscrobber": {
+                "textContent": 'usoCheckup',
+                "iconUrl": '165d78a59b842dcde5d6485f1b753de7',
+                "title": 'by youmaker (265341)',
+                "rex": [
+                  "^https?:\\/\\/github\\.com\\/justan\\/gmscrobber\\/.*"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", Partial and Unlicensed derivate of usoCheckup"
                 }
               },
               "usoCheckup": {
