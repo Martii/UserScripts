@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.18
+// @version       0.9.19
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1892,23 +1892,23 @@
         function loadNumber() {
           window.removeEventListener("load", loadNumber, false);
           renumber(hookNode);
+
+          let hash = window.location.hash.match(/^#(line-\d+)/);
+          if (hash) {
+            var anchorNode = document.evaluate(
+              "//a[@id='" + hash[1] + "']",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              null
+            );
+            if (anchorNode && anchorNode.singleNodeValue)
+              anchorNode.singleNodeValue.scrollIntoView();
+          }
         }
         window.addEventListener("load", loadNumber, false);
       }
     }
-  }
-
-  let hash = window.location.hash.match(/^#(line-\d+)/);
-  if (hash) {
-    var anchorNode = document.evaluate(
-      "//a[@id='" + hash[1] + "']",
-      document.body,
-      null,
-      XPathResult.FIRST_ORDERED_NODE_TYPE,
-      null
-    );
-    if (anchorNode && anchorNode.singleNodeValue)
-      anchorNode.singleNodeValue.scrollIntoView();
   }
 
 })();
