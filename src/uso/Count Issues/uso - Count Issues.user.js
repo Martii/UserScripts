@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.17
+// @version       0.9.18
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -299,6 +299,7 @@
           #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_enableHEAD,
           #gmc69307_field_checkShowVersionsSource,
+          #gmc69307_field_checkShowLineNumbers,
           #gmc69307_field_hideH6,
           #gmc69307_field_hideNavTab
           {
@@ -312,6 +313,7 @@
           #gmc69307_field_showOnAboutOnly,
           #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_checkShowVersionsSource,
+          #gmc69307_field_checkShowLineNumbers,
           #gmc69307_field_hideH6,
           #gmc69307_field_hideNavTab
           {
@@ -495,6 +497,11 @@
           'checkShowVersionsSource': {
               "type": 'checkbox',
               "label": 'Show recent Versions on Source Code page <em class="gmc69307-yellownote">BETA</em>',
+              "default": false
+          },
+          'checkShowLineNumbers': {
+              "type": 'checkbox',
+              "label": 'Show line numbers on Source Code page <em class="gmc69307-yellownote">BETA</em>',
               "default": false
           }
         }
@@ -1300,6 +1307,7 @@
 
   }
 
+
   if (gmc.get("checkShowVersionsSource")) {
     if (location.pathname.match(/\/scripts\/review\//)) {
 
@@ -1328,6 +1336,13 @@
               try {
                 [hookNode.textContent] = simpleTranscode(hookNode.textContent, 0);
 
+                if (gmc.get("checkShowLineNumbers")) {
+                  renumber(hookNode);
+                  GM_addStyle(<><![CDATA[
+                    .number { background-color: #fcc; }
+                  ]]></> + '');
+                }
+
                 // If source is < 20KB then autohighlight just like USO does
                 if (hookNode.textContent.length < 20480) {
                   let win = window.wrappedJSObject || window;
@@ -1341,6 +1356,13 @@
             case 'JsCode':
               try {
                 hookNode.textContent = JsCode.deobfuscate(hookNode.textContent);
+
+                if (gmc.get("checkShowLineNumbers")) {
+                  renumber(hookNode);
+                  GM_addStyle(<><![CDATA[
+                    .number { background-color: #fcc; }
+                  ]]></> + '');
+                }
 
                 // If source is < 20KB then autohighlight just like USO does
                 if (hookNode.textContent.length < 20480) {
@@ -1363,6 +1385,13 @@
         buttonBeautNode.textContent = 'Beautify';
         buttonBeautNode.addEventListener("click", function(ev) {
           hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
+
+          if (gmc.get("checkShowLineNumbers")) {
+            renumber(hookNode);
+            GM_addStyle(<><![CDATA[
+              .number { background-color: #fcc; }
+            ]]></> + '');
+          }
 
           // If source is < 20KB then autohighlight just like USO does
           if (hookNode.textContent.length < 20480) {
@@ -1395,6 +1424,7 @@
 
           let source = document.getElementById("source");
           if (source) {
+            // Create divs and things
             source.style.setProperty("margin-top", "0", "");
 
             let subcontainer = document.createElement("div");
@@ -1418,6 +1448,8 @@
 
             source.parentNode.insertBefore(subcontainer, source);
             sourcesNodes.appendChild(source);
+
+            // Start twiddling
 
             GM_addStyle(<><![CDATA[
               #syntax-highlight-select { margin-left: 0.6em; }
@@ -1616,6 +1648,9 @@
                               onload: function(xhr) {
                                 switch (xhr.status) {
                                   case 200:
+                                    if (xhr.responseText.match(/[\r\n]$/))
+                                      xhr.responseText = xhr.responseText.replace(/[\r\n]$/, "");
+
                                     let preNode = document.getElementById("source");
                                     preNode.textContent = xhr.responseText;
 
@@ -1640,6 +1675,9 @@
                                       let win = window.wrappedJSObject || window;
                                       win.sh_highlightDocument();
                                     }
+
+                                    if (gmc.get("checkShowLineNumbers"))
+                                      renumber(preNode);
                                     break;
                                 }
                               }
@@ -1716,6 +1754,13 @@
 
                                       // Remove GIJoes disabling
                                       enableCTTS();
+
+                                      // Remove numbering for now if present
+                                      let number = document.getElementById("number");
+                                      if (number) {
+                                        GM_addStyle(<><![CDATA[ #source { margin-left: 0 } ]]></> + '');
+                                        number.parentNode.removeChild(number);
+                                      }
                                     }
                                     break;
                                 }
@@ -1756,6 +1801,114 @@
       }
     }
 
+  }
+
+
+
+  function renumber(hookNode) {
+    let newlines = hookNode.textContent.match(/\n/g);
+    if (newlines)
+      newlines = newlines.length;
+    else
+      newlines = 0;
+
+    let dummy = newlines, digits = 0;
+    do {
+      ++digits;
+      dummy = parseInt(dummy / 10);
+    } while (dummy > 0);
+
+    let css = ".number { ";
+    let properties = window.getComputedStyle(hookNode, null);
+    for each (let property in properties) {
+      css += (property + ":" + properties.getPropertyValue(property) + "; ");
+    }
+    css += " }"
+    GM_addStyle(css);
+
+    GM_addStyle(<><![CDATA[
+      .number { display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
+      .number a { text-decoration: none; color: #000 }
+    ]]></> + '');
+
+    let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
+    GM_addStyle(".number { width: " + (textWidth * digits) + "px; }");
+
+    let preNode = document.getElementById("number") || document.createElement("pre");
+
+    if (preNode.hasChildNodes()) {
+      while (preNode.hasChildNodes())
+        preNode.removeChild(preNode.firstChild);
+    }
+    else {
+      preNode.setAttribute("id", "number");
+      preNode.setAttribute("class", "number");
+    }
+
+    let line = 1;
+    do {
+      let aNode = document.createElement("a");
+      aNode.id = "line-" + line;
+      aNode.href = "#line-" + line;
+      aNode.textContent = line;
+
+      let divNode = document.createElement("div");
+      //divNode.id = "dline-" + line;
+
+      divNode.appendChild(aNode);
+      preNode.appendChild(divNode);
+    } while (line++ <= newlines);
+
+    hookNode.parentNode.insertBefore(preNode, hookNode);
+    GM_addStyle("#source { margin-left: " + preNode.offsetWidth + "px; }");
+  }
+
+  if (gmc.get("checkShowLineNumbers")) {
+    if (location.pathname.match(/\/scripts\/review\//)) {
+      let xpr = document.evaluate(
+        "//pre[@id='source']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      if (xpr && xpr.singleNodeValue) {
+        let hookNode = xpr.singleNodeValue;
+
+        let preNode = document.createElement("pre");
+        preNode.setAttribute("id", "number");
+        preNode.setAttribute("class", "number");
+        GM_addStyle(<><![CDATA[
+          .number { display: none; }
+        ]]></> + '');
+
+        let divNode = document.createElement("div");
+
+        divNode.appendChild(preNode);
+
+        hookNode.parentNode.insertBefore(divNode, hookNode);
+        divNode.appendChild(hookNode);
+
+        function loadNumber() {
+          window.removeEventListener("load", loadNumber, false);
+          renumber(hookNode);
+        }
+        window.addEventListener("load", loadNumber, false);
+      }
+    }
+  }
+
+  let hash = window.location.hash.match(/^#(line-\d+)/);
+  if (hash) {
+    var anchorNode = document.evaluate(
+      "//a[@id='" + hash[1] + "']",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+    if (anchorNode && anchorNode.singleNodeValue)
+      anchorNode.singleNodeValue.scrollIntoView();
   }
 
 })();
