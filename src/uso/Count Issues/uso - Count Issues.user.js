@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.20
+// @version       0.9.21
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1649,7 +1649,7 @@
                                 switch (xhr.status) {
                                   case 200:
                                     if (xhr.responseText.match(/[\r\n]$/))
-                                      xhr.responseText = xhr.responseText.replace(/[\r\n]$/, "");
+                                      xhr.responseText = xhr.responseText.replace(/[\r\n]*$/, "");
 
                                     let preNode = document.getElementById("source");
                                     preNode.textContent = xhr.responseText;
