@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.19
+// @version       0.9.20
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1829,6 +1829,7 @@
     GM_addStyle(<><![CDATA[
       .number { display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
       .number a { text-decoration: none; color: #000 }
+      .number a.soften { font-size: 0.8em; color: #888; }
     ]]></> + '');
 
     let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
@@ -1851,9 +1852,10 @@
       aNode.id = "line-" + line;
       aNode.href = "#line-" + line;
       aNode.textContent = line;
+      if (line % 10 != 0 && line != 1)
+        aNode.setAttribute("class", "soften");
 
       let divNode = document.createElement("div");
-      //divNode.id = "dline-" + line;
 
       divNode.appendChild(aNode);
       preNode.appendChild(divNode);
