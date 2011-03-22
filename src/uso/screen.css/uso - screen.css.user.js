@@ -7,6 +7,7 @@
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @version       0.1.3
 // @icon    http://s3.amazonaws.com/uso_ss/icon/48071/thumb.jpg
+//
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://usocheckup.redirectme.net/48071.js?method=install&open=window&maxage=7&custom=yes&topicid=26082&id=usoCheckup
