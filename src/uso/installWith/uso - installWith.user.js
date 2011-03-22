@@ -36,6 +36,7 @@
 // @resource high http://usocheckup.redirectme.net/res/high.png
 // @resource severe http://usocheckup.redirectme.net/res/severe.png
 // @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
+//
 // @require http://usocheckup.redirectme.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 // @require https://github.com/sizzlemctwizzle/GM_config/raw/050978c9d41245b135404a3692ac42418a09be24/gm_config.js
