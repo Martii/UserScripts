@@ -24,6 +24,7 @@
 //
 // @require http://usocheckup.redirectme.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
+//
 // ==/UserScript==
 
   var img = "data:image/png;base64,"
