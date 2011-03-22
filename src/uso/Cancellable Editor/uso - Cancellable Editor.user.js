@@ -15,6 +15,7 @@
 //
 // @require  http://usocheckup.redirectme.net/48200.js?method=install&open=window&maxage=3&id=usoCheckup&custom=yes&topicid=26205
 // @require  http://userscripts.org/scripts/source/61794.user.js
+//
 // ==/UserScript==
 
   if (typeof usoCheckup != "undefined") {
