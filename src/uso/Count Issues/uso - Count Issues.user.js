@@ -31,7 +31,6 @@
 // @require https://github.com/sizzlemctwizzle/GM_config/raw/050978c9d41245b135404a3692ac42418a09be24/gm_config.js
 // @require https://github.com/einars/js-beautify/raw/master/beautify.js
 // @require http://userscripts.org/scripts/version/87269/312367.user.js
-//
 // ==/UserScript==
 
   function simpleTranscodeDotNotation(line, counter, loop) { // NOTE: Fuzzy
