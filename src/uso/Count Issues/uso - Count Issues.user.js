@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.10.0
+// @version       0.10.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1915,11 +1915,7 @@
     else
       newlines = 0;
 
-    let dummy = newlines, digits = 0;
-    do {
-      ++digits;
-      dummy = parseInt(dummy / 10);
-    } while (dummy > 0);
+    let digits = (parseInt(newlines) + 1).toString().length;
 
     let css = ".number { ";
     let properties = window.getComputedStyle(hookNode, null);
