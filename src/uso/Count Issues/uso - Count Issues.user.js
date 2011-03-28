@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.22
+// @version       0.10.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -495,7 +495,7 @@
           },
           'checkShowVersionsSource': {
               "type": 'checkbox',
-              "label": 'Show recent Versions on Source Code page <em class="gmc69307-yellownote">BETA</em>',
+              "label": 'Show Versions and Diffs inline on Source Code page <em class="gmc69307-yellownote">BETA</em>',
               "default": false
           },
           'checkShowLineNumbers': {
@@ -565,6 +565,18 @@
       thisNode.setAttribute("class", thisValue);
     else if (!class.match(re))
       thisNode.setAttribute("class", class + " " + thisValue);
+  }
+
+  function removeClass(thisNode, thisValue) {
+    let class = thisNode.getAttribute("class");
+    let re = new RegExp("\\s{0,1}\\b" + thisValue + "\\b");
+    if (class && class.match(re)) {
+      let newclass = thisNode.getAttribute("class").replace(re, "");
+      if (newclass != "")
+        thisNode.setAttribute("class", newclass);
+      else
+        thisNode.removeAttribute("class");
+    }
   }
 
   var scriptid = getScriptid();
@@ -1311,8 +1323,7 @@
     if (location.pathname.match(/\/scripts\/review\//)) {
 
       GM_addStyle(<><![CDATA[
-        .deobfuscate { margin-left: 0.5em }
-        .beautify { margin-left: 1.4em }
+        div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }
       ]]></> + '');
 
       let xpr = document.evaluate(
@@ -1325,11 +1336,155 @@
       if (xpr && xpr.singleNodeValue) {
         let hookNode = xpr.singleNodeValue;
 
-        let buttonDeobfNode = document.createElement("button");
-        buttonDeobfNode.setAttribute("id", "deobfuscate-button");
-        buttonDeobfNode.setAttribute("class", "deobfuscate");
-        buttonDeobfNode.textContent = 'Deobfuscate';
-        buttonDeobfNode.addEventListener("click", function(ev) {
+
+        // Create standardized div framing
+        let toolbarBottomNode = document.createElement("div");
+        toolbarBottomNode.className = "toolbar_menu";
+
+        let toolbarTopNode = document.createElement("div");
+        toolbarTopNode.className = "toolbar_menu";
+
+        let sourcesNode = document.createElement("div");
+        sourcesNode.className = "sources";
+
+        let leftNode = document.createElement("div");
+        leftNode.id = "left";
+        GM_addStyle(<><![CDATA[ #left { float: left;} ]]></> + '');
+
+        let paginationsNode = document.createElement("div");
+
+        let subcontentNode = document.createElement("div");
+
+        subcontentNode.appendChild(paginationsNode);
+        subcontentNode.appendChild(leftNode);
+        subcontentNode.appendChild(sourcesNode);
+
+        hookNode.parentNode.insertBefore(subcontentNode, hookNode);
+
+        sourcesNode.appendChild(toolbarTopNode);
+        sourcesNode.appendChild(hookNode);
+        sourcesNode.appendChild(toolbarBottomNode);
+
+        // Check for GIJoes buttons and modify them
+        let wrap2;
+        document.evaluate(
+          "//button[@id='wrap-button2']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpr
+        );
+        if (xpr && xpr.singleNodeValue) {
+          wrap2 = xpr.singleNodeValue;
+
+          GM_addStyle(<><![CDATA[
+            .wrap-button { width: 11.5em; }
+          ]]></> + '');
+
+          wrap2.removeAttribute("style");
+          wrap2.setAttribute("class", "wrap-button");
+
+          let wrap2DIV = document.createElement("div");
+          let wrap2LI = document.createElement("li");
+
+          wrap2DIV.appendChild(wrap2);
+          wrap2LI.appendChild(wrap2DIV);
+          wrap2 = wrap2LI;
+        }
+
+        let wrap1;
+        document.evaluate(
+          "//button[@id='wrap-button1']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpr
+        );
+        if (xpr && xpr.singleNodeValue) {
+          wrap1 = xpr.singleNodeValue;
+
+          wrap1.removeAttribute("style");
+          wrap1.setAttribute("class", "wrap-button");
+
+          let wrap1DIV = document.createElement("div");
+          let wrap1LI = document.createElement("li");
+
+          wrap1DIV.appendChild(wrap1);
+          wrap1LI.appendChild(wrap1DIV);
+          wrap1 = wrap1LI;
+        }
+
+        let ctts;
+        document.evaluate(
+          "//button[.='Change Tabs to Spaces']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpr
+        );
+        if (xpr && xpr.singleNodeValue) {
+          let cttsBUTTON = xpr.singleNodeValue;
+
+          GM_addStyle(<><![CDATA[
+            .changetabs-button { width: 13.5em; }
+            .changetabs-input { position: relative; top: 0; width: 1.5em; height: 1.3em; padding: 0 !important; margin: 0 0 !important; margin-left: 0.3em !important; }
+          ]]></> + '');
+
+          cttsBUTTON.removeAttribute("style");
+          cttsBUTTON.setAttribute("class", "changetabs-button");
+
+          let cttsINPUT = cttsBUTTON.nextSibling;
+          cttsINPUT.removeAttribute("style");
+          cttsINPUT.setAttribute("class", "changetabs-input");
+
+          let cttsDIV = document.createElement("div");
+
+          let cttsLI = document.createElement("li");
+
+          cttsDIV.appendChild(cttsBUTTON);
+          cttsDIV.appendChild(cttsINPUT);
+          cttsLI.appendChild(cttsDIV);
+
+          ctts = cttsLI;
+        }
+
+        // Create beautify
+        let beautifyBUTTON = document.createElement("button");
+        beautifyBUTTON.type = "button";
+        beautifyBUTTON.textContent = "Beautify";
+        beautifyBUTTON.addEventListener("click", function(ev) {
+          hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
+
+          if (gmc.get("checkShowLineNumbers")) {
+            renumber(hookNode);
+            GM_addStyle(<><![CDATA[
+              .number { background-color: #fcc; }
+            ]]></> + '');
+          }
+
+          // If source is < 20KB then autohighlight just like USO does
+          if (hookNode.textContent.length < 20480) {
+            let win = window.wrappedJSObject || window;
+            win.sh_highlightDocument();
+          }
+
+          enableCTTS();
+          ev.target.blur();
+        }, false);
+
+        let beautifyDIV = document.createElement("div");
+
+        let beautifyLI = document.createElement("li");
+
+        beautifyDIV.appendChild(beautifyBUTTON);
+        beautifyLI.appendChild(beautifyDIV);
+
+
+        // Create deobfuscate
+        let deobfuscateBUTTON = document.createElement("button");
+        deobfuscateBUTTON.type = "button";
+        deobfuscateBUTTON.textContent = "Deobfuscate";
+        deobfuscateBUTTON.addEventListener("click", function(ev) {
           switch (gmc.get("deobMethod")) {
             case 'Simple Transcode':
               try {
@@ -1378,267 +1533,142 @@
           ev.target.blur();
         }, false);
 
-        let buttonBeautNode = document.createElement("button");
-        buttonBeautNode.setAttribute("id", "beautify-button");
-        buttonBeautNode.setAttribute("class", "beautify");
-        buttonBeautNode.textContent = 'Beautify';
-        buttonBeautNode.addEventListener("click", function(ev) {
-          hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
+        let deobfuscateDIV = document.createElement("div");
 
-          if (gmc.get("checkShowLineNumbers")) {
-            renumber(hookNode);
-            GM_addStyle(<><![CDATA[
-              .number { background-color: #fcc; }
-            ]]></> + '');
-          }
+        let deobfuscateLI = document.createElement("li");
 
-          // If source is < 20KB then autohighlight just like USO does
-          if (hookNode.textContent.length < 20480) {
-            let win = window.wrappedJSObject || window;
-            win.sh_highlightDocument();
-          }
-
-          enableCTTS();
-          ev.target.blur();
-        }, false);
-
-        hookNode.parentNode.insertBefore(buttonBeautNode, hookNode);
-        hookNode.parentNode.insertBefore(buttonDeobfNode, hookNode);
-      }
+        deobfuscateDIV.appendChild(deobfuscateBUTTON);
+        deobfuscateLI.appendChild(deobfuscateDIV);
 
 
-      // Only nab if a contains href to versions pages
-      document.evaluate(
-        "//a[@href='/scripts/versions/" + scriptid + "']",
-        document.body,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        xpr
-      );
-      if (xpr && xpr.singleNodeValue) {
-        let thisNode = xpr.singleNodeValue;
-        if (thisNode.textContent.match(/\d+ previous version/)) {
+        // Add buttons
+        if (wrap1) toolbarTopNode.appendChild(wrap1);
+        if (ctts) toolbarTopNode.appendChild(ctts);
+        toolbarTopNode.appendChild(beautifyLI);
+        toolbarTopNode.appendChild(deobfuscateLI);
 
-          let hookP = thisNode.parentNode;
+        if (wrap2)
+          toolbarBottomNode.appendChild(wrap2);
 
-          let source = document.getElementById("source");
-          if (source) {
-            // Create divs and things
-            source.style.setProperty("margin-top", "0", "");
+        // Virtual link versions if present
+        document.evaluate(
+          "//a[@href='/scripts/versions/" + scriptid + "']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpr
+        );
+        if (xpr && xpr.singleNodeValue) {
+          let thisNode = xpr.singleNodeValue;
 
-            let subcontainer = document.createElement("div");
-            subcontainer.setAttribute("id", "subcontainer");
-            subcontainer.style.setProperty("margin", "0", "");
-            subcontainer.style.setProperty("clear", "both", "");
+          function onclickVersions(ev) {
+            ev.preventDefault();
 
-            let versionsNodes = document.createElement("div");
-            versionsNodes.setAttribute("id", "versions");
-            versionsNodes.style.setProperty("width", "18em", "");
-            versionsNodes.style.setProperty("padding", "0 0.5em", "");
-            versionsNodes.style.setProperty("margin", "0", "");
-            versionsNodes.style.setProperty("float", "left", "");
-
-            let sourcesNodes = document.createElement("div");
-            sourcesNodes.setAttribute("id", "sources");
-            sourcesNodes.style.setProperty("margin-left", "19em", "");
-
-            subcontainer.appendChild(versionsNodes);
-            subcontainer.appendChild(sourcesNodes);
-
-            source.parentNode.insertBefore(subcontainer, source);
-            sourcesNodes.appendChild(source);
-
-            // Start twiddling
+            thisNode.removeEventListener("click", onclickVersions, false);
 
             GM_addStyle(<><![CDATA[
-              #syntax-highlight-select { margin-left: 0.6em; }
-              #syntax-highlight-button { margin-left: 0.25em; }
-              .deobfuscate, .beautify { margin-left: 0.5em }
+              .notice { background-image: url(]]></> + throbber + <><![CDATA[);
             ]]></> + '');
 
-            // Move beat and deobf buttons
-            let xpr = document.evaluate(
-              "//button[@id='deobfuscate-button']",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              null
-            );
-            if (xpr && xpr.singleNodeValue) {
-              let thisNode = xpr.singleNodeValue;
+            getVersions("http://userscripts.org/scripts/versions/" + scriptid);
+          }
 
-              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
-            }
+          function getVersions(url) {
 
-            document.evaluate(
-              "//button[@id='beautify-button']",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              xpr
-            );
-            if (xpr && xpr.singleNodeValue) {
-              let thisNode = xpr.singleNodeValue;
+            GM_xmlhttpRequest({
+              retry: 5,
+              method: "GET",
+              url: url,
+              onload: function(xhr) {
+                switch (xhr.status) {
+                  case 502:
+                  case 503:
+                    if (--this.retry > 0)
+                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                    break;
+                  case 200:
+                    let
+                      dt = document.implementation.createDocumentType(
+                        "html",
+                        "-//W3C//DTD HTML 4.01 Transitional//EN",
+                        "http://www.w3.org/TR/html4/loose.dtd"
+                      ),
+                      doc = document.implementation.createDocument("", "", dt),
+                      documentElement = doc.createElement("html")
+                    ;
 
-              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
-            }
+                    documentElement.innerHTML = xhr.responseText;
+                    doc.appendChild(documentElement);
 
-            // Find GIJoes buttons and move them
-            document.evaluate(
-              "//button[.='Change Tabs to Spaces']",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              xpr
-            );
-            if (xpr && xpr.singleNodeValue) {
-              let thisNode = xpr.singleNodeValue;
-              thisNode.style.setProperty("margin-left", "0.6em", "");
+                    let html = doc.documentElement.innerHTML;
+                    doc.documentElement.innerHTML = "";
 
-              sourcesNodes.insertBefore(thisNode.nextSibling, sourcesNodes.firstChild);
-              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
-            }
+                    let body = doc.createElement("body");
+                    body.innerHTML = html;
+                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
 
-            document.evaluate(
-              "//button[@id='wrap-button1']",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              xpr
-            );
-            if (xpr && xpr.singleNodeValue) {
-              let thisNode = xpr.singleNodeValue;
-              thisNode.style.setProperty("width", "150px", "");
+                    let head = doc.createElement("head");
+                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
 
-              sourcesNodes.insertBefore(thisNode, sourcesNodes.firstChild);
-            }
-
-            document.evaluate(
-              "//button[@id='wrap-button2']",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              xpr
-            );
-            if (xpr && xpr.singleNodeValue) {
-              let thisNode = xpr.singleNodeValue;
-              thisNode.style.setProperty("width", "150px", "");
-
-              sourcesNodes.appendChild(thisNode);
-            }
-
-            function loadVersions(url) {
-              GM_xmlhttpRequest({
-                retry: 5,
-                method: "GET",
-                url: url,
-                onload: function(xhr) {
-                  switch (xhr.status) {
-                    case 502:
-                    case 503:
-                      if (--this.retry > 0)
-                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                      break;
-                    case 200:
-                      let
-                        dt = document.implementation.createDocumentType(
-                          "html",
-                          "-//W3C//DTD HTML 4.01 Transitional//EN",
-                          "http://www.w3.org/TR/html4/loose.dtd"
-                        ),
-                        doc = document.implementation.createDocument("", "", dt),
-                        documentElement = doc.createElement("html")
-                      ;
-
-                      documentElement.innerHTML = xhr.responseText;
-                      doc.appendChild(documentElement);
-
-                      let html = doc.documentElement.innerHTML;
-                      doc.documentElement.innerHTML = "";
-
-                      let body = doc.createElement("body");
-                      body.innerHTML = html;
-                      doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
-
-                      let head = doc.createElement("head");
-                      doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
-
-                      // doc has been created... start twiddling
-
-                      // Nab pagination
-                      let xpr = doc.evaluate(
-                        "//div[@class='pagination']",
-                        doc.body,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                      );
-                      if (xpr && xpr.singleNodeValue) {
-                        let thisNode = xpr.singleNodeValue;
-
-                          let pagination = thisNode.cloneNode(true);
-                          versionsNodes.parentNode.insertBefore(pagination, versionsNodes);
-
-                          document.evaluate(
-                            "//div[@class='pagination']/a",
-                            document.body,
-                            null,
-                            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                            xpr
-                          );
-                          if (xpr)
-                            for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
-                              thisNode.addEventListener("click", function(ev) {
-                                ev.preventDefault();
-
-                                versionsNodes.parentNode.removeChild(pagination);
-                                versionsNodes.removeChild(versionsNodes.firstChild)
-                                loadVersions(location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search);
-                              }, false);
-                            }
-                      }
-
-                      doc.evaluate(
-                        "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
-                        doc.body,
-                        null,
-                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                        xpr
-                      );
-
-                      let ulNode = document.createElement("ul");
-                      ulNode.style.setProperty("list-style", "none outside none", "");
-                      ulNode.style.setProperty("padding", "0", "");
-                      ulNode.style.setProperty("margin", "0.25em", "");
-                      ulNode.style.setProperty("font-size", "1.0em", "");
-
-                      if (xpr)
-                        for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
-                          let dateNode = thisNode.firstChild;
-                          let diffNode = thisNode.firstChild.nextSibling;
-
-                          let dateid = dateNode.textContent.replace(/\n\[/, "");
-                          let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
+                    // doc has been created... start twiddling
 
 
-                          let aInstallNode = document.createElement("a");
-                          aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
-                          aInstallNode.style.setProperty("text-decoration", "none", "");
-                          aInstallNode.style.setProperty("color", "black", "");
+                    // Nab pagination
+                    let pagination;
+                    let xpr = doc.evaluate(
+                      "//div[@class='pagination']",
+                      doc.body,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      null
+                    );
+                    if (xpr && xpr.singleNodeValue) {
+                      let thisNode = xpr.singleNodeValue;
 
-                          aInstallNode.textContent = dateid;
+                      pagination = thisNode.cloneNode(true);
+                    }
+
+                    // Nab versions
+                    let versions;
+                    doc.evaluate(
+                      "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
+                      doc.body,
+                      null,
+                      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                      xpr
+                    );
+
+                    let ulNode = document.createElement("ul");
+
+                    if (xpr)
+                      for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                        let dateNode = thisNode.firstChild;
+                        let diffNode = thisNode.firstChild.nextSibling;
+
+                        let dateid = dateNode.textContent.replace(/\n\[/, "");
+                        let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
 
 
-                          let spanNode = document.createElement("span");
-                          spanNode.style.setProperty("float", "right", "");
+                        let aInstallNode = document.createElement("a");
+                        aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
+                        aInstallNode.style.setProperty("text-decoration", "none", "");
+                        aInstallNode.style.setProperty("color", "black", "");
 
-                          let leftText = document.createTextNode(" [ ")
+                        aInstallNode.textContent = dateid;
 
-                          let aViewNode = document.createElement("a");
-                          aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
-                          aViewNode.textContent = "view";
-                          aViewNode.addEventListener("click", function(ev) {
+
+                        let spanNode = document.createElement("span");
+                        spanNode.style.setProperty("float", "right", "");
+
+                        let leftText = document.createTextNode("[")
+
+                        let aViewNode = document.createElement("a");
+                        aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
+                        aViewNode.textContent = "view";
+                        aViewNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
+
+                            addClass(ev.target.parentNode.parentNode, "retrieving");
 
                             let aNode = ev.target;
                             GM_xmlhttpRequest({
@@ -1658,13 +1688,14 @@
 
                                     let thisNode = ulNode.firstChild;
                                     while(thisNode) {
-                                      thisNode.style.removeProperty("background-color");
+                                      removeClass(thisNode, "current");
+                                      removeClass(thisNode, "retrieving");
                                       thisNode = thisNode.nextSibling;
                                     }
 
                                     // Set current selection marker
                                     let liNode = aNode.parentNode.parentNode;
-                                    liNode.style.setProperty("background-color", "#ccc", "");
+                                    addClass(liNode, "current");
 
                                     // Remove GIJoes disabling
                                     enableCTTS();
@@ -1684,124 +1715,197 @@
                           }, false);
 
 
-                          let middleText = document.createTextNode(" | ")
+                        let middleText = document.createTextNode("|")
 
 
-                          let aDiffNode = document.createElement("a");
-                          aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
-                          aDiffNode.textContent = "changes";
+                        let aDiffNode = document.createElement("a");
+                        aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
+                        aDiffNode.textContent = "changes";
+                        aDiffNode.addEventListener("click", function(ev) {
+                          ev.preventDefault();
 
-                          aDiffNode.addEventListener("click", function(ev) {
+                          let aNode = ev.target;
+                          GM_xmlhttpRequest({
+                            method: "GET",
+                            url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                            onload: function(xhr) {
+                              switch (xhr.status) {
+                                case 200:
+
+                                  let
+                                    dt = document.implementation.createDocumentType(
+                                      "html",
+                                      "-//W3C//DTD HTML 4.01 Transitional//EN",
+                                      "http://www.w3.org/TR/html4/loose.dtd"
+                                    ),
+                                    doc = document.implementation.createDocument("", "", dt),
+                                    documentElement = doc.createElement("html")
+                                  ;
+
+                                  documentElement.innerHTML = xhr.responseText;
+                                  doc.appendChild(documentElement);
+
+                                  let html = doc.documentElement.innerHTML;
+                                  doc.documentElement.innerHTML = "";
+
+                                  let body = doc.createElement("body");
+                                  body.innerHTML = html;
+                                  doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+
+                                  let head = doc.createElement("head");
+                                  doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+
+
+                                  let xpr = doc.evaluate(
+                                    "//pre",
+                                    doc.body,
+                                    null,
+                                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                    null
+                                  );
+                                  if (xpr && xpr.singleNodeValue) {
+                                    let preNode = document.getElementById("source");
+                                    preNode.innerHTML = xpr.singleNodeValue.innerHTML;
+
+
+                                    // Clear all Selection markers
+                                    let ulNode = aNode.parentNode.parentNode.parentNode;
+
+                                    let thisNode = ulNode.firstChild;
+                                    while(thisNode) {
+                                      removeClass(thisNode, "current");
+                                      removeClass(thisNode, "retrieving");
+                                      thisNode = thisNode.nextSibling;
+                                    }
+
+                                    // Set current selection marker
+                                    let liNode = aNode.parentNode.parentNode;
+                                    addClass(liNode, "current");
+
+                                    // Remove GIJoes disabling
+                                    enableCTTS();
+
+                                    // Remove numbering for now if present
+                                    let number = document.getElementById("number");
+                                    if (number) {
+                                      GM_addStyle(<><![CDATA[ #source { margin-left: 0 } ]]></> + '');
+                                      number.parentNode.removeChild(number);
+                                    }
+                                  }
+                                  break;
+                              }
+                            }
+                          });
+                        }, false);
+
+                        let rightText = document.createTextNode("]")
+
+                        let liNode = document.createElement("li");
+
+                        liNode.appendChild(aInstallNode);
+
+                        spanNode.appendChild(leftText);
+                        spanNode.appendChild(aViewNode);
+                        spanNode.appendChild(middleText);
+                        spanNode.appendChild(aDiffNode);
+                        spanNode.appendChild(rightText);
+
+                        liNode.appendChild(spanNode);
+
+                        ulNode.appendChild(liNode);
+                      }
+
+
+                    let leftDIV = document.getElementById("left");
+
+                    // Replace pagination NOTE: Scope referenced variable nodes
+                    if (pagination) {
+                      GM_addStyle(<><![CDATA[
+                        .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+                      ]]></> + "");
+
+                      while (paginationsNode.hasChildNodes())
+                        paginationsNode.removeChild(paginationsNode.firstChild);
+
+                      paginationsNode.appendChild(pagination);
+
+                      document.evaluate(
+                        "//div[@class='pagination']/a",
+                        document.body,
+                        null,
+                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                        xpr
+                      );
+                      if (xpr)
+                        for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                          thisNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
 
-                            let aNode = ev.target;
-                            GM_xmlhttpRequest({
-                              method: "GET",
-                              url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
-                              onload: function(xhr) {
-                                switch (xhr.status) {
-                                  case 200:
-
-                                    let
-                                      dt = document.implementation.createDocumentType(
-                                        "html",
-                                        "-//W3C//DTD HTML 4.01 Transitional//EN",
-                                        "http://www.w3.org/TR/html4/loose.dtd"
-                                      ),
-                                      doc = document.implementation.createDocument("", "", dt),
-                                      documentElement = doc.createElement("html")
-                                    ;
-
-                                    documentElement.innerHTML = xhr.responseText;
-                                    doc.appendChild(documentElement);
-
-                                    let html = doc.documentElement.innerHTML;
-                                    doc.documentElement.innerHTML = "";
-
-                                    let body = doc.createElement("body");
-                                    body.innerHTML = html;
-                                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
-
-                                    let head = doc.createElement("head");
-                                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
-
-
-                                    let xpr = doc.evaluate(
-                                      "//pre",
-                                      doc.body,
-                                      null,
-                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                                      null
-                                    );
-                                    if (xpr && xpr.singleNodeValue) {
-                                      let preNode = document.getElementById("source");
-                                      preNode.innerHTML = xpr.singleNodeValue.innerHTML;
-
-
-                                      // Clear all Selection markers
-                                      let ulNode = aNode.parentNode.parentNode.parentNode;
-
-                                      let thisNode = ulNode.firstChild;
-                                      while(thisNode) {
-                                        thisNode.style.removeProperty("background-color");
-                                        thisNode = thisNode.nextSibling;
-                                      }
-
-                                      // Set current selection marker
-                                      let liNode = aNode.parentNode.parentNode;
-                                      liNode.style.setProperty("background-color", "#ccc", "");
-
-                                      // Remove GIJoes disabling
-                                      enableCTTS();
-
-                                      // Remove numbering for now if present
-                                      let number = document.getElementById("number");
-                                      if (number) {
-                                        GM_addStyle(<><![CDATA[ #source { margin-left: 0 } ]]></> + '');
-                                        number.parentNode.removeChild(number);
-                                      }
-                                    }
-                                    break;
-                                }
-                              }
-                            });
+                            addClass(ev.target ,"retrieving");
+                            getVersions(location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search);
                           }, false);
-
-
-                          let rightText = document.createTextNode(" ]")
-
-                          let liNode = document.createElement("li");
-
-                          liNode.appendChild(aInstallNode);
-
-                          spanNode.appendChild(leftText);
-                          spanNode.appendChild(aViewNode);
-                          spanNode.appendChild(middleText);
-                          spanNode.appendChild(aDiffNode);
-                          spanNode.appendChild(rightText);
-
-                          liNode.appendChild(spanNode);
-
-                          ulNode.appendChild(liNode);
                         }
+                    }
 
-                      versionsNodes.appendChild(ulNode);
-                      break;
-                    default:
-                      GM_log('failure code ' + xhr.status);
-                      break;
-                  }
+                    let versionsDIV = document.getElementById("versions");
+
+                    if (versionsDIV) {
+                      while (versionsDIV.hasChildNodes())
+                        versionsDIV.removeChild(versionsDIV.firstChild);
+                    }
+                    else {
+                      versionsDIV = document.createElement("div");
+                      versionsDIV.id = "versions";
+
+                      GM_addStyle(<><![CDATA[
+                        #versions { margin-right: 0.5em; }
+                        #versions ul { list-style: none outside none; padding: 0; margin: 0; font-size: 1em; }
+                        #versions ul li a { margin-right: 0.25em; }
+                        #versions ul li span a { margin-right: 0.25em; margin-left: 0.25em; }
+                        #versions ul li.current { background-color: #ddd; }
+                        #versions ul li.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+                      ]]></> + '');
+                    }
+
+                    versionsDIV.appendChild(ulNode);
+                    leftDIV.appendChild(versionsDIV);
+
+
+                    GM_addStyle(<><![CDATA[
+                      .notice { background-image: none; }
+                      .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+                    ]]></> + "");
+
+                    // Compute left margin of pre and add width
+                    document.evaluate(
+                      "//div[@id='left']",
+                      document.body,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      xpr
+                    );
+                    if (xpr && xpr.singleNodeValue) {
+                      let hookNode = xpr.singleNodeValue;
+
+                      let marginLeft = window.getComputedStyle(hookNode, null).getPropertyValue("width").replace(/px$/, "");
+
+                      GM_addStyle(<><![CDATA[
+                        .sources { margin-left: ]]></> + marginLeft + <><![CDATA[px; }
+                        #left { padding: 1px; }  // NOTE: Strange first run fix for CSS
+                      ]]></> + '');
+                    }
+
                 }
-              });
-            }
-            loadVersions(location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/versions/" + scriptid);
+              }
+            });
+
           }
+          thisNode.addEventListener("click", onclickVersions, false);
         }
+
       }
     }
-
   }
-
 
 
   function renumber(hookNode) {
