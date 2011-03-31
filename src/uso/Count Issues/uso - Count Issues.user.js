@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.10.2
+// @version       0.10.3
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -495,8 +495,8 @@
           },
           'checkShowVersionsSource': {
               "type": 'checkbox',
-              "label": 'Show Versions and Diffs inline on Source Code page <em class="gmc69307-yellownote">BETA</em>',
-              "default": false
+              "label": 'Show inline Versions and Diffs on Source Code page',
+              "default": true
           },
           'checkShowLineNumbers': {
               "type": 'checkbox',
@@ -1336,34 +1336,35 @@
       if (xpr && xpr.singleNodeValue) {
         let hookNode = xpr.singleNodeValue;
 
-
         // Create standardized div framing
         let toolbarBottomNode = document.createElement("div");
-        toolbarBottomNode.className = "toolbar_menu";
+        addClass(toolbarBottomNode, "toolbar_menu");
 
         let toolbarTopNode = document.createElement("div");
-        toolbarTopNode.className = "toolbar_menu";
+        addClass(toolbarTopNode, "toolbar_menu");
 
-        let sourcesNode = document.createElement("div");
-        sourcesNode.className = "sources";
+        let rightNode = document.createElement("div");
+        addClass(rightNode, "right");
 
         let leftNode = document.createElement("div");
         leftNode.id = "left";
-        GM_addStyle(<><![CDATA[ #left { float: left;} ]]></> + '');
+        GM_addStyle(<><![CDATA[
+          #left { float: left; }
+        ]]></> + '');
 
-        let paginationsNode = document.createElement("div");
+        let topNode = document.createElement("div");
 
         let subcontentNode = document.createElement("div");
 
-        subcontentNode.appendChild(paginationsNode);
+        subcontentNode.appendChild(topNode);
         subcontentNode.appendChild(leftNode);
-        subcontentNode.appendChild(sourcesNode);
+        subcontentNode.appendChild(rightNode);
 
         hookNode.parentNode.insertBefore(subcontentNode, hookNode);
 
-        sourcesNode.appendChild(toolbarTopNode);
-        sourcesNode.appendChild(hookNode);
-        sourcesNode.appendChild(toolbarBottomNode);
+        rightNode.appendChild(toolbarTopNode);
+        rightNode.appendChild(hookNode);
+        rightNode.appendChild(toolbarBottomNode);
 
         // Check for GIJoes buttons and modify them
         let wrap2;
@@ -1382,7 +1383,7 @@
           ]]></> + '');
 
           wrap2.removeAttribute("style");
-          wrap2.setAttribute("class", "wrap-button");
+          addClass(wrap2, "wrap-button");
 
           let wrap2DIV = document.createElement("div");
           let wrap2LI = document.createElement("li");
@@ -1404,7 +1405,7 @@
           wrap1 = xpr.singleNodeValue;
 
           wrap1.removeAttribute("style");
-          wrap1.setAttribute("class", "wrap-button");
+          addClass(wrap1, "wrap-button");
 
           let wrap1DIV = document.createElement("div");
           let wrap1LI = document.createElement("li");
@@ -1431,11 +1432,12 @@
           ]]></> + '');
 
           cttsBUTTON.removeAttribute("style");
-          cttsBUTTON.setAttribute("class", "changetabs-button");
+          addClass(cttsBUTTON, "changetabs-button");
+
 
           let cttsINPUT = cttsBUTTON.nextSibling;
           cttsINPUT.removeAttribute("style");
-          cttsINPUT.setAttribute("class", "changetabs-input");
+          addClass(cttsINPUT, "changetabs-input");
 
           let cttsDIV = document.createElement("div");
 
@@ -1640,6 +1642,11 @@
 
                     let ulNode = document.createElement("ul");
 
+                    GM_addStyle(<><![CDATA[
+                      #versions ul li > a { text-decoration: none; color: black; }
+                      #versions ul li > span { float: right; }
+                    ]]></> + '');
+
                     if (xpr)
                       for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
                         let dateNode = thisNode.firstChild;
@@ -1651,14 +1658,9 @@
 
                         let aInstallNode = document.createElement("a");
                         aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
-                        aInstallNode.style.setProperty("text-decoration", "none", "");
-                        aInstallNode.style.setProperty("color", "black", "");
-
                         aInstallNode.textContent = dateid;
 
-
                         let spanNode = document.createElement("span");
-                        spanNode.style.setProperty("float", "right", "");
 
                         let leftText = document.createTextNode("[")
 
@@ -1670,12 +1672,23 @@
 
                             addClass(ev.target.parentNode.parentNode, "retrieving");
 
-                            let aNode = ev.target;
+                            let aNode = ev.target, ulNode, thisNode;
                             GM_xmlhttpRequest({
                               method: "GET",
                               url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                               onload: function(xhr) {
                                 switch (xhr.status) {
+                                  case 502:
+                                  case 503:
+                                    // Clear retrieving Selection marker
+                                    ulNode = aNode.parentNode.parentNode.parentNode;
+
+                                    thisNode = ulNode.firstChild;
+                                    while(thisNode) {
+                                      removeClass(thisNode, "retrieving");
+                                      thisNode = thisNode.nextSibling;
+                                    }
+                                    break;
                                   case 200:
                                     if (xhr.responseText.match(/[\r\n]$/))
                                       xhr.responseText = xhr.responseText.replace(/[\r\n]*$/, "");
@@ -1684,9 +1697,9 @@
                                     preNode.textContent = xhr.responseText;
 
                                     // Clear all Selection markers
-                                    let ulNode = aNode.parentNode.parentNode.parentNode;
+                                    ulNode = aNode.parentNode.parentNode.parentNode;
 
-                                    let thisNode = ulNode.firstChild;
+                                    thisNode = ulNode.firstChild;
                                     while(thisNode) {
                                       removeClass(thisNode, "current");
                                       removeClass(thisNode, "retrieving");
@@ -1714,9 +1727,7 @@
                             });
                           }, false);
 
-
                         let middleText = document.createTextNode("|")
-
 
                         let aDiffNode = document.createElement("a");
                         aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
@@ -1724,12 +1735,23 @@
                         aDiffNode.addEventListener("click", function(ev) {
                           ev.preventDefault();
 
-                          let aNode = ev.target;
+                          let aNode = ev.target, ulNode, thisNode;
                           GM_xmlhttpRequest({
                             method: "GET",
                             url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                             onload: function(xhr) {
                               switch (xhr.status) {
+                                  case 502:
+                                  case 503:
+                                    // Clear retrieving Selection marker
+                                    ulNode = aNode.parentNode.parentNode.parentNode;
+
+                                    thisNode = ulNode.firstChild;
+                                    while(thisNode) {
+                                      removeClass(thisNode, "retrieving");
+                                      thisNode = thisNode.nextSibling;
+                                    }
+                                    break;
                                 case 200:
 
                                   let
@@ -1769,9 +1791,9 @@
 
 
                                     // Clear all Selection markers
-                                    let ulNode = aNode.parentNode.parentNode.parentNode;
+                                    ulNode = aNode.parentNode.parentNode.parentNode;
 
-                                    let thisNode = ulNode.firstChild;
+                                    thisNode = ulNode.firstChild;
                                     while(thisNode) {
                                       removeClass(thisNode, "current");
                                       removeClass(thisNode, "retrieving");
@@ -1788,7 +1810,9 @@
                                     // Remove numbering for now if present
                                     let number = document.getElementById("number");
                                     if (number) {
-                                      GM_addStyle(<><![CDATA[ #source { margin-left: 0 } ]]></> + '');
+                                      GM_addStyle(<><![CDATA[
+                                        #source { margin-left: 0 }
+                                      ]]></> + '');
                                       number.parentNode.removeChild(number);
                                     }
                                   }
@@ -1824,10 +1848,10 @@
                         .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
                       ]]></> + "");
 
-                      while (paginationsNode.hasChildNodes())
-                        paginationsNode.removeChild(paginationsNode.firstChild);
+                      while (topNode.hasChildNodes())
+                        topNode.removeChild(topNode.firstChild);
 
-                      paginationsNode.appendChild(pagination);
+                      topNode.appendChild(pagination);
 
                       document.evaluate(
                         "//div[@class='pagination']/a",
@@ -1890,7 +1914,7 @@
                       let marginLeft = window.getComputedStyle(hookNode, null).getPropertyValue("width").replace(/px$/, "");
 
                       GM_addStyle(<><![CDATA[
-                        .sources { margin-left: ]]></> + marginLeft + <><![CDATA[px; }
+                        .right { margin-left: ]]></> + marginLeft + <><![CDATA[px; }
                         #left { padding: 1px; }  // NOTE: Strange first run fix for CSS
                       ]]></> + '');
                     }
@@ -1919,9 +1943,8 @@
 
     let css = ".number { ";
     let properties = window.getComputedStyle(hookNode, null);
-    for each (let property in properties) {
+    for each (let property in properties)
       css += (property + ":" + properties.getPropertyValue(property) + "; ");
-    }
     css += " }"
     GM_addStyle(css);
 
@@ -1932,7 +1955,9 @@
     ]]></> + '');
 
     let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
-    GM_addStyle(".number { width: " + (textWidth * digits) + "px; }");
+    GM_addStyle(<><![CDATA[
+      .number { width: ]]></> + (textWidth * digits) + <><![CDATA[px; }
+    ]]></> + '');
 
     let preNode = document.getElementById("number") || document.createElement("pre");
 
@@ -1942,17 +1967,17 @@
     }
     else {
       preNode.setAttribute("id", "number");
-      preNode.setAttribute("class", "number");
+      addClass(preNode, "number");
     }
 
     let line = 1;
     do {
       let aNode = document.createElement("a");
-      aNode.id = "line-" + line;
-      aNode.href = "#line-" + line;
+      aNode.setAttribute("id", "line-" + line);
+      aNode.setAttribute("href", "#line-" + line);
       aNode.textContent = line;
       if (line % 10 == 0 || line == 1)
-        aNode.setAttribute("class", "sharpen");
+        addClass(aNode, "sharpen");
 
       let divNode = document.createElement("div");
 
@@ -1961,7 +1986,9 @@
     } while (line++ <= newlines);
 
     hookNode.parentNode.insertBefore(preNode, hookNode);
-    GM_addStyle("#source { margin-left: " + preNode.offsetWidth + "px; }");
+    GM_addStyle(<><![CDATA[
+      #source { margin-left: ]]></> + preNode.offsetWidth + <><![CDATA[px; }
+    ]]></> + '');
   }
 
   if (gmc.get("checkShowLineNumbers")) {
@@ -1978,7 +2005,7 @@
 
         let preNode = document.createElement("pre");
         preNode.setAttribute("id", "number");
-        preNode.setAttribute("class", "number");
+        addClass(preNode, "number");
         GM_addStyle(<><![CDATA[
           .number { display: none; }
         ]]></> + '');
