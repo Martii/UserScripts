@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.11
+// @version       0.9.12
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -467,7 +467,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of Another Auto Updater (crea7or.spb.ru)"
+                  "title": ", Derivative of AAU (crea7or.spb.ru)"
                 }
               },
               "bsm.oldtu.com": {
@@ -479,7 +479,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of Another Auto Updater (bsm.oldtu.com)"
+                  "title": ", Derivative of AAU (bsm.oldtu.com)"
                 }
               },
               "mekan.dreamhosters.com": {
@@ -491,7 +491,19 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of Another Auto Updater (mekan.dreamhosters.com)"
+                  "title": ", Derivative of AAU (mekan.dreamhosters.com)"
+                }
+              },
+              "tomchapin.me": {
+                "derivative": 1,
+                "textContent": 'Another Auto Updater',
+                "title": 'by (tomchapin.me)',
+                "rex": [
+                  "^https?:\\/\\/tomchapin\\.me\\/auto\\-updater\\.php\\?id=(\\d+)"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", Derivative of AAU (tomchapin.me)"
                 }
               },
               "www.hitotext.com": {
@@ -503,7 +515,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of Another Auto Updater (www.hitotext.com/mh/ff)"
+                  "title": ", Derivative of AAU (www.hitotext.com/mh/ff)"
                 }
               },
               "www.jeffersonscher.com": {
@@ -516,7 +528,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of Another Auto Updater (www.jeffersonscher.com)"
+                  "title": ", Derivative of AAU (www.jeffersonscher.com)"
                 }
               },
               "www.nodeka411.net": {
@@ -528,7 +540,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of Another Auto Updater (www.nodeka411.net)"
+                  "title": ", Derivative of AAU (www.nodeka411.net)"
                 }
               },
               "75442": {
@@ -1024,6 +1036,19 @@
                 "title": 'by mindfox (69388)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95007\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "99735": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "iconUrl": '17ab6e678b7d5079a6d3a7a5d7f3a2ac',
+                "title": 'by Isgard (118652)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/99735\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
