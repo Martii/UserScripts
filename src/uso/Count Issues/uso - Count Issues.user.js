@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.11.0
+// @version       0.11.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -353,6 +353,7 @@
           }
 
           #gmc69307_hideNavTab_var,
+          #gmc69307_enableQuickReviewsMenu_var,   
           #gmc69307_showStrings_var,
           #gmc69307_showKeys_var,
           #gmc69307_fontSize_var
@@ -650,27 +651,39 @@
           owned = true;
         }
 
+        let authenticated = true;
+        document.evaluate(
+          "//ul[@id='login']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpr
+        );
+        if (xpr && xpr.singleNodeValue) {
+          authenticated = false;
+        }
+
         let newNode;
-        if (!owned) {
+        if (!owned && authenticated) {
           newNode = document.createElement("a");
           newNode.textContent = "Add your review";
           newNode.href = "/reviews/new?script_id=" + scriptid;
         }
 
         let highestNode = document.createElement("a");
-        highestNode.textContent = "Highest";
+        highestNode.textContent = "Sort by highest";
         highestNode.href = "/scripts/reviews/" + scriptid + "?sort=highest";
 
         let lowestNode = document.createElement("a");
-        lowestNode.textContent = "Lowest";
+        lowestNode.textContent = "Sort by lowest";
         lowestNode.href = "/scripts/reviews/" + scriptid + "?sort=lowest";
 
         let commentsNode = document.createElement("a");
-        commentsNode.textContent = "Comments";
+        commentsNode.textContent = "Sort by comments";
         commentsNode.href = "/scripts/reviews/" + scriptid + "?sort=comments";
 
         let helpfulNode = document.createElement("a");
-        helpfulNode.textContent = "Helpful";
+        helpfulNode.textContent = "Sort by helpful";
         helpfulNode.href = "/scripts/reviews/" + scriptid + "?sort=helpful";
 
         let divNode = document.createElement("div");
@@ -684,7 +697,7 @@
         divNode.appendChild(lowestNode);
         divNode.appendChild(highestNode);
 
-        if (!owned)
+        if (!owned && authenticated)
           divNode.appendChild(newNode);
 
         thisNode.appendChild(divNode);
