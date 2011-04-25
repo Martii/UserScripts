@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.10.3
+// @version       0.11.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -299,6 +299,7 @@
           #gmc69307_field_enableHEAD,
           #gmc69307_field_checkShowVersionsSource,
           #gmc69307_field_checkShowLineNumbers,
+          #gmc69307_field_enableQuickReviewsMenu,
           #gmc69307_field_hideH6,
           #gmc69307_field_hideNavTab
           {
@@ -313,6 +314,7 @@
           #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_checkShowVersionsSource,
           #gmc69307_field_checkShowLineNumbers,
+          #gmc69307_field_enableQuickReviewsMenu,
           #gmc69307_field_hideH6,
           #gmc69307_field_hideNavTab
           {
@@ -381,6 +383,11 @@
 
         /* Settings object */
         {
+          'enableQuickReviewsMenu': {
+              "type": 'checkbox',
+              "label": 'Enable quick reviews menu <em class="gmc69307-yellownote">BETA</em>',
+              "default": true
+          },
           'hideNavTab': {
               "type": 'checkbox',
               "label": 'Hide navigation tab(s) if present',
@@ -581,6 +588,108 @@
 
   var scriptid = getScriptid();
   if (scriptid) {
+
+    if (gmc.get("enableQuickReviewsMenu")) {
+      let xpr = document.evaluate(
+        "//ul[@id='script-nav']/li/a[starts-with(.,'Reviews')]",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      if (xpr && xpr.singleNodeValue) {
+        function onmouseover() {
+          GM_addStyle(<><![CDATA[
+            .menu-reviews { display: inline; }
+          ]]></> + "");
+        }
+
+        function onmouseout() {
+          GM_addStyle(<><![CDATA[
+            .menu-reviews { display: none; }
+          ]]></> + "");
+        }
+
+        let thisNode = xpr.singleNodeValue;
+        thisNode.addEventListener("mouseover", onmouseover, false);
+        thisNode.addEventListener("mouseout", onmouseout, false);
+
+
+        thisNode = thisNode.parentNode;
+
+        let fontSize = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("font-size").replace(/px$/, ""));
+        if (fontSize > 12)
+          GM_addStyle(<><![CDATA[
+            .menu-reviews {
+              font-size: 0.9em;
+            }
+          ]]></> + '');
+
+        GM_addStyle(<><![CDATA[
+          .menu-reviews {
+            display: none;
+            z-index: 1;
+            position: absolute;
+            background-color: #eee;
+            line-height: 1.5em;
+            text-decoration: underline;
+            padding-top: 0.4em;
+            padding-bottom: 0.4em;
+          }
+        ]]></> + '');
+
+        let owned = false;
+        document.evaluate(
+          "//ul[@id='script-nav']/li/a[starts-with(.,'Admin')]",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpr
+        );
+        if (xpr && xpr.singleNodeValue) {
+          owned = true;
+        }
+
+        let newNode;
+        if (!owned) {
+          newNode = document.createElement("a");
+          newNode.textContent = "Add your review";
+          newNode.href = "/reviews/new?script_id=" + scriptid;
+        }
+
+        let highestNode = document.createElement("a");
+        highestNode.textContent = "Highest";
+        highestNode.href = "/scripts/reviews/" + scriptid + "?sort=highest";
+
+        let lowestNode = document.createElement("a");
+        lowestNode.textContent = "Lowest";
+        lowestNode.href = "/scripts/reviews/" + scriptid + "?sort=lowest";
+
+        let commentsNode = document.createElement("a");
+        commentsNode.textContent = "Comments";
+        commentsNode.href = "/scripts/reviews/" + scriptid + "?sort=comments";
+
+        let helpfulNode = document.createElement("a");
+        helpfulNode.textContent = "Helpful";
+        helpfulNode.href = "/scripts/reviews/" + scriptid + "?sort=helpful";
+
+        let divNode = document.createElement("div");
+        divNode.className = "menu-reviews";
+        divNode.addEventListener("mouseover", onmouseover, false);
+        divNode.addEventListener("mouseout", onmouseout, false);
+
+
+        divNode.appendChild(helpfulNode);
+        divNode.appendChild(commentsNode);
+        divNode.appendChild(lowestNode);
+        divNode.appendChild(highestNode);
+
+        if (!owned)
+          divNode.appendChild(newNode);
+
+        thisNode.appendChild(divNode);
+      }
+    }
 
     if (gmc && gmc.get("hideNavTab")) {
       GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
