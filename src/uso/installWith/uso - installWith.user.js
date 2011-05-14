@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.13
+// @version       0.9.14
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -491,7 +491,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (mekan.dreamhosters.com)"
+                  "title": ", Derivative of AAU (koc.god-like.info)"
                 }
               },
               "mekan.dreamhosters.com": {
