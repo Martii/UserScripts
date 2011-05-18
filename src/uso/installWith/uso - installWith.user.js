@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.14
+// @version       0.9.15
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1065,6 +1065,18 @@
                 "securityAdvisory": {
                   "advisory": "elevated",
                   "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                }
+              },
+              "bealegend.c0.pl": {
+                "derivative": 2,
+                "textContent": 'Script Updater (userscripts.org)',
+                "title": 'used by ircdirk (214722)',
+                "rex": [
+                  "^https?:\\/\\/bealegend\\.c0\\.pl\\/gm_scripts\\/57756user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
                 }
               },
               "files.kkhweb.com": {
