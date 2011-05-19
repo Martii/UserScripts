@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.11.1
+// @version       0.11.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -353,7 +353,7 @@
           }
 
           #gmc69307_hideNavTab_var,
-          #gmc69307_enableQuickReviewsMenu_var,   
+          #gmc69307_enableQuickReviewsMenu_var,
           #gmc69307_showStrings_var,
           #gmc69307_showKeys_var,
           #gmc69307_fontSize_var
@@ -567,18 +567,18 @@
   }
 
   function addClass(thisNode, thisValue) {
-    let class = thisNode.getAttribute("class");
+    let c = thisNode.getAttribute("class");
     let re = new RegExp("\\b" + thisValue + "\\b");
-    if (!class)
+    if (!c)
       thisNode.setAttribute("class", thisValue);
-    else if (!class.match(re))
-      thisNode.setAttribute("class", class + " " + thisValue);
+    else if (!c.match(re))
+      thisNode.setAttribute("class", c + " " + thisValue);
   }
 
   function removeClass(thisNode, thisValue) {
-    let class = thisNode.getAttribute("class");
+    let c = thisNode.getAttribute("class");
     let re = new RegExp("\\s{0,1}\\b" + thisValue + "\\b");
-    if (class && class.match(re)) {
+    if (c && c.match(re)) {
       let newclass = thisNode.getAttribute("class").replace(re, "");
       if (newclass != "")
         thisNode.setAttribute("class", newclass);
