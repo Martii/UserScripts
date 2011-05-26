@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.11.2
+// @version       0.12.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -766,8 +766,9 @@
         }
     }
 
-    if (gmc && gmc.get("showOnAboutOnly") && window.location.pathname.match(/\/show\//i) || gmc && !gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i)) {
-
+    if (gmc && gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i))
+      ;
+    else {
       var hookNode = document.getElementById("right");
       if (hookNode) {
         GM_xmlhttpRequest({
