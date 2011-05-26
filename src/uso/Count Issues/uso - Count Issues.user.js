@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.12.0
+// @version       0.12.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -482,8 +482,8 @@
           },
           'enableHEAD': {
             "type": 'checkbox',
-            "label": 'Check urls with a HTTP HEAD request <em class="gmc69307-yellownote">Not currently recommended</em>',
-            "default": false
+            "label": 'Check urls with a HTTP HEAD request</em>',
+            "default": true
           },
           'showStringsStringHeight': {
             "type": 'hidden',
