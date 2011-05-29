@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.12.1
+// @version       0.12.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -938,6 +938,7 @@
                           if (matches) {
                             let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", matches[1]);
+                            anchorNode.setAttribute("rel", "nofollow");
                             anchorNode.textContent = matches[1];
 
                             liNode.setAttribute("title", matches[1]);
@@ -974,6 +975,7 @@
 
                             let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
+                            anchorNode.setAttribute("rel", "nofollow");
                             anchorNode.textContent = key;
                             if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
                               GM_xmlhttpRequest({
@@ -1019,6 +1021,7 @@
 
                                 let anchorNode = document.createElement("a");
                                 anchorNode.setAttribute("href", url[1] + key);
+                                anchorNode.setAttribute("rel", "nofollow");
                                 anchorNode.style.setProperty("color", "red", "");
                                 anchorNode.textContent = key;
 
@@ -1058,6 +1061,7 @@
 
                             let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", (showUrl) ? showUrl : matches[2]);
+                            anchorNode.setAttribute("rel", "nofollow");
                             anchorNode.textContent = matches[2];
 
                             if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
@@ -1105,6 +1109,7 @@
 
                                 let anchorNode = document.createElement("a");
                                 anchorNode.setAttribute("href", url[1] + key);
+                                anchorNode.setAttribute("rel", "nofollow");
                                 anchorNode.style.setProperty("color", "red", "");
                                 anchorNode.textContent = key;
 
