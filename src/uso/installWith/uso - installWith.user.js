@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.9.16
+// @version       0.10.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -378,8 +378,20 @@
               +   "|https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
 
               + ")", "gmi"))
+                possibleEmbedded = true;
 
-              possibleEmbedded = true;
+              if (possibleEmbedded && xhr.responseText.match(
+                "("
+              +   "|https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/103455\\.user\\.js"
+
+              + ")", "gmi")) {
+                installNode.setAttribute("title", "Security Advisory: SEVERE, Possible malicious code and no script homepage for referenced user.js.");
+                GM_addStyle(
+                    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                  + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
+                );
+                return;
+              }
 
             let
               metadataBlock = xhr.responseText,
