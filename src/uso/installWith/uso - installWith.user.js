@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.10.1
+// @version       0.11.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -361,7 +361,7 @@
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             break;
           case 200:
-            let possibleEmbedded;
+            let possibleEmbedded, DDoS;
 
             if (xhr.responseText.match(
                 "("
@@ -1672,6 +1672,9 @@
                       return;
                     }
 
+            let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
+            if (headers["updateURL"] && headers["updateURL"].match(rex))
+                DDoS = true;
 
             let helpNode = document.evaluate(
               "//div[@id='install_script']/a[@class='help']",
@@ -1777,7 +1780,14 @@
                   let url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs + frag;
                   installNode.setAttribute("href", url);
 
-                  if (possibleEmbedded) {
+                  if (DDoS) {
+                    installNode.setAttribute("title", "Security Advisory: SEVERE, DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters");
+                    GM_addStyle(
+                        "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                      + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
+                    );
+                  }
+                  else if (possibleEmbedded) {
                     installNode.setAttribute("title", "POSSIBLE EMBEDDED UPDATER FOUND: Please check source");
                     GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
                         + securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
