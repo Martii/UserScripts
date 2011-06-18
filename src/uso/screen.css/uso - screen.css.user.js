@@ -5,7 +5,7 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.1.3
+// @version       0.2.0
 // @icon    http://s3.amazonaws.com/uso_ss/icon/48071/thumb.jpg
 //
 // @include http://userscripts.org/*
@@ -102,5 +102,12 @@
     }
   }
   window.setTimeout(resizeOnceSearch, 50); // Increase delay if not resizing
+
+  // Fix overflow and coloring on menu drop downs
+  GM_addStyle(<><![CDATA[
+    #header .container { overflow: visible; }
+    #header h1 { margin: 0; padding-bottom: 0.5em; }
+    #header #mainmenu li div a, #header #mainmenu li.active div a, #header #mainmenu li.active div a:hover { background-color: #000; color: #fff; }
+  ]]></> + "");
 
 })();
