@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.0
+// @version       0.14.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -545,7 +545,7 @@
     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
     null
   );
-  
+
   var titleNode = xpr.snapshotItem((xpr.snapshotLength > 1) ? 1 : 0);
 
   document.evaluate(
@@ -1259,10 +1259,19 @@
                   }
 
                   if (window.location.pathname.match(/scripts\/show\/.*/i)) {
-                    let fansNode = document.getElementById("fans");
-                    if (fansNode) {
+
+                    let hookmbxNode = document.evaluate(
+                    "//h6[contains(., 'Groups')]|//h6[contains(., 'Tags')]",
+                      document.body,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      null
+                    );
+                    if (hookmbxNode && hookmbxNode.singleNodeValue) {
+                      let thisNode = hookmbxNode.singleNodeValue;
+
                       mbx.style.setProperty("margin-bottom", "0.75em", "");
-                      sidebarNode.insertBefore(mbx, fansNode);
+                      sidebarNode.insertBefore(mbx, thisNode);
                     }
                     else
                       sidebarNode.appendChild(mbx);
