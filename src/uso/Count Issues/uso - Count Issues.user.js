@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.1
+// @version       0.14.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -539,12 +539,13 @@
   }
 
   var xpr = document.evaluate(
-   "//h1[@class='title']/a | //h1[@class='title']",
-    document.documentElement,
+   "//h2[@class='title']/a|//h2[@class='title']",
+    document.body,
     null,
     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
     null
   );
+  
   var titleNode = xpr.snapshotItem((xpr.snapshotLength > 1) ? 1 : 0);
 
   document.evaluate(
