@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.0
+// @version       0.13.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -120,7 +120,8 @@
     installNode = installNode.singleNodeValue;
 
     installNode.setAttribute("title", securityAdvisory["checking"]["title"]);
-    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+    GM_addStyle(
+    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
         + securityAdvisory["checking"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
   }
   else
@@ -1692,7 +1693,9 @@
 
             let thisNode = installNode;
             thisNode.textContent += ' with';
-            thisNode.style.setProperty("font-size", "1.2em", "");
+            thisNode.style.setProperty("font-size", "1.1em", "");
+            thisNode.style.setProperty("width", "11.75em", "");
+            thisNode.style.setProperty("margin-left","0.5em","");
 
             thisNode = helpNode;
             let qmark = decodeURIComponent(GM_getResourceURL("qmark"));
@@ -1707,9 +1710,10 @@
 
             let selectNode = document.createElement("select");
             selectNode.setAttribute("id", "updater_select");
-            selectNode.style.setProperty("width", "90%", "");
+            selectNode.style.setProperty("width", "87%", "");
             selectNode.style.setProperty("height", "1.6em", "");
             selectNode.style.setProperty("font-size", "0.87em", "");
+            selectNode.style.setProperty("margin-left","0.75em","");
             selectNode.addEventListener("change", function(ev) {
               let thisUpdater = updaters[this.value];
               GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
