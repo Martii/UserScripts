@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.3.2
+// @version       0.4.0
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -184,7 +184,7 @@
       var guideid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
       if (guideid) {
         var contextNode = document.evaluate(
-          "//div[@class='script-info']",
+          "//div[@id='content']",
           document,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -195,6 +195,7 @@
           addBookmarks(contextNode, "bookmark-");
         }
 
+        // TODO: This may not be needed any more due to theme change
         contextNode = document.evaluate(
           "//div[contains(@id, 'comment-body')]",
           document,
@@ -208,6 +209,7 @@
           var commentid = thisNode.getAttribute("id").match(/comment-body-(\d+)/i)[1];
           addBookmarks(thisNode, "bookmark-" + commentid + "-");
         }
+        // /TODO:
       }
       break;
 
