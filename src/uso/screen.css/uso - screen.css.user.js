@@ -5,7 +5,7 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.2.0
+// @version       0.2.1
 // @icon    http://s3.amazonaws.com/uso_ss/icon/48071/thumb.jpg
 //
 // @include http://userscripts.org/*
@@ -24,23 +24,21 @@
   ]]></> + "");
 
   // Script icons if custom... change back to thumb
-  if (window.location.pathname.match(/(.+)scripts\/show\/\d+/)) {
-    let xpr = document.evaluate(
-      "//a[@id='icon']/img",
-      document.body,
-      null,
-      XPathResult.FIRST_ORDERED_NODE_TYPE,
-      null
-    );
+  let xpr = document.evaluate(
+    "//a[@id='icon']/img",
+    document.body,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  );
 
-    if (xpr && xpr.singleNodeValue) {
-      let thisNode = xpr.singleNodeValue;
+  if (xpr && xpr.singleNodeValue) {
+    let thisNode = xpr.singleNodeValue;
 
-      let url = thisNode.getAttribute("src");
-      if (url.match(/^http:\/\/s3\.amazonaws\.com\/uso_ss\/icon\/\d+\/(large)\.png\?\d+/)) {
-        thisNode.removeAttribute("width");
-        thisNode.setAttribute("src", url.replace("large", "thumb"));
-      }
+    let url = thisNode.getAttribute("src");
+    if (url.match(/^http:\/\/s3\.amazonaws\.com\/uso_ss\/icon\/\d+\/(large)\.png\?\d+/)) {
+      //thisNode.removeAttribute("width");
+      thisNode.setAttribute("src", url.replace("large", "thumb"));
     }
   }
 
