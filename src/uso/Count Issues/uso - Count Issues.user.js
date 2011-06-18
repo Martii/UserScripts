@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.1
+// @version       0.14.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -638,6 +638,9 @@
             padding-top: 0.4em;
             padding-bottom: 0.4em;
           }
+
+          #section .container { overflow: visible; };
+
         ]]></> + '');
 
         let owned = false;
