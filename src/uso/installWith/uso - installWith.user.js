@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.3
+// @version       0.13.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -69,6 +69,7 @@
         div#details h1.title { max-height: 2.05em; overflow: hidden; }
         a.userjs { width: auto !important; }
         #details h2.title { white-space: nowrap; overflow: hidden; }
+        #section .ad { position: relative; }
       ]]></> + "");
 
       // Move #install_script back to similar position for bottomsUp theme
