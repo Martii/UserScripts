@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.1
+// @version       0.13.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -67,7 +67,34 @@
         div#content { width: 100% !important; left: 0; }
         div#heading { height: 66px; min-height: 0; }
         div#details h1.title { max-height: 2.05em; overflow: hidden; }
+        a.userjs { width: auto !important; }
+        #details h2.title { white-space: nowrap; }
       ]]></> + "");
+
+      // Move #install_script back to similar position for bottomsUp theme
+      document.evaluate(
+        "//div[@id='install_script']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        xpr
+      );
+      if (xpr && xpr.singleNodeValue) {
+        let thisNode = xpr.singleNodeValue;
+
+        document.evaluate(
+          "//div[@id='details']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpr
+        );
+        if (xpr && xpr.singleNodeValue) {
+          let thatNode = xpr.singleNodeValue;
+
+          thatNode.appendChild(thisNode);
+        }
+      }
   }
 
   var securityAdvisory = {
