@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.2
+// @version       0.14.3
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -655,16 +655,16 @@
           owned = true;
         }
 
-        let authenticated = true;
+        let authenticated = false;
         document.evaluate(
-          "//ul[@id='login']",
+          "//ul[@class='login_status']//a[@href='/logout']",
           document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
           xpr
         );
         if (xpr && xpr.singleNodeValue) {
-          authenticated = false;
+          authenticated = true;
         }
 
         let newNode;
