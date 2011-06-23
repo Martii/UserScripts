@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.3
+// @version       0.14.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -311,7 +311,6 @@
           #gmc69307_field_showKeys,
           #gmc69307_field_limitMaxHeight,
           #gmc69307_field_showOnAboutOnly,
-          #gmc69307_field_checkAgainstHomepageUSO,
           #gmc69307_field_checkShowVersionsSource,
           #gmc69307_field_checkShowLineNumbers,
           #gmc69307_field_enableQuickReviewsMenu,
@@ -336,13 +335,14 @@
           #gmc69307_field_checkDeobfuscate,
           #gmc69307_field_checkShowSize,
           #gmc69307_field_maxHeightList,
-          #gmc69307_field_enableHEAD
+          #gmc69307_field_checkAgainstHomepageUSO
           {
             margin-left: 1.5em;
           }
 
           #gmc69307_field_checkTrimSourceCode,
-          #gmc69307_field_deobMethod
+          #gmc69307_field_deobMethod,
+          #gmc69307_field_enableHEAD
           {
             margin-left: 3.0em;
           }
@@ -386,7 +386,7 @@
         {
           'enableQuickReviewsMenu': {
               "type": 'checkbox',
-              "label": 'Enable quick reviews menu <em class="gmc69307-yellownote">BETA</em>',
+              "label": 'Enable quick reviews menu',
               "default": true
           },
           'hideNavTab': {
@@ -421,7 +421,7 @@
           },
           'checkDeobfuscate': {
               "type": 'checkbox',
-              "label": 'Deobfuscate</em>',
+              "label": 'Deobfuscate',
               "default": true
           },
           'deobMethod': {
@@ -449,6 +449,16 @@
               "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
               "default": "name,icon,description,version,copyright,license,namespace,require,resource,include,match,exclude"
           },
+          'checkAgainstHomepageUSO': {
+              "type": 'checkbox',
+              "label": 'Check USO require and resource urls against USO script homepage <em class="gmc69307-yellownote">Rate and Limiting may limit accuracy</em>',
+              "default": false
+          },
+          'enableHEAD': {
+            "type": 'checkbox',
+            "label": 'Check urls with a HTTP HEAD request</em>',
+            "default": true
+          },
           'fontSize': {
               "type": 'unsigned number',
               "label": 'em font size for all items found under the specified item type',
@@ -474,16 +484,6 @@
               "type": 'checkbox',
               "label": 'Use greasefire USO urls whenever possible <em class="gmc69307-yellownote">useful for bandwidth conservation</em>',
               "default": true
-          },
-          'checkAgainstHomepageUSO': {
-              "type": 'checkbox',
-              "label": 'Check USO require and resource urls against USO script homepage <em class="gmc69307-yellownote">Rate and Limiting may limit accuracy</em>',
-              "default": false
-          },
-          'enableHEAD': {
-            "type": 'checkbox',
-            "label": 'Check urls with a HTTP HEAD request</em>',
-            "default": true
           },
           'showStringsStringHeight': {
             "type": 'hidden',
@@ -591,9 +591,20 @@
   var scriptid = getScriptid();
   if (scriptid) {
 
+    let insNode = document.evaluate(
+      "//div[@id='section']//ins",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+    if (insNode && !insNode.singleNodeValue)
+      GM_addStyle(<><![CDATA[ body.scripts.anon #right { margin-top: 0; } ]]></> + "");
+
+
     if (gmc.get("enableQuickReviewsMenu")) {
       let xpr = document.evaluate(
-        "//ul[@id='script-nav']/li/a[starts-with(.,'Reviews')]",
+        "//ul[@id='script-nav']//a[starts-with(.,'Reviews')]",
         document.body,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -1149,7 +1160,7 @@
                             [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
                           }
                           catch(e) {
-                            GM_log('Too much recursion error encountered. Aborting transcode');
+                            GM_log('Too much recursion error encountered. Aborting Transcode');
                             responseText = xhr.responseText;
                           }
                           break;
@@ -1158,8 +1169,14 @@
                             responseText = JsCode.deobfuscate(xhr.responseText);
                           }
                           catch(e) {
-                            GM_log('Too much recursion error encountered. Aborting JsCode');
-                            responseText = xhr.responseText;
+                            GM_log('Too much recursion error encountered. Aborting JsCode...fallback to Transcode');
+                            try {
+                              [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
+                            }
+                            catch(e) {
+                              GM_log('Too much recursion error encountered. Aborting Transcode');
+                              responseText = xhr.responseText;
+                            }
                           }
                           break;
                       }
@@ -1264,7 +1281,8 @@
                   if (window.location.pathname.match(/scripts\/show\/.*/i)) {
 
                     let hookmbxNode = document.evaluate(
-                    "//h6[contains(., 'Groups')]|//h6[contains(., 'Tags')]",
+//                     "//h6[contains(., 'Share')]|//h6[contains(., 'Groups')]|//h6[contains(., 'Tags')]|//h6[contains(., 'Other Scripts by Author')]",
+                    "//h6[contains(., 'Share')]",
                       document.body,
                       null,
                       XPathResult.FIRST_ORDERED_NODE_TYPE,
