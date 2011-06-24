@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.0.2
+// @version       0.0.3
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://usocheckup.redirectme.net/105402.js?method=install&open=window&maxage=1&custom=yes&topicid=77715&id=usoCheckup
@@ -82,7 +82,6 @@
       }
 
       #top div.menu-home {
-        background-color: #f80;
         display: none;
         margin: 0;
         position: fixed;
@@ -94,13 +93,18 @@
       }
 
       #top div.menu-home ul li {
-        background:  #f80 url(/images/fade_bg_comment.png) repeat-x scroll center bottom;
+        background:  #f80 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top;
         display: block;
         float: none !important;
         margin: 0;
+        padding-left: 1.5em;
         padding-right: 1em;
         padding-top: 0.25em;
-        white-space: nowrap;
+      }
+
+      #top div.menu-home ul li a {
+        margin: 0;
+        padding: 0;
       }
 
     ]]></> + '');
