@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.0.3
+// @version       0.0.4
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://usocheckup.redirectme.net/105402.js?method=install&open=window&maxage=1&custom=yes&topicid=77715&id=usoCheckup
@@ -68,6 +68,21 @@
     thisNode.addEventListener("mouseover", onmouseover, false);
     thisNode.addEventListener("mouseout", onmouseout, false);
 
+    if (parseFloat(window.getComputedStyle(thisNode.parentNode, null).getPropertyValue("height").replace(/px/, "")) < 24)
+      GM_addStyle(<><![CDATA[
+
+        #top, #top ul.login_status {
+          height: 24px;
+          padding-bottom: 0;
+          padding-top: 2px;
+        }
+
+        #top div.menu-home {
+          padding-top: 0.5em;
+        }
+
+      ]]></> + '');
+
     GM_addStyle(<><![CDATA[
 
       #top ul.login_status li {
@@ -82,6 +97,7 @@
       }
 
       #top div.menu-home {
+        background-color: #ff7c00;
         display: none;
         margin: 0;
         position: fixed;
@@ -93,7 +109,7 @@
       }
 
       #top div.menu-home ul li {
-        background:  #f80 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top;
+        background:  #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top;
         display: block;
         float: none !important;
         margin: 0;
@@ -125,8 +141,6 @@
 
     let divNode = document.createElement("div");
     addClass(divNode, "menu-home");
-    divNode.addEventListener("mouseover", onmouseover, false);
-    divNode.addEventListener("mouseout", onmouseout, false);
 
     divNode.appendChild(ulNode);
 
