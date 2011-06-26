@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.4
+// @version       0.14.5
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -611,9 +611,11 @@
         null
       );
       if (xpr && xpr.singleNodeValue) {
+        let thisNode = xpr.singleNodeValue.parentNode;
+
         function onmouseover() {
           GM_addStyle(<><![CDATA[
-            .menu-reviews { display: inline; }
+            .menu-reviews { display: block; }
           ]]></> + "");
         }
 
@@ -623,40 +625,26 @@
           ]]></> + "");
         }
 
-        let thisNode = xpr.singleNodeValue;
         thisNode.addEventListener("mouseover", onmouseover, false);
         thisNode.addEventListener("mouseout", onmouseout, false);
 
-
-        thisNode = thisNode.parentNode;
-
-        let fontSize = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("font-size").replace(/px$/, ""));
-        if (fontSize > 12)
-          GM_addStyle(<><![CDATA[
-            .menu-reviews {
-              font-size: 0.9em;
-            }
-          ]]></> + '');
-
         GM_addStyle(<><![CDATA[
-          .menu-reviews {
-            display: none;
-            z-index: 1;
-            position: absolute;
-            background-color: #eee;
-            line-height: 1.5em;
-            text-decoration: underline;
-            padding-top: 0.4em;
-            padding-bottom: 0.4em;
-          }
+          .menu-reviews { background-color: #eee; display: none; position: fixed; z-index: 1; }
+          .menu-reviews, #divQuickAdmin { border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }
 
-          #section .container { overflow: visible; };
-
+          .menu-reviews ul { list-style: none outside none; padding: 0; margin: 0; padding-top: 0.6em; padding-bottom: 0.6em; }
+          .menu-reviews ul li { float: none !important; line-height: 1.4em !important; !important; height: auto !important; }
+          .menu-reviews ul li a { text-decoration: underline !important; }
         ]]></> + '');
+
+        if (parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("font-size").replace(/px$/, "")) > 12)
+          GM_addStyle(<><![CDATA[
+            .menu-reviews { font-size: 0.9em; }
+          ]]></> + '');
 
         let owned = false;
         document.evaluate(
-          "//ul[@id='script-nav']/li/a[starts-with(.,'Admin')]",
+          "//ul[@id='script-nav']//a[starts-with(.,'Admin')]",
           document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -678,43 +666,32 @@
           authenticated = true;
         }
 
-        let newNode;
-        if (!owned && authenticated) {
-          newNode = document.createElement("a");
-          newNode.textContent = "Add your review";
-          newNode.href = "/reviews/new?script_id=" + scriptid;
+        let menu = {
+          "Sort by highest": "/scripts/reviews/" + scriptid + "?sort=highest",
+          "Sort by lowest": "/scripts/reviews/" + scriptid + "?sort=lowest",
+          "Sort by comments": "/scripts/reviews/" + scriptid + "?sort=comments",
+          "Sort by helpful": "/scripts/reviews/" + scriptid + "?sort=helpful"
+        };
+
+        if (!owned && authenticated)
+          menu["Add your review"] = "/reviews/new?script_id=" + scriptid;
+
+        let ulNode = document.createElement("ul");
+
+        for (let item in menu) {
+          let aNode = document.createElement("a");
+          aNode.textContent = item;
+          aNode.href = menu[item];
+
+          let liNode = document.createElement("li");
+          liNode.appendChild(aNode);
+          ulNode.appendChild(liNode);
         }
-
-        let highestNode = document.createElement("a");
-        highestNode.textContent = "Sort by highest";
-        highestNode.href = "/scripts/reviews/" + scriptid + "?sort=highest";
-
-        let lowestNode = document.createElement("a");
-        lowestNode.textContent = "Sort by lowest";
-        lowestNode.href = "/scripts/reviews/" + scriptid + "?sort=lowest";
-
-        let commentsNode = document.createElement("a");
-        commentsNode.textContent = "Sort by comments";
-        commentsNode.href = "/scripts/reviews/" + scriptid + "?sort=comments";
-
-        let helpfulNode = document.createElement("a");
-        helpfulNode.textContent = "Sort by helpful";
-        helpfulNode.href = "/scripts/reviews/" + scriptid + "?sort=helpful";
 
         let divNode = document.createElement("div");
         divNode.className = "menu-reviews";
-        divNode.addEventListener("mouseover", onmouseover, false);
-        divNode.addEventListener("mouseout", onmouseout, false);
 
-
-        divNode.appendChild(helpfulNode);
-        divNode.appendChild(commentsNode);
-        divNode.appendChild(lowestNode);
-        divNode.appendChild(highestNode);
-
-        if (!owned && authenticated)
-          divNode.appendChild(newNode);
-
+        divNode.appendChild(ulNode);
         thisNode.appendChild(divNode);
       }
     }
