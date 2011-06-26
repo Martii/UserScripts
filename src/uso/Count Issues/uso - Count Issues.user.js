@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.5
+// @version       0.14.6
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -615,7 +615,7 @@
 
         function onmouseover() {
           GM_addStyle(<><![CDATA[
-            .menu-reviews { display: block; }
+            .menu-reviews { display: inline; }
           ]]></> + "");
         }
 
@@ -629,10 +629,10 @@
         thisNode.addEventListener("mouseout", onmouseout, false);
 
         GM_addStyle(<><![CDATA[
-          .menu-reviews { background-color: #eee; display: none; position: fixed; z-index: 1; }
+          .menu-reviews { background-color: #eee; display: none; position: absolute; z-index: 1; }
           .menu-reviews, #divQuickAdmin { border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }
 
-          .menu-reviews ul { list-style: none outside none; padding: 0; margin: 0; padding-top: 0.6em; padding-bottom: 0.6em; }
+          .menu-reviews ul { list-style: none outside none; margin: 0; padding: 0.6em 0; }
           .menu-reviews ul li { float: none !important; line-height: 1.4em !important; !important; height: auto !important; }
           .menu-reviews ul li a { text-decoration: underline !important; }
         ]]></> + '');
