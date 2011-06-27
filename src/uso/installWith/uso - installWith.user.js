@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.5
+// @version       0.13.6
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -379,7 +379,7 @@
   if ((scriptid = getScriptid()))
     GM_xmlhttpRequest({
       retry: 5,
-      url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
+      url: ((gmc && gmc.get("skipEmbeddedScan")) ? "http://userscripts.org/scripts/source/" + scriptid + ".meta.js" : "http://userscripts.org/scripts/review/" + scriptid + "?format=txt"),
       method: "GET",
       onload: function(xhr) {
         switch(xhr.status) {
