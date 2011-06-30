@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.1.0
+// @version       0.1.1
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://usocheckup.redirectme.net/105402.js?method=install&open=window&maxage=1&custom=yes&topicid=77715&id=usoCheckup
@@ -51,7 +51,7 @@ Please note this script uses native JSON and native classList which requires Fir
     null
   );
   if (xpr && xpr.singleNodeValue) {
-    let thisNode = xpr.singleNodeValue;
+    let thisNode = xpr.singleNodeValue.parentNode;
 
     function onmouseover(ev) {
       let divNode = document.getElementById("menu-home");
@@ -97,11 +97,9 @@ Please note this script uses native JSON and native classList which requires Fir
     divNode.id = "menu-home";
     divNode.className = "menu-";
     divNode.classList.add("hide");
-    divNode.addEventListener("mouseover", onmouseover, false);
-    divNode.addEventListener("mouseout", onmouseout, false);
 
     divNode.appendChild(ulNode);
-    thisNode.parentNode.appendChild(divNode);
+    thisNode.appendChild(divNode);
   }
 
 })();
