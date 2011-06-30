@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.0.5
+// @version       0.1.0
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://usocheckup.redirectme.net/105402.js?method=install&open=window&maxage=1&custom=yes&topicid=77715&id=usoCheckup
@@ -21,17 +21,9 @@ CHANGELOG
 =========
 http://userscripts.org/topics/77715
 
-*/
+Please note this script uses native JSON and native classList which requires Firefox 3.6.x+
 
-  // Common function
-  function addClass(thisNode, thisValue) {
-    let c = thisNode.getAttribute("class");
-    let re = new RegExp("\\b" + thisValue + "\\b");
-    if (!c)
-      thisNode.setAttribute("class", thisValue);
-    else if (!c.match(re))
-      thisNode.setAttribute("class", c + " " + thisValue);
-  }
+*/
 
   // Initialize the menu
   if (window.location.pathname == "/home") {
@@ -59,77 +51,31 @@ http://userscripts.org/topics/77715
     null
   );
   if (xpr && xpr.singleNodeValue) {
-    let thisNode = xpr.singleNodeValue.parentNode;
+    let thisNode = xpr.singleNodeValue;
 
-    function onmouseover() {
-      GM_addStyle(<><![CDATA[
-        #top div.menu-home { display: block; }
-      ]]></> + "");
+    function onmouseover(ev) {
+      let divNode = document.getElementById("menu-home");
+      if (divNode)
+        divNode.classList.remove("hide");
     }
 
-    function onmouseout() {
-      GM_addStyle(<><![CDATA[
-        #top div.menu-home { display: none; }
-      ]]></> + "");
+    function onmouseout(ev) {
+      let divNode = document.getElementById("menu-home");
+      if (divNode)
+        divNode.classList.add("hide");
     }
 
     thisNode.addEventListener("mouseover", onmouseover, false);
     thisNode.addEventListener("mouseout", onmouseout, false);
 
-    if (parseFloat(window.getComputedStyle(thisNode.parentNode, null).getPropertyValue("height").replace(/px/, "")) < 24)
-      GM_addStyle(<><![CDATA[
-
-        #top, #top ul.login_status {
-          height: 24px;
-          padding-bottom: 0;
-          padding-top: 2px;
-        }
-
-        #top div.menu-home {
-          padding-top: 0.5em;
-        }
-
-      ]]></> + '');
-
     GM_addStyle(<><![CDATA[
+      #top ul.login_status>li { margin-bottom: 0 !important; }
+      #top ul.login_status>li>a { padding-bottom: 24px; }
 
-      #top ul.login_status li {
-        margin: 0;
-        padding-bottom: 0.25em;
-      }
-
-      #top ul.login_status li a {
-        padding-bottom: 0.75em;
-        padding-left: 1.5em;
-        padding-right: 0.5em;
-      }
-
-      #top div.menu-home {
-        background-color: #ff7c00;
-        display: none;
-        margin: 0;
-        position: fixed;
-        z-index: 1;
-      }
-
-      #top div.menu-home ul {
-        margin: 0;
-      }
-
-      #top div.menu-home ul li {
-        background:  #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top;
-        display: block;
-        float: none !important;
-        margin: 0;
-        padding-left: 1.5em;
-        padding-right: 1em;
-        padding-top: 0.25em;
-      }
-
-      #top div.menu-home ul li a {
-        margin: 0;
-        padding: 0;
-      }
+      div.menu- { background-color: #ff7c00; margin: 0; padding: 0; position: fixed; z-index: 1; margin-left: -1.5em; }
+      div.menu- ul { margin: 0; list-style: none outside none; }
+      div.menu- ul li { float: none !important; margin: 0 !important; padding-left: 1.5em; padding-right: 1.5em; background: #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top; }
+      .hide { display: none; }
 
     ]]></> + '');
 
@@ -148,11 +94,14 @@ http://userscripts.org/topics/77715
     }
 
     let divNode = document.createElement("div");
-    addClass(divNode, "menu-home");
+    divNode.id = "menu-home";
+    divNode.className = "menu-";
+    divNode.classList.add("hide");
+    divNode.addEventListener("mouseover", onmouseover, false);
+    divNode.addEventListener("mouseout", onmouseout, false);
 
     divNode.appendChild(ulNode);
-
-    thisNode.appendChild(divNode);
+    thisNode.parentNode.appendChild(divNode);
   }
 
 })();
