@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.8
+// @version       0.14.9
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1258,9 +1258,8 @@
                   if (window.location.pathname.match(/scripts\/show\/.*/i)) {
 
                     let hookmbxNode = document.evaluate(
-//                     "//h6[contains(., 'Share')]|//h6[contains(., 'Groups')]|//h6[contains(., 'Tags')]|//h6[contains(., 'Other Scripts by Author')]",
-                    "//h6[contains(., 'Share')]",
-                      document.body,
+                      "./h6[contains(., 'Review Summary')]|./h6[contains(., 'Share')]|./h6[contains(., 'Forum Activity')]|./h6[contains(., 'Groups')]|./h6[contains(., 'Admin for script')]|./h6[contains(., 'Other Scripts by Author')]",
+                      document.getElementById("script_sidebar"),
                       null,
                       XPathResult.FIRST_ORDERED_NODE_TYPE,
                       null
@@ -1269,7 +1268,11 @@
                       let thisNode = hookmbxNode.singleNodeValue;
 
                       mbx.style.setProperty("margin-bottom", "0.75em", "");
-                      sidebarNode.insertBefore(mbx, thisNode);
+
+                      if (thisNode.parentNode.id == "script_sidebar")
+                        sidebarNode.insertBefore(mbx, thisNode);
+                      else
+                        sidebarNode.insertBefore(mbx, thisNode.parentNode);
                     }
                     else
                       sidebarNode.appendChild(mbx);
