@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.10
+// @version       0.14.11
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -264,7 +264,8 @@
           #gmc69307_field_showStringsString,
           #gmc69307_field_showKeysString,
           #gmc69307_field_hideH6String,
-          #gmc69307_field_hideNavTabString
+          #gmc69307_field_hideNavTabString,
+          #gmc69307_field_insertH6String
           {
             font-size: 1.0em;
             margin-left: 1.7em;
@@ -280,7 +281,8 @@
 
           #gmc69307_field_showKeysString,
           #gmc69307_field_hideH6String,
-          #gmc69307_field_hideNavTabString
+          #gmc69307_field_hideNavTabString,
+          #gmc69307_field_insertH6String
           {
             min-height: 1.2em;
             height: 1.2em;
@@ -301,7 +303,8 @@
           #gmc69307_field_checkShowLineNumbers,
           #gmc69307_field_enableQuickReviewsMenu,
           #gmc69307_field_hideH6,
-          #gmc69307_field_hideNavTab
+          #gmc69307_field_hideNavTab,
+          #gmc69307_field_insertH6,
           {
             top: 0.075em;
           }
@@ -315,7 +318,8 @@
           #gmc69307_field_checkShowLineNumbers,
           #gmc69307_field_enableQuickReviewsMenu,
           #gmc69307_field_hideH6,
-          #gmc69307_field_hideNavTab
+          #gmc69307_field_hideNavTab,
+          #gmc69307_field_insertH6
           {
             margin-left: 0;
           }
@@ -370,7 +374,8 @@
           #gmc69307_showStringsString_field_label,
           #gmc69307_showKeysString_field_label,
           #gmc69307_hideH6String_field_label,
-          #gmc69307_hideNavTabString_field_label
+          #gmc69307_hideNavTabString_field_label,
+          #gmc69307_insertH6String_field_label
           {
             margin: 0 0 0 1.75em;
           }
@@ -478,6 +483,16 @@
               "type": 'checkbox',
               "label": 'Show sidebar on script homepage only <em class="gmc69307-yellownote">useful for CPU conservation when examining large scripts</em>',
               "default": true
+          },
+          'insertH6': {
+              "type": 'checkbox',
+              "label": 'Insert item types before these headers if present <em class="gmc69307-yellownote">leave blank for first - disable for last</em>',
+              "default": false
+          },
+          'insertH6String': {
+              "type": 'textarea',
+              "label": '<em class="gmc69307-yellownote">use commas to separate headers</em>',
+              "default": ""
           },
           'useGreasefireUrl': {
               "section": [, ""],
@@ -1255,10 +1270,19 @@
                     }
                   }
 
-                  if (window.location.pathname.match(/scripts\/show\/.*/i)) {
+                  if (window.location.pathname.match(/scripts\/show\/.*/i) && gmc.get("insertH6")) {
+
+                    // TODO: Clean this up later
+                    let items = gmc.get("insertH6String").split(","), xpe;
+                    for (let i = 0, len = items.length; i < len; ++i) {
+                      if (i == 0)
+                        xpe = ".//h6[contains(., '" + items[i]+ "')]";
+                      else
+                        xpe += "|.//h6[contains(., '" + items[i]+ "')]";
+                    }
 
                     let hookmbxNode = document.evaluate(
-                      ".//h6[contains(., 'Review Summary')]|.//h6[contains(., 'Share')]|.//h6[contains(., 'Forum Activity')]|.//h6[contains(., 'Groups')]|.//h6[contains(., 'Admin for script')]|.//h6[contains(., 'Other Scripts by Author')]",
+                      xpe,
                       document.getElementById("script_sidebar"),
                       null,
                       XPathResult.FIRST_ORDERED_NODE_TYPE,
