@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.11
+// @version       0.14.12
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -203,6 +203,13 @@
       height = gmc.fields["hideNavTabString"].node.clientHeight + "px";
         if (height != gmc.get("hideNavTabStringHeight")) {
           gmc.set("hideNavTabStringHeight", height);
+          write = true;
+        }
+
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["insertH6String"].node.clientHeight + "px";
+        if (height != gmc.get("insertH6StringHeight")) {
+          gmc.set("insertH6StringHeight", height);
           write = true;
         }
 
@@ -516,6 +523,10 @@
               "type": 'hidden',
               "default": "1em"
           },
+          'insertH6StringHeight': {
+              "type": 'hidden',
+              "default": "1em"
+          },
           'checkShowVersionsSource': {
               "type": 'checkbox',
               "label": 'Show inline Versions and Diffs on Source Code page',
@@ -534,6 +545,7 @@
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; } ]]></>);
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; } ]]></>);
 
       gmc.open();
       gmc.fields["showStringsString"].node.setAttribute("spellcheck", "false");
@@ -1272,7 +1284,7 @@
 
                   if (window.location.pathname.match(/scripts\/show\/.*/i) && gmc.get("insertH6")) {
 
-                    // TODO: Clean this up later
+                    // TODO: Optimize later
                     let items = gmc.get("insertH6String").split(","), xpe;
                     for (let i = 0, len = items.length; i < len; ++i) {
                       if (i == 0)
