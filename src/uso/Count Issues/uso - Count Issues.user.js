@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.12
+// @version       0.14.13
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/thumb.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1283,19 +1283,17 @@
                   }
 
                   if (window.location.pathname.match(/scripts\/show\/.*/i) && gmc.get("insertH6")) {
-
-                    // TODO: Optimize later
                     let items = gmc.get("insertH6String").split(","), xpe;
                     for (let i = 0, len = items.length; i < len; ++i) {
                       if (i == 0)
-                        xpe = ".//h6[contains(., '" + items[i]+ "')]";
+                        xpe = "//div[@id='script_sidebar']//h6[contains(., '" + items[i]+ "')]";
                       else
-                        xpe += "|.//h6[contains(., '" + items[i]+ "')]";
+                        xpe += "|//div[@id='script_sidebar']//h6[contains(., '" + items[i]+ "')]";
                     }
 
                     let hookmbxNode = document.evaluate(
                       xpe,
-                      document.getElementById("script_sidebar"),
+                      document.body,
                       null,
                       XPathResult.FIRST_ORDERED_NODE_TYPE,
                       null
