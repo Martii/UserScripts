@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.6
+// @version       0.13.7
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/thumb.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -67,35 +67,7 @@
         div#content { width: 100% !important; left: 0; }
         div#heading { height: 66px; min-height: 0; }
         div#details h1.title { max-height: 2.05em; overflow: hidden; }
-        a.userjs { width: auto !important; }
-        #details h2.title { white-space: nowrap; overflow: hidden; }
-        #section .ad { position: relative; }
       ]]></> + "");
-
-      // Move #install_script back to similar position for bottomsUp theme
-      document.evaluate(
-        "//div[@id='install_script']",
-        document.body,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        xpr
-      );
-      if (xpr && xpr.singleNodeValue) {
-        let thisNode = xpr.singleNodeValue;
-
-        document.evaluate(
-          "//div[@id='heading']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          xpr
-        );
-        if (xpr && xpr.singleNodeValue) {
-          let thatNode = xpr.singleNodeValue;
-
-          thatNode.parentNode.insertBefore(thisNode, thatNode);
-        }
-      }
   }
 
   var securityAdvisory = {
@@ -148,8 +120,7 @@
     installNode = installNode.singleNodeValue;
 
     installNode.setAttribute("title", securityAdvisory["checking"]["title"]);
-    GM_addStyle(
-    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
         + securityAdvisory["checking"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
   }
   else
@@ -1407,7 +1378,7 @@
                 "iconUrl": '165d78a59b842dcde5d6485f1b753de7',
                 "title": 'by youmaker (265341)',
                 "rex": [
-                  "^https?:\\/\\/(?:raw\\.)?github\\.com\\/justan\\/gmscrobber\\/.*",
+                  "^https?:\\/\\/(?:raw\\.)?github\\.com\\/justan\\/gmscrobber\\/.*"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -1721,9 +1692,7 @@
 
             let thisNode = installNode;
             thisNode.textContent += ' with';
-            thisNode.style.setProperty("font-size", "1.1em", "");
-            thisNode.style.setProperty("width", "11.75em", "");
-            thisNode.style.setProperty("margin-left","0.5em","");
+            thisNode.style.setProperty("font-size", "1.0em", "");
 
             thisNode = helpNode;
             let qmark = decodeURIComponent(GM_getResourceURL("qmark"));
@@ -1738,10 +1707,9 @@
 
             let selectNode = document.createElement("select");
             selectNode.setAttribute("id", "updater_select");
-            selectNode.style.setProperty("width", "87%", "");
+            selectNode.style.setProperty("width", "90%", "");
             selectNode.style.setProperty("height", "1.6em", "");
-            selectNode.style.setProperty("font-size", "0.87em", "");
-            selectNode.style.setProperty("margin-left","0.75em","");
+            selectNode.style.setProperty("font-size", "0.9em", "");
             selectNode.addEventListener("change", function(ev) {
               let thisUpdater = updaters[this.value];
               GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
