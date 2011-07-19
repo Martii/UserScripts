@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://s3.amazonaws.com/uso_ss/icon/105402/large.png
-// @version       0.1.1
+// @version       0.1.2
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://usocheckup.redirectme.net/105402.js?method=install&open=window&maxage=1&custom=yes&topicid=77715&id=usoCheckup
