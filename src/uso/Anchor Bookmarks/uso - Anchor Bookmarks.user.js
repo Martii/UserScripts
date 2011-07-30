@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.4.0
+// @version       0.5.0
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -42,6 +42,21 @@
     + "7tnNq0dFpCba/nVGFKx8ESEQQrDLHk/T3bPISC6EjNaWn40SWCyWSfcvtz3eFs9GsOBdAJgDAgZA"
     + "MBgsefa8qSkQCKRthCAmJmYiFArdKCst138BG630E1pVEUQAAAAASUVORK5CYII=";
 
+  var headNode = document.evaluate(
+    "//head",
+    document.documentElement,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  );
+  if (headNode && headNode.singleNodeValue) {
+    var styleNode = document.createElement("style");
+    styleNode.setAttribute("type", "text/css");
+    styleNode.setAttribute("media", "screen, projection");
+    styleNode.textContent = ".bookmark { width: 16px; height: 16px; margin: 0.1em 0.2em 0; float: left; background: transparent url(" + img + ") no-repeat top left; opacity: 0.4; } .bookmark:hover { opacity: 1.0; }";
+    headNode.singleNodeValue.appendChild(styleNode);
+  }
+
   var xpr = document.evaluate(
    "//a[starts-with(@name,'comment-')]",
     document.body,
@@ -57,9 +72,63 @@
       imgNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
       imgNode.setAttribute("title", "link");
       thisNode.appendChild(imgNode);
-      thisNode.setAttribute("href", window.location.pathname + "#" + thisNode.name);
+
+      if (window.location.pathname.match(/^\/comments(.*)/i)) {
+        var userid, useridNode = document.evaluate(
+          ".//a[@user_id]",
+          thisNode.parentNode,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (useridNode && useridNode.singleNodeValue) {
+          var thatNode = useridNode.singleNodeValue;
+
+          userid = thatNode.getAttribute("user_id");
+          if (userid)
+            thisNode.setAttribute("href", "/users/" + userid + "/comments#" + thisNode.name); // NOTE: Comments are not fully linked to source page so use public profile comments
+        }
+        if (!userid)
+          thisNode.setAttribute("href", window.location.pathname + window.location.search + "#" + thisNode.name); // NOTE: Fallback to actual fragment in case of USO gen err
+      }
+      else
+        thisNode.setAttribute("href", window.location.pathname + "#" + thisNode.name); // NOTE: Fallback for no pagination
     }
 
+  // Fix missing recent /posts linkage if still missing
+  if (window.location.pathname.match(/(.*)\/posts$/i)) {
+    var xpr = document.evaluate(
+    "//tr[starts-with(@id,'posts-')]",
+      document.body,
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      null
+    );
+    if (xpr)
+      for (var i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+        var targetNode = document.evaluate(
+          ".//abbr[@class='updated']",
+          thisNode,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (targetNode && targetNode.singleNodeValue) {
+          var abbrNode = targetNode.singleNodeValue;
+
+          if (abbrNode.parentNode.getAttribute("rel") != "bookmark") {
+            var aNode = document.createElement("a");
+            aNode.setAttribute("rel", "bookmark");
+            aNode.setAttribute("href", "/" + thisNode.getAttribute("id").replace("-", "/"));
+
+            abbrNode.parentNode.appendChild(aNode);
+            aNode.appendChild(abbrNode);
+          }
+        }
+      }
+  }
+
+  // Add custom bookmarks if present
   var pathname, portion;
   switch ((pathname = window.location.pathname)) {
     case undefined:
@@ -72,7 +141,7 @@
         case "show":
           var contextNode = document.evaluate(
             "//div[@id='full_description']",
-            document,
+            document.body,
             null,
             XPathResult.FIRST_ORDERED_NODE_TYPE,
             null
@@ -85,7 +154,7 @@
         case "reviews":
           var contextNode = document.evaluate(
             "//div[@class='review']/div[@class='body']",
-            document,
+            document.body,
             null,
             XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
             null
@@ -100,7 +169,7 @@
         case "issues":
           var contextNode = document.evaluate(
             "//p[contains(@id, 'issuecomments-')]",
-            document,
+            document.body,
             null,
             XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
             null
@@ -120,7 +189,7 @@
       if (jetpackid) {
         var contextNode = document.evaluate(
           "//p/b/text()['Summary:']",
-          document,
+          document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
           null
@@ -137,7 +206,7 @@
       if (articleid) {
         var contextNode = document.evaluate(
           "//div[contains(@id, 'comment-body')]",
-          document,
+          document.body,
           null,
           XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
           null
@@ -151,7 +220,7 @@
 
         contextNode = document.evaluate(
           "//p[@class='summary']",
-          document,
+          document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
           null
@@ -163,12 +232,40 @@
       }
       break;
 
+    case (portion = pathname.match(/(.*)\/comments$/i)) ? portion[0] : undefined:
+      var contextNode = document.evaluate(
+        "//div[contains(@id, 'comment-body')]",
+        document.body,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+      );
+      for (var i = 0; i < contextNode.snapshotLength; ++i) {
+        var thisNode = contextNode.snapshotItem(i);
+
+        var commentid = thisNode.getAttribute("id").match(/comment-body-(\d+)/i)[1];
+        addBookmarks(thisNode, "bookmark-" + commentid + "-");
+      }
+
+      contextNode = document.evaluate(
+        "//p[@class='summary']",
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      if (contextNode && contextNode.singleNodeValue) {
+        contextNode = contextNode.singleNodeValue;
+        addBookmarks(contextNode, "bookmark-");
+      }
+      break;
+
     case (portion = pathname.match(/^\/groups(.*)/i)) ? portion[0] : undefined:
       var groupid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
       if (groupid) {
         var contextNode = document.evaluate(
           "//div[@class='description']",
-          document,
+          document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
           null
@@ -185,7 +282,7 @@
       if (guideid) {
         var contextNode = document.evaluate(
           "//div[@id='content']",
-          document,
+          document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
           null
@@ -194,22 +291,6 @@
           contextNode = contextNode.singleNodeValue;
           addBookmarks(contextNode, "bookmark-");
         }
-
-        // TODO: This may not be needed any more due to theme change
-        contextNode = document.evaluate(
-          "//div[contains(@id, 'comment-body')]",
-          document,
-          null,
-          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-          null
-        );
-        for (var i = 0; i < contextNode.snapshotLength; ++i) {
-          var thisNode = contextNode.snapshotItem(i);
-
-          var commentid = thisNode.getAttribute("id").match(/comment-body-(\d+)/i)[1];
-          addBookmarks(thisNode, "bookmark-" + commentid + "-");
-        }
-        // /TODO:
       }
       break;
 
@@ -218,7 +299,7 @@
       if (topicid) {
         var contextNode = document.evaluate(
           "//td[contains(@id, 'post-body')]",
-          document,
+          document.body,
           null,
           XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
           null
@@ -237,7 +318,7 @@
       if (reviewid) {
         var contextNode = document.evaluate(
           "//div[@class='body']",
-          document,
+          document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
           null
@@ -249,7 +330,7 @@
 
         contextNode = document.evaluate(
           "//div[contains(@id, 'comment-body')]",
-          document,
+          document.body,
           null,
           XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
           null
@@ -276,81 +357,63 @@ function addBookmarks(contextNode, prefixAttribute) {
 
   var thisNode, thatNode;
   if (xpr) {
+    var bookmarks = {};
 
-    var headNode = document.evaluate(
-      "//head",
-      document,
-      null,
-      XPathResult.FIRST_ORDERED_NODE_TYPE,
-      null
-    );
-
-    if (headNode && headNode.singleNodeValue) {
-      var styleNode = document.createElement("style");
-      styleNode.setAttribute("type", "text/css");
-      styleNode.setAttribute("media", "screen, projection");
-      styleNode.textContent = ".bookmark { width: 16px; height: 16px; margin: 0.1em 0.2em 0; float: left; background: transparent url(" + img + ") no-repeat top left; opacity: 0.4; } .bookmark:hover { opacity: 1.0; }";
-      headNode.singleNodeValue.appendChild(styleNode);
-
-      var bookmarks = {};
-
-      function checkBookmark(bookmarks, newbookmark, suffix) {
-        for (var bookmark in bookmarks) {
-          if (newbookmark + ((suffix) ? "-" + suffix : "") == bookmarks[bookmark]) {
-            suffix = (suffix) ? suffix + 1 : 1;
-            checkBookmark(bookmarks, newbookmark, suffix);
-          }
+    function checkBookmark(bookmarks, newbookmark, suffix) {
+      for (var bookmark in bookmarks) {
+        if (newbookmark + ((suffix) ? "-" + suffix : "") == bookmarks[bookmark]) {
+          suffix = (suffix) ? suffix + 1 : 1;
+          checkBookmark(bookmarks, newbookmark, suffix);
         }
-        return suffix;
       }
+      return suffix;
+    }
 
-      for (var i = 0; i < xpr.snapshotLength; ++i) {
-        var thatNode = thisNode = xpr.snapshotItem(i);
+    for (var i = 0; i < xpr.snapshotLength; ++i) {
+      var thatNode = thisNode = xpr.snapshotItem(i);
 
-        while (thatNode) {
-          if (thatNode.textContent != "") {
-            var newbookmark = thatNode.textContent;
+      while (thatNode) {
+        if (thatNode.textContent != "") {
+          var newbookmark = thatNode.textContent;
 
-            if (!newbookmark.match(/^about:.*/i)) {
-              newbookmark = newbookmark.replace(/^\s*/, "");
-              if (newbookmark.match(/(.{1,64})/i)) {
-                newbookmark = newbookmark.match(/(.{1,64})/i)[1];
-                newbookmark = newbookmark.replace(/\s*$/, "");
-                newbookmark = newbookmark.replace(/\s{2,}/g, " ");
+          if (!newbookmark.match(/^about:.*/i)) {
+            newbookmark = newbookmark.replace(/^\s*/, "");
+            if (newbookmark.match(/(.{1,64})/i)) {
+              newbookmark = newbookmark.match(/(.{1,64})/i)[1];
+              newbookmark = newbookmark.replace(/\s*$/, "");
+              newbookmark = newbookmark.replace(/\s{2,}/g, " ");
 
-                newbookmark = newbookmark.replace(/\.*/g, "");
+              newbookmark = newbookmark.replace(/\.*/g, "");
 
-                newbookmark = encodeURIComponent(newbookmark.toLowerCase());
-                newbookmark = newbookmark.replace(/\%20/g, "-");
-                newbookmark = newbookmark.replace(/\%/g, ".");
-                newbookmark = prefixAttribute + newbookmark;
+              newbookmark = encodeURIComponent(newbookmark.toLowerCase());
+              newbookmark = newbookmark.replace(/\%20/g, "-");
+              newbookmark = newbookmark.replace(/\%/g, ".");
+              newbookmark = prefixAttribute + newbookmark;
 
-                var suffix;
-                if ((suffix = checkBookmark(bookmarks, newbookmark)))
-                  newbookmark += "-" + suffix;
+              var suffix;
+              if ((suffix = checkBookmark(bookmarks, newbookmark)))
+                newbookmark += "-" + suffix;
 
-                bookmarks[newbookmark] = newbookmark;
-              }
-
-              thisNode.setAttribute("name", newbookmark);
-              thisNode.setAttribute("id", newbookmark);
-
-              var imgNode = document.createElement("img");
-              imgNode.setAttribute("class", "bookmark");
-              imgNode.setAttribute("title", "link");
-              imgNode.setAttribute("alt", "link");
-              imgNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
-
-              var anchorNode = document.createElement("a");
-              anchorNode.setAttribute("href", "#" + newbookmark);
-
-              anchorNode.appendChild(imgNode);
-              thisNode.parentNode.insertBefore(anchorNode, thisNode);
+              bookmarks[newbookmark] = newbookmark;
             }
-            break;
+            thisNode.setAttribute("name", newbookmark);
+            thisNode.setAttribute("id", newbookmark);
+
+            var imgNode = document.createElement("img");
+            imgNode.setAttribute("class", "bookmark");
+            imgNode.setAttribute("title", "link");
+            imgNode.setAttribute("alt", "link");
+            imgNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+
+            var anchorNode = document.createElement("a");
+            anchorNode.setAttribute("href", "#" + newbookmark);
+
+            anchorNode.appendChild(imgNode);
+            thisNode.parentNode.insertBefore(anchorNode, thisNode);
           }
-          thatNode = thatNode.nextSibling;
+          break;
         }
+        thatNode = thatNode.nextSibling;
       }
     }
   }
