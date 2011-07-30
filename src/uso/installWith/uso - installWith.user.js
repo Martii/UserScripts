@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.8
+// @version       0.13.9
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -471,12 +471,24 @@
                 },
                 "border-bottom": "thin dotted #666"
               },
+              "alex7kom.ru": {
+                "derivative": 1,
+                "textContent": 'Another Auto Updater',
+                "title": 'by (alex7kom.ru)',
+                "rex": [
+                  "https?:\\/\\/alex7kom\\.ru\\/wwwjdic2\\/us_updater\\.php"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", Derivative of AAU (crea7or.spb.ru)"
+                }
+              },
               "crea7or.spb.ru": {
                 "derivative": 1,
                 "textContent": 'Another Auto Updater',
                 "title": 'by (crea7or.spb.ru)',
                 "rex": [
-                  "^http:\\/\\/crea7or\\.spb\\.ru\\/scripts\\/user\\.js\\.updater\\.php\\?id=(\\d+)",
+                  "^http:\\/\\/crea7or\\.spb\\.ru\\/scripts\\/user\\.js\\.updater\\.php\\?id=(\\d+)"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -488,7 +500,7 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by (bsm.oldtu.com)',
                 "rex": [
-                  "^http:\\/\\/bsm\\.oldtu\\.com\\/updater\\.php\\?id=(\\d+)",
+                  "^http:\\/\\/bsm\\.oldtu\\.com\\/updater\\.php\\?id=(\\d+)"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
