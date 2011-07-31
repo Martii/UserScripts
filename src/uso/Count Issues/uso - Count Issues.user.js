@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.1
+// @version       0.15.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -979,6 +979,7 @@
                           }
                           break;
                         case "include":
+                        case "exclude":
                           if (key.match(/\s/)) {
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
                             liNode.setAttribute("class", "metadata metadataforced");
