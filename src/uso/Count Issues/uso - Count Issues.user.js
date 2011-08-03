@@ -933,8 +933,18 @@
                     if (typeof keys == "string")
                       keys = new Array(keys);
 
+                    let textNode = document.createTextNode(" ");
+                    
+                    let aNode = document.createElement("a");
+                    aNode.style.setProperty("text-decoration", "none", "");
+                    aNode.style.setProperty("color", "#000", "");
+                    aNode.href = "http://sf.net/apps/mediawiki/greasemonkey/index.php?title=Greasemonkey_Manual:Metadata_Block#.40" + title.replace("@", "");
+                    aNode.textContent = title;
+
                     let headerNode = document.createElement("h6");
-                    headerNode.textContent = title + ' ';
+                    headerNode.appendChild(aNode);
+                    headerNode.appendChild(textNode);
+
                     el.appendChild(headerNode);
 
                     let spanNodeSection = document.createElement("span");
