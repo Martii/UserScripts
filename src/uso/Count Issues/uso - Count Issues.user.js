@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.2
+// @version       0.15.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -938,7 +938,7 @@
                     let aNode = document.createElement("a");
                     aNode.style.setProperty("text-decoration", "none", "");
                     aNode.style.setProperty("color", "#000", "");
-                    aNode.href = "http://sf.net/apps/mediawiki/greasemonkey/index.php?title=Greasemonkey_Manual:Metadata_Block#.40" + title.replace("@", "");
+                    aNode.href = "http://sf.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
                     aNode.textContent = title;
 
                     let headerNode = document.createElement("h6");
