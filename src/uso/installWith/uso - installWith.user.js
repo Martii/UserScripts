@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.1
+// @version       0.14.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -25,17 +25,17 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @resource usoCheckup http://usocheckup.redirectme.net/res/usoCheckup.png
-// @resource usoCheckupBeta http://usocheckup.redirectme.net/res/usoCheckupBeta.png
-// @resource qmark http://usocheckup.redirectme.net/res/qmark.png
-// @resource script http://usocheckup.redirectme.net/res/script.png
-// @resource checking http://usocheckup.redirectme.net/res/checking.png
-// @resource low http://usocheckup.redirectme.net/res/low.png
-// @resource guarded http://usocheckup.redirectme.net/res/guarded.png
-// @resource elevated http://usocheckup.redirectme.net/res/elevated.png
-// @resource high http://usocheckup.redirectme.net/res/high.png
-// @resource severe http://usocheckup.redirectme.net/res/severe.png
-// @resource undetermined http://usocheckup.redirectme.net/res/undetermined.png
+// @resource usoCheckup http://usocheckup.dune.net/res/usoCheckup.png
+// @resource usoCheckupBeta http://usocheckup.dune.net/res/usoCheckupBeta.png
+// @resource qmark http://usocheckup.dune.net/res/qmark.png
+// @resource script http://usocheckup.dune.net/res/script.png
+// @resource checking http://usocheckup.dune.net/res/checking.png
+// @resource low http://usocheckup.dune.net/res/low.png
+// @resource guarded http://usocheckup.dune.net/res/guarded.png
+// @resource elevated http://usocheckup.dune.net/res/elevated.png
+// @resource high http://usocheckup.dune.net/res/high.png
+// @resource severe http://usocheckup.dune.net/res/severe.png
+// @resource undetermined http://usocheckup.dune.net/res/undetermined.png
 //
 // @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
@@ -533,7 +533,7 @@
                           if(confirm('Are you really, really sure?\n\nIf you continue then the next Install button click will work.'))
                             ev.target.removeEventListener("click", nag, true);
                     }
-                        
+
                   }
                   if (!gmcHome.get("skipVerifyLibs"))
                     installNode.addEventListener("click", nag, true);
