@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.13.10
+// @version       0.14.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -182,11 +182,6 @@
       // Reclaim some memory
       delete GM_config;
 
-      var gmc = new GM_configStruct();
-      gmc.id = "gmc68219";
-
-      let divNode = document.getElementById("full_description");
-
       /* Nearest fix for a glitch on USO */
       let scriptNav = document.getElementById("script-nav");
       if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
@@ -201,6 +196,11 @@
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.05))
         GM_addStyle("#screenshots { width: 95.6% !important; }");
 
+      // installWith homepage
+      var gmcHome = new GM_configStruct();
+      gmcHome.id = "gmc68219home";
+
+      let divNode = document.getElementById("full_description");
       if (divNode && !divNode.firstChild) {
         let newdivNode = document.createElement("div");
         divNode = divNode.appendChild(newdivNode);
@@ -212,6 +212,105 @@
         else
           divNode = document.body.appendChild(newdivNode);
       }
+
+      gmcHome.init(divNode,
+          <><![CDATA[
+            <img src="http://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Options
+            <span style="float: right; margin: 0.4em 0.5em;"><a href="http://github.com/sizzlemctwizzle/GM_config"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+          ]]></>.toString(),
+          {
+            'mirrorDomain': {
+                "label": 'Mirror domain name <em class="gmc68219home-yellownote">Select primary ONLY if behind a domain blocklist that prevents the redirect</em>',
+                "type": 'radio',
+                "options": ['redirect', 'primary'],
+                "default": 'redirect'
+            },
+            'skipVerifyLibs': {
+                "type": 'checkbox',
+                "label": 'Skip verify for installation of libraries scripts <em class="gmc68219home-yellownote">Not recommended</em>',
+                "default": false
+            },
+          },
+          <><![CDATA[
+            #gmc68219home {
+              position: static !important;
+              z-index: 0 !important;
+              width: auto !important;
+              height: auto !important;
+              max-height: none !important;
+              max-width: none !important;
+              margin: 0 0 0.5em 0 !important;
+              border: 1px solid #ddd !important;
+              clear: right !important;
+            }
+
+            #gmc68219home_wrapper {
+              background-color: #eee;
+              padding-bottom: 0.25em;
+            }
+
+            #gmc68219home .config_header {
+              color: white;
+              background-color: #333;
+              text-align: left;
+              margin: 0 0 0.4em 0;
+              padding: 0 0 0 0.5em;
+              font-size: 1.57em;
+            }
+
+            #gmc68219home .config_var {
+              margin: 0.5em 1em;
+              padding: 0;
+              clear: both;
+            }
+
+            #gmc68219home .field_label {
+              color: #333;
+              font-weight: normal;
+              font-size: 100%;
+            }
+
+            .gmc68219home-yellownote
+            {
+              background-color: #ffd;
+              font-size: 0.66em !important;
+            }
+
+            .section_desc
+            {
+              margin: 0.25em 1.5em !important;
+            }
+
+            #gmc68219home_field_mirrorDomain
+            {
+              margin-left: 1em;
+            }
+
+            #gmc68219home_field_mirrorDomain input
+            {
+              top: 0.1em;
+            }
+
+
+            #gmc68219home_field_skipVerifyLibs
+            {
+              top: 0.08em;
+            }
+
+            #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+            #gmc68219home_resetLink { margin-right: 2.5em; }
+            #gmc68219home_closeBtn { display: none; }
+
+          ]]></>.toString()
+      );
+
+      if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
+        gmcHome.open();
+      }
+
+      // other homepages
+      var gmc = new GM_configStruct();
+      gmc.id = "gmc68219";
 
       gmc.onSave = function() {
         let write = false;
@@ -427,12 +526,17 @@
                   installNode.setAttribute("title", "Security Advisory: NON-RUNNING, Possible library support file detected");
                   function nag(ev) {
                     ev.preventDefault();
-                    if (confirm('This script won\'t execute on any page.\n\nAre you sure?'))
-                      if (confirm('This script is a library file and won\'t run by itself.\n\nAre you really sure?'))
-                        if(confirm('Are you really, really sure?\n\nIf you continue then the next Install button click will work.'))
-                          ev.target.removeEventListener("click", nag, true);
+
+                    if (!gmcHome.get("skipVerifyLibs")) {
+                      if (confirm('This script won\'t execute on any page.\n\nAre you sure?'))
+                        if (confirm('This script is a library file and won\'t run by itself.\n\nAre you really sure?'))
+                          if(confirm('Are you really, really sure?\n\nIf you continue then the next Install button click will work.'))
+                            ev.target.removeEventListener("click", nag, true);
+                    }
+                        
                   }
-                  installNode.addEventListener("click", nag, true);
+                  if (!gmcHome.get("skipVerifyLibs"))
+                    installNode.addEventListener("click", nag, true);
                   GM_addStyle(<><![CDATA[
                     #install_script a.userjs, #install_script a.userjs:hover { background: #FFF none repeat scroll 0 0; }
                     #install_script a.userjs:hover { color: black; }
@@ -1790,11 +1894,11 @@
 
                   let frag = "#.user.js";
 
-                  let url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs + frag;
+                  let url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : (gmcHome.get("mirrorDomain") != "redirect") ? "usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs + frag;
                   installNode.setAttribute("href", url);
 
                   if (DDoS) {
-                    installNode.setAttribute("title", "Security Advisory: SEVERE, DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters");
+                    installNode.setAttribute("title", "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters");
                     GM_addStyle(
                         "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
                       + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
