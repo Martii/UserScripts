@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.4
+// @version       0.15.5
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -28,7 +28,7 @@
 // @require http://usocheckup.redirectme.net/69307.js?method=install&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
 // @require http://userscripts.org/scripts/source/61794.user.js
 //
-// @require https://raw.github.com/sizzlemctwizzle/GM_config/050978c9d41245b135404a3692ac42418a09be24/gm_config.js
+// @require https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
 // @require http://userscripts.org/scripts/version/87269/317283.user.js
 // ==/UserScript==
@@ -934,7 +934,7 @@
                       keys = new Array(keys);
 
                     let textNode = document.createTextNode(" ");
-                    
+
                     let aNode = document.createElement("a");
                     aNode.style.setProperty("text-decoration", "none", "");
                     aNode.style.setProperty("color", "#000", "");
