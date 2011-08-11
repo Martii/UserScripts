@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.2
+// @version       0.14.3
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -227,7 +227,7 @@
             },
             'skipVerifyLibs': {
                 "type": 'checkbox',
-                "label": 'Skip verify for installation of libraries scripts <em class="gmc68219home-yellownote">Not recommended</em>',
+                "label": 'Skip verify for installation of library scripts <em class="gmc68219home-yellownote">Not recommended</em>',
                 "default": false
             },
           },
@@ -311,22 +311,6 @@
       // other homepages
       var gmc = new GM_configStruct();
       gmc.id = "gmc68219";
-
-      gmc.onSave = function() {
-        let write = false;
-        let reopen = false;
-          if (gmc.get("updaterMinage") > gmc.get("updaterMaxage") * 24 ) {
-            gmc.set("updaterMinage", 1);
-            write = true;
-          }
-        if (write) gmc.write();
-        if (reopen) { gmc.close(); gmc.open(); }
-
-        let ev = document.createEvent("HTMLEvents");
-        ev.initEvent("change", true, true);
-        let selectNode = document.getElementById("updater_select");
-        selectNode.dispatchEvent(ev);
-      }
 
       gmc.init(divNode,
           <><![CDATA[
@@ -443,6 +427,22 @@
 
           ]]></>.toString()
       );
+
+      gmc.onSave = function() {
+        let write = false;
+        let reopen = false;
+          if (gmc.get("updaterMinage") > gmc.get("updaterMaxage") * 24 ) {
+            gmc.set("updaterMinage", 1);
+            write = true;
+          }
+        if (write) gmc.write();
+        if (reopen) { gmc.close(); gmc.open(); }
+
+        let ev = document.createEvent("HTMLEvents");
+        ev.initEvent("change", true, true);
+        let selectNode = document.getElementById("updater_select");
+        selectNode.dispatchEvent(ev);
+      }
     }
 
   let scriptid;
