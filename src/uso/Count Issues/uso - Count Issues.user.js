@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.5
+// @version       0.15.6
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -155,67 +155,6 @@
         divNode = document.body.appendChild(newdivNode);
     }
 
-    gmc.onSave = function() {
-      let write = false;
-      let open = false;
-
-        if (gmc.get("limitMaxHeight"))
-          GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
-        else
-          GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
-
-        GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
-
-        let keys = gmc.get("showKeysString").split(",");
-        for (let i = 0, len = keys.length; i < len; ++i) {
-          keys[i] = keys[i].replace(/^\s*/, "").replace(/\s*$/, "");
-        }
-        keys = keys.join(",");
-
-        if (keys != gmc.get("showKeysString")) {
-          gmc.set("showKeysString", keys);
-          write = open = true;
-        }
-
-      let height;
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
-      height = gmc.fields["showStringsString"].node.clientHeight + "px";
-        if (height != gmc.get("showStringsStringHeight")) {
-          gmc.set("showStringsStringHeight", height);
-          write = true;
-        }
-
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
-      height = gmc.fields["showKeysString"].node.clientHeight + "px";
-        if (height != gmc.get("showKeysStringHeight")) {
-          gmc.set("showKeysStringHeight", height);
-          write = true;
-        }
-
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
-      height = gmc.fields["hideH6String"].node.clientHeight + "px";
-        if (height != gmc.get("hideH6StringHeight")) {
-          gmc.set("hideH6StringHeight", height);
-          write = true;
-        }
-
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; } ]]></>);
-      height = gmc.fields["hideNavTabString"].node.clientHeight + "px";
-        if (height != gmc.get("hideNavTabStringHeight")) {
-          gmc.set("hideNavTabStringHeight", height);
-          write = true;
-        }
-
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; } ]]></>);
-      height = gmc.fields["insertH6String"].node.clientHeight + "px";
-        if (height != gmc.get("insertH6StringHeight")) {
-          gmc.set("insertH6StringHeight", height);
-          write = true;
-        }
-
-      if (write) gmc.write();
-      if (open) { gmc.close(); gmc.open(); }
-    }
     gmc.init(divNode,
         <><![CDATA[
           <img src="http://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Options
@@ -225,48 +164,12 @@
         <><![CDATA[
 
           /* GM_config specific fixups */
-          #gmc69307 {
-            position: static !important;
-            z-index: 0 !important;
-            width: auto !important;
-            height: auto !important;
-            max-height: none !important;
-            max-width: 100% !important;
-            margin: 0 0 0.6em 0 !important;
-            border: 1px solid #ddd !important;
-            clear: right !important;
-          }
-
-          #gmc69307_wrapper {
-            background-color: #eee;
-            padding-bottom: 0.25em;
-          }
-
-          #gmc69307 .config_header {
-            color: white;
-            background-color: #333;
-            text-align: left;
-            margin: 0;
-            padding: 0 0 0 0.5em;
-            font-size: 1.57em;
-          }
-
-          #gmc69307 .config_var {
-            margin: 0 1em;
-            padding: 0;
-            clear: both;
-          }
-
-          #gmc69307 .field_label {
-            color: #333;
-            font-weight: normal;
-            font-size: 100%;
-          }
-
-          .section_desc
-          {
-            margin: 0.25em 1em !important;
-          }
+          #gmc69307 { border: 1px solid #ddd !important; clear: right !important; height: auto !important; max-height: none !important; max-width: 100% !important; margin: 0 0 0.6em 0 !important; position: static !important; width: auto !important; z-index: 0 !important; }
+          #gmc69307_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+          #gmc69307 .config_header { background-color: #333; color: white; font-size: 1.57em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
+          #gmc69307 .config_var { clear: both; margin: 0 1em; padding: 0; }
+          #gmc69307 .field_label { color: #333; font-size: 100%; font-weight: normal; }
+          .section_desc { margin: 0.25em 1em !important; }
 
           #gmc69307_field_showStringsString,
           #gmc69307_field_showKeysString,
@@ -539,6 +442,69 @@
           }
         }
     );
+
+    gmc.onSave = function() {
+      let write = false;
+      let open = false;
+
+        if (gmc.get("limitMaxHeight"))
+          GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
+        else
+          GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
+
+        GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
+
+        let keys = gmc.get("showKeysString").split(",");
+        for (let i = 0, len = keys.length; i < len; ++i) {
+          keys[i] = keys[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        keys = keys.join(",");
+
+        if (keys != gmc.get("showKeysString")) {
+          gmc.set("showKeysString", keys);
+          write = open = true;
+        }
+
+      let height;
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["showStringsString"].node.clientHeight + "px";
+        if (height != gmc.get("showStringsStringHeight")) {
+          gmc.set("showStringsStringHeight", height);
+          write = true;
+        }
+
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["showKeysString"].node.clientHeight + "px";
+        if (height != gmc.get("showKeysStringHeight")) {
+          gmc.set("showKeysStringHeight", height);
+          write = true;
+        }
+
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["hideH6String"].node.clientHeight + "px";
+        if (height != gmc.get("hideH6StringHeight")) {
+          gmc.set("hideH6StringHeight", height);
+          write = true;
+        }
+
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["hideNavTabString"].node.clientHeight + "px";
+        if (height != gmc.get("hideNavTabStringHeight")) {
+          gmc.set("hideNavTabStringHeight", height);
+          write = true;
+        }
+
+      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; } ]]></>);
+      height = gmc.fields["insertH6String"].node.clientHeight + "px";
+        if (height != gmc.get("insertH6StringHeight")) {
+          gmc.set("insertH6StringHeight", height);
+          write = true;
+        }
+
+      if (write) gmc.write();
+      if (open) { gmc.close(); gmc.open(); }
+    }
+    
     if (window.location.pathname == "/scripts/show/69307"
         || window.location.href == "http://userscripts.org/scripts/show/69307/") {
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
