@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.6
+// @version       0.15.7
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -129,20 +129,6 @@
 
     var divNode = document.getElementById("full_description");
 
-    /* Nearest fix for a glitch on USO */
-    var scriptNav = document.getElementById("script-nav");
-    if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
-      GM_addStyle("div #full_description { width: 95.84%; }");
-
-    var screenShots =  document.getElementById("screenshots");
-    if (screenShots)
-      GM_addStyle("#full_description { clear: left; }");
-
-    /* Nearest fix for userscripts.org Alternate CSS */
-    var fullDescription = document.getElementById("full_description");
-    if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.05))
-      GM_addStyle("#screenshots { width: 95.6% !important; }");
-
     if (divNode && !divNode.firstChild) {
       var newdivNode = document.createElement("div");
       divNode = divNode.appendChild(newdivNode);
@@ -154,6 +140,20 @@
       else
         divNode = document.body.appendChild(newdivNode);
     }
+
+    /* Nearest fix for a glitch on USO */
+    let scriptNav = document.getElementById("script-nav");
+    if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
+      GM_addStyle("div #full_description { width: 98.1%; }");
+
+    let screenShots = document.getElementById("screenshots");
+    if (screenShots)
+      GM_addStyle("#full_description { clear: left; }");
+
+    /* Nearest fix for userscripts.org Alternate CSS */
+    let fullDescription = document.getElementById("full_description");
+    if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
+      GM_addStyle("#screenshots { width: 97.5% !important; }");
 
     gmc.init(divNode,
         <><![CDATA[
@@ -504,7 +504,7 @@
       if (write) gmc.write();
       if (open) { gmc.close(); gmc.open(); }
     }
-    
+
     if (window.location.pathname == "/scripts/show/69307"
         || window.location.href == "http://userscripts.org/scripts/show/69307/") {
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
