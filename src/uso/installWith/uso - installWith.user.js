@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.3
+// @version       0.14.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -182,24 +182,6 @@
       // Reclaim some memory
       delete GM_config;
 
-      /* Nearest fix for a glitch on USO */
-      let scriptNav = document.getElementById("script-nav");
-      if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
-        GM_addStyle("div #full_description { width: 95.84%; }");
-
-      let screenShots = document.getElementById("screenshots");
-      if (screenShots)
-        GM_addStyle("#full_description { clear: left; }");
-
-      /* Nearest fix for userscripts.org Alternate CSS */
-      let fullDescription = document.getElementById("full_description");
-      if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.05))
-        GM_addStyle("#screenshots { width: 95.6% !important; }");
-
-      // installWith homepage
-      var gmcHome = new GM_configStruct();
-      gmcHome.id = "gmc68219home";
-
       let divNode = document.getElementById("full_description");
       if (divNode && !divNode.firstChild) {
         let newdivNode = document.createElement("div");
@@ -212,6 +194,24 @@
         else
           divNode = document.body.appendChild(newdivNode);
       }
+
+      /* Nearest fix for a glitch on USO */
+      let scriptNav = document.getElementById("script-nav");
+      if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
+        GM_addStyle("div #full_description { width: 98.1%; }");
+
+      let screenShots = document.getElementById("screenshots");
+      if (screenShots)
+        GM_addStyle("#full_description { clear: left; }");
+
+      /* Nearest fix for userscripts.org Alternate CSS */
+      let fullDescription = document.getElementById("full_description");
+      if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
+        GM_addStyle("#screenshots { width: 97.5% !important; }");
+
+      // installWith homepage
+      var gmcHome = new GM_configStruct();
+      gmcHome.id = "gmc68219home";
 
       gmcHome.init(divNode,
           <><![CDATA[
