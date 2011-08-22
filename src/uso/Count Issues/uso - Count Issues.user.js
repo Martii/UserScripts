@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.7
+// @version       0.15.8
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -758,7 +758,7 @@
       if (hookNode) {
         GM_xmlhttpRequest({
           retry: 5,
-          url: ((gmc && gmc.get("showStrings")) ? "http://userscripts.org/scripts/review/" + scriptid + "?format=txt" : "http://userscripts.org/scripts/source/" + scriptid + ".meta.js"),
+          url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("showStrings")) ? ".user.js?" : ".meta.js"),
           method: "GET",
           onload: function(xhr) {
             switch (xhr.status) {
