@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.5
+// @version       0.14.6
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -682,6 +682,18 @@
                 "securityAdvisory": {
                   "advisory": "guarded",
                   "title": ", Derivative of AAU (www.nodeka411.net)"
+                }
+              },
+              "111662": {
+                "derivative": 2,
+                "textContent": 'Another Auto Updater',
+                "title": 'by Starrow Pan (http://userscripts.org/users/157466)',
+                "rex": [
+                  "^http:\/\/userscripts\.org\/scripts\/source\/111662"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", i/frame vulnerability, Derivative of inline AAU and PhasmaExMachina"
                 }
               },
               "75442": {
