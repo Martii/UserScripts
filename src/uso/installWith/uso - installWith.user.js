@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.0
+// @version       0.15.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1608,7 +1608,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/82206"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&theme=82206,66530,74732&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&theme=82206,66530,74732&trim=pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1627,7 +1627,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/60926"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,74732&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,74732&trim=pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1646,7 +1646,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/68506"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,74732&custom=yes&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,74732&custom=yes&trim=pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1665,7 +1665,7 @@
                   "^http:\\/\\/userscripts\\.org\\/scripts\\/show\\/61794"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,74732&custom=yes&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,74732&custom=yes&trim=pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
