@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.14.6
+// @version       0.15.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -47,6 +47,28 @@
     frameless = (window == window.top);
   }
   catch (e) {}
+
+  /* Common */
+  function addClass(thisNode, thisValue) {
+    let c = thisNode.getAttribute("class");
+    let re = new RegExp("\\b" + thisValue + "\\b");
+    if (!c)
+      thisNode.setAttribute("class", thisValue);
+    else if (!c.match(re))
+      thisNode.setAttribute("class", c + " " + thisValue);
+  }
+
+  function removeClass(thisNode, thisValue) {
+    let c = thisNode.getAttribute("class");
+    let re = new RegExp("\\s{0,1}\\b" + thisValue + "\\b");
+    if (c && c.match(re)) {
+      let newclass = thisNode.getAttribute("class").replace(re, "");
+      if (newclass != "")
+        thisNode.setAttribute("class", newclass);
+      else
+        thisNode.removeAttribute("class");
+    }
+  }
 
   // Clean up USO for framed presentation
   if (!frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
@@ -195,6 +217,9 @@
           divNode = document.body.appendChild(newdivNode);
       }
 
+      /* Common */
+      GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
+
       /* Nearest fix for a glitch on USO */
       let scriptNav = document.getElementById("script-nav");
       if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
@@ -230,6 +255,11 @@
                 "label": 'Skip verify for installation of library scripts <em class="gmc68219home-yellownote">Not recommended</em>',
                 "default": false
             },
+            "skipEmbeddedScan": {
+              "type": "checkbox",
+              "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219home-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
+              "default": false
+            }
           },
           <><![CDATA[
             #gmc68219home {
@@ -292,9 +322,11 @@
             }
 
 
-            #gmc68219home_field_skipVerifyLibs
+            #gmc68219home_field_skipVerifyLibs,
+            #gmc68219home_field_skipEmbeddedScan
             {
               top: 0.08em;
+              margin-right: 0.5em;
             }
 
             #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
@@ -325,7 +357,7 @@
             },
             "updaterMinage": {
               "type": "unsigned integer",
-              "label": 'hour(s) minimum before starting a check for this script <em class="gmc68219-yellownote">Not all updaters support this</em>',
+              "label": 'hour(s) minimum before starting a check for this script',
               "default": 1
             },
             "useGravatarIcon": {
@@ -336,12 +368,6 @@
             "useScriptIcon": {
               "type": "checkbox",
               "label": '',
-              "default": false
-            },
-            "skipEmbeddedScan": {
-              "section": [, ""],
-              "type": "checkbox",
-              "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
               "default": false
             }
           },
@@ -449,7 +475,7 @@
   if ((scriptid = getScriptid()))
     GM_xmlhttpRequest({
       retry: 5,
-      url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
+      url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmcHome.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
       method: "GET",
       onload: function(xhr) {
         switch(xhr.status) {
@@ -1513,6 +1539,44 @@
                   "title": ", Partial and Unlicensed derivative of usoCheckup"
                 }
               },
+              "usoCheckupbeta": {
+                "value": "usoCheckupbeta",
+                "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
+                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckupBeta")),
+                "title": 'by tHE gREASEmONKEYS (multiple contributors)',
+                "updater": "usocheckup",
+                "rex": [
+                  "^http:\\/\\/beta\\.usocheckup\\.dune\\.net\\/(\\d+)\\.js"
+                ],
+                "url": "http://beta.usocheckup.dune.net/" + scriptid + ".js",
+                "qs": "wrapperid=" + scriptid,
+                "qsmax": "maxage",
+                "qsmin": "minage",
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", BETA runtime, MAY NOT ALWAYS WORK! :)"
+                },
+                "beta": true,
+                "border-top": "thin dotted #666"
+              },
+              "usoCheckupmeta": {
+                "value": "usoCheckupmeta",
+                "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
+                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckup")),
+                "title": 'by tHE gREASEmONKEYS (multiple contributors)',
+                "updater": "none",
+                "rex": [
+                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                ],
+                "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
+                "qs": "updater=none",
+                "securityAdvisory": {
+                  "advisory": "low",
+                  "title": ""
+                }
+              },
               "usoCheckup": {
                 "value": "usoCheckup",
                 "textContent": 'usoCheckup',
@@ -1531,28 +1595,7 @@
                 "securityAdvisory": {
                   "advisory": "low",
                   "title": ""
-                },
-                "border-top": "thin dotted #666"
-              },
-              "usoCheckupbeta": {
-                "value": "usoCheckupbeta",
-                "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
-                "derivative": 1,
-                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckupBeta")),
-                "title": 'by tHE gREASEmONKEYS (multiple contributors)',
-                "updater": "usocheckup",
-                "rex": [
-                  "^http:\\/\\/beta\\.usocheckup\\.dune\\.net\\/(\\d+)\\.js"
-                ],
-                "url": "http://beta.usocheckup.dune.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid,
-                "qsmax": "maxage",
-                "qsmin": "minage",
-                "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", BETA runtime, MAY NOT ALWAYS WORK! :)"
-                },
-                "beta": true
+                }
               },
               "usoCheckupOttoShow": {
                 "value": "usoCheckupOttoShow",
@@ -1565,7 +1608,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/82206"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&theme=82206,66530,67771,74732&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&theme=82206,66530,74732&trim=de,pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1584,7 +1627,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/60926"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,67771,74732&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,74732&trim=de,pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1603,7 +1646,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/68506"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,74732&custom=yes&trim=de,pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1622,7 +1665,7 @@
                   "^http:\\/\\/userscripts\\.org\\/scripts\\/show\\/61794"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,67771,74732&custom=yes&trim=de,pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,74732&custom=yes&trim=de,pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1889,9 +1932,6 @@
                   else
                     gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
 
-
-
-
                   let icon = "";
                   if (gmc.get("useGravatarIcon") && gravatar)
                     icon = appendListItem(icon, gravatar);
@@ -1922,8 +1962,19 @@
                         + securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
                   }
 
-                  if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
+                  if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
                     gmc.open();
+
+                    if (thisUpdater["qsmax"])
+                      removeClass(gmc.fields["updaterMaxage"].node.parentNode, "hidden");
+                    else
+                      addClass(gmc.fields["updaterMaxage"].node.parentNode, "hidden");
+
+                    if (thisUpdater["qsmin"])
+                      removeClass(gmc.fields["updaterMinage"].node.parentNode, "hidden");
+                    else
+                      addClass(gmc.fields["updaterMinage"].node.parentNode, "hidden");
+                  }
                 break;
               }
             }, true);
