@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.1
+// @version       0.15.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -510,7 +510,7 @@
               +   "https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/103455\\.user\\.js"
 
               + ")", "gmi")) {
-                installNode.setAttribute("title", "Security Advisory: SEVERE, Possible malicious code and no script homepage for referenced user.js.");
+                installNode.setAttribute("title", "Security Advisory: SEVERE, possible malicious code and no script homepage for referenced user.js.");
                 GM_addStyle(
                     "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
                   + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
@@ -578,6 +578,24 @@
                 "title": 'Use native meta.js',
                 "securityAdvisory": {
                   "advisory": "undetermined",
+                  "title": ""
+                }
+              },
+              "usoCheckupmeta": {
+                "value": "usoCheckupmeta",
+                "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
+                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckup")),
+                "title": 'by tHE gREASEmONKEYS (multiple contributors)',
+                "updater": "none",
+                "rex": [
+                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
+                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                ],
+                "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
+                "qs": "updater=none",
+                "securityAdvisory": {
+                  "advisory": "low",
                   "title": ""
                 },
                 "border-bottom": "thin dotted #666"
@@ -715,11 +733,11 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by Starrow Pan (http://userscripts.org/users/157466)',
                 "rex": [
-                  "^http:\/\/userscripts\.org\/scripts\/source\/111662"
+                  "^https?:\/\/userscripts\.org\/scripts\/source\/111662"
                 ],
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", i/frame vulnerability, Derivative of inline AAU and PhasmaExMachina"
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, Derivative of inline AAU and PhasmaExMachina"
                 }
               },
               "75442": {
@@ -1101,8 +1119,8 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/87942\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater"
+                  "advisory": "elevated",
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Userscripts - AutoUpdater"
                 }
               },
               "57756": {
@@ -1115,7 +1133,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", i/frame vulnerability, derivative of Userscripts - AutoUpdater, Possible malicious code and no script homepage."
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Userscripts - AutoUpdater, possible malicious code and no script homepage."
                 }
               },
               "PhasmaExMachina": {
@@ -1127,7 +1145,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", Possible malicious code and no script homepage."
+                  "title": ", possible malicious code and no script homepage."
                 }
               },
               "98729": {
@@ -1140,7 +1158,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "95997": {
@@ -1153,7 +1171,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "95992": {
@@ -1166,7 +1184,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "94724": {
@@ -1179,7 +1197,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "94662": {
@@ -1192,7 +1210,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "94703": {
@@ -1205,7 +1223,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "95007": {
@@ -1218,7 +1236,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "99735": {
@@ -1231,7 +1249,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "103196": {
@@ -1244,7 +1262,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "bealegend.c0.pl": {
@@ -1256,7 +1274,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "files.kkhweb.com": {
@@ -1269,7 +1287,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "pc-expert.pl": {
@@ -1283,7 +1301,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "www.betawarriors.com": {
@@ -1296,7 +1314,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "xavier.hinfray.free.fr": {
@@ -1309,7 +1327,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "thogamerscripts.webs.com": {
@@ -1322,7 +1340,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "home.arcor.de": {
@@ -1334,7 +1352,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, offsite derivative of Script Updater (userscripts.org), Possible malicious code, hashed download url"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code, hashed download url"
                 }
               },
               "60663": {
@@ -1347,7 +1365,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, es-ES derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, es-ES derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "74144": {
@@ -1360,7 +1378,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", localStorage vulnerability, i/frame vulnerability, derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", localStorage vulnerability, possible excessive bandwith usage, i/frame vulnerability, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "66255": {
@@ -1373,7 +1391,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, ru-RU derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, ru-RU derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "88544": {
@@ -1386,7 +1404,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, ua-UA derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, ua-UA derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "ika-info.ucoz.ru": {
@@ -1398,7 +1416,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, Offsite derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, Offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "91400": {
@@ -1410,7 +1428,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, Onsite Better Loopy derivative of Script Updater (userscripts.org), Possible malicious code"
+                  "title": ", i/frame vulnerability, possible excessive bandwith usage, Onsite Better Loopy derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "37853": {
@@ -1558,24 +1576,6 @@
                 },
                 "beta": true,
                 "border-top": "thin dotted #666"
-              },
-              "usoCheckupmeta": {
-                "value": "usoCheckupmeta",
-                "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
-                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckup")),
-                "title": 'by tHE gREASEmONKEYS (multiple contributors)',
-                "updater": "none",
-                "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
-                ],
-                "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "updater=none",
-                "securityAdvisory": {
-                  "advisory": "low",
-                  "title": ""
-                }
               },
               "usoCheckup": {
                 "value": "usoCheckup",
