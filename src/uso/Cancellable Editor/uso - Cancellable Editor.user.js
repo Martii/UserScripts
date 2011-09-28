@@ -8,13 +8,10 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://s3.amazonaws.com/uso_ss/icon/48200/thumb.png
-// @version       0.0.12
+// @version       0.0.13
 //
 // @include  http://userscripts.org/topics/*
 // @include  https://userscripts.org/topics/*
-//
-// @require  http://usocheckup.redirectme.net/48200.js?method=install&open=window&maxage=3&id=usoCheckup&custom=yes&topicid=26205
-// @require  http://userscripts.org/scripts/source/61794.user.js
 //
 // ==/UserScript==
 
