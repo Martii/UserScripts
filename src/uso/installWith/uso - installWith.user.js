@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.3
+// @version       0.16.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -204,21 +204,26 @@
       // Reclaim some memory
       delete GM_config;
 
-      let divNode = document.getElementById("full_description");
-      if (divNode && !divNode.firstChild) {
-        let newdivNode = document.createElement("div");
-        divNode = divNode.appendChild(newdivNode);
-      }
-      else {
-        let newdivNode = document.createElement("div");
-        if (divNode)
-          divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
-        else
-          divNode = document.body.appendChild(newdivNode);
+      function insertDiv() {
+        let divNode = document.getElementById("full_description");
+        if (divNode && !divNode.firstChild) {
+          let newdivNode = document.createElement("div");
+          divNode = divNode.appendChild(newdivNode);
+        }
+        else {
+          let newdivNode = document.createElement("div");
+          if (divNode)
+            divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
+          else
+            divNode = document.body.appendChild(newdivNode);
+        }
+        return divNode;
       }
 
       /* Common */
       GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
+
+      let divNode = insertDiv();
 
       /* Nearest fix for a glitch on USO */
       let scriptNav = document.getElementById("script-nav");
@@ -240,8 +245,8 @@
 
       gmcHome.init(divNode,
           <><![CDATA[
-            <img src="http://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Options
-            <span style="float: right; margin: 0.4em 0.5em;"><a href="http://github.com/sizzlemctwizzle/GM_config"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+            <img src="http://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
+            <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
           ]]></>.toString(),
           {
             'mirrorDomain': {
@@ -337,121 +342,129 @@
       );
 
       if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
-        gmcHome.open();
+        gmcHome.open(); 
       }
 
       // other homepages
       var gmc = new GM_configStruct();
       gmc.id = "gmc68219";
 
-      gmc.init(divNode,
-          <><![CDATA[
-            <a href="/scripts/show/68219"><img src="http://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> Options
-            <span style="float: right; margin: 0.4em 0.5em;"><a href="http://github.com/sizzlemctwizzle/GM_config"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
-          ]]></>.toString(),
-          {
-            "updaterMaxage": {
-                "type": "unsigned integer",
-                "label": 'day(s) maximum between checks for this script',
-                "default": 30
-            },
-            "updaterMinage": {
-              "type": "unsigned integer",
-              "label": 'hour(s) minimum before starting a check for this script',
-              "default": 1
-            },
-            "useGravatarIcon": {
-              "type": "checkbox",
-              "label": '',
-              "default": false
-            },
-            "useScriptIcon": {
-              "type": "checkbox",
-              "label": '',
-              "default": false
-            }
+      gmc.init(insertDiv(),
+        (
+          (window.location.pathname.match(/\/scripts\/show\/68219\/?/i))
+          ? <><![CDATA[ <img src="http://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> ]]></>.toString()
+          : <><![CDATA[ <a href="/scripts/show/68219"><img src="http://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> ]]></>.toString()
+        )
+        + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
+        {
+          "useGravatarIcon": {
+            "type": "checkbox",
+            "label": '',
+            "default": false
           },
-          <><![CDATA[
-            #gmc68219 {
-              position: static !important;
-              z-index: 0 !important;
-              width: auto !important;
-              height: auto !important;
-              max-height: none !important;
-              max-width: none !important;
-              margin: 0 0 0.5em 0 !important;
-              border: 1px solid #ddd !important;
-              clear: right !important;
-            }
+          "useScriptIcon": {
+            "type": "checkbox",
+            "label": '',
+            "default": false
+          },
+          "updaterMaxage": {
+              "type": "unsigned integer",
+              "label": 'day(s) maximum between checks for this script',
+              "default": 30
+          },
+          "updaterMinage": {
+            "type": "unsigned integer",
+            "label": 'hour(s) minimum before starting a check for this script',
+            "default": 1
+          }
+        },
+        <><![CDATA[
+          #gmc68219 {
+            position: static !important;
+            z-index: 0 !important;
+            width: auto !important;
+            height: auto !important;
+            max-height: none !important;
+            max-width: none !important;
+            margin: 0 0 0.5em 0 !important;
+            border: 1px solid #ddd !important;
+            clear: right !important;
+          }
 
-            #gmc68219_wrapper {
-              background-color: #eee;
-              padding-bottom: 0.25em;
-            }
+          #gmc68219_wrapper {
+            background-color: #eee;
+            padding-bottom: 0.25em;
+          }
 
-            #gmc68219 .config_header {
-              color: white;
-              background-color: #333;
-              text-align: left;
-              margin: 0 0 0.4em 0;
-              padding: 0 0 0 0.5em;
-              font-size: 1.57em;
-            }
+          #gmc68219 .config_header {
+            color: white;
+            background-color: #333;
+            text-align: left;
+            margin: 0 0 0.4em 0;
+            padding: 0 0 0 0.5em;
+            font-size: 1.57em;
+          }
 
-            #gmc68219 .config_var {
-              margin: 0.5em 1em;
-              padding: 0;
-              clear: both;
-            }
+          #gmc68219 .config_var {
+            margin: 0.5em 1em;
+            padding: 0;
+            clear: both;
+          }
 
-            #gmc68219 .field_label {
-              color: #333;
-              font-weight: normal;
-              font-size: 100%;
-            }
+          #gmc68219 .field_label {
+            color: #333;
+            font-weight: normal;
+            font-size: 100%;
+          }
 
-            #gmc68219_field_updaterMaxage,
-            #gmc68219_field_updaterMinage
-            {
-              width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right;
-            }
+          #gmc68219_field_updaterMaxage,
+          #gmc68219_field_updaterMinage
+          {
+            width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right;
+          }
 
-            .gmc68219-yellownote
-            {
-              background-color: #FFD;
-              font-size: 0.66em !important;
-            }
+          #gmc68219_field_updaterMaxage
+          {
+            margin-top: 0.25em;
+          }
 
-            #gmc68219_field_useGravatarIcon,
-            #gmc68219_field_useScriptIcon,
-            #gmc68219_field_skipEmbeddedScan
-            {
-              top: 0.05em;
-              margin-right: 0.5em;
-            }
 
-            #gmc68219_useGravatarIcon_var,
-            #gmc68219_useScriptIcon_var
-            {
-              margin-right: 0 !important;
-              display: inline !important;
-            }
+          .gmc68219-yellownote
+          {
+            background-color: #FFD;
+            font-size: 0.66em !important;
+          }
 
-            #gmc68219_useScriptIcon_var
-            {
-              margin-left: 0 !important;
-            }
+          #gmc68219_field_useGravatarIcon,
+          #gmc68219_field_useScriptIcon,
+          #gmc68219_field_skipEmbeddedScan
+          {
+            top: 0.05em;
+            margin-right: 0.5em;
+          }
 
-            .section_desc
-            {
-              margin: 0.25em 1.5em !important;
-            }
+          #gmc68219_useGravatarIcon_var,
+          #gmc68219_useScriptIcon_var
+          {
+            margin-right: 0 !important;
+            display: inline !important;
+          }
 
-            #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-            #gmc68219_resetLink { margin-right: 2.5em; }
-            #gmc68219_closeBtn { display: none; }
+          #gmc68219_useScriptIcon_var
+          {
+            margin-left: 0 !important;
+          }
 
-          ]]></>.toString()
+          .section_desc
+          {
+            margin: 0.25em 1.5em !important;
+          }
+
+          #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+          #gmc68219_resetLink { margin-right: 2.5em; }
+          #gmc68219_closeBtn { display: none; }
+
+        ]]></>.toString()
       );
 
       gmc.onSave = function() {
@@ -503,7 +516,7 @@
               +   "|https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
 
               + ")", "gmi"))
-                possibleEmbedded = true;
+                possibleEmbedded = (scriptid == "68219" || scriptid == "69307") ? false : true;
 
               if (possibleEmbedded && xhr.responseText.match(
                 "("
@@ -1928,7 +1941,7 @@
 
 
                   if (icontype)
-                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/thumb." + icontype + "'  alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
+                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/large." + icontype + "'  alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
                   else
                     gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
 
