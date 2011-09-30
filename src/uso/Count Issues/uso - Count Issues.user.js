@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.8
+// @version       0.15.9
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -157,7 +157,7 @@
 
     gmc.init(divNode,
         <><![CDATA[
-          <img src="http://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Options
+          <img src="http://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
           <span style="float: right; margin: 0.4em 0.5em;"><a href="http://github.com/sizzlemctwizzle/GM_config"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
         ]]></>.toString(),
         /* Custom CSS */
@@ -356,13 +356,13 @@
           },
           'showKeys': {
               "type": 'checkbox',
-              "label": 'Show metadata block key(s) if present or different then USO in sidebar',
+              "label": 'Show metadata block key(s) if present or different than USO in sidebar',
               "default": true
           },
           'showKeysString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
-              "default": "name,icon,description,version,copyright,license,namespace,require,resource,include,match,exclude"
+              "default": "name,icon,description,version,copyright,license,namespace,require,resource,run-at,include,match,exclude"
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
