@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.0
+// @version       0.16.1
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -342,7 +342,7 @@
       );
 
       if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
-        gmcHome.open(); 
+        gmcHome.open();
       }
 
       // other homepages
@@ -516,7 +516,7 @@
               +   "|https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
 
               + ")", "gmi"))
-                possibleEmbedded = (scriptid == "68219" || scriptid == "69307") ? false : true;
+                possibleEmbedded = (scriptid == "68219" || scriptid == "69307" || scriptid == "114843") ? false : true;
 
               if (possibleEmbedded && xhr.responseText.match(
                 "("
