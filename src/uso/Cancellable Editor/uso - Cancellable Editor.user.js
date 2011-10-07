@@ -7,7 +7,8 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.18
+//@icon          http://s3.amazonaws.com/uso_ss/icon/48200/large.png
+// @version       0.0.19
 //
 // @include  http://userscripts.org/topics/*
 // @include  https://userscripts.org/topics/*
