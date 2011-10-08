@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.3
+// @version       0.0.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -71,6 +71,7 @@ Please note this script uses native JSON and native classList which requires Fir
   }
 
   function onDOMContentLoaded() {
+
     document.removeEventListener("DOMContentLoaded", onDOMContentLoaded, true);
 
     if (window.location.hash == "#posts-last")
@@ -100,16 +101,16 @@ Please note this script uses native JSON and native classList which requires Fir
       /* Nearest fix for a glitch on USO */
       let scriptNav = document.getElementById("script-nav");
       if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
-        GM_addStyle("div #full_description { width: 98.1%; }");
+        GM_addStyle(<><![CDATA[div #full_description { width: 98.1%; }]]></> + '');
 
       let screenShots = document.getElementById("screenshots");
       if (screenShots)
-        GM_addStyle("#full_description { clear: left; }");
+        GM_addStyle(<><![CDATA[#full_description { clear: left; }]]></> + '');
 
       /* Nearest fix for userscripts.org Alternate CSS */
       let fullDescription = document.getElementById("full_description");
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
-        GM_addStyle("#screenshots { width: 97.5% !important; }");
+        GM_addStyle(<><![CDATA[#screenshots { width: 97.5% !important; }]]></> + '');
 
       gmc.init(
           divNode,
@@ -134,18 +135,11 @@ Please note this script uses native JSON and native classList which requires Fir
             #gmc114843_section_0 { margin: 0 1em; }
             #gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }
 
-            #gmc114843_field_jsonMenus
-            {
-              font-size: 1em;
-              min-width: 98.28%;
-              max-width: 98.28%;
+            #gmc114843_field_jsonMenus { font-size: 1em; min-width: 98.28%; max-width: 98.28%; margin-top: 1em; min-height: 15.2em; height: 15.2em; }
 
-              margin-top: 1em;
-              min-height: 15.2em;
-              height: 15.2em;
-            }
-
-            #gmc114843_field_importGroups { top: 0.07em; }
+            #gmc114843_field_importGroups,
+            #gmc114843_field_enableUnstick
+            { top: 0.07em; }
 
             #gmc114843_importGroups_field_label p { margin-left: 1.5em; }
 
@@ -173,9 +167,14 @@ Please note this script uses native JSON and native classList which requires Fir
                       "spam and malware \u00bb": "/topics/9#posts-last",
                       "cookie stealing scripts \u00bb": "/topics/704#posts-last"
                       }
-                    ]
+                     ]
                     }
                 ]]></>.toString()), null, " ")
+            },
+            'enableUnstick': {
+                "type": 'checkbox',
+                "label": 'Unstick submenus',
+                "default": true
             },
             'importGroups': {
                 "type": 'checkbox',
@@ -208,33 +207,48 @@ Please note this script uses native JSON and native classList which requires Fir
       // -------------------------------------------------------------------------------------------------------------------------------------------------
       GM_addStyle(<><![CDATA[
 
-        .hid { display: none; }
-        .mainmenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; }
-        .mainmenu- li { border-radius: 0 !important; margin: 0 !important; float: none !important; background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }
-        .mainmenu- li a { color: #fff !important; }
+          .hid { display: none; }
+          .mainmenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; }
+          .mainmenu- li { border-radius: 0 !important; margin: 0 !important; float: none !important; background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }
+          .mainmenu- li a { color: #fff !important; }
 
       ]]></> + '');
 
-      // Detect if userscripts.org alternate CSS is loaded and unstick submenus
-      let xpr = document.evaluate(
-        "//div[@id='top']/div[@class='container']",
-        document.body,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-      );
-      if (xpr && xpr.singleNodeValue) {
-        let thisNode = xpr.singleNodeValue;
+      function onresize(ev) {
+        let xpr = document.evaluate(
+          "//div[@id='top']/div[@class='container']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (xpr && xpr.singleNodeValue) {
+          let thisNode = xpr.singleNodeValue;
 
-        let marginRight = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("margin-right").replace(/px$/i, ""));
-        if (marginRight) {
-          GM_addStyle(<><![CDATA[
+          let width = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("width").replace(/px$/i, "")); // NOTE: Returns normalized used instead of computed
+          if (width <= 950) {
+            let mainmenu = document.getElementById("mainmenu");
+            if (mainmenu)
+              mainmenu.style.setProperty("margin-right", (document.body.clientWidth - width) / 2 + "px", "");
+          }
+          else
+            return true;
+
+        }
+        if (!ev)
+          return false;
+      }
+
+      if (gmc.get("enableUnstick")) {
+        GM_addStyle(<><![CDATA[
 
             #header > .container { position: static; }
             .mainmenu- { position: absolute; }
 
-          ]]></> + '');
-        }
+        ]]></> + '');
+
+      if (!onresize())
+        window.addEventListener("resize", onresize, false);
       }
 
       // ** Event listeners
@@ -299,7 +313,6 @@ Please note this script uses native JSON and native classList which requires Fir
 
           window.location.pathname = "/scripts/show/114843";
         }
-
         return;
       }
 
@@ -332,11 +345,11 @@ Please note this script uses native JSON and native classList which requires Fir
       let mm = document.getElementById("mainmenu");
       if (mm) {
         let xpr = document.evaluate(
-          "./li/a[.='Monkey Barrel']",
-          mm,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            "./li/a[.='Monkey Barrel']",
+            mm,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (xpr && xpr.singleNodeValue)
           return;
