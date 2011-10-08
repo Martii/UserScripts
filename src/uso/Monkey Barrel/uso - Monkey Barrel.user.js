@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.1
+// @version       0.0.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -179,7 +179,7 @@ Please note this script uses native JSON and native classList which requires Fir
             },
             'importGroups': {
                 "type": 'checkbox',
-                "label": 'Enable automatic import for subscribed Groups when clicked<p><em class="gmc114843-yellownote">NOTICE: Due to the nature of fixed positioned menus any long menus may not be accessible below a certain point</em></p>',
+                "label": 'Enable automatic import for subscribed Groups when clicked<',
                 "default": true
             }
           }
@@ -215,6 +215,27 @@ Please note this script uses native JSON and native classList which requires Fir
 
       ]]></> + '');
 
+      // Detect if userscripts.org alternate CSS is loaded and unstick submenus
+      let xpr = document.evaluate(
+        "//div[@id='top']/div[@class='container']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      if (xpr && xpr.singleNodeValue) {
+        let thisNode = xpr.singleNodeValue;
+
+        let marginRight = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("margin-right").replace(/px$/i, ""));
+        if (marginRight) {
+          GM_addStyle(<><![CDATA[
+
+            #header > .container { position: static; }
+            .mainmenu- { position: absolute; }
+
+          ]]></> + '');
+        }
+      }
 
       // ** Event listeners
       function onmouseover(ev) {
