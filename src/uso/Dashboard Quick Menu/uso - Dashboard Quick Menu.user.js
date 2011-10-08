@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://s3.amazonaws.com/uso_ss/icon/105402/large.png
-// @version       0.1.2
+// @version       0.1.3
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://usocheckup.redirectme.net/105402.js?method=install&open=window&maxage=1&custom=yes&topicid=77715&id=usoCheckup
@@ -54,32 +54,30 @@ Please note this script uses native JSON and native classList which requires Fir
     let thisNode = xpr.singleNodeValue.parentNode;
 
     function onmouseover(ev) {
-      let divNode = document.getElementById("menu-home");
-      if (divNode)
-        divNode.classList.remove("hide");
+      this.firstChild.nextSibling.classList.remove("hid");
     }
 
     function onmouseout(ev) {
-      let divNode = document.getElementById("menu-home");
-      if (divNode)
-        divNode.classList.add("hide");
+      this.firstChild.nextSibling.classList.add("hid");
     }
 
     thisNode.addEventListener("mouseover", onmouseover, false);
     thisNode.addEventListener("mouseout", onmouseout, false);
 
     GM_addStyle(<><![CDATA[
-      #top ul.login_status>li { margin-bottom: 0 !important; }
-      #top ul.login_status>li>a { padding-bottom: 24px; }
 
-      div.menu- { background-color: #ff7c00; margin: 0; padding: 0; position: fixed; z-index: 1; margin-left: -1.5em; }
-      div.menu- ul { margin: 0; list-style: none outside none; }
-      div.menu- ul li { float: none !important; margin: 0 !important; padding-left: 1.5em; padding-right: 1.5em; background: #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top; }
-      .hide { display: none; }
+      #header #mainmenu { padding-top: 0; } /* Fix USO */
+
+      .hid { display: none; }
+      .menu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; margin-left: -1.5em; }
+      .menu- li { border-radius: 0 !important; margin: 0 !important; float: none !important; background: #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; padding: 0 1.5em; }
+      .menu- li a { color: #fff !important; }
 
     ]]></> + '');
 
     let ulNode = document.createElement("ul");
+    ulNode.className = "menu-";
+    ulNode.classList.add("hid");
 
     let menu = JSON.parse(GM_getValue(":/home", "{}"));
     for (let item in menu) {
@@ -93,13 +91,7 @@ Please note this script uses native JSON and native classList which requires Fir
       ulNode.appendChild(liNode);
     }
 
-    let divNode = document.createElement("div");
-    divNode.id = "menu-home";
-    divNode.className = "menu-";
-    divNode.classList.add("hide");
-
-    divNode.appendChild(ulNode);
-    thisNode.appendChild(divNode);
+    thisNode.appendChild(ulNode);
   }
 
 })();
