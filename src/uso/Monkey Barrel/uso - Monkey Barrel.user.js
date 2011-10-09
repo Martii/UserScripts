@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.6
+// @version       0.0.7
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -71,7 +71,6 @@ Please note this script uses native JSON and native classList which requires Fir
   }
 
   function onDOMContentLoaded() {
-
     document.removeEventListener("DOMContentLoaded", onDOMContentLoaded, true);
 
     if (window.location.hash == "#posts-last")
@@ -115,9 +114,11 @@ Please note this script uses native JSON and native classList which requires Fir
       gmc.init(
           divNode,
           <><![CDATA[
-            <img src="http://s3.amazonaws.com/uso_ss/icon/114843/thumb.png" style="vertical-align: middle; width: 32px; height: 32px;" alt="uso - Monkey Barrel" title="uso - Monkey Barrel" /> Preferences
-            <span style="float: right; margin: 0.4em 0.5em;"><a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
-          ]]></>.toString(),
+
+              <img src="http://s3.amazonaws.com/uso_ss/icon/114843/large.png" alt="uso - Monkey Barrel" title="uso - Monkey Barrel" /> Preferences
+              <span><a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+
+          ]]></> + '',
           /* Custom CSS */
           <><![CDATA[
 
@@ -130,6 +131,9 @@ Please note this script uses native JSON and native classList which requires Fir
             .section_desc { margin: 0.25em 1em !important; }
 
             .gmc114843-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+
+            #gmc114843_header > img { vertical-align: middle; width: 32px; height: 32px; }
+            #gmc114843_header > span { float: right; margin: 0.4em 0.5em; }
 
             #gmc114843_section_header_0 { color: inherit !important; background-color: inherit !important; font-size: inherit !important; border-style: none !important; text-align: left !important; }
             #gmc114843_section_0 { margin: 0 1em; }
@@ -147,7 +151,7 @@ Please note this script uses native JSON and native classList which requires Fir
             #gmc114843_resetLink { margin-right: 2.5em; }
             #gmc114843_closeBtn { display: none; }
 
-          ]]></>.toString(),
+          ]]></> + '',
 
           /* Settings object */
           {
@@ -156,6 +160,7 @@ Please note this script uses native JSON and native classList which requires Fir
                 "type": 'textarea',
                 "label": "<p><em class='gmc114843-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format.</em></p>",
                 "default": JSON.stringify(JSON.parse(<><![CDATA[
+
                     {
                     "Monkey Barrel": [
                       "/scripts/show/114843",
@@ -169,7 +174,8 @@ Please note this script uses native JSON and native classList which requires Fir
                       }
                      ]
                     }
-                ]]></>.toString()), null, " ")
+
+                ]]></> + ''), null, " ")
             },
             'enableUnstick': {
                 "type": 'checkbox',
@@ -206,6 +212,7 @@ Please note this script uses native JSON and native classList which requires Fir
 
       // -------------------------------------------------------------------------------------------------------------------------------------------------
       GM_addStyle(<><![CDATA[
+
           #header #mainmenu { padding-top: 0; } /* Fix USO */
 
           .hid { display: none; }
