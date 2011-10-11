@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.10
+// @version       0.0.11
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -222,7 +222,6 @@ Please note this script uses native JSON and native classList which requires Fir
 
       ]]></> + '');
 
-      let computedWidth;
       function onresize(ev) {
         let xpr = document.evaluate(
           "//div[@id='top']/div[@class='container']",
@@ -234,25 +233,8 @@ Please note this script uses native JSON and native classList which requires Fir
         if (xpr && xpr.singleNodeValue) {
           let thisNode = xpr.singleNodeValue;
 
-          // Workaround for absent getComputedStyle(thisNode, null).cssText and null getComputedStyle(thisNode, null).parentRule :\
-          if (!computedWidth) {
-            let sheet = 0;
-            while (document.styleSheets.item(sheet)) {
-              let rule = 0;
-              while (typeof document.styleSheets.item(sheet).cssRules[rule] != "undefined") {
-                let foundrule = document.styleSheets.item(sheet).cssRules[rule].cssText.match(/^\.container\s\{\s.*width\:\s(\w+).*\s\}/);
-                if (foundrule) {
-                  computedWidth = foundrule[1];
-                }
-                ++rule;
-              }
-              ++sheet;
-            }
-          }
-
-          if (computedWidth != "auto") {
-            let width = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("width").replace(/px$/i, ""));
-
+          let width = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("width").replace(/px$/i, "")); // NOTE: Returns normalized used instead of computed
+          if (width <= 950) {
             let mainmenu = document.getElementById("mainmenu");
             if (mainmenu)
               mainmenu.style.setProperty("margin-right", (document.body.clientWidth - width) / 2 + "px", "");
