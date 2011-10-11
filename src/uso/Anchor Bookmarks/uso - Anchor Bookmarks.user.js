@@ -9,10 +9,11 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.5.0
+// @version       0.5.1
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
+//
 // @exclude http://userscripts.org/login*
 // @exclude https://userscripts.org/login*
 // @exclude http://userscripts.org/scripts/source/*.meta.js
@@ -22,32 +23,16 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @require http://usocheckup.redirectme.net/69725.js?method=install&open=window&maxage=14&custom=yes&topicid=46797&id=usoCheckup
-// @require http://userscripts.org/scripts/source/61794.user.js
-//
 // ==/UserScript==
 
-  var img = "data:image/png;base64,"
-    + "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A"
-    + "/wD/oL2nkwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAAd0SU1FB9oCGRYCJ6c31rcAAAJbSURBVDjL"
-    + "jZJLSNRRFMZ/997/mDY1ZuRjxpwkRbCwh4YuEgKNilpUq6CIkh7UokULEQwypAzfRbuUWkmbVi1q"
-    + "EZhJgYjmozS10RbhG9KpcZyZ/jO3xYyTL8IPDvcezj3f/b57rtBaU1P38KRS6qlpmqmsAymlFkIE"
-    + "DMPo9Pv9FWWl5e+iRa01dQ3VkzOz0/p/GB1z6c9f+vTjJw2e+saaeq01WmskgGmaKYk7khgeHWTY"
-    + "NRBeRwcZWRa9vd3YHQ4uXSyxSilvVtdWHQfCBEtQUqKUgZIKQ6nwPhJCCXyLiyCg8HBhnGExKgGM"
-    + "FQRqKRUIsbwisNsddHZ1YJoh0p3phIKhg2sJpAIhmPnppfHFJ/q/zYCA3Kxkbl/IIzPDite7SE7O"
-    + "ft63t1nWWlCK2Xkf1+6/JjnFTekVP/du5ZOZMcvlyjdoZcXpdBK7KZZgMEh1bZWQqy3Ut3RzuthF"
-    + "wd5RJtynMMU4BfvaOHdinPqWLpRSYVNCaECsUdA3PI09yUbH8Bmm53xsiW3F47ORljJD99AUhlrh"
-    + "eiWBlGF2359CnNub8SzM8n08AYtw4fXlRy+JKGDdMR7ISuZDz2+2xv3AkdBB19BRPAtW2nus5GXb"
-    + "o5Na14KUijtXj/B1ZIqBsUNsjjlG9k4brZ3F9A/OU3G9KKpgyYKx6s+zy76Nl7XnedDcxtuPXQDk"
-    + "7tnNq0dFpCba/nVGFKx8ESEQQrDLHk/T3bPISC6EjNaWn40SWCyWSfcvtz3eFs9GsOBdAJgDAgZA"
-    + "MBgsefa8qSkQCKRthCAmJmYiFArdKCst138BG630E1pVEUQAAAAASUVORK5CYII=";
+  var img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAl2cEFnAAAAEAAAABAAXMatwwAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAlNJREFUOE+Nk+tLU3EYx+3+v6RRb3tXEAhBBDWjzK03Um+VirI0IWr3c+ZYURJJsTHnSJshdH3TtNoNZLY1zV3Y3TkvZ3rm1G1++/1+mey0ih74nHHg+X7OzvP8TgOABo1OeVLPa1Jq7X38Ca1etaXj1OsGo95J7o/TzC/YhYSz8/kc/lWRaBhfA34YTbzIGbScRECfQms6HMT0bODnL2GmhuGRISws5SEIyyD/ZI1kmusEs9EQYZoRjlFmdhgZtSOVTkAoLMPrc0Fv0LjrBNH47DZhxBK1RPDFM8Ek9mEbPF4XnctmnSCejCKeisE7FURrlxlNMg5NLRwUty2Y/BbCVGASLs9nlNZLIENFnSCVicMXCOHIOR06jQ/w/LUSL5zjuDtgwOHzPPyh78jMpVjv9oZ2SQTZXBoXuizo7b8C24dOqGx+2MZteOs7DeWzq1B0W5HLZ1kvWf0Wye2WCOYX5nDwDIfHL6+j4+FHdDxyY8x7GcMTcpjfyNEo47FINlEj2CMR0DVRQZ99FPygHO36MZgcN/Dq01H0O0xMIBSWWC89XHWCZWERrTctkJHXeOI4hjtPu3FJ/R7WdydwsXcAip5BrIorrJcMsUpyeyWCwoqAYDiJxrN6dPDXoDY7oba40X5PhUMtPCLJHNZKxVrBPomA2sXiKkLRDNpuWYmIZ8h7hhBL57G5ucGgRY5/heT2SwQ0XFwT2VPorjc21lmgXC6jUqmgWq0yaJHvgQoOMAG5yQgFAf9bYlGkgvzOOSATbeb7dIm/fc6/Q3rTZAanaPYH/jkU5snfMgQAAAAASUVORK5CYII=";
 
   var headNode = document.evaluate(
-    "//head",
-    document.documentElement,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null
+      "//head",
+      document.documentElement,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
   );
   if (headNode && headNode.singleNodeValue) {
     var styleNode = document.createElement("style");
@@ -58,11 +43,11 @@
   }
 
   var xpr = document.evaluate(
-   "//a[starts-with(@name,'comment-')]",
-    document.body,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null
+      "//a[starts-with(@name,'comment-')]",
+      document.body,
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      null
   );
 
   if (xpr)
@@ -75,11 +60,11 @@
 
       if (window.location.pathname.match(/^\/comments(.*)/i)) {
         var userid, useridNode = document.evaluate(
-          ".//a[@user_id]",
-          thisNode.parentNode,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            ".//a[@user_id]",
+            thisNode.parentNode,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (useridNode && useridNode.singleNodeValue) {
           var thatNode = useridNode.singleNodeValue;
@@ -98,20 +83,20 @@
   // Fix missing recent /posts linkage if still missing
   if (window.location.pathname.match(/(.*)\/posts$/i)) {
     var xpr = document.evaluate(
-    "//tr[starts-with(@id,'posts-')]",
-      document.body,
-      null,
-      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-      null
+        "//tr[starts-with(@id,'posts-')]",
+        document.body,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
     );
     if (xpr)
       for (var i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
         var targetNode = document.evaluate(
-          ".//abbr[@class='updated']",
-          thisNode,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            ".//abbr[@class='updated']",
+            thisNode,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (targetNode && targetNode.singleNodeValue) {
           var abbrNode = targetNode.singleNodeValue;
@@ -140,11 +125,11 @@
       switch (tabid) {
         case "show":
           var contextNode = document.evaluate(
-            "//div[@id='full_description']",
-            document.body,
-            null,
-            XPathResult.FIRST_ORDERED_NODE_TYPE,
-            null
+              "//div[@id='full_description']",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              null
           );
           if (contextNode && contextNode.singleNodeValue) {
             contextNode = contextNode.singleNodeValue;
@@ -153,11 +138,11 @@
           break;
         case "reviews":
           var contextNode = document.evaluate(
-            "//div[@class='review']/div[@class='body']",
-            document.body,
-            null,
-            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-            null
+              "//div[@class='review']/div[@class='body']",
+              document.body,
+              null,
+              XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+              null
           );
           for (var i = 0; i < contextNode.snapshotLength; ++i) {
             var thisNode = contextNode.snapshotItem(i);
@@ -168,11 +153,11 @@
           break;
         case "issues":
           var contextNode = document.evaluate(
-            "//p[contains(@id, 'issuecomments-')]",
-            document.body,
-            null,
-            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-            null
+              "//p[contains(@id, 'issuecomments-')]",
+              document.body,
+              null,
+              XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+              null
           );
           for (var i = 0; i < contextNode.snapshotLength; ++i) {
             var thisNode = contextNode.snapshotItem(i);
@@ -188,11 +173,11 @@
       var jetpackid = (portion = portion[1].match(/^\/(.*)/i)) ? portion[1] : undefined;
       if (jetpackid) {
         var contextNode = document.evaluate(
-          "//p/b/text()['Summary:']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            "//p/b/text()['Summary:']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (contextNode && contextNode.singleNodeValue) {
           contextNode = contextNode.singleNodeValue.parentNode.parentNode;
@@ -205,11 +190,11 @@
       var articleid = (portion = portion[1].match(/^\/(\d+).*/i)) ? portion[1] : undefined;
       if (articleid) {
         var contextNode = document.evaluate(
-          "//div[contains(@id, 'comment-body')]",
-          document.body,
-          null,
-          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-          null
+            "//div[contains(@id, 'comment-body')]",
+            document.body,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
         );
         for (var i = 0; i < contextNode.snapshotLength; ++i) {
           var thisNode = contextNode.snapshotItem(i);
@@ -219,11 +204,11 @@
         }
 
         contextNode = document.evaluate(
-          "//p[@class='summary']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            "//p[@class='summary']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (contextNode && contextNode.singleNodeValue) {
           contextNode = contextNode.singleNodeValue;
@@ -234,11 +219,11 @@
 
     case (portion = pathname.match(/(.*)\/comments$/i)) ? portion[0] : undefined:
       var contextNode = document.evaluate(
-        "//div[contains(@id, 'comment-body')]",
-        document.body,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-        null
+          "//div[contains(@id, 'comment-body')]",
+          document.body,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
       );
       for (var i = 0; i < contextNode.snapshotLength; ++i) {
         var thisNode = contextNode.snapshotItem(i);
@@ -248,11 +233,11 @@
       }
 
       contextNode = document.evaluate(
-        "//p[@class='summary']",
-        document,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
+          "//p[@class='summary']",
+          document,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
       );
       if (contextNode && contextNode.singleNodeValue) {
         contextNode = contextNode.singleNodeValue;
@@ -264,11 +249,11 @@
       var groupid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
       if (groupid) {
         var contextNode = document.evaluate(
-          "//div[@class='description']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            "//div[@class='description']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (contextNode && contextNode.singleNodeValue) {
           contextNode = contextNode.singleNodeValue;
@@ -281,11 +266,11 @@
       var guideid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
       if (guideid) {
         var contextNode = document.evaluate(
-          "//div[@id='content']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            "//div[@id='content']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (contextNode && contextNode.singleNodeValue) {
           contextNode = contextNode.singleNodeValue;
@@ -298,11 +283,11 @@
       var topicid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
       if (topicid) {
         var contextNode = document.evaluate(
-          "//td[contains(@id, 'post-body')]",
-          document.body,
-          null,
-          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-          null
+            "//td[contains(@id, 'post-body')]",
+            document.body,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
         );
         for (var i = 0; i < contextNode.snapshotLength; ++i) {
           var thisNode = contextNode.snapshotItem(i);
@@ -317,11 +302,11 @@
       var reviewid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
       if (reviewid) {
         var contextNode = document.evaluate(
-          "//div[@class='body']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
+            "//div[@class='body']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
         );
         if (contextNode && contextNode.singleNodeValue) {
           contextNode = contextNode.singleNodeValue;
@@ -329,11 +314,11 @@
         }
 
         contextNode = document.evaluate(
-          "//div[contains(@id, 'comment-body')]",
-          document.body,
-          null,
-          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-          null
+            "//div[contains(@id, 'comment-body')]",
+            document.body,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
         );
         for (var i = 0; i < contextNode.snapshotLength; ++i) {
           var thisNode = contextNode.snapshotItem(i);
@@ -348,11 +333,11 @@
 
 function addBookmarks(contextNode, prefixAttribute) {
   var xpr = document.evaluate(
-    "../descendant::a[not(@href)][not(@name)][not(@id)]",
-    contextNode,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null
+      "../descendant::a[not(@href)][not(@name)][not(@id)]",
+      contextNode,
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      null
   );
 
   var thisNode, thatNode;
@@ -421,14 +406,14 @@ function addBookmarks(contextNode, prefixAttribute) {
   var hash = window.location.hash.match(/^#(bookmark-.*)/);
   if (hash) {
     var anchorNode = document.evaluate(
-      "//a[@id='" + hash[1] + "']",
-      document,
-      null,
-      XPathResult.FIRST_ORDERED_NODE_TYPE,
-      null
+        "//a[@id='" + hash[1] + "']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
     );
     if (anchorNode && anchorNode.singleNodeValue)
-      anchorNode.singleNodeValue.scrollIntoView();
+      setTimeout(function () { anchorNode.singleNodeValue.scrollIntoView(); }, 750);
   }
 
 })();
