@@ -3,23 +3,20 @@
 // ==UserScript==
 // @name          uso - Cancellable Editor
 // @namespace     http://userscripts.org/users/37004
-// @description   Allows cancelling of the Editor while viewing offline with site JavaScript disabled
+// @description   Allows cancelling of the reply editor while viewing on or offline with site JavaScript disabled
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.21
+// @version       0.1.0
 //
+// @include  /https?:\/\/userscripts\.org\/topics\/.*/
 // @include  http://userscripts.org/topics/*
 // @include  https://userscripts.org/topics/*
 //
 // ==/UserScript==
 
-  if (typeof usoCheckup != "undefined") {
-    usoCheckup.widgets("query");   // Activate the default query widget.
-  }
-
 /*
-NOTE: This script uses object existence tests on unsafeWindow, but NEVER CALLS those objects
+NOTE: This script uses object existence tests on the wrappedJSObject, but NEVER CALLS those objects
 
 CHANGELOG
 =========
@@ -27,53 +24,39 @@ http://userscripts.org/topics/26205
 
 */
 
-  //  ***************************************************************************
-  function cancelReply(ev) {
-    this.removeEventListener("click", cancelReply, false);
+  function cancelReply(aEv) {
+    aEv.preventDefault();
 
-    this.setAttribute("onclick", "$('#reply').hide(); return false;");
-    this.setAttribute("href", "#");
-
-    var xpr = document.evaluate(
-      "//div[@id='reply']",
-      document,
-      null,
-      XPathResult.ANY_UNORDERED_NODE_TYPE,
-      null
+    let xpr = document.evaluate(
+        "//div[@id='reply']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
     );
 
     if (xpr && xpr.singleNodeValue)  {
-      var thisNode = xpr.singleNodeValue;
-      thisNode.setAttribute("style", "display: none;");
+      let thisNode = xpr.singleNodeValue;
+
+      thisNode.style.setProperty("display", "none", "");
     }
   }
-  //  ***************************************************************************
 
-  if (typeof unsafeWindow == "object" && typeof unsafeWindow.jQuery == "function")
+  if (typeof window.wrappedJSObject == "object" && typeof window.wrappedJSObject.jQuery == "function")
     return;
-  
-  if (document.evaluate(
-    "//a[starts-with(@href,'/login')]",
-    document,
-    null,
-    XPathResult.BOOLEAN_TYPE,
-    null
-  ).booleanValue) {
 
-    var xpr = document.evaluate(
+  let xpr = document.evaluate(
       '//a[starts-with(@onclick,"$(\'#reply\').hide();")]',
-      document,
+      document.body,
       null,
-      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
       null
-    );
+  );
 
-    if (xpr)
-      for (var i = xpr.snapshotLength - 1; thisNode = xpr.snapshotItem(i); --i) {
-        thisNode.setAttribute("onclick", "javascript:void(0);");
-        thisNode.setAttribute("href", "javascript:void(0);");
-        thisNode.addEventListener("click", cancelReply, false);
-      }
-  }
+  if (xpr)
+    for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+      thisNode.removeAttribute("onclick");
+      thisNode.addEventListener("click", cancelReply, false);
+    }
 
 })();
