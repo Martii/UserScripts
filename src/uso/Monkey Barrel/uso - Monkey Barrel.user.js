@@ -8,10 +8,11 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.11
+// @version       0.0.12
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
+// @require   http://userscripts.org/scripts/source/115323.user.js
 // @require   https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
 // ==/UserScript==
 
@@ -100,16 +101,33 @@ Please note this script uses native JSON and native classList which requires Fir
       /* Nearest fix for a glitch on USO */
       let scriptNav = document.getElementById("script-nav");
       if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
-        GM_addStyle(<><![CDATA[div #full_description { width: 98.1%; }]]></> + '');
+        GM_addGlobalStyle({
+            media: "screen, projection",
+            data: <><![CDATA[
+
+                div #full_description { width: 98.1%; }
+
+            ]]></>
+        });
 
       let screenShots = document.getElementById("screenshots");
       if (screenShots)
-        GM_addStyle(<><![CDATA[#full_description { clear: left; }]]></> + '');
+        GM_addGlobalStyle({
+          media: "screen, projection",
+          data: <><![CDATA[#full_description { clear: left; }]]></>
+        });
 
       /* Nearest fix for userscripts.org Alternate CSS */
       let fullDescription = document.getElementById("full_description");
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
-        GM_addStyle(<><![CDATA[#screenshots { width: 97.5% !important; }]]></> + '');
+        GM_addGlobalStyle({
+          media: "screen, projection",
+          data: <><![CDATA[
+
+              #screenshots { width: 97.5% !important; }
+
+          ]]></>
+        });
 
       gmc.init(
           divNode,
@@ -211,16 +229,19 @@ Please note this script uses native JSON and native classList which requires Fir
       }
 
       // -------------------------------------------------------------------------------------------------------------------------------------------------
-      GM_addStyle(<><![CDATA[
+      GM_addGlobalStyle({
+        media: "screen, projection",
+        data: <><![CDATA[
 
-          #header #mainmenu { padding-top: 0; } /* Fix USO */
+            #header #mainmenu { padding-top: 0; } /* Fix USO */
 
-          .hid { display: none; }
-          .mainmenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; }
-          .mainmenu- li { -moz-border-radius: 0 !important; border-radius: 0 !important; margin: 0 !important; float: none !important; background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }
-          .mainmenu- li a { color: #fff !important; }
+            .hid { display: none; }
+            .mainmenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; }
+            .mainmenu- li { -moz-border-radius: 0 !important; border-radius: 0 !important; margin: 0 !important; float: none !important; background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }
+            .mainmenu- li a { color: #fff !important; }
 
-      ]]></> + '');
+          ]]></>
+      });
 
       function onresize(ev) {
         let xpr = document.evaluate(
@@ -248,12 +269,15 @@ Please note this script uses native JSON and native classList which requires Fir
       }
 
       if (gmc.get("enableUnstick")) {
-        GM_addStyle(<><![CDATA[
+        GM_addGlobalStyle({
+          media: "",
+          data: <><![CDATA[
 
-            #header > .container { position: static; }
-            .mainmenu- { position: absolute; }
+              #header > .container { position: static; }
+              .mainmenu- { position: absolute; }
 
-        ]]></> + '');
+          ]]></>
+        });
 
       if (!onresize())
         window.addEventListener("resize", onresize, false);
