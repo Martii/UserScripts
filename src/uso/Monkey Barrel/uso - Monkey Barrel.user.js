@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.12
+// @version       0.0.13
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -129,6 +129,15 @@ Please note this script uses native JSON and native classList which requires Fir
           ]]></>
         });
 
+      GM_addGlobalStyle({
+        media: "print",
+        data: <><![CDATA[
+
+            #gmc114843 { display: none !important; }
+
+        ]]></>
+      });
+
       gmc.init(
           divNode,
           <><![CDATA[
@@ -169,7 +178,7 @@ Please note this script uses native JSON and native classList which requires Fir
               #gmc114843_resetLink { margin-right: 2.5em; }
               #gmc114843_closeBtn { display: none; }
 
-          ]]></> + '',
+          ]]></>.toCSSString("\n"),
 
           /* Settings object */
           {
