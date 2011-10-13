@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.13
+// @version       0.0.14
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -147,38 +147,42 @@ Please note this script uses native JSON and native classList which requires Fir
 
           ]]></> + '',
           /* Custom CSS */
-          <><![CDATA[
+          GM_addGlobalStyle({
+              node: null,
+              space: "\n",
+              data: <><![CDATA[
 
-              /* GM_config specific fixups */
-              #gmc114843 { border: 1px solid #ddd !important; clear: right !important; height: auto !important; max-height: none !important; max-width: 100% !important; margin: 0 0 0.6em 0 !important; position: static !important; width: auto !important; z-index: 0 !important; }
-              #gmc114843_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-              #gmc114843 .config_header { background-color: #333; color: white; font-size: 1.57em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
-              #gmc114843 .config_var { clear: both; margin: 0 1em; padding: 0; }
-              #gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; }
-              .section_desc { margin: 0.25em 1em !important; }
+                  /* GM_config specific fixups */
+                  #gmc114843 { border: 1px solid #ddd !important; clear: right !important; height: auto !important; max-height: none !important; max-width: 100% !important; margin: 0 0 0.6em 0 !important; position: static !important; width: auto !important; z-index: 0 !important; }
+                  #gmc114843_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+                  #gmc114843 .config_header { background-color: #333; color: white; font-size: 1.57em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
+                  #gmc114843 .config_var { clear: both; margin: 0 1em; padding: 0; }
+                  #gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; }
+                  .section_desc { margin: 0.25em 1em !important; }
 
-              .gmc114843-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+                  .gmc114843-yellownote { background-color: #ffd; font-size: 0.66em !important; }
 
-              #gmc114843_header > img { vertical-align: middle; width: 32px; height: 32px; }
-              #gmc114843_header > span { float: right; margin: 0.4em 0.5em; }
+                  #gmc114843_header > img { vertical-align: middle; width: 32px; height: 32px; }
+                  #gmc114843_header > span { float: right; margin: 0.4em 0.5em; }
 
-              #gmc114843_section_header_0 { color: inherit !important; background-color: inherit !important; font-size: inherit !important; border-style: none !important; text-align: left !important; }
-              #gmc114843_section_0 { margin: 0 1em; }
-              #gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }
+                  #gmc114843_section_header_0 { color: inherit !important; background-color: inherit !important; font-size: inherit !important; border-style: none !important; text-align: left !important; }
+                  #gmc114843_section_0 { margin: 0 1em; }
+                  #gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }
 
-              #gmc114843_field_jsonMenus { font-size: 1em; min-width: 98.28%; max-width: 98.28%; margin-top: 1em; min-height: 15.2em; height: 15.2em; }
+                  #gmc114843_field_jsonMenus { font-size: 1em; min-width: 98.28%; max-width: 98.28%; margin-top: 1em; min-height: 15.2em; height: 15.2em; }
 
-              #gmc114843_field_importGroups,
-              #gmc114843_field_enableUnstick
-              { top: 0.07em; }
+                  #gmc114843_field_importGroups,
+                  #gmc114843_field_enableUnstick
+                  { top: 0.07em; }
 
-              #gmc114843_importGroups_field_label p { margin-left: 1.5em; }
+                  #gmc114843_importGroups_field_label p { margin-left: 1.5em; }
 
-              #gmc114843_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-              #gmc114843_resetLink { margin-right: 2.5em; }
-              #gmc114843_closeBtn { display: none; }
+                  #gmc114843_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+                  #gmc114843_resetLink { margin-right: 2.5em; }
+                  #gmc114843_closeBtn { display: none; }
 
-          ]]></>.toCSSString("\n"),
+              ]]></>
+          }),
 
           /* Settings object */
           {
