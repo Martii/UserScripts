@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.14
+// @version       0.0.15
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -77,6 +77,10 @@ Please note this script uses native JSON and native classList which requires Fir
     if (window.location.hash == "#posts-last")
       window.document.body.style.cursor = "progress";
 
+    let gCSS = GM_addGlobalStyle({
+        media: "screen, projection"
+    });
+
     if (typeof GM_configStruct != "undefined") {
       // Save some memory
       delete GM_config;
@@ -102,7 +106,7 @@ Please note this script uses native JSON and native classList which requires Fir
       let scriptNav = document.getElementById("script-nav");
       if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
         GM_addGlobalStyle({
-            media: "screen, projection",
+            node: gCSS,
             data: <><![CDATA[
 
                 div #full_description { width: 98.1%; }
@@ -113,7 +117,7 @@ Please note this script uses native JSON and native classList which requires Fir
       let screenShots = document.getElementById("screenshots");
       if (screenShots)
         GM_addGlobalStyle({
-          media: "screen, projection",
+          node: gCSS,
           data: <><![CDATA[#full_description { clear: left; }]]></>
         });
 
@@ -121,7 +125,7 @@ Please note this script uses native JSON and native classList which requires Fir
       let fullDescription = document.getElementById("full_description");
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
         GM_addGlobalStyle({
-          media: "screen, projection",
+          node: gCSS,
           data: <><![CDATA[
 
               #screenshots { width: 97.5% !important; }
@@ -243,7 +247,7 @@ Please note this script uses native JSON and native classList which requires Fir
 
       // -------------------------------------------------------------------------------------------------------------------------------------------------
       GM_addGlobalStyle({
-        media: "screen, projection",
+        node: gCSS,
         data: <><![CDATA[
 
             #header #mainmenu { padding-top: 0; } /* Fix USO */
@@ -283,7 +287,7 @@ Please note this script uses native JSON and native classList which requires Fir
 
       if (gmc.get("enableUnstick")) {
         GM_addGlobalStyle({
-          media: "",
+          node: gCSS,
           data: <><![CDATA[
 
               #header > .container { position: static; }
