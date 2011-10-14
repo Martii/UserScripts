@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://s3.amazonaws.com/uso_ss/icon/105402/large.png
-// @version       0.1.5
+// @version       0.1.6
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -68,10 +68,12 @@ Please note this script uses native JSON and native classList which requires Fir
       media: "screen, projection",
       data: <><![CDATA[
 
-          #header #mainmenu { padding-top: 0; } /* Fix USO */
+          /* Fix USO */
+          #top > .container { position: static; }
+          #header #mainmenu { padding-top: 0; }
 
           .hid { display: none; }
-          .usermenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; margin-left: -1.5em; }
+          .usermenu- { position: absolute; z-index: 1; margin: 0; list-style: none outside none; margin-left: -1.5em; }
           .usermenu- li { border-radius: 0 !important; margin: 0 !important; float: none !important; background: #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; padding: 0 1.5em; }
           .usermenu- li a { color: #fff !important; }
 
