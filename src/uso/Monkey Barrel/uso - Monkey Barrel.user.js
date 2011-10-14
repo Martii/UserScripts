@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.16
+// @version       0.0.17
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -117,33 +117,33 @@ Please note this script uses native JSON and native classList which requires Fir
       let screenShots = document.getElementById("screenshots");
       if (screenShots)
         GM_addGlobalStyle({
-          node: gCSS,
-          data: <><![CDATA[
+            node: gCSS,
+            data: <><![CDATA[
 
-              #full_description { clear: left; }
+                #full_description { clear: left; }
 
-          ]]></>
+            ]]></>
         });
 
       /* Nearest fix for userscripts.org Alternate CSS */
       let fullDescription = document.getElementById("full_description");
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
         GM_addGlobalStyle({
-          node: gCSS,
-          data: <><![CDATA[
+            node: gCSS,
+            data: <><![CDATA[
 
-              #screenshots { width: 97.5% !important; }
+                #screenshots { width: 97.5% !important; }
 
-          ]]></>
+            ]]></>
         });
 
       GM_addGlobalStyle({
-        media: "print",
-        data: <><![CDATA[
+          media: "print",
+          data: <><![CDATA[
 
-            #gmc114843 { display: none !important; }
+              #gmc114843 { display: none !important; }
 
-        ]]></>
+          ]]></>
       });
 
       gmc.init(
@@ -157,7 +157,6 @@ Please note this script uses native JSON and native classList which requires Fir
           /* Custom CSS */
           GM_addGlobalStyle({
               node: null,
-              space: "\n",
               data: <><![CDATA[
 
                   /* GM_config specific fixups */
