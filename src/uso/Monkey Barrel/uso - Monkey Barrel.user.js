@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.18
+// @version       0.0.19
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/.*/
@@ -27,41 +27,79 @@ Please note this script uses native JSON and native classList which requires Fir
 */
 
   function findlastPost(aTopicid) {
-    let req = new XMLHttpRequest();
-    req.open("GET", "/topics/" + aTopicid + ".rss", true);
-    req.onreadystatechange = function () {
-      if (req.readyState == 4) {
-        if (req.status == 200) {
-          let doc = new DOMParser().parseFromString(req.responseText,"text/xml"),
-              xpr = doc.evaluate(
-                  "//channel/item/link",
-                  doc.documentElement,
-                  null,
-                  XPathResult.FIRST_ORDERED_NODE_TYPE,
-                  null
-              );
+    if (document && document.body)
+      window.document.body.style.cursor = "progress";
 
-          if (xpr && xpr.singleNodeValue) {
-            let thisNode = xpr.singleNodeValue;
-
-            if (/https?:\/\/userscripts\.org\/posts\/\d+\/?/i.test(thisNode.textContent)) {
-              let rurl = thisNode.textContent.replace(/https?:\/\/userscripts\.org/i, "")
-              if (window.location.hash == "#posts-last")
-                window.location.replace(rurl);
-              else
-                window.location.pathname = rurl;
+    GM_xmlhttpRequest({
+      retry: 5,
+      url: window.location.protocol + "//" + window.location.host + "/topics/" + aTopicid + ".rss",
+      method: "GET",
+      onload: function (xhr) {
+        switch (xhr.status) {
+          case 502:
+          case 503:
+            if (--this.retry > 0)
+              setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+            else {
+              if (document && document.body)
+                window.document.body.style.cursor = "auto";
             }
-          }
-          if (document && document.body)
-            window.document.body.style.cursor = "auto";
-        }
-        else {
-          if (document && document.body)
-            window.document.body.style.cursor = "auto";
+            break;
+          case 200:
+            let doc = new DOMParser().parseFromString(xhr.responseText, "text/xml"),
+                xpr = doc.evaluate(
+                    "//channel/item/link",
+                    doc.documentElement,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                );
+
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              if (/^https?:\/\/userscripts\.org\/posts\/\d+\/?/i.test(thisNode.textContent)) {
+                let url = thisNode.textContent.replace(/http:/i, window.location.protocol);
+                GM_xmlhttpRequest({
+                  retry: 5,
+                  url: thisNode.textContent.replace(/http:/i, window.location.protocol),
+                  method: "GET",
+                  onload: function (xhr) {
+                    // NOTE: Secure xhr is prevented currently on USO and GM_xhr currently has an issue with onreadystatechange in FF 7.0.1,
+                    //       so rely upon finalUrl in unsecure mode but redirect to secure
+                    switch (xhr.status) {
+                      case 502:
+                      case 503:
+                        if (--this.retry > 0)
+                          setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                        else {
+                          if (document && document.body)
+                            window.document.body.style.cursor = "auto";
+                        }
+                        break;
+                      case 200:
+                        if (document && document.body)
+                          window.document.body.style.cursor = "auto";
+
+                        window.location.assign(xhr.finalUrl.replace(/^http:/i, window.location.protocol));
+                        break;
+                      default:
+                        if (document && document.body)
+                          window.document.body.style.cursor = "auto";
+                        break;
+                    }
+                  }
+                });
+              }
+            }
+            break;
+          default:
+            if (document && document.body)
+              window.document.body.style.cursor = "auto";
+          break;
         }
       }
-    };
-    req.send(null);
+    });
   }
 
   // ** "load into view" e.g. use accelerator if #posts-last
@@ -343,8 +381,6 @@ Please note this script uses native JSON and native classList which requires Fir
 
       // ** Accelerator function
       function lastPost(ev) {
-        window.document.body.style.cursor = "progress";
-
         let topicid = ev.target.href.match(/\/topics\/(\d+)\#posts\-last/i);
         if (!topicid)
           return;
