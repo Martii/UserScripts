@@ -8,7 +8,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://s3.amazonaws.com/uso_ss/icon/105402/large.png
-// @version       0.1.6
+// @version       0.1.7
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -64,7 +64,7 @@ Please note this script uses native JSON and native classList which requires Fir
     thisNode.addEventListener("mouseover", onmouseover, false);
     thisNode.addEventListener("mouseout", onmouseout, false);
 
-    GM_addGlobalStyle({
+    GM_setStyle({
       media: "screen, projection",
       data: <><![CDATA[
 
