@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.5
+// @version       0.16.6
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -821,8 +821,21 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
                 ],
                 "securityAdvisory": {
-                  "advisory": "low",
-                  "title": ""
+                  "advisory": "guarded",
+                  "title": ", possible excessive bandwith usage"
+                }
+              },
+              "116461": {
+                "derivative": 1,
+                "textContent": 'GM_ScriptUpdater',
+                "iconUrl": '83a4ca755e04b8b00d15ec02e2146e9d',
+                "title": 'by phoenix7C2 (411307)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/116461\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": ", possible excessive bandwith usage"
                 }
               },
               "ikariamscriptresources.googlecode.com": {
