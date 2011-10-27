@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.2
+// @version       0.16.3
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1974,7 +1974,7 @@
                     );
                   }
                   else if (RHV) {
-                    installNode.setAttribute("title", "Security Advisory: HIGH, Possible Remotely Hosted Version applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters");
+                    installNode.setAttribute("title", "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters");
                     GM_addStyle(
                         "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
                       + securityAdvisory["high"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
