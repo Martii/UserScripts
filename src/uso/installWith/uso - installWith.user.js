@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.1
+// @version       0.16.2
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -499,7 +499,7 @@
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             break;
           case 200:
-            let possibleEmbedded, DDoS;
+            let possibleEmbedded, rex, DDoS, RHV;
 
             if (xhr.responseText.match(
                 "("
@@ -1857,9 +1857,13 @@
                       return;
                     }
 
-            let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
+            rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
             if (headers["updateURL"] && headers["updateURL"].match(rex))
                 DDoS = true;
+
+            rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js", "i");
+            if (headers["updateURL"] && !headers["updateURL"].match(rex))
+                RHV = true;
 
             let helpNode = document.evaluate(
               "//div[@id='install_script']/a[@class='help']",
@@ -1967,6 +1971,13 @@
                     GM_addStyle(
                         "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
                       + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
+                    );
+                  }
+                  else if (RHV) {
+                    installNode.setAttribute("title", "Security Advisory: HIGH, Possible Remotely Hosted Version applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters");
+                    GM_addStyle(
+                        "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                      + securityAdvisory["high"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
                     );
                   }
                   else if (possibleEmbedded) {
