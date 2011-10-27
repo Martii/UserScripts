@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.3
+// @version       0.16.4
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -1858,11 +1858,11 @@
                     }
 
             rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
-            if (headers["updateURL"] && headers["updateURL"].match(rex))
-                DDoS = true;
+            if (headers["updateURL"] && typeof headers["updateURL"] == "string" && headers["updateURL"].match(rex))
+              DDoS = true;
 
             rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js", "i");
-            if (headers["updateURL"] && !headers["updateURL"].match(rex))
+            if (headers["updateURL"] && typeof headers["updateURL"] == "string" && !headers["updateURL"].match(rex))
                 RHV = true;
 
             let helpNode = document.evaluate(
