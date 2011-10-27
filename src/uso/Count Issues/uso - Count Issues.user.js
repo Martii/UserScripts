@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.12
+// @version       0.15.13
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -926,7 +926,7 @@
                     ulNode.setAttribute("class", "metadata");
                     divNode.appendChild(ulNode);
 
-                    let namespaceCount = 0;
+                    let keyCount = 0;
                     for each (let key in keys) {
                       let liNode = document.createElement("li");
                       liNode.setAttribute("class", "metadata");
@@ -934,7 +934,7 @@
                       switch(filter) {
                         case "namespace":
                         case "icon":
-                          if (++namespaceCount > 1)
+                          if (++keyCount > 1)
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
 
                           var matches = key.match(/^(https?:\/\/.*)/i);
@@ -1122,6 +1122,65 @@
 
                                 ulNode.appendChild(liNode);
                                 break;
+                              }
+                            }
+                          }
+                        case 'updateURL':
+                          let rex = new RegExp("^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(\\d+)\\.(meta|user)\\.js", "i");
+                          var matches = key.match(rex);
+                          if (matches) {
+                            if (matches[1] != scriptid || matches[2] == "user" || ++keyCount > 1)
+                              spanNodeSection.setAttribute("class", "metadata metadataforced");
+
+                            let anchorNode = document.createElement("a");
+                            anchorNode.setAttribute("href", "/scripts/show/" + matches[1]);
+                            anchorNode.setAttribute("rel", "nofollow");
+                            anchorNode.textContent = key;
+
+                            liNode.setAttribute("title", key);
+                            liNode.appendChild(anchorNode);
+
+                            ulNode.appendChild(liNode);
+                            break;
+                          } else {
+                            spanNodeSection.setAttribute("class", "metadata metadataforced");
+
+                            if (key.match(/^https?:\/\/.*/)) {  // NOTE: Offsite
+                              let anchorNode = document.createElement("a");
+                              anchorNode.setAttribute("href", key);
+                              anchorNode.setAttribute("rel", "nofollow");
+                              anchorNode.textContent = key;
+
+                              liNode.setAttribute("title", key);
+                              liNode.appendChild(anchorNode);
+
+                              ulNode.appendChild(liNode);
+                              break;
+                            }
+                            else { // NOTE: Relative (which may not be supported yet)
+                              let xpr = document.evaluate(
+                                "//div[@id='summary']/p/a[.='Remotely hosted version']",
+                                document.documentElement,
+                                null,
+                                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                null
+                              );
+                              if (xpr && xpr.singleNodeValue) {
+                                let thisNode = xpr.singleNodeValue;
+                                let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                                if (url) {
+                                  let anchorNode = document.createElement("a");
+                                  anchorNode.setAttribute("href", url[1] + key);
+                                  anchorNode.setAttribute("rel", "nofollow");
+                                  anchorNode.style.setProperty("color", "red", "");
+                                  anchorNode.textContent = key;
+
+                                  liNode.setAttribute("title", url[1] + key);
+                                  liNode.appendChild(anchorNode);
+
+                                  ulNode.appendChild(liNode);
+                                  break;
+                                }
                               }
                             }
                           }
