@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.13
+// @version       0.15.14
 // @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -362,7 +362,7 @@
           'showKeysString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
-              "default": "name,icon,description,version,copyright,license,namespace,require,resource,run-at,include,match,exclude"
+              "default": "name,icon,description,version,copyright,license,namespace,installURL,updateURL,require,resource,run-at,include,match,exclude,userInclude,userExclude"
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
@@ -956,6 +956,8 @@
                           break;
                         case "include":
                         case "exclude":
+                        case "userInclude":
+                        case "userExclude":
                           if (key.match(/\s/)) {
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
                             liNode.setAttribute("class", "metadata metadataforced");
@@ -1126,10 +1128,11 @@
                             }
                           }
                         case 'updateURL':
+                        case 'installURL':
                           let rex = new RegExp("^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(\\d+)\\.(meta|user)\\.js", "i");
                           var matches = key.match(rex);
                           if (matches) {
-                            if (matches[1] != scriptid || matches[2] == "user" || ++keyCount > 1)
+                            if (matches[1] != scriptid || (matches[2] == "user" && filter == "updateURL") || ++keyCount > 1)
                               spanNodeSection.setAttribute("class", "metadata metadataforced");
 
                             let anchorNode = document.createElement("a");
@@ -1142,7 +1145,8 @@
 
                             ulNode.appendChild(liNode);
                             break;
-                          } else {
+                          }
+                          else {
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
 
                             if (key.match(/^https?:\/\/.*/)) {  // NOTE: Offsite
