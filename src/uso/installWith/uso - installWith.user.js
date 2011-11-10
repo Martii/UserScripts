@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.7
+// @version       0.17.0
 // @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -250,9 +250,9 @@
           ]]></>.toString(),
           {
             'mirrorDomain': {
-                "label": 'Mirror domain name <em class="gmc68219home-yellownote">Select primary ONLY if behind a domain blocklist that prevents the redirect</em>',
+                "label": 'Mirror domain name <em class="gmc68219home-yellownote">Select primary ONLY or secure OPTIONALLY if behind a domain blocklist that prevents the redirect.</em>',
                 "type": 'radio',
-                "options": ['redirect', 'primary'],
+                "options": ['redirect', 'primary', 'secure'],
                 "default": 'redirect'
             },
             'skipVerifyLibs': {
@@ -601,9 +601,8 @@
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "none",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)(\\d+)\\.js",
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "updater=none",
@@ -1610,9 +1609,8 @@
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/usocheckup\\.redirectme\\.net\\/(\\d+)\\.js",
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/(\\d+)\\.js",  // This is deprecated DO NOT USE
-                  "^http:\\/\\/usocheckup\\.dune\\.net\\/index.php\\?"  // This is deprecated DO NOT USE
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)(\\d+)\\.js",
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid,
@@ -1984,7 +1982,9 @@
 
                   let frag = "#.user.js";
 
-                  let url = "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : (gmcHome.get("mirrorDomain") != "redirect") ? "usocheckup.dune" : "usocheckup.redirectme") + ".net/" + scriptid + ".user.js" + qs + frag;
+                  let url = (gmcHome.get("mirrorDomain") == "secure" && thisUpdater["value"] != "usoCheckupbeta") ? "https://secure.dune.net/usocheckup/": "http://" + ((thisUpdater["beta"]) ? "beta.usocheckup.dune" : (gmcHome.get("mirrorDomain") != "redirect") ? "usocheckup.dune" : "usocheckup.redirectme") + ".net/";
+                  url +=  scriptid + ".user.js" + qs + frag;
+
                   installNode.setAttribute("href", url);
 
                   if (DDoS) {
