@@ -8,8 +8,8 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.15.14
-// @icon          http://s3.amazonaws.com/uso_ss/icon/69307/large.png
+// @version       0.16.0
+// @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -18,19 +18,19 @@
 // @include   http://userscripts.org/reviews/*
 // @include   https://userscripts.org/reviews/*
 //
-// @exclude http://userscripts.org/scripts/source/*.meta.js
-// @exclude https://userscripts.org/scripts/source/*.meta.js
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @require http://usocheckup.redirectme.net/69307.js?method=install&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
-// @require http://userscripts.org/scripts/source/61794.user.js
+// @updateURL  https://userscripts.org/scripts/source/69307.meta.js
+// @installURL https://userscripts.org/scripts/source/69307.user.js
+// @require https://secure.dune.net/usocheckup/69307.js?method=install&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
+// @require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
-// @require http://userscripts.org/scripts/version/87269/317283.user.js
+// @require https://userscripts.org/scripts/version/87269/317283.user.js
 // ==/UserScript==
 
   function simpleTranscodeDotNotation(line, counter, loop) { // NOTE: Fuzzy
@@ -157,8 +157,8 @@
 
     gmc.init(divNode,
         <><![CDATA[
-          <img src="http://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
-          <span style="float: right; margin: 0.4em 0.5em;"><a href="http://github.com/sizzlemctwizzle/GM_config"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+          <img src="https://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
+          <span style="float: right; margin: 0.4em 0.5em;"><a href="https://github.com/sizzlemctwizzle/GM_config"><img src="https://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
         ]]></>.toString(),
         /* Custom CSS */
         <><![CDATA[
@@ -407,8 +407,8 @@
           'useGreasefireUrl': {
               "section": [, ""],
               "type": 'checkbox',
-              "label": 'Use greasefire USO urls whenever possible <em class="gmc69307-yellownote">useful for bandwidth conservation</em>',
-              "default": true
+              "label": 'Use greasefire USO urls whenever possible <em class="gmc69307-yellownote">useful for bandwidth conservation but not properly secured</em>',
+              "default": false
           },
           'showStringsStringHeight': {
             "type": 'hidden',
@@ -505,8 +505,7 @@
       if (open) { gmc.close(); gmc.open(); }
     }
 
-    if (window.location.pathname == "/scripts/show/69307"
-        || window.location.href == "http://userscripts.org/scripts/show/69307/") {
+    if (window.location.href.match(/^(?:https?:\/\/userscripts\.org)?\/scripts\/show\/69307\/?/i)) {
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
       GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
@@ -518,11 +517,8 @@
       gmc.fields["showKeysString"].node.setAttribute("spellcheck", "false");
     }
   }
-  else {
-    if (!window.location.pathname == "/scripts/show/69307"
-        || window.location.href == "http://userscripts.org/scripts/show/69307/")
-      GM_log('Something may have gone wrong in uso - Count Issues. Please let me know steps to reproduce');
-  }
+  else
+    GM_log('Something may have gone wrong in uso - Count Issues. Please let me know steps to reproduce');
 
   function nsResolver(prefix) {
     var ns = {
@@ -758,7 +754,7 @@
       if (hookNode) {
         GM_xmlhttpRequest({
           retry: 5,
-          url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("showStrings")) ? ".user.js?" : ".meta.js"),
+          url: window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("showStrings")) ? ".user.js?" : ".meta.js"),
           method: "GET",
           onload: function(xhr) {
             switch (xhr.status) {
@@ -904,7 +900,7 @@
                     let aNode = document.createElement("a");
                     aNode.style.setProperty("text-decoration", "none", "");
                     aNode.style.setProperty("color", "#000", "");
-                    aNode.href = "http://sf.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
+                    aNode.href = "https://sf.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
                     aNode.textContent = title;
 
                     let headerNode = document.createElement("h6");
@@ -1385,7 +1381,7 @@
 
             GM_xmlhttpRequest({
               retry: 5,
-              url: "http://userscripts.org/scripts/source/" + scriptid + ".user.js?",
+              url: window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".user.js?",
               method: "GET",
               onload: function(xhr) {
                 switch (xhr.status) {
@@ -1485,7 +1481,7 @@
         GM_xmlhttpRequest({
           retry: 5,
           method: "GET",
-          url: "http://" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,
+          url: "http:" + ((window.location.href.match(/^https:\/\/usersripts.org\/.*/i)) ? "s" : "") + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,  // NOTE: Greasefire not SSLd properly
           onload: function (xhr) {
             switch (xhr.status) {
               case 404:
@@ -1793,7 +1789,7 @@
               .notice { background-image: url(]]></> + throbber + <><![CDATA[);
             ]]></> + '');
 
-            getVersions("http://userscripts.org/scripts/versions/" + scriptid);
+            getVersions(window.location.protocol + "//userscripts.org/scripts/versions/" + scriptid);
           }
 
           function getVersions(url) {
@@ -2087,7 +2083,7 @@
                             ev.preventDefault();
 
                             addClass(ev.target ,"retrieving");
-                            getVersions(location.protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search);
+                            getVersions("http:" + ((window.location.href.match(/^https:\/\/usersripts.org\/.*/i)) ? "s" : "") + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
                           }, false);
                         }
                     }
