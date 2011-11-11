@@ -7,8 +7,8 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.17.0
-// @icon          http://s3.amazonaws.com/uso_ss/icon/68219/large.png
+// @version       0.18.0
+// @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -25,20 +25,22 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @resource usoCheckup http://usocheckup.dune.net/res/usoCheckup.png
-// @resource usoCheckupBeta http://usocheckup.dune.net/res/usoCheckupBeta.png
-// @resource qmark http://usocheckup.dune.net/res/qmark.png
-// @resource script http://usocheckup.dune.net/res/script.png
-// @resource checking http://usocheckup.dune.net/res/checking.png
-// @resource low http://usocheckup.dune.net/res/low.png
-// @resource guarded http://usocheckup.dune.net/res/guarded.png
-// @resource elevated http://usocheckup.dune.net/res/elevated.png
-// @resource high http://usocheckup.dune.net/res/high.png
-// @resource severe http://usocheckup.dune.net/res/severe.png
-// @resource undetermined http://usocheckup.dune.net/res/undetermined.png
+// @resource usoCheckup https://secure.dune.net/usocheckup/res/usoCheckup.png
+// @resource usoCheckupBeta https://secure.dune.net/usocheckup/res/usoCheckupBeta.png
+// @resource qmark https://secure.dune.net/usocheckup/res/qmark.png
+// @resource script https://secure.dune.net/usocheckup/res/script.png
+// @resource checking https://secure.dune.net/usocheckup/res/checking.png
+// @resource low https://secure.dune.net/usocheckup/res/low.png
+// @resource guarded https://secure.dune.net/usocheckup/res/guarded.png
+// @resource elevated https://secure.dune.net/usocheckup/res/elevated.png
+// @resource high https://secure.dune.net/usocheckup/res/high.png
+// @resource severe https://secure.dune.net/usocheckup/res/severe.png
+// @resource undetermined https://secure.dune.net/usocheckup/res/undetermined.png
 //
-// @require http://usocheckup.dune.net/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
-// @require http://userscripts.org/scripts/source/61794.user.js
+// @updateURL  https://userscripts.org/scripts/source/68219.meta.js
+// @installURL https://userscripts.org/scripts/source/68219.user.js
+// @require https://secure.dune.net/usocheckup/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
+// @require https://userscripts.org/scripts/source/61794.user.js
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
 // ==/UserScript==
 
@@ -488,7 +490,7 @@
   if ((scriptid = getScriptid()))
     GM_xmlhttpRequest({
       retry: 5,
-      url: "http://userscripts.org/scripts/source/" + scriptid + ((gmc && gmcHome.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
+      url: "http" + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ((gmc && gmcHome.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
       method: "GET",
       onload: function(xhr) {
         switch(xhr.status) {
@@ -1815,6 +1817,9 @@
               }
             }
 
+            if (window.location.protocol != installNode.protocol)
+              installNode.protocol = window.location.protocol;
+
             let lastAdvisory = 0;
             let lastUpdater = {};
             if (headers["require"])
@@ -1867,6 +1872,7 @@
                         + "); } #install_script a.userjs:hover { color: black;}");
                       return;
                     }
+
 
             if (headers["updateURL"]) {
               let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
