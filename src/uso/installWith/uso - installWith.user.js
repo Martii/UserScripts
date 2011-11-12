@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.0
+// @version       0.18.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -18,8 +18,6 @@
 // @include http://userscripts.org/scripts/versions/*
 // @include https://userscripts.org/scripts/versions/*
 //
-// @exclude http://userscripts.org/scripts/source/*.meta.js
-// @exclude https://userscripts.org/scripts/source/*.meta.js
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
@@ -501,6 +499,7 @@
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             break;
           case 200:
+
             let possibleEmbedded, DDoS, RHV;
 
             if (xhr.responseText.match(
@@ -560,6 +559,29 @@
               else
                 header[key] = value;
             }
+
+            let xpr = document.evaluate(
+            "//div[@id='summary']/p/b[.='Version:']/following-sibling::text()",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              null
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              let currentVersion = (headers["version"] && typeof headers["version"] == "string") ? headers["version"] : headers["version"][0];
+              if (!gmcHome.get("skipEmbeddedScan") && currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
+                installNode.setAttribute("title", "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith");
+                GM_addStyle(<><![CDATA[
+                    #install_script a.userjs, #install_script a.userjs:hover { color: #fff; background: #000 none repeat scroll 0 0; }
+                    #install_script a.userjs:hover { color: #fff; }
+                ]]></> + "");
+                return;
+              }
+            }
+            else
+              GM_log('Possible DOM change detected or missing @version');
 
             if (headers["exclude"])
               for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"])
