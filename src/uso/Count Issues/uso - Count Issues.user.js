@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.1
+// @version       0.16.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1308,6 +1308,32 @@
                             }
                             if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
                               display(mbx, headers[key], key, "@description");
+                          }
+                          break;
+                        case "version":
+                          if (headers[key]) {
+                            if (summaryNode) {
+                              let xpr = document.evaluate(
+                              "./p/b[.='Version:']/following-sibling::text()",
+                                summaryNode,
+                                null,
+                                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                null
+                              );
+                              if (xpr && xpr.singleNodeValue) {
+                                let thisNode = xpr.singleNodeValue;
+
+                                let currentVersion = (headers[key] && typeof headers[key] == "string") ? headers[key] : headers[key][0];
+                                if (currentVersion.trim() != thisNode.textContent.trim()) {
+                                  display(mbx, headers[key], key, "@version", true);
+                                  break;
+                                }
+                              }
+                              else
+                                GM_log('Possible DOM change detected');
+                            }
+                            if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
+                              display(mbx, headers[key], key, "@version");
                           }
                           break;
                         case "include":
