@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.0
+// @version       0.16.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -538,14 +538,16 @@
   var titleNode = xpr.snapshotItem((xpr.snapshotLength > 1) ? 1 : 0);
 
   document.evaluate(
-   "//div[@id='summary']/br",
-    document.documentElement,
+   "//div[@id='summary']",
+    document.body,
     null,
     XPathResult.FIRST_ORDERED_NODE_TYPE,
     xpr
   );
-  if (xpr && xpr.singleNodeValue && xpr.singleNodeValue.nextSibling)
-    var summaryNode = xpr.singleNodeValue.nextSibling;
+  if (xpr && xpr.singleNodeValue)
+    var summaryNode = xpr.singleNodeValue;
+  else
+    GM_log('Possible DOM change detected or no summaryNode');
 
   function getScriptid() {
     var scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
@@ -1282,18 +1284,31 @@
                           else
                             display(mbx, "", key, "@namespace");
                           break;
-                      case "description":
-                        if (headers[key]) {
-                          if (summaryNode) {
-                            let summary = summaryNode.textContent.replace(/^\s*/, "").replace(/\s*$/, "");
-                            if (!summary.match(/[\r\n](.*)[\r\n]/) && summary != headers[key]) {
-                              display(mbx, headers[key], key, "@description", true);
-                              break;
+                        case "description":
+                          if (headers[key]) {
+                            if (summaryNode) {
+                              let xpr = document.evaluate(
+                              "./p/b[.='Script Summary:']/following-sibling::text()",
+                                summaryNode,
+                                null,
+                                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                null
+                              );
+                              if (xpr && xpr.singleNodeValue) {
+                                let thisNode = xpr.singleNodeValue;
+
+                                let currentSummary = (headers[key] && typeof headers[key] == "string") ? headers[key] : headers[key][0];
+                                if (currentSummary.trim() != thisNode.textContent.trim()) {
+                                  display(mbx, headers[key], key, "@description", true);
+                                  break;
+                                }
+                              }
+                              else
+                                GM_log('Possible DOM change detected or no Script Summary');
                             }
+                            if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
+                              display(mbx, headers[key], key, "@description");
                           }
-                          if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
-                            display(mbx, headers[key], key, "@description");
-                        }
                           break;
                         case "include":
                           let notify = true;
