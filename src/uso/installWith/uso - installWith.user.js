@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.2
+// @version       0.18.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -265,10 +265,15 @@
                 "label": 'Skip verify for installation of library scripts <em class="gmc68219home-yellownote">Not recommended</em>',
                 "default": false
             },
-            "skipEmbeddedScan": {
+            'skipEmbeddedScan': {
               "type": "checkbox",
               "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219home-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
               "default": false
+            },
+            'allowUpdatersOnBadGMSyntax': {
+                "type": 'checkbox',
+                "label": 'Allow updaters to be added on invalid Greasemonkey updater syntax <em class="gmc68219home-yellownote">Select this ONLY if you have Greasemonkey updating DISABLED</em>',
+                "default": false
             }
           },
           <><![CDATA[
@@ -334,7 +339,8 @@
 
             #gmc68219home_field_forceInstallSecure,
             #gmc68219home_field_skipVerifyLibs,
-            #gmc68219home_field_skipEmbeddedScan
+            #gmc68219home_field_skipEmbeddedScan,
+            #gmc68219home_field_allowUpdatersOnBadGMSyntax
             {
               top: 0.08em;
               margin-right: 0.5em;
@@ -1902,20 +1908,43 @@
                     }
 
 
+            if (headers["installURL"]) {
+              let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
+                  lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
+
+              if (!lastInstallURL.match(rex))
+                RHV = true;
+            }
+
             if (headers["updateURL"]) {
-              let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
-              for each (let key in (typeof headers["installURL"] == "string") ? [headers["installURL"]] : headers["installURL"])
-                if(!key.match(rex))
-                  RHV = true;
+              let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js", "i"),
+                  lastUpdateURL = (typeof headers["updateURL"] == "string") ? headers["updateURL"] : headers["updateURL"][headers["updateURL"].length - 1];
 
-              for each (let key in (typeof headers["updateURL"] == "string") ? [headers["updateURL"]] : headers["updateURL"])
-                if(key.match(rex))
-                  DDoS = true;
+              if (!lastUpdateURL.match(rex))
+                RHV = true;
 
-              rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js", "i");
-              for each (let key in (typeof headers["updateURL"] == "string") ? [headers["updateURL"]] : headers["updateURL"])
-                if(!key.match(rex))
-                  RHV = true;
+              rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
+              if (lastUpdateURL.match(rex))
+                DDoS = true;
+            }
+
+            if (!gmcHome.get("allowUpdatersOnBadGMSyntax")) {
+              if (DDoS) {
+                installNode.setAttribute("title", "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters");
+                GM_addStyle(
+                    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                  + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
+                );
+                return;
+              }
+              else if (RHV) {
+                installNode.setAttribute("title", "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters");
+                GM_addStyle(
+                    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
+                  + securityAdvisory["high"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
+                );
+                return;
+              }
             }
 
             let helpNode = document.evaluate(
