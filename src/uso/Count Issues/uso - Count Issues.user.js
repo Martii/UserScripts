@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.3
+// @version       0.16.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -157,8 +157,8 @@
 
     gmc.init(divNode,
         <><![CDATA[
-          <img src="https://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
-          <span style="float: right; margin: 0.4em 0.5em;"><a href="https://github.com/sizzlemctwizzle/GM_config"><img src="https://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+          <img src="]]></> + window.location.protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
+          <span style="float: right; margin: 0.4em 0.5em;"><a href="]]></> + window.location.protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config"><img src="]]></> + window.location.protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
         ]]></>.toString(),
         /* Custom CSS */
         <><![CDATA[
@@ -902,7 +902,7 @@
                     let aNode = document.createElement("a");
                     aNode.style.setProperty("text-decoration", "none", "");
                     aNode.style.setProperty("color", "#000", "");
-                    aNode.href = "https://sf.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
+                    aNode.href = window.location.protocol + "//sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
                     aNode.textContent = title;
 
                     let headerNode = document.createElement("h6");
