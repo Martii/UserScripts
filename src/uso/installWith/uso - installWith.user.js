@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.3
+// @version       0.18.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -2034,15 +2034,14 @@
                     gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
 
                   let icon = "";
-                  if (gmc.get("useGravatarIcon") && gravatar)
-                    icon = appendListItem(icon, gravatar);
+                  icon = appendListItem(icon, gravatar);
 
                   if (gmc.get("useScriptIcon") && icontype)
                     icon = appendListItem(icon, icontype);
 
 
                   if (icon)
-                    qs = appendQSP(qs, "icon=" + icon);
+                    qs = appendQSP(qs, "icon=" + ((gmc.get("useGravatarIcon")||gmc.get("useScriptIcon")) ? "1," : "0,") + icon);
 
 
                   let frag = "#.user.js";
