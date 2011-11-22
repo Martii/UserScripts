@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1
+// @version       1.0.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -76,7 +76,8 @@
           #install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }
 
           #install_script a.installWith { font-size: 1.0em; }
-          #install_script a.helpWith { width: 16px; height: 16px; margin-top: 0.6em; float: right; background: transparent no-repeat scroll top left url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oCBhUpFGSrs1gAAAM/SURBVDgRBcFbTFt1HMDx7+/c2jNauRQYMJgwURSWqMTEJmbZeMCMLAYzNZJo5oXo24wJL+KjxpBoMDHhZWbEmSlGiUZM8BK8ZM5tEjPxgdW5TVzFUgotPbS0tIdzzt/PR4aHh5mbm2N6elpGR0cVwMfnzrT6vupN5woH3GoF8Sqpa4lriU9m59IAExMTjI+PAyAACwsLDA4Ocurp43p84KnX1jfzL5fK5YOWX8YPAkqeThB4/+xsb71//sPp94BdAACZnJyUsbExNfPBm3YqH/tmPZ0+eo92lbh93YuFdpUYYTaDJrnkdBlLuWbyeef7z2fPjwA5pRSilEJEmHh76mtn89bQ491fEe9IKmwTr4gEPspqMEBr5eLNgzKz2MVft9LzP/0wP6KU2jFEhLcm3n1xI5MZeuz+eeL9K5TLpvw9G7B+WVAKifVV6Tm1wpFjOmXT4Gy++UTXoZ7nRWRKA8xcrvBcYyTBwCM3VTUKGz8qVt/RCZUhagdqc0Yn9aWPZ/3Ho8fWVEeLS1Nz67NAm/bK6Re6c9l8X9+hZYjcjWYfIdIOvS/t8dBZl+4TiuZAw9418NUOOQc69ufQdeMuXaPPKBaKtdtFdUc0nKVaiUtVG2K39zZG/yprH5m4ZwxpiPtEnlCsJUHDl8aoi1ulxrKMJmN1NRW4qtFNJ8NmoeUKfrii2PFwcybFnw20wwrttEhZNxEnoHZ/iEppD2e75O3teZq2vJzIZDLp1O9/RokZJWXkL0oNBYkGltS1I/V9GpF6HbuiETVrqLNtdWWpwtZW1vF8str6xnYyvbb669yFMivJiDTui2ApC7NgEPymCJYUVtkk5CtisYNc/UPJd79kcJzcdeC2DlCtlNL5fPXkYiKwT/Zbqi5iSeAKZqtO+D6DUL3IvoY2kqmYevL1hKz8m91GeVPAot7Z2YnjOCnw3FR27/gXl6rSFTU53G4r+04Lu6UG8Rv57AIy8kZCVlI7AOeAT0UkBQBASMcCXgXWANVap6uBe8PqaE9YNdeGFKCAjMAU8ABgAAgAAABQAzwMPAM8CNQBAhSBG8C3wGXgBuABCAAAAABgAvUCBzShTYERKBxgE1gHHCAAAPgfsu15foUhTJIAAAAASUVORK5CYII=);}
+          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-size: 11px; font-weight: 900; color: #c00; background: #fc0 -moz-linear-gradient(center top,  #eee, #fc0) repeat scroll 0 0; width: 16px; height: 16px; border-radius: 1em; border: 1px solid #999; }
+          #install_script a.helpWith:hover { color: #a00; background: #ec0 -moz-linear-gradient(center top,  #eee, #e6b800) repeat scroll 0 0; }
           #install_script select.updateWith { width: 90%; height: 1.6em; font-size: 0.9em; }
           #install_script select.updateWith option.separator { border-bottom: thin dotted #666; }
           #install_script select.updateWith img { vertical-align: middle; margin: 0.25em 0.25em 0.25em 0; width: 16px; height: 16px; background: none no-repeat scroll center center transparent; }
@@ -1923,7 +1924,7 @@
 
             thisNode = helpNode;
             thisNode.classList.add("helpWith");
-            thisNode.textContent = "";
+            thisNode.textContent = "?";
 
             let selectNode = document.createElement("select");
             selectNode.setAttribute("id", "updater_select");
