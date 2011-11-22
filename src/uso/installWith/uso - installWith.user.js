@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0
+// @version       1.0.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -189,232 +189,238 @@
     return undefined;
   }
 
-    if (typeof GM_configStruct != "undefined") {
-      // Reclaim some memory
-      delete GM_config;
+  if (typeof GM_configStruct != "undefined") {
+    // Reclaim some memory
+    delete GM_config;
 
-      function insertDiv() {
-        let divNode = document.getElementById("full_description");
-        if (divNode && !divNode.firstChild) {
-          let newdivNode = document.createElement("div");
-          divNode = divNode.appendChild(newdivNode);
-        }
-        else {
-          let newdivNode = document.createElement("div");
-          if (divNode)
-            divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
-          else
-            divNode = document.body.appendChild(newdivNode);
-        }
-        return divNode;
+    function insertDiv() {
+      let divNode = document.getElementById("full_description");
+      if (divNode && !divNode.firstChild) {
+        let newdivNode = document.createElement("div");
+        divNode = divNode.appendChild(newdivNode);
       }
-
-      /* Common */
-      let divNode = insertDiv();
-
-      /* Nearest fix for a glitch on USO */
-      let scriptNav = document.getElementById("script-nav");
-      if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
-        GM_setStyle({
-            node: nodeStyle,
-            data: <><![CDATA[
-
-                div #full_description { width: 98.1%; }
-
-            ]]></>
-        });
-
-      let screenShots = document.getElementById("screenshots");
-      if (screenShots)
-        GM_setStyle({
-            node: nodeStyle,
-            data: <><![CDATA[
-
-                #full_description { clear: left; }
-
-            ]]></>
-        });
-
-      /* Nearest fix for userscripts.org Alternate CSS */
-      let fullDescription = document.getElementById("full_description");
-      if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
-        GM_setStyle({
-            node: nodeStyle,
-            data: <><![CDATA[
-
-                #screenshots { width: 97.5% !important; }
-
-            ]]></>
-        });
-
-      // installWith homepage
-      var gmcHome = new GM_configStruct();
-      gmcHome.id = "gmc68219home";
-
-      gmcHome.init(divNode,
-          <><![CDATA[
-
-              <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
-              <span style="float: right; margin: 0 0.5em;">
-                <a href="/guides/24/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
-              </span>
-
-          ]]></>.toString(),
-          {
-            'forceInstallSecure': {
-                "type": 'checkbox',
-                "label": 'Force Install button to be secure when browsing the site in unsecure and using userscripts.org for installation',
-                "default": false
-            },
-            'mirrorDomain': {
-                "label": 'Mirror domain name <em class="gmc68219home-yellownote">Select primary ONLY or secure OPTIONALLY if behind a domain blocklist that prevents the redirect</em>',
-                "type": 'radio',
-                "options": ['redirect', 'primary', 'secure'],
-                "default": 'redirect'
-            },
-            'skipVerifyLibs': {
-                "type": 'checkbox',
-                "label": 'Skip verify for installation of library scripts <em class="gmc68219home-yellownote">Not recommended</em>',
-                "default": false
-            },
-            'skipEmbeddedScan': {
-              "type": "checkbox",
-              "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219home-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
-              "default": false
-            },
-            'allowUpdatersOnBadGMSyntax': {
-                "type": 'checkbox',
-                "label": 'Allow updaters to be added on invalid Greasemonkey updater syntax <em class="gmc68219home-yellownote">Select this ONLY if you have Greasemonkey updating DISABLED</em>',
-                "default": false
-            }
-          },
-          /* Custom CSS */
-
-        GM_setStyle({
-            node: null,
-            data: <><![CDATA[
-
-                #gmc68219home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
-                #gmc68219home_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-                #gmc68219home .config_header { color: white; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
-                #gmc68219home .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
-                #gmc68219home .field_label { color: #333; font-weight: normal; font-size: 100%; }
-                .section_desc { margin: 0.25em 1.5em !important; }
-
-                    .gmc68219home-yellownote { background-color: #ffd; font-size: 0.66em !important; }
-
-                    #gmc68219home_field_mirrorDomain { margin-left: 1em; }
-
-                    #gmc68219home_field_mirrorDomain input { top: 0.1em; }
-
-
-                    #gmc68219home_field_forceInstallSecure,
-                    #gmc68219home_field_skipVerifyLibs,
-                    #gmc68219home_field_skipEmbeddedScan,
-                    #gmc68219home_field_allowUpdatersOnBadGMSyntax
-                    { top: 0.08em; margin-right: 0.5em; }
-
-                #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-                #gmc68219home_resetLink { margin-right: 2.5em; }
-                #gmc68219home_closeBtn { display: none; }
-
-            ]]></>
-        })
-      );
-
-      if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
-        gmcHome.open();
+      else {
+        let newdivNode = document.createElement("div");
+        if (divNode)
+          divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
+        else
+          divNode = document.body.appendChild(newdivNode);
       }
-
-      // other homepages
-      var gmc = new GM_configStruct();
-      gmc.id = "gmc68219";
-
-      gmc.init(insertDiv(),
-        (
-          (window.location.pathname.match(/\/scripts\/show\/68219\/?/i))
-          ? <><![CDATA[ <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> ]]></>.toString()
-          : <><![CDATA[ <a href="/scripts/show/68219"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> ]]></>.toString()
-        )
-        + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http:]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[//s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
-        {
-          "useGravatarIcon": {
-            "type": "checkbox",
-            "label": '',
-            "default": false
-          },
-          "useScriptIcon": {
-            "type": "checkbox",
-            "label": '',
-            "default": false
-          },
-          "updaterMaxage": {
-              "type": "unsigned integer",
-              "label": 'day(s) maximum between checks for this script',
-              "default": 30
-          },
-          "updaterMinage": {
-            "type": "unsigned integer",
-            "label": 'hour(s) minimum before starting a check for this script',
-            "default": 1
-          }
-        },
-        GM_setStyle({
-            node: null,
-            data: <><![CDATA[
-                #gmc68219 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
-                #gmc68219_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-                #gmc68219 .config_header { color: #fff; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
-                #gmc68219 .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
-                #gmc68219 .field_label { color: #333; font-weight: normal; font-size: 100%; }
-                .section_desc { margin: 0.25em 1.5em !important; }
-
-                    #gmc68219_field_updaterMaxage,
-                    #gmc68219_field_updaterMinage
-                    { width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right; }
-
-                    #gmc68219_field_updaterMaxage { margin-top: 0.25em; }
-
-                    .gmc68219-yellownote { background-color: #FFD; font-size: 0.66em !important; }
-
-                    #gmc68219_field_useGravatarIcon,
-                    #gmc68219_field_useScriptIcon,
-                    #gmc68219_field_skipEmbeddedScan
-                    { top: 0.05em; margin-right: 0.5em; }
-
-                    #gmc68219_useGravatarIcon_var,
-                    #gmc68219_useScriptIcon_var
-                    { margin-right: 0 !important; display: inline !important; }
-
-                    #gmc68219_useScriptIcon_var { margin-left: 0 !important; }
-
-                #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-                #gmc68219_resetLink { margin-right: 2.5em; }
-                #gmc68219_closeBtn { display: none; }
-
-            ]]></>
-        })
-      );
-
-      gmc.onSave = function() {
-        let write = false;
-        let reopen = false;
-          if (gmc.get("updaterMinage") > gmc.get("updaterMaxage") * 24 ) {
-            gmc.set("updaterMinage", 1);
-            write = true;
-          }
-        if (write) gmc.write();
-        if (reopen) { gmc.close(); gmc.open(); }
-
-        let ev = document.createEvent("HTMLEvents");
-        ev.initEvent("change", true, true);
-        let selectNode = document.getElementById("updater_select");
-        selectNode.dispatchEvent(ev);
-      }
+      return divNode;
     }
 
+    /* Common */
+    let divNode = insertDiv();
+
+    /* Nearest fix for a glitch on USO */
+    let scriptNav = document.getElementById("script-nav");
+    if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              div #full_description { width: 98.1%; }
+
+          ]]></>
+      });
+
+    let screenShots = document.getElementById("screenshots");
+    if (screenShots)
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              #full_description { clear: left; }
+
+          ]]></>
+      });
+
+    /* Nearest fix for userscripts.org Alternate CSS */
+    let fullDescription = document.getElementById("full_description");
+    if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              #screenshots { width: 97.5% !important; }
+
+          ]]></>
+      });
+
+    // installWith homepage
+    var gmcHome = new GM_configStruct();
+    gmcHome.id = "gmc68219home";
+
+    gmcHome.init(divNode,
+        <><![CDATA[
+
+            <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
+            <span style="float: right; margin: 0 0.5em;">
+              <a href="/guides/24/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
+            </span>
+
+        ]]></>.toString(),
+        {
+          'forceInstallSecure': {
+              "type": 'checkbox',
+              "label": 'Force Install button to be secure when browsing the site in unsecure and using userscripts.org for installation',
+              "default": false
+          },
+          'mirrorDomain': {
+              "label": 'Mirror domain name <em class="gmc68219home-yellownote">Select primary ONLY or secure OPTIONALLY if behind a domain blocklist that prevents the redirect</em>',
+              "type": 'radio',
+              "options": ['redirect', 'primary', 'secure'],
+              "default": 'redirect'
+          },
+          'skipVerifyLibs': {
+              "type": 'checkbox',
+              "label": 'Skip verify for installation of library scripts <em class="gmc68219home-yellownote">Not recommended</em>',
+              "default": false
+          },
+          'skipEmbeddedScan': {
+            "type": "checkbox",
+            "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219home-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
+            "default": false
+          },
+          'allowUpdatersOnBadGMSyntax': {
+              "type": 'checkbox',
+              "label": 'Allow updaters to be added on invalid Greasemonkey updater syntax <em class="gmc68219home-yellownote">Select this ONLY if you have Greasemonkey updating DISABLED</em>',
+              "default": false
+          }
+        },
+        /* Custom CSS */
+
+      GM_setStyle({
+          node: null,
+          data: <><![CDATA[
+
+              #gmc68219home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+              #gmc68219home_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+              #gmc68219home .config_header { color: white; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
+              #gmc68219home .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
+              #gmc68219home .field_label { color: #333; font-weight: normal; font-size: 100%; }
+              .section_desc { margin: 0.25em 1.5em !important; }
+
+                  .gmc68219home-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+
+                  #gmc68219home_field_mirrorDomain { margin-left: 1em; }
+
+                  #gmc68219home_field_mirrorDomain input { top: 0.1em; }
+
+
+                  #gmc68219home_field_forceInstallSecure,
+                  #gmc68219home_field_skipVerifyLibs,
+                  #gmc68219home_field_skipEmbeddedScan,
+                  #gmc68219home_field_allowUpdatersOnBadGMSyntax
+                  { top: 0.08em; margin-right: 0.5em; }
+
+              #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+              #gmc68219home_resetLink { margin-right: 2.5em; }
+              #gmc68219home_closeBtn { display: none; }
+
+          ]]></>
+      })
+    );
+
+    if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
+      gmcHome.open();
+    }
+
+    // other homepages
+    var gmc = new GM_configStruct();
+    gmc.id = "gmc68219";
+
+    gmc.init(insertDiv(),
+      (
+        (window.location.pathname.match(/\/scripts\/show\/68219\/?/i))
+        ? <><![CDATA[ <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> ]]></>.toString()
+        : <><![CDATA[ <a href="/scripts/show/68219"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> ]]></>.toString()
+      )
+      + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http:]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[//s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
+      {
+        "useGravatarIcon": {
+          "type": "checkbox",
+          "label": '',
+          "default": false
+        },
+        "useScriptIcon": {
+          "type": "checkbox",
+          "label": '',
+          "default": false
+        },
+        "updaterMaxage": {
+            "type": "unsigned integer",
+            "label": 'day(s) maximum between checks for this script',
+            "default": 30
+        },
+        "updaterMinage": {
+          "type": "unsigned integer",
+          "label": 'hour(s) minimum before starting a check for this script',
+          "default": 1
+        }
+      },
+      GM_setStyle({
+          node: null,
+          data: <><![CDATA[
+              #gmc68219 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+              #gmc68219_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+              #gmc68219 .config_header { color: #fff; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
+              #gmc68219 .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
+              #gmc68219 .field_label { color: #333; font-weight: normal; font-size: 100%; }
+              .section_desc { margin: 0.25em 1.5em !important; }
+
+                  #gmc68219_field_updaterMaxage,
+                  #gmc68219_field_updaterMinage
+                  { width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right; }
+
+                  #gmc68219_field_updaterMaxage { margin-top: 0.25em; }
+
+                  .gmc68219-yellownote { background-color: #FFD; font-size: 0.66em !important; }
+
+                  #gmc68219_field_useGravatarIcon,
+                  #gmc68219_field_useScriptIcon,
+                  #gmc68219_field_skipEmbeddedScan
+                  { top: 0.05em; margin-right: 0.5em; }
+
+                  #gmc68219_useGravatarIcon_var,
+                  #gmc68219_useScriptIcon_var
+                  { margin-right: 0 !important; display: inline !important; }
+
+                  #gmc68219_useScriptIcon_var { margin-left: 0 !important; }
+
+              #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+              #gmc68219_resetLink { margin-right: 2.5em; }
+              #gmc68219_closeBtn { display: none; }
+
+          ]]></>
+      })
+    );
+
+    gmc.onSave = function() {
+      let write = false;
+      let reopen = false;
+        if (gmc.get("updaterMinage") > gmc.get("updaterMaxage") * 24 ) {
+          gmc.set("updaterMinage", 1);
+          write = true;
+        }
+      if (write) gmc.write();
+      if (reopen) { gmc.close(); gmc.open(); }
+
+      let ev = document.createEvent("HTMLEvents");
+      ev.initEvent("change", true, true);
+      let selectNode = document.getElementById("updater_select");
+      selectNode.dispatchEvent(ev);
+    }
+  }
+  else {
+    installNode.title = "Security Advisory: ERROR, GM_config not found";
+    installNode.classList.add("saERROR");
+    installNode.classList.remove("saBUSY");
+    return;
+  }
+
   let scriptid;
-  if ((scriptid = getScriptid()))
+  if ((scriptid = getScriptid())) {
     GM_xmlhttpRequest({
       retry: 5,
       url: window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".meta.js",
@@ -423,7 +429,7 @@
         switch(xhr.status) {
           case 403:
             installNode.title = "Security Advisory: UNLISTED, Unlisted script";
-            installNode.classList.remove("saELEVATED");
+            installNode.classList.add("saELEVATED");
             installNode.classList.remove("saBUSY");
             break;
           case 404:
@@ -433,37 +439,48 @@
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             break;
           case 200:
-            function isKey(e, i, a) { return (e.match(/^\s*\/\/ @\S+/)); }
-            let
-              metadataBlock = xhr.responseText,
-              headers = {},
-              name, prefix, header, key, value,
-              lines = metadataBlock.split(/[\r\n]+/).filter(isKey)
-            ;
+            function parseMeta(aString) {
+              function isKey(e, i, a) { return (e.match(/^\s*\/\/ @\S+/)); }
+              let
+                metadataBlock = aString,
+                headers = {},
+                name, prefix, header, key, value,
+                lines = metadataBlock.split(/[\r\n]+/).filter(isKey)
+              ;
 
-            for each (let line in lines) {
-              [, name, value] = line.match(/^\s*\/\/\s@(\S*)\s*(.*)/);
-              value = value.trim().replace(/\s+/g, " ");
-              [key, prefix] = name.split(/:/).reverse();
-              if (prefix) {
-                if (!headers[prefix])
-                  headers[prefix] = new Object;
-                header = headers[prefix];
+              for each (let line in lines) {
+                [, name, value] = line.match(/^\s*\/\/\s@(\S*)\s*(.*)/);
+                value = value.trim().replace(/\s+/g, " ");
+                [key, prefix] = name.split(/:/).reverse();
+                if (prefix) {
+                  if (!headers[prefix])
+                    headers[prefix] = new Object;
+                  header = headers[prefix];
+                }
+                else
+                  header = headers;
+                if (header[key]) {
+                  if (!(header[key] instanceof Array))
+                    header[key] = new Array(header[key]);
+                  header[key].push(value);
+                }
+                else
+                  header[key] = value;
               }
-              else
-                header = headers;
-              if (header[key]) {
-                if (!(header[key] instanceof Array))
-                  header[key] = new Array(header[key]);
-                header[key].push(value);
-              }
-              else
-                header[key] = value;
+              return (headers.toSource() == "({})") ? undefined : headers;
             }
 
-            if (headers.toSource() == "({})") {
+            let headers = parseMeta(xhr.responseText);
+            if (!headers) {
               installNode.title = "ERROR: Invalid metadata block returned from userscripts.org";
               installNode.classList.add("saERROR");
+              installNode.classList.remove("saBUSY");
+              return;
+            }
+
+            if (installNode.search.match(/token\=/i) || (headers["uso"] && headers["uso"]["unlisted"] == "")) {
+              installNode.title = "Security Advisory: UNLISTED, Unlisted script";
+              installNode.classList.add("saELEVATED");
               installNode.classList.remove("saBUSY");
               return;
             }
@@ -483,6 +500,35 @@
                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                       break;
                     case 200:
+                      let userHeaders = parseMeta(xhr.responseText);
+                      if (!userHeaders) {
+                        installNode.title = "ERROR: Invalid user.js returned from userscripts.org";
+                        installNode.classList.add("saERROR");
+                        installNode.classList.remove("saBUSY");
+                        return;
+                      }
+
+                      // Detect difference in meta.js and user.js
+                      let xpr = document.evaluate(
+                      "//div[@id='summary']/p/b[.='Version:']/following-sibling::text()",
+                        document.body,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                      );
+                      if (xpr && xpr.singleNodeValue) {
+                        let thisNode = xpr.singleNodeValue;
+
+                        let currentVersion = (userHeaders["version"] && typeof userHeaders["version"] == "string") ? userHeaders["version"] : userHeaders["version"][0];
+                        if (currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
+                          installNode.title = "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith";
+                          installNode.classList.add("saERROR");
+                          installNode.classList.remove("saBUSY");
+                          return;
+                        }
+                      }
+
+                      // Remove some keys
                       let userJs = xhr.responseText;
                       userJs = userJs.replace(/\s+\/\/\s@(?:updateURL|installURL)\s+.*[^\n\r]/gm, "");
 
@@ -1816,27 +1862,6 @@
                       return;
                     }
 
-            // Detect difference in meta.js and user.js
-            let xpr = document.evaluate(
-            "//div[@id='summary']/p/b[.='Version:']/following-sibling::text()",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              null
-            );
-            if (xpr && xpr.singleNodeValue) {
-              let thisNode = xpr.singleNodeValue;
-
-              let currentVersion = (headers["version"] && typeof headers["version"] == "string") ? headers["version"] : headers["version"][0];
-              if (!gmcHome.get("skipEmbeddedScan") && currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
-                installNode.title = "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith";
-                installNode.classList.add("saERROR");
-                if (gmcHome.get("skipEmbeddedScan"))
-                  installNode.classList.remove("saBUSY");
-                return;
-              }
-            }
-
             if (headers["installURL"]) {
               let rex = new RegExp("https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
                   lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
@@ -2059,5 +2084,11 @@
         }
       }
     });
+  }
+  else {
+    installNode.title = "Security Advisory: ERROR, scriptid not found";
+    installNode.classList.add("saERROR");
+    installNode.classList.remove("saBUSY");
+  }
 
 })();
