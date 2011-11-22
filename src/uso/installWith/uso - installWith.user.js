@@ -7,8 +7,13 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.4
+// @version       1.0.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
+//
+// @include /https?:\/\/userscripts\.org\/scripts\/.*/
+// @include /https?:\/\/userscripts\.org\/topics\/.*/
+// @include /https?:\/\/userscripts\.org\/reviews\/.*/
+//
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
 // @include http://userscripts.org/topics/*
@@ -18,57 +23,75 @@
 // @include http://userscripts.org/scripts/versions/*
 // @include https://userscripts.org/scripts/versions/*
 //
+// @exclude /https?:\/\/userscripts\.org\/scripts\/diff\/.*/
+// @exclude /https?:\/\/userscripts\.org\/scripts\/version\/.*/
+//
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @resource usoCheckup https://secure.dune.net/usocheckup/res/usoCheckup.png
-// @resource usoCheckupBeta https://secure.dune.net/usocheckup/res/usoCheckupBeta.png
-// @resource qmark https://secure.dune.net/usocheckup/res/qmark.png
-// @resource script https://secure.dune.net/usocheckup/res/script.png
-// @resource checking https://secure.dune.net/usocheckup/res/checking.png
-// @resource low https://secure.dune.net/usocheckup/res/low.png
-// @resource guarded https://secure.dune.net/usocheckup/res/guarded.png
-// @resource elevated https://secure.dune.net/usocheckup/res/elevated.png
-// @resource high https://secure.dune.net/usocheckup/res/high.png
-// @resource severe https://secure.dune.net/usocheckup/res/severe.png
-// @resource undetermined https://secure.dune.net/usocheckup/res/undetermined.png
-//
 // @updateURL  https://userscripts.org/scripts/source/68219.meta.js
 // @installURL https://userscripts.org/scripts/source/68219.user.js
+//
 // @require https://secure.dune.net/usocheckup/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
+//
+// @require https://userscripts.org/scripts/source/115323.user.js
+//
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
 // ==/UserScript==
 
-  var frameless = false;
+  let nodeStyle = GM_setStyle({
+      media: "screen, projection",
+      data: <><![CDATA[
+
+          .hid { display: none; }
+
+          #install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; }
+          #install_script a.userjs:hover { color: #004; background: #999 -moz-linear-gradient(top, #f5f5f5, #999) no-repeat scroll 0 0; }
+
+          #install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0; }
+          #install_script a.saLIB:hover { color: #000; background: #fff none repeat scroll 0 0; }
+
+          #install_script a.saLOW { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
+          #install_script a.saLOW:hover { background:  #a2cc5d -moz-linear-gradient(top, #e5f5cb, #a2cc5d) repeat scroll 0 0; }
+
+          #install_script a.saGUARDED { background: #8085a0 -moz-linear-gradient(top, #cbd2f5, #8085a0) repeat scroll 0 0; }
+          #install_script a.saGUARDED:hover { background: #767b94 -moz-linear-gradient(top, #cbd2f5, #767b94) repeat scroll 0 0; }
+
+          #install_script a.saELEVATED { background: #e0e36e -moz-linear-gradient(top, #f4f5cb, #e0e36e) repeat scroll 0 0; }
+          #install_script a.saELEVATED:hover { background: #d3d668 -moz-linear-gradient(top, #f4f5cb, #d3d668) repeat scroll 0 0; }
+
+          #install_script a.saHIGH { background: #e0a46d -moz-linear-gradient(top, #f5dfcb, #e0a46d) repeat scroll 0 0; }
+          #install_script a.saHIGH:hover { background: #d49b67 -moz-linear-gradient(top, #f5dfcb, #d49b67) repeat scroll 0 0; }
+
+          #install_script a.saSEVERE { background: #e57169 -moz-linear-gradient(top,  #f5cecb, #e57169) repeat scroll 0 0; }
+          #install_script a.saSEVERE:hover { background: #d96b63 -moz-linear-gradient(top,  #f5cecb, #d96b63) repeat scroll 0 0; }
+
+          #install_script a.saERROR { color: #fff; background: #000 none repeat scroll 0 0; }
+          #install_script a.saERROR:hover { color: #fff; background: #000 none repeat scroll 0 0; }
+
+          @-moz-keyframes saBUSY { from { background: #a7a7a7; } to { background: #8c8c8c; } }
+          #install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }
+
+          #install_script a.installWith { font-size: 1.0em; }
+          #install_script a.helpWith { width: 16px; height: 16px; margin-top: 0.6em; float: right; background: transparent no-repeat scroll top left url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oCBhUpFGSrs1gAAAM/SURBVDgRBcFbTFt1HMDx7+/c2jNauRQYMJgwURSWqMTEJmbZeMCMLAYzNZJo5oXo24wJL+KjxpBoMDHhZWbEmSlGiUZM8BK8ZM5tEjPxgdW5TVzFUgotPbS0tIdzzt/PR4aHh5mbm2N6elpGR0cVwMfnzrT6vupN5woH3GoF8Sqpa4lriU9m59IAExMTjI+PAyAACwsLDA4Ocurp43p84KnX1jfzL5fK5YOWX8YPAkqeThB4/+xsb71//sPp94BdAACZnJyUsbExNfPBm3YqH/tmPZ0+eo92lbh93YuFdpUYYTaDJrnkdBlLuWbyeef7z2fPjwA5pRSilEJEmHh76mtn89bQ491fEe9IKmwTr4gEPspqMEBr5eLNgzKz2MVft9LzP/0wP6KU2jFEhLcm3n1xI5MZeuz+eeL9K5TLpvw9G7B+WVAKifVV6Tm1wpFjOmXT4Gy++UTXoZ7nRWRKA8xcrvBcYyTBwCM3VTUKGz8qVt/RCZUhagdqc0Yn9aWPZ/3Ho8fWVEeLS1Nz67NAm/bK6Re6c9l8X9+hZYjcjWYfIdIOvS/t8dBZl+4TiuZAw9418NUOOQc69ufQdeMuXaPPKBaKtdtFdUc0nKVaiUtVG2K39zZG/yprH5m4ZwxpiPtEnlCsJUHDl8aoi1ulxrKMJmN1NRW4qtFNJ8NmoeUKfrii2PFwcybFnw20wwrttEhZNxEnoHZ/iEppD2e75O3teZq2vJzIZDLp1O9/RokZJWXkL0oNBYkGltS1I/V9GpF6HbuiETVrqLNtdWWpwtZW1vF8str6xnYyvbb669yFMivJiDTui2ApC7NgEPymCJYUVtkk5CtisYNc/UPJd79kcJzcdeC2DlCtlNL5fPXkYiKwT/Zbqi5iSeAKZqtO+D6DUL3IvoY2kqmYevL1hKz8m91GeVPAot7Z2YnjOCnw3FR27/gXl6rSFTU53G4r+04Lu6UG8Rv57AIy8kZCVlI7AOeAT0UkBQBASMcCXgXWANVap6uBe8PqaE9YNdeGFKCAjMAU8ABgAAgAAABQAzwMPAM8CNQBAhSBG8C3wGXgBuABCAAAAABgAvUCBzShTYERKBxgE1gHHCAAAPgfsu15foUhTJIAAAAASUVORK5CYII=);}
+          #install_script select.updateWith { width: 90%; height: 1.6em; font-size: 0.9em; }
+          #install_script select.updateWith option.separator { border-bottom: thin dotted #666; }
+          #install_script select.updateWith img { vertical-align: middle; margin: 0.25em 0.25em 0.25em 0; width: 16px; height: 16px; background: none no-repeat scroll center center transparent; }
+          #install_script select.updateWith img.indent { margin-left: 0.6em; }
+
+      ]]></>
+  });
+
+  let frameless = false;
   try {
     frameless = (window == window.top);
   }
   catch (e) {}
 
   /* Common */
-  function addClass(thisNode, thisValue) {
-    let c = thisNode.getAttribute("class");
-    let re = new RegExp("\\b" + thisValue + "\\b");
-    if (!c)
-      thisNode.setAttribute("class", thisValue);
-    else if (!c.match(re))
-      thisNode.setAttribute("class", c + " " + thisValue);
-  }
-
-  function removeClass(thisNode, thisValue) {
-    let c = thisNode.getAttribute("class");
-    let re = new RegExp("\\s{0,1}\\b" + thisValue + "\\b");
-    if (c && c.match(re)) {
-      let newclass = thisNode.getAttribute("class").replace(re, "");
-      if (newclass != "")
-        thisNode.setAttribute("class", newclass);
-      else
-        thisNode.removeAttribute("class");
-    }
-  }
 
   // Clean up USO for framed presentation
   if (!frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
@@ -84,53 +107,20 @@
       for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);)
         thisNode.setAttribute("target", "_top");
 
-      GM_addStyle(<><![CDATA[
-        div.container { width: auto; margin: 0; }
-        div#content { width: 100% !important; left: 0; }
-        div#heading { height: 66px; min-height: 0; }
-        div#details h1.title { max-height: 2.05em; overflow: hidden; }
-      ]]></> + "");
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              div.container { width: auto; margin: 0; }
+              div#content { width: 100% !important; left: 0; }
+              div#heading { height: 66px; min-height: 0; }
+              div#details h1.title { max-height: 2.05em; overflow: hidden; }
+
+          ]]></>
+      });
   }
 
-  var securityAdvisory = {
-    "checking": {
-      "index": 0,
-      "title": 'Security Advisory: CHECKING, Please Wait',
-      "background-image": decodeURIComponent(GM_getResourceURL("checking"))
-    },
-    "low": {
-      "index": 1,
-      "title": 'Security Advisory: LOW',
-      "background-image": decodeURIComponent(GM_getResourceURL("low"))
-    },
-    "guarded": {
-      "index": 2,
-      "title": 'Security Advisory: GUARDED',
-      "background-image": decodeURIComponent(GM_getResourceURL("guarded"))
-    },
-    "elevated": {
-      "index": 3,
-      "title": 'Security Advisory: ELEVATED',
-      "background-image": decodeURIComponent(GM_getResourceURL("elevated"))
-    },
-    "high": {
-      "index": 4,
-      "title": 'Security Advisory: HIGH',
-      "background-image": decodeURIComponent(GM_getResourceURL("high"))
-    },
-    "severe": {
-      "index": 5,
-      "title": 'Security Advisory: SEVERE',
-      "background-image": decodeURIComponent(GM_getResourceURL("severe"))
-    },
-    "undetermined": {
-      "index": 6,
-      "title": 'Security Advisory: UNDETERMINED',
-      "background-image": decodeURIComponent(GM_getResourceURL("undetermined"))
-    }
-};
-
-  var installNode = document.evaluate(
+  let installNode = document.evaluate(
     "//div[@id='install_script']/a[@class='userjs']",
     document.body,
     null,
@@ -141,9 +131,8 @@
   if (installNode && installNode.singleNodeValue) {
     installNode = installNode.singleNodeValue;
 
-    installNode.setAttribute("title", securityAdvisory["checking"]["title"]);
-    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-        + securityAdvisory["checking"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+    installNode.title = "Security Advisory: BUSY, Please wait";
+    installNode.classList.add("saBUSY");
   }
   else
     return;
@@ -221,23 +210,42 @@
       }
 
       /* Common */
-      GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
-
       let divNode = insertDiv();
 
       /* Nearest fix for a glitch on USO */
       let scriptNav = document.getElementById("script-nav");
       if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
-        GM_addStyle("div #full_description { width: 98.1%; }");
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
+
+                div #full_description { width: 98.1%; }
+
+            ]]></>
+        });
 
       let screenShots = document.getElementById("screenshots");
       if (screenShots)
-        GM_addStyle("#full_description { clear: left; }");
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
+
+                #full_description { clear: left; }
+
+            ]]></>
+        });
 
       /* Nearest fix for userscripts.org Alternate CSS */
       let fullDescription = document.getElementById("full_description");
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
-        GM_addStyle("#screenshots { width: 97.5% !important; }");
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
+
+                #screenshots { width: 97.5% !important; }
+
+            ]]></>
+        });
 
       // installWith homepage
       var gmcHome = new GM_configStruct();
@@ -245,8 +253,12 @@
 
       gmcHome.init(divNode,
           <><![CDATA[
-            <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
-            <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+
+              <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
+              <span style="float: right; margin: 0 0.5em;">
+                <a href="/guides/24/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
+              </span>
+
           ]]></>.toString(),
           {
             'forceInstallSecure': {
@@ -276,81 +288,38 @@
                 "default": false
             }
           },
-          <><![CDATA[
-            #gmc68219home {
-              position: static !important;
-              z-index: 0 !important;
-              width: auto !important;
-              height: auto !important;
-              max-height: none !important;
-              max-width: none !important;
-              margin: 0 0 0.5em 0 !important;
-              border: 1px solid #ddd !important;
-              clear: right !important;
-            }
+          /* Custom CSS */
 
-            #gmc68219home_wrapper {
-              background-color: #eee;
-              padding-bottom: 0.25em;
-            }
+        GM_setStyle({
+            node: null,
+            data: <><![CDATA[
 
-            #gmc68219home .config_header {
-              color: white;
-              background-color: #333;
-              text-align: left;
-              margin: 0 0 0.4em 0;
-              padding: 0 0 0 0.5em;
-              font-size: 1.57em;
-            }
+                #gmc68219home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+                #gmc68219home_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+                #gmc68219home .config_header { color: white; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
+                #gmc68219home .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
+                #gmc68219home .field_label { color: #333; font-weight: normal; font-size: 100%; }
+                .section_desc { margin: 0.25em 1.5em !important; }
 
-            #gmc68219home .config_var {
-              margin: 0.5em 1em;
-              padding: 0;
-              clear: both;
-            }
+                    .gmc68219home-yellownote { background-color: #ffd; font-size: 0.66em !important; }
 
-            #gmc68219home .field_label {
-              color: #333;
-              font-weight: normal;
-              font-size: 100%;
-            }
+                    #gmc68219home_field_mirrorDomain { margin-left: 1em; }
 
-            .gmc68219home-yellownote
-            {
-              background-color: #ffd;
-              font-size: 0.66em !important;
-            }
-
-            .section_desc
-            {
-              margin: 0.25em 1.5em !important;
-            }
-
-            #gmc68219home_field_mirrorDomain
-            {
-              margin-left: 1em;
-            }
-
-            #gmc68219home_field_mirrorDomain input
-            {
-              top: 0.1em;
-            }
+                    #gmc68219home_field_mirrorDomain input { top: 0.1em; }
 
 
-            #gmc68219home_field_forceInstallSecure,
-            #gmc68219home_field_skipVerifyLibs,
-            #gmc68219home_field_skipEmbeddedScan,
-            #gmc68219home_field_allowUpdatersOnBadGMSyntax
-            {
-              top: 0.08em;
-              margin-right: 0.5em;
-            }
+                    #gmc68219home_field_forceInstallSecure,
+                    #gmc68219home_field_skipVerifyLibs,
+                    #gmc68219home_field_skipEmbeddedScan,
+                    #gmc68219home_field_allowUpdatersOnBadGMSyntax
+                    { top: 0.08em; margin-right: 0.5em; }
 
-            #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-            #gmc68219home_resetLink { margin-right: 2.5em; }
-            #gmc68219home_closeBtn { display: none; }
+                #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+                #gmc68219home_resetLink { margin-right: 2.5em; }
+                #gmc68219home_closeBtn { display: none; }
 
-          ]]></>.toString()
+            ]]></>
+        })
       );
 
       if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
@@ -390,93 +359,41 @@
             "default": 1
           }
         },
-        <><![CDATA[
-          #gmc68219 {
-            position: static !important;
-            z-index: 0 !important;
-            width: auto !important;
-            height: auto !important;
-            max-height: none !important;
-            max-width: none !important;
-            margin: 0 0 0.5em 0 !important;
-            border: 1px solid #ddd !important;
-            clear: right !important;
-          }
+        GM_setStyle({
+            node: null,
+            data: <><![CDATA[
+                #gmc68219 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+                #gmc68219_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+                #gmc68219 .config_header { color: #fff; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
+                #gmc68219 .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
+                #gmc68219 .field_label { color: #333; font-weight: normal; font-size: 100%; }
+                .section_desc { margin: 0.25em 1.5em !important; }
 
-          #gmc68219_wrapper {
-            background-color: #eee;
-            padding-bottom: 0.25em;
-          }
+                    #gmc68219_field_updaterMaxage,
+                    #gmc68219_field_updaterMinage
+                    { width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right; }
 
-          #gmc68219 .config_header {
-            color: white;
-            background-color: #333;
-            text-align: left;
-            margin: 0 0 0.4em 0;
-            padding: 0 0 0 0.5em;
-            font-size: 1.57em;
-          }
+                    #gmc68219_field_updaterMaxage { margin-top: 0.25em; }
 
-          #gmc68219 .config_var {
-            margin: 0.5em 1em;
-            padding: 0;
-            clear: both;
-          }
+                    .gmc68219-yellownote { background-color: #FFD; font-size: 0.66em !important; }
 
-          #gmc68219 .field_label {
-            color: #333;
-            font-weight: normal;
-            font-size: 100%;
-          }
+                    #gmc68219_field_useGravatarIcon,
+                    #gmc68219_field_useScriptIcon,
+                    #gmc68219_field_skipEmbeddedScan
+                    { top: 0.05em; margin-right: 0.5em; }
 
-          #gmc68219_field_updaterMaxage,
-          #gmc68219_field_updaterMinage
-          {
-            width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right;
-          }
+                    #gmc68219_useGravatarIcon_var,
+                    #gmc68219_useScriptIcon_var
+                    { margin-right: 0 !important; display: inline !important; }
 
-          #gmc68219_field_updaterMaxage
-          {
-            margin-top: 0.25em;
-          }
+                    #gmc68219_useScriptIcon_var { margin-left: 0 !important; }
 
+                #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
+                #gmc68219_resetLink { margin-right: 2.5em; }
+                #gmc68219_closeBtn { display: none; }
 
-          .gmc68219-yellownote
-          {
-            background-color: #FFD;
-            font-size: 0.66em !important;
-          }
-
-          #gmc68219_field_useGravatarIcon,
-          #gmc68219_field_useScriptIcon,
-          #gmc68219_field_skipEmbeddedScan
-          {
-            top: 0.05em;
-            margin-right: 0.5em;
-          }
-
-          #gmc68219_useGravatarIcon_var,
-          #gmc68219_useScriptIcon_var
-          {
-            margin-right: 0 !important;
-            display: inline !important;
-          }
-
-          #gmc68219_useScriptIcon_var
-          {
-            margin-left: 0 !important;
-          }
-
-          .section_desc
-          {
-            margin: 0.25em 1.5em !important;
-          }
-
-          #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-          #gmc68219_resetLink { margin-right: 2.5em; }
-          #gmc68219_closeBtn { display: none; }
-
-        ]]></>.toString()
+            ]]></>
+        })
       );
 
       gmc.onSave = function() {
@@ -500,50 +417,22 @@
   if ((scriptid = getScriptid()))
     GM_xmlhttpRequest({
       retry: 5,
-      url: "http" + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ((gmc && gmcHome.get("skipEmbeddedScan")) ? ".meta.js" : ".user.js?"),
+      url: window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".meta.js",
       method: "GET",
       onload: function(xhr) {
         switch(xhr.status) {
+          case 403:
+            installNode.title = "Security Advisory: UNLISTED, Unlisted script";
+            installNode.classList.remove("saELEVATED");
+            installNode.classList.remove("saBUSY");
+            break;
           case 404:
           case 502:
           case 503:
-            if (--this.retry > 0)
+            if (this.retry-- > 0)
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             break;
           case 200:
-
-            let possibleEmbedded, DDoS, RHV;
-
-            if (xhr.responseText.match(
-                "("
-              +   "\\.meta\\.js"
-              +   "|" + scriptid + "\\.user\\.js"
-              +   "|(\"|')https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/" + scriptid
-              +   "|(\"|')(?:https?:\\/\\/userscripts\\.org\\/)?scripts\\/source\\/.+\\.user\\.js"
-              +   "|https?:\\/\\/www\\.monkeyupdater\\.com"
-              +   "|https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
-              +   "|\\/version\\.xml"
-              +   "|https?:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
-              +   "|https?:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
-              +   "|https?:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts"
-              +   "|https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
-
-              + ")", "gmi"))
-                possibleEmbedded = (scriptid == "68219" || scriptid == "69307" || scriptid == "114843") ? false : true;
-
-              if (possibleEmbedded && xhr.responseText.match(
-                "("
-              +   "https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/103455\\.user\\.js"
-
-              + ")", "gmi")) {
-                installNode.setAttribute("title", "Security Advisory: SEVERE, possible malicious code and no script homepage for referenced user.js.");
-                GM_addStyle(
-                    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                  + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
-                );
-                return;
-              }
-
             function isKey(e, i, a) { return (e.match(/^\s*\/\/ @\S+/)); }
             let
               metadataBlock = xhr.responseText,
@@ -553,7 +442,7 @@
             ;
 
             for each (let line in lines) {
-              [, name, value] = line.match(/^\s*\/\/ @(\S*)\s*(.*)/);
+              [, name, value] = line.match(/^\s*\/\/\s@(\S*)\s*(.*)/);
               value = value.trim().replace(/\s+/g, " ");
               [key, prefix] = name.split(/:/).reverse();
               if (prefix) {
@@ -572,33 +461,72 @@
                 header[key] = value;
             }
 
-            let xpr = document.evaluate(
-            "//div[@id='summary']/p/b[.='Version:']/following-sibling::text()",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              null
-            );
-            if (xpr && xpr.singleNodeValue) {
-              let thisNode = xpr.singleNodeValue;
-
-              let currentVersion = (headers["version"] && typeof headers["version"] == "string") ? headers["version"] : headers["version"][0];
-              if (!gmcHome.get("skipEmbeddedScan") && currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
-                installNode.setAttribute("title", "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith");
-                GM_addStyle(<><![CDATA[
-                    #install_script a.userjs, #install_script a.userjs:hover { color: #fff; background: #000 none repeat scroll 0 0; }
-                    #install_script a.userjs:hover { color: #fff; }
-                ]]></> + "");
-                return;
-              }
+            if (headers.toSource() == "({})") {
+              installNode.title = "ERROR: Invalid metadata block returned from userscripts.org";
+              installNode.classList.add("saERROR");
+              installNode.classList.remove("saBUSY");
+              return;
             }
-            else
-              GM_log('Possible DOM change detected or missing @version');
 
+            let possibleEmbedded, DDoS, RHV;
+            if (!gmcHome.get("skipEmbeddedScan")) {
+              GM_xmlhttpRequest({
+                retry: 5,
+                url: window.location.protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
+                method: "GET",
+                onload: function (xhr) {
+                  switch(xhr.status) {
+                    case 404:
+                    case 502:
+                    case 503:
+                      if (this.retry-- > 0)
+                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      break;
+                    case 200:
+                      let userJs = xhr.responseText;
+                      userJs = userJs.replace(/\s+\/\/\s@(?:updateURL|installURL)\s+.*[^\n\r]/gm, "");
+
+                      if (userJs.match(
+                          "("
+                        +   "\\.meta\\.js"
+                        +   "|" + scriptid + "\\.user\\.js"
+                        +   "|(\"|')https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/" + scriptid
+                        +   "|(\"|')(?:https?:\\/\\/userscripts\\.org\\/)?scripts\\/source\\/.+\\.user\\.js"
+                        +   "|https?:\\/\\/www\\.monkeyupdater\\.com"
+                        +   "|https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
+                        +   "|\\/version\\.xml"
+                        +   "|https?:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
+                        +   "|https?:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
+                        +   "|https?:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts"
+                        +   "|https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
+
+                        + ")", "gmi"))
+                          possibleEmbedded = (scriptid == "68219" || scriptid == "69307" || scriptid == "114843") ? false : true;
+
+                      if (possibleEmbedded) {
+                        installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source!!!";
+                        installNode.classList.remove("saLIB");
+                        installNode.classList.remove("saLOW");
+                        installNode.classList.remove("saGUARDED");
+                      }
+                      installNode.classList.remove("saBUSY");
+
+                      break;
+                    default:
+                      break;
+                  }
+                },
+                onerror: function (xhr) {
+                  GM_log('ERROR: Some critical unknown error occurred');
+                }
+              });
+            }
+
+            // Lib check here
             if (headers["exclude"])
               for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"])
                 if (exclude == "*") {
-                  installNode.setAttribute("title", "Security Advisory: NON-RUNNING, Possible library support file detected");
+                  installNode.title = "Security Advisory: LIBRARY, Possible library support file detected";
                   function nag(ev) {
                     ev.preventDefault();
 
@@ -612,10 +540,9 @@
                   }
                   if (!gmcHome.get("skipVerifyLibs"))
                     installNode.addEventListener("click", nag, true);
-                  GM_addStyle(<><![CDATA[
-                    #install_script a.userjs, #install_script a.userjs:hover { background: #FFF none repeat scroll 0 0; }
-                    #install_script a.userjs:hover { color: black; }
-                  ]]></> + "");
+                  installNode.classList.add("saLIB");
+                  if (gmcHome.get("skipEmbeddedScan"))
+                    installNode.classList.remove("saBUSY");
                   return;
                 }
 
@@ -623,7 +550,7 @@
               "uso": {
                 "value": "uso",
                 "textContent": 'userscripts.org (default)',
-                "iconUrl": decodeURIComponent(GM_getResourceURL("script")),
+                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/7996/large.png",
                 "title": 'Use native meta.js',
                 "securityAdvisory": {
                   "advisory": "undetermined",
@@ -633,7 +560,7 @@
               "usoCheckupmeta": {
                 "value": "usoCheckupmeta",
                 "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
-                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckup")),
+                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/814/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "none",
                 "rex": [
@@ -646,7 +573,7 @@
                   "advisory": "low",
                   "title": ""
                 },
-                "border-bottom": "thin dotted #666"
+                "separator": true
               },
               "AnotherAutoUpdater": {
                 "value": "AnotherAutoUpdater",
@@ -665,7 +592,7 @@
                   "advisory": "low",
                   "title": ""
                 },
-                "border-bottom": "thin dotted #666"
+                "separator": true
               },
               "alex7kom.ru": {
                 "derivative": 1,
@@ -676,7 +603,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (crea7or.spb.ru)"
+                  "title": "Derivative of AAU (crea7or.spb.ru)"
                 }
               },
               "crea7or.spb.ru": {
@@ -688,7 +615,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (crea7or.spb.ru)"
+                  "title": "Derivative of AAU (crea7or.spb.ru)"
                 }
               },
               "bsm.oldtu.com": {
@@ -700,7 +627,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (bsm.oldtu.com)"
+                  "title": "Derivative of AAU (bsm.oldtu.com)"
                 }
               },
               "koc.god-like.info": {
@@ -712,7 +639,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (koc.god-like.info)"
+                  "title": "Derivative of AAU (koc.god-like.info)"
                 }
               },
               "mekan.dreamhosters.com": {
@@ -724,7 +651,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (mekan.dreamhosters.com)"
+                  "title": "Derivative of AAU (mekan.dreamhosters.com)"
                 }
               },
               "tomchapin.me": {
@@ -736,7 +663,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (tomchapin.me)"
+                  "title": "Derivative of AAU (tomchapin.me)"
                 }
               },
               "www.hitotext.com": {
@@ -748,7 +675,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (www.hitotext.com/mh/ff)"
+                  "title": "Derivative of AAU (www.hitotext.com/mh/ff)"
                 }
               },
               "www.jeffersonscher.com": {
@@ -761,7 +688,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (www.jeffersonscher.com)"
+                  "title": "Derivative of AAU (www.jeffersonscher.com)"
                 }
               },
               "www.nodeka411.net": {
@@ -773,7 +700,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Derivative of AAU (www.nodeka411.net)"
+                  "title": "Derivative of AAU (www.nodeka411.net)"
                 }
               },
               "111662": {
@@ -785,7 +712,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, Derivative of inline AAU and PhasmaExMachina"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, Derivative of inline AAU and PhasmaExMachina"
                 }
               },
               "75442": {
@@ -797,7 +724,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", i/frame vulnerability"
+                  "title": "i/frame vulnerability"
                 }
               },
               "16338": {
@@ -809,7 +736,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "AutoUpdate Test"
                 }
               },
               "45904": {
@@ -821,7 +748,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "Easy Update Code"
                 }
               },
               "45266": {
@@ -833,7 +760,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "easy userscript updater snippet"
                 }
               },
               "35611": {
@@ -845,7 +772,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "GM Script Update Control"
                 }
               },
               "51513": {
@@ -857,7 +784,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", possible excessive bandwith usage"
+                  "title": "possible excessive bandwith usage"
                 }
               },
               "116461": {
@@ -870,7 +797,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", possible excessive bandwith usage"
+                  "title": "possible excessive bandwith usage"
                 }
               },
               "ikariamscriptresources.googlecode.com": {
@@ -881,7 +808,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", i/frame vulnerability"
+                  "title": "i/frame vulnerability"
                 }
               },
               "38788": {
@@ -893,7 +820,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "Includes : CheckForUpdate"
                 }
               },
               "33024": {
@@ -906,7 +833,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Top-level script may have update check init for this lib"
+                  "title": "Top-level script may have update check init for this lib"
                 }
               },
               "47852": {
@@ -919,7 +846,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Top-level script may have update check init for this lib, Derivative of Aquilax lib"
+                  "title": "Top-level script may have update check init for this lib, Derivative of Aquilax lib"
                 }
               },
               "jobmine-plus.googlecode.com": {
@@ -930,7 +857,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", References another script to install (80771), Uses cookies"
+                  "title": "References another script to install (80771), Uses cookies"
                 }
               },
               "js-addon.googlecode.com": {
@@ -941,7 +868,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", Possible Security/Privacy Risk"
+                  "title": "Possible Security/Privacy Risk"
                 }
               },
               "pennerstore.de": {
@@ -952,7 +879,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", Possible Security Risk"
+                  "title": "Possible Security Risk"
                 }
               },
               "36259": {
@@ -964,7 +891,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "Script AutoUpdater"
                 }
               },
               "20145": {
@@ -976,7 +903,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "Script Update Checker"
                 }
               },
               "8857": {
@@ -988,7 +915,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", BROKEN"
+                  "title": "BROKEN"
                 }
               },
               "41075": {
@@ -1000,7 +927,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", Ability to use non-meta.js routine"
+                  "title": "Ability to use non-meta.js routine"
                 }
               },
               "29878": {
@@ -1012,7 +939,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "SelfUpdaterExample"
                 }
               },
               "29880": {
@@ -1024,7 +951,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "SelfUpdaterExampleOpera"
                 }
               },
               "94511": {
@@ -1036,7 +963,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", iframe vulnerability, Possible non-use of meta.js routine"
+                  "title": "iframe vulnerability, Possible non-use of meta.js routine"
                 }
               },
               "street-kicker-eu": {
@@ -1047,7 +974,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", Possible Security Risk"
+                  "title": "Possible Security Risk"
                 }
               },
               "45989": {
@@ -1059,7 +986,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "SVC Script Version Checker"
                 }
               },
               "42456": {
@@ -1071,7 +998,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", Multiple search hosts, Interval vulnerability"
+                  "title": "Multiple search hosts, Interval vulnerability"
                 }
               },
               "94712": {
@@ -1083,7 +1010,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", Currently obfuscated, Abstraction of URL to meta.js routine, offsite xhr"
+                  "title": "Currently obfuscated, Abstraction of URL to meta.js routine, offsite xhr"
                 }
               },
               "94713": {
@@ -1095,7 +1022,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", Currently obfuscated, VAGUE and possible risk"
+                  "title": "Currently obfuscated, VAGUE and possible risk"
                 }
               },
               "62036": {
@@ -1107,7 +1034,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", Interval vulnerability"
+                  "title": "Interval vulnerability"
                 }
               },
               "22372": {
@@ -1119,7 +1046,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "Userscript Auto-Update Add-in"
                 }
               },
               "UserscriptAutoupdateHelper": {
@@ -1130,7 +1057,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", i/frame vulnerability"
+                  "title": "i/frame vulnerability"
                 }
               },
               "50390": {
@@ -1142,7 +1069,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", Outdated copy of local checker"
+                  "title": "Outdated copy of local checker"
                 }
               },
               "UserscriptUpdaterGenerator": {
@@ -1154,7 +1081,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", Closed-Source"
+                  "title": "Closed-Source"
                 }
               },
               "52251": {
@@ -1168,7 +1095,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", i/frame vulnerability"
+                  "title": "i/frame vulnerability"
                 }
               },
               "87942": {
@@ -1181,7 +1108,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Userscripts - AutoUpdater"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Userscripts - AutoUpdater"
                 }
               },
               "57756": {
@@ -1194,7 +1121,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Userscripts - AutoUpdater, possible malicious code and no script homepage."
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Userscripts - AutoUpdater, possible malicious code and no script homepage."
                 }
               },
               "PhasmaExMachina": {
@@ -1206,7 +1133,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", possible malicious code and no script homepage."
+                  "title": "possible malicious code and no script homepage."
                 }
               },
               "98729": {
@@ -1219,7 +1146,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "95997": {
@@ -1232,7 +1159,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "95992": {
@@ -1245,7 +1172,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "94724": {
@@ -1258,7 +1185,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "94662": {
@@ -1271,7 +1198,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "94703": {
@@ -1284,7 +1211,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "95007": {
@@ -1297,7 +1224,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "99735": {
@@ -1310,7 +1237,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "103196": {
@@ -1323,7 +1250,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "bealegend.c0.pl": {
@@ -1335,7 +1262,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "files.kkhweb.com": {
@@ -1348,7 +1275,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "pc-expert.pl": {
@@ -1362,7 +1289,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "www.betawarriors.com": {
@@ -1375,7 +1302,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "xavier.hinfray.free.fr": {
@@ -1388,7 +1315,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "thogamerscripts.webs.com": {
@@ -1401,7 +1328,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "home.arcor.de": {
@@ -1413,7 +1340,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code, hashed download url"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, offsite derivative of Script Updater (userscripts.org), possible malicious code, hashed download url"
                 }
               },
               "60663": {
@@ -1426,7 +1353,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, es-ES derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, es-ES derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "74144": {
@@ -1439,7 +1366,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", localStorage vulnerability, possible excessive bandwith usage, i/frame vulnerability, derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "localStorage vulnerability, possible excessive bandwith usage, i/frame vulnerability, derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "66255": {
@@ -1452,7 +1379,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, ru-RU derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, ru-RU derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "88544": {
@@ -1465,7 +1392,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, ua-UA derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, ua-UA derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "ika-info.ucoz.ru": {
@@ -1477,7 +1404,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, Offsite derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, Offsite derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "91400": {
@@ -1489,7 +1416,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", i/frame vulnerability, possible excessive bandwith usage, Onsite Better Loopy derivative of Script Updater (userscripts.org), possible malicious code"
+                  "title": "i/frame vulnerability, possible excessive bandwith usage, Onsite Better Loopy derivative of Script Updater (userscripts.org), possible malicious code"
                 }
               },
               "37853": {
@@ -1501,7 +1428,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "Userscripts.org Timed Updater"
                 }
               },
               "26062": {
@@ -1513,7 +1440,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "Userscripts Updater"
                 }
               },
               "12193": {
@@ -1525,7 +1452,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "UserScript Update Notification"
                 }
               },
               "2296": {
@@ -1537,7 +1464,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": ", Doesn't use meta.js routine - Bandwidth waster"
+                  "title": "Doesn't use meta.js routine - Bandwidth waster"
                 }
               },
               "39678": {
@@ -1549,7 +1476,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "US Framework"
                 }
               },
               "USOUpdater": {
@@ -1565,8 +1492,9 @@
                 "qsmax": "interval",
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Possible security risk"
-                }
+                  "title": "Possible security risk"
+                },
+                "separator": true
               },
               "16144": {
                 "textContent": 'US Update',
@@ -1577,7 +1505,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "US Update"
                 }
               },
               "46384": {
@@ -1589,7 +1517,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
-                  "title": ", Interval vulnerability"
+                  "title": "Interval vulnerability"
                 }
               },
               "zahlii.independent-irc.com": {
@@ -1603,7 +1531,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", Updates to offsite script; Multiple redirections"
+                  "title": "Updates to offsite script; Multiple redirections"
                 }
               },
               "github.com-justan-gmscrobber": {
@@ -1615,13 +1543,13 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Partial and Unlicensed derivative of usoCheckup"
+                  "title": "Partial and Unlicensed derivative of usoCheckup"
                 }
               },
               "usoCheckupbeta": {
                 "value": "usoCheckupbeta",
                 "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
-                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckupBeta")),
+                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/9785/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1633,15 +1561,14 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", BETA runtime, MAY NOT ALWAYS WORK! :)"
+                  "title": "BETA runtime, MAY NOT ALWAYS WORK! :)"
                 },
-                "beta": true,
-                "border-top": "thin dotted #666"
+                "beta": true
               },
               "usoCheckup": {
                 "value": "usoCheckup",
                 "textContent": 'usoCheckup',
-                "iconUrl": decodeURIComponent(GM_getResourceURL("usoCheckup")),
+                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/814/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1692,7 +1619,7 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": ", Implicit trust of script"
+                  "title": "Implicit trust of script"
                 }
               },
               "usoCheckupbottomsUp": {
@@ -1846,7 +1773,7 @@
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
-                  "title": ", POSSIBLE DANGEROUS SCRIPT"
+                  "title": "POSSIBLE DANGEROUS SCRIPT"
                 }
               }
             }
@@ -1854,8 +1781,6 @@
             if (window.location.protocol != installNode.protocol || gmcHome.get("forceInstallSecure"))
               installNode.protocol = "https:";
 
-            let lastAdvisory = 0;
-            let lastUpdater = {};
             if (headers["require"])
               for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
                 for each (let updater in updaters)
@@ -1863,53 +1788,57 @@
                     let sid = require.match(new RegExp(rex  + ".*", "i"));
                     if (sid) {
                       if (sid[1] == scriptid || sid[1] == null) {
-                        if (lastAdvisory < securityAdvisory[updater["securityAdvisory"]["advisory"]]["index"]) {
-                          lastAdvisory = securityAdvisory[updater["securityAdvisory"]["advisory"]]["index"];
-                          lastUpdater = updater;
-                        }
-                        installNode.setAttribute("title", securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
-                        GM_addStyle(
-                            "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                          + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
-                          + "); } #install_script a.userjs:hover { color: black;}"
-                        );
+                        installNode.title = "Security Advisory: " + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"]: "");
+                        installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                        installNode.classList.remove("saBUSY");
                       }
                       else {
-                        installNode.setAttribute("title", "Security Advisory: GUARDED, Possible malformed updater syntax, Possible Security Risk");
-                        GM_addStyle(
-                            "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                          + securityAdvisory["guarded"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
-                        );
+                        installNode.title = "Security Advisory: GUARDED, Possible malformed updater syntax, Possible Security Risk";
+                        installNode.classList.add("saGUARDED");
+                        installNode.classList.remove("saBUSY");
                         return;
                       }
                     }
                   }
-            if (lastAdvisory > 0) {
-              installNode.setAttribute("title", securityAdvisory[lastUpdater["securityAdvisory"]["advisory"]]["title"] + lastUpdater["securityAdvisory"]["title"]);
-              GM_addStyle(
-                  "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                + securityAdvisory[lastUpdater["securityAdvisory"]["advisory"]]["background-image"]
-                + "); } #install_script a.userjs:hover { color: black;}");
-              return;
-            }
+
+               if (!installNode.classList.contains("saBUSY"))
+                 return;
 
             if (headers["include"])
               for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
                 for each (let updater in updaters)
                   for each (let rex in updater["rex"])
                     if (include.match(new RegExp(rex  + ".*", "i"))) {
-                      installNode.setAttribute("title",
-                        securityAdvisory[updater["securityAdvisory"]["advisory"]]["title"] + updater["securityAdvisory"]["title"]);
-                      GM_addStyle(
-                          "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                        + securityAdvisory[updater["securityAdvisory"]["advisory"]]["background-image"]
-                        + "); } #install_script a.userjs:hover { color: black;}");
+                      installNode.title = "Security Advisory: " + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"]: "");
+                      installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                      if (gmcHome.get("skipEmbeddedScan"))
+                        installNode.classList.remove("saBUSY");
                       return;
                     }
 
+            // Detect difference in meta.js and user.js
+            let xpr = document.evaluate(
+            "//div[@id='summary']/p/b[.='Version:']/following-sibling::text()",
+              document.body,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              null
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              let currentVersion = (headers["version"] && typeof headers["version"] == "string") ? headers["version"] : headers["version"][0];
+              if (!gmcHome.get("skipEmbeddedScan") && currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
+                installNode.title = "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith";
+                installNode.classList.add("saERROR");
+                if (gmcHome.get("skipEmbeddedScan"))
+                  installNode.classList.remove("saBUSY");
+                return;
+              }
+            }
 
             if (headers["installURL"]) {
-              let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
+              let rex = new RegExp("https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
                   lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
 
               if (!lastInstallURL.match(rex))
@@ -1917,32 +1846,30 @@
             }
 
             if (headers["updateURL"]) {
-              let rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js", "i"),
+              let rex = new RegExp("https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js", "i"),
                   lastUpdateURL = (typeof headers["updateURL"] == "string") ? headers["updateURL"] : headers["updateURL"][headers["updateURL"].length - 1];
 
               if (!lastUpdateURL.match(rex))
                 RHV = true;
 
-              rex = new RegExp("https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
+              rex = new RegExp("https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
               if (lastUpdateURL.match(rex))
                 DDoS = true;
             }
 
             if (!gmcHome.get("allowUpdatersOnBadGMSyntax")) {
               if (DDoS) {
-                installNode.setAttribute("title", "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters");
-                GM_addStyle(
-                    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                  + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
-                );
+                installNode.title = "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
+                installNode.classList.add("saSEVERE");
+                if (gmcHome.get("skipEmbeddedScan"))
+                  installNode.classList.remove("saBUSY");
                 return;
               }
               else if (RHV) {
-                installNode.setAttribute("title", "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters");
-                GM_addStyle(
-                    "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                  + securityAdvisory["high"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
-                );
+                installNode.title = "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
+                installNode.classList.add("saHIGH");
+                if (gmcHome.get("skipEmbeddedScan"))
+                  installNode.classList.remove("saBUSY");
                 return;
               }
             }
@@ -1955,40 +1882,42 @@
               null
             );
 
-            if (helpNode && helpNode.singleNodeValue)
+            if (helpNode && helpNode.singleNodeValue) {
               helpNode = helpNode.singleNodeValue;
-            else
+            }
+            else {
+              installNode.title = "ERROR: Help node not found";
+              installNode.classList.add("saERROR");
+              installNode.classList.remove("saBUSY");
               return;
+            }
 
             let thisNode = installNode;
             thisNode.textContent += ' with';
-            thisNode.style.setProperty("font-size", "1.0em", "");
+            thisNode.classList.add("installWith");
 
             thisNode = helpNode;
-            let qmark = decodeURIComponent(GM_getResourceURL("qmark"));
-
-            thisNode.style.setProperty("width", "16px", "");
-            thisNode.style.setProperty("height", "16px", "");
-            thisNode.style.setProperty("margin-top", "0.6em", "");
-            thisNode.style.setProperty("background", "transparent url(" + qmark + ") no-repeat scroll top left", "");
-            thisNode.style.setProperty("float", "right", "");
-
+            thisNode.classList.add("helpWith");
             thisNode.textContent = "";
 
             let selectNode = document.createElement("select");
             selectNode.setAttribute("id", "updater_select");
-            selectNode.style.setProperty("width", "90%", "");
-            selectNode.style.setProperty("height", "1.6em", "");
-            selectNode.style.setProperty("font-size", "0.9em", "");
+            selectNode.className = "updateWith";
             selectNode.addEventListener("change", function(ev) {
               let thisUpdater = updaters[this.value];
-              GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                  + securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["background-image"]
-                  + "); } #install_script a.userjs:hover { color: black;}");
+
+              installNode.classList.remove("saLOW");
+              installNode.classList.remove("saGUARDED");
+              installNode.classList.remove("saELEVATED");
+              installNode.classList.remove("saHIGH");
+              installNode.classList.remove("saSEVERE");
+
+              installNode.classList.add("sa" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
+
               switch(this.value) {
                 case "uso":
                   GM_deleteValue(":updaterPreference");
-                  installNode.setAttribute("title", "");
+                  installNode.title = "";
                   installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
                   if (gmcHome.get("forceInstallSecure"))
                     installNode.protocol = "https:";
@@ -1997,8 +1926,7 @@
                   break;
                 default:
                   GM_setValue(":updaterPreference", this.value);
-                  installNode.setAttribute("title",
-                      securityAdvisory[thisUpdater["securityAdvisory"]["advisory"]]["title"] + thisUpdater["securityAdvisory"]["title"]);
+                  installNode.title = "Security Advisory: " + thisUpdater["securityAdvisory"]["advisory"].toUpperCase() + ((thisUpdater["securityAdvisory"]["title"]) ? ", " + thisUpdater["securityAdvisory"]["title"]: "");
 
                   function appendQSP(qs, qsp) {
                     if (qsp)
@@ -2039,10 +1967,8 @@
                   if (gmc.get("useScriptIcon") && icontype)
                     icon = appendListItem(icon, icontype);
 
-
                   if (icon)
                     qs = appendQSP(qs, "icon=" + ((gmc.get("useGravatarIcon")||gmc.get("useScriptIcon")) ? "1," : "0,") + icon);
-
 
                   let frag = "#.user.js";
 
@@ -2052,72 +1978,64 @@
                   installNode.setAttribute("href", url);
 
                   if (DDoS) {
-                    installNode.setAttribute("title", "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters");
-                    GM_addStyle(
-                        "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                      + securityAdvisory["severe"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
-                    );
+                    installNode.title = "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
+                    installNode.classList.add("saSEVERE");
                   }
                   else if (RHV) {
-                    installNode.setAttribute("title", "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters");
-                    GM_addStyle(
-                        "#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                      + securityAdvisory["high"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}"
-                    );
-                  }
-                  else if (possibleEmbedded) {
-                    installNode.setAttribute("title", "POSSIBLE EMBEDDED UPDATER FOUND: Please check source");
-                    GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                        + securityAdvisory["undetermined"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
+                    installNode.title = "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
+                    installNode.classList.add("saHIGH");
                   }
 
                   if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
                     gmc.open();
 
                     if (thisUpdater["qsmax"])
-                      removeClass(gmc.fields["updaterMaxage"].node.parentNode, "hidden");
+                      gmc.fields["updaterMaxage"].node.parentNode.classList.remove("hid");
                     else
-                      addClass(gmc.fields["updaterMaxage"].node.parentNode, "hidden");
+                      gmc.fields["updaterMaxage"].node.parentNode.classList.add("hid");
 
                     if (thisUpdater["qsmin"])
-                      removeClass(gmc.fields["updaterMinage"].node.parentNode, "hidden");
+                      gmc.fields["updaterMinage"].node.parentNode.classList.remove("hid");
                     else
-                      addClass(gmc.fields["updaterMinage"].node.parentNode, "hidden");
+                      gmc.fields["updaterMinage"].node.parentNode.classList.add("hid");
                   }
+
+                  if (gmcHome.get("skipEmbeddedScan"))
+                    installNode.classList.remove("saBUSY");
                 break;
               }
             }, true);
 
             thisNode.parentNode.insertBefore(selectNode, thisNode);
 
-            let updaterNode, iconNode, textNode;
             for each (let updater in updaters)
               if (updater["value"]) {
+                let textNode = document.createTextNode(updater["textContent"]);
 
-                updaterNode = document.createElement("option");
+                let iconNode = document.createElement("img");
+                if (updater["derivative"] && updater["derivative"] >= 1)
+                  iconNode.className = "indent";
+
+                iconNode.src =
+                    (updater["iconUrl"])
+                        ? (updater["iconUrl"].match(/^(?:https?:|data:)/)
+                            ? updater["iconUrl"]
+                            : ((window.location.protocol.match(/^https:/i))
+                                ? "https://secure"
+                                : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + updater["iconUrl"] + "&r=PG&s=16&default=identicon")
+                        : ""
+                ;
+
+                let updaterNode = document.createElement("option");
                 updaterNode.setAttribute("value", updater["value"]);
-                if (updater["border-bottom"])
-                  updaterNode.style.setProperty("border-bottom", updater["border-bottom"], "");
-
-                if (updater["border-top"])
-                  updaterNode.style.setProperty("border-top", updater["border-top"], "");
-
-                iconNode = document.createElement("img");
-                iconNode.style.setProperty("vertical-align", "middle", "");
-
-                textNode = document.createTextNode(updater["textContent"]);
-
-                updaterNode.setAttribute("title", updater["title"]);
-
-                iconNode.style.setProperty("margin", "0.25em 0.25em 0.25em " + ((updater["derivative"]) ? updater["derivative"] * 0.6 + "em" : "0"), "");
-                iconNode.style.setProperty("width", "16px", "");
-                iconNode.style.setProperty("height", "16px", "");
-                iconNode.style.setProperty("background", "transparent url(" + ((updater["iconUrl"]) ? (updater["iconUrl"].match(/^(?:http:|data:)/) ? updater["iconUrl"] : ((window.location.protocol.match(/^https:/i)) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + updater["iconUrl"] + "&r=PG&s=16&default=identicon") : "") + ") no-repeat center center", "");
+                updaterNode.className = "updateWith";
+                if (updater["separator"])
+                  updaterNode.classList.add("separator");
+                updaterNode.title = updater["title"];
 
                 updaterNode.appendChild(iconNode);
-                iconNode.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
-
                 updaterNode.appendChild(textNode);
+
                 selectNode.appendChild(updaterNode);
               }
 
@@ -2133,19 +2051,10 @@
             let ev = document.createEvent("HTMLEvents");
             ev.initEvent("change", true, true);
             selectNode.dispatchEvent(ev);
-
-            break;
-          case 403:
-            installNode.setAttribute("title", securityAdvisory["elevated"]["title"] + ', UNLISTED');
-            GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                + securityAdvisory["elevated"]["background-image"] + "); } #install_script a.userjs:hover { color: black;}");
-
             break;
           default:
-            installNode.setAttribute("title", securityAdvisory["undetermined"]["title"]);
-            GM_addStyle("#install_script a.userjs, #install_script a.userjs:hover { background-repeat: repeat-x; background-image: url("
-                + securityAdvisory["undetermined"]["background-image"] + ") !important; } #install_script a.userjs:hover { color: black;}");
-
+            installNode.title = "Security Advisory: UNDETERMINED, Unable to determine update mechanism";
+            installNode.classList.remove("saBUSY");
             break;
         }
       }
