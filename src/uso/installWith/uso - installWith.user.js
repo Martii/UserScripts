@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.2
+// @version       1.0.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -31,8 +31,7 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @updateURL  https://userscripts.org/scripts/source/68219.meta.js
-// @installURL https://userscripts.org/scripts/source/68219.user.js
+// @updateURL  file:///
 //
 // @require https://secure.dune.net/usocheckup/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
@@ -308,7 +307,6 @@
 
                   #gmc68219home_field_mirrorDomain input { top: 0.1em; }
 
-
                   #gmc68219home_field_forceInstallSecure,
                   #gmc68219home_field_skipVerifyLibs,
                   #gmc68219home_field_skipEmbeddedScan,
@@ -551,10 +549,10 @@
                           possibleEmbedded = (scriptid == "68219" || scriptid == "69307" || scriptid == "114843") ? false : true;
 
                       if (possibleEmbedded) {
-                        installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source!!!";
                         installNode.classList.remove("saLIB");
                         installNode.classList.remove("saLOW");
                         installNode.classList.remove("saGUARDED");
+                        installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source; " + installNode.title;
                       }
                       installNode.classList.remove("saBUSY");
 
@@ -1940,13 +1938,14 @@
 
               installNode.classList.add("sa" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
 
-              switch(this.value) {
+              switch (this.value) {
                 case "uso":
                   GM_deleteValue(":updaterPreference");
                   installNode.title = "";
-                  installNode.setAttribute("href", "/scripts/source/" + scriptid + ".user.js");
+                  installNode.href = "/scripts/source/" + scriptid + ".user.js";
                   if (gmcHome.get("forceInstallSecure"))
                     installNode.protocol = "https:";
+
                   if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                     gmc.close();
                   break;
@@ -2011,6 +2010,9 @@
                     installNode.title = "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
                     installNode.classList.add("saHIGH");
                   }
+
+                  if (possibleEmbedded)
+                    installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source; " + installNode.title;
 
                   if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
                     gmc.open();
