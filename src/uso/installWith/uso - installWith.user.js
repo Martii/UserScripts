@@ -7,12 +7,12 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.4
+// @version       1.0.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
-// @include /https?:\/\/userscripts\.org\/scripts\/.*/
-// @include /https?:\/\/userscripts\.org\/topics\/.*/
-// @include /https?:\/\/userscripts\.org\/reviews\/.*/
+// @include /^https?:\/\/userscripts\.org\/scripts\/.*/
+// @include /^https?:\/\/userscripts\.org\/topics\/.*/
+// @include /^https?:\/\/userscripts\.org\/reviews\/.*/
 //
 // @include http://userscripts.org/scripts/*/*
 // @include https://userscripts.org/scripts/*/*
@@ -23,8 +23,8 @@
 // @include http://userscripts.org/scripts/versions/*
 // @include https://userscripts.org/scripts/versions/*
 //
-// @exclude /https?:\/\/userscripts\.org\/scripts\/diff\/.*/
-// @exclude /https?:\/\/userscripts\.org\/scripts\/version\/.*/
+// @exclude /^https?:\/\/userscripts\.org\/scripts\/diff\/.*/
+// @exclude /^https?:\/\/userscripts\.org\/scripts\/version\/.*/
 //
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
@@ -1862,7 +1862,7 @@
                     }
 
             if (headers["installURL"]) {
-              let rex = new RegExp("https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
+              let rex = new RegExp("^https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
                   lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
 
               if (!lastInstallURL.match(rex))
@@ -1870,13 +1870,13 @@
             }
 
             if (headers["updateURL"]) {
-              let rex = new RegExp("(?:file:.*|https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js)", "i"),
+              let rex = new RegExp("^(?:file:.*|https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js)", "i"),
                   lastUpdateURL = (typeof headers["updateURL"] == "string") ? headers["updateURL"] : headers["updateURL"][headers["updateURL"].length - 1];
 
               if (!lastUpdateURL.match(rex))
                 RHV = true;
 
-              rex = new RegExp("https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
+              rex = new RegExp("^https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
               if (lastUpdateURL.match(rex))
                 DDoS = true;
             }
