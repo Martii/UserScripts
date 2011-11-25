@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.5
+// @version       1.0.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -75,7 +75,7 @@
           #install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }
 
           #install_script a.installWith { font-size: 1.0em; }
-          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-size: 11px; font-weight: 900; color: #c00; background: #fc0 -moz-linear-gradient(center top,  #eee, #fc0) repeat scroll 0 0; width: 16px; height: 16px; border-radius: 1em; border: 1px solid #999; }
+          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-size: 11px; font-weight: 900; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; width: 16px; height: 16px; border-radius: 1em; border: 1px solid #999; }
           #install_script a.helpWith:hover { color: #a00; background: #ec0 -moz-linear-gradient(center top,  #eee, #e6b800) repeat scroll 0 0; }
           #install_script select.updateWith { width: 90%; height: 1.6em; font-size: 0.9em; }
           #install_script select.updateWith option.separator { border-bottom: thin dotted #666; }
@@ -254,9 +254,9 @@
     gmcHome.init(divNode,
         <><![CDATA[
 
-            <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
+            <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
             <span style="float: right; margin: 0 0.5em;">
-              <a href="/guides/24/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
+              <a href="/guides/24/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
             </span>
 
         ]]></>.toString(),
@@ -332,10 +332,10 @@
     gmc.init(insertDiv(),
       (
         (window.location.pathname.match(/\/scripts\/show\/68219\/?/i))
-        ? <><![CDATA[ <img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> ]]></>.toString()
-        : <><![CDATA[ <a href="/scripts/show/68219"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> ]]></>.toString()
+        ? <><![CDATA[ <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> ]]></>.toString()
+        : <><![CDATA[ <a href="/scripts/show/68219"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> ]]></>.toString()
       )
-      + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http:]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[//s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
+      + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
       {
         "useGravatarIcon": {
           "type": "checkbox",
@@ -422,7 +422,7 @@
   if ((scriptid = getScriptid())) {
     GM_xmlhttpRequest({
       retry: 5,
-      url: window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".meta.js",
+      url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".meta.js",
       method: "GET",
       onload: function(xhr) {
         switch(xhr.status) {
@@ -488,7 +488,7 @@
             if (!gmcHome.get("skipEmbeddedScan")) {
               GM_xmlhttpRequest({
                 retry: 5,
-                url: window.location.protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
+                url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
                 method: "GET",
                 onload: function (xhr) {
                   switch(xhr.status) {
@@ -595,7 +595,7 @@
               "uso": {
                 "value": "uso",
                 "textContent": 'userscripts.org (default)',
-                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/7996/large.png",
+                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/7996/large.png",
                 "title": 'Use native meta.js',
                 "securityAdvisory": {
                   "advisory": "undetermined",
@@ -605,7 +605,7 @@
               "usoCheckupmeta": {
                 "value": "usoCheckupmeta",
                 "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
-                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/814/large.png",
+                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/814/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "none",
                 "rex": [
@@ -1594,7 +1594,7 @@
               "usoCheckupbeta": {
                 "value": "usoCheckupbeta",
                 "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
-                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/9785/large.png",
+                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/9785/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1613,7 +1613,7 @@
               "usoCheckup": {
                 "value": "usoCheckup",
                 "textContent": 'usoCheckup',
-                "iconUrl": window.location.protocol + "//s3.amazonaws.com/uso_ss/814/large.png",
+                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/814/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1966,7 +1966,7 @@
                   }
 
                   let qs = "";
-                  qs = appendQSP(qs, ((!thisUpdater["value"].match(/usoCheckup.*/i)) ? "updater=" + thisUpdater["value"] : "") );
+                  qs = appendQSP(qs, ((!thisUpdater["value"].match(/usoCheckup.*/i)) ? "updater=" + thisUpdater["value"] : ""));
                   qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(Math.abs(gmc.get("updaterMaxage"))) : ""));
                   if (thisUpdater["qsmin"] && gmc.get("updaterMinage") != 1)
                     qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(Math.abs(gmc.get("updaterMinage")))));
@@ -1976,13 +1976,13 @@
                   let icontype = getIcontype();
 
                   if (gravatar)
-                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='" + ((window.location.protocol.match(/^https:/i)) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=PG&s=32&default=identicon' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=PG&s=32&default=identicon' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
                   else
                     gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
 
 
                   if (icontype)
-                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http" + ((window.location.protocol.match(/^https:/i)) ? "s" : "") + "://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/large." + icontype + "'  alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
+                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http" +  (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/large." + icontype + "'  alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
                   else
                     gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
 
@@ -2048,7 +2048,7 @@
                     (updater["iconUrl"])
                         ? (updater["iconUrl"].match(/^(?:https?:|data:)/)
                             ? updater["iconUrl"]
-                            : ((window.location.protocol.match(/^https:/i))
+                            : (/^https:$/i.test(window.location.protocol)
                                 ? "https://secure"
                                 : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + updater["iconUrl"] + "&r=PG&s=16&default=identicon")
                         : ""
