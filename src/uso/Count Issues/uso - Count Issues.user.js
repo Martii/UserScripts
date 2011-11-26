@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.16.4
+// @version       0.17.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -23,15 +23,26 @@
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
 //
-// @updateURL  https://userscripts.org/scripts/source/69307.meta.js
-// @installURL https://userscripts.org/scripts/source/69307.user.js
+// @updateURL  file:
+//
 // @require https://secure.dune.net/usocheckup/69307.js?method=install&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
 //
+// @require https://userscripts.org/scripts/source/115323.user.js
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
 // @require https://userscripts.org/scripts/version/87269/317283.user.js
 // ==/UserScript==
+
+
+  let nodeStyle = GM_setStyle({
+      media: "screen, projection",
+      data: <><![CDATA[
+
+          .hid { display: none; }
+
+      ]]></>
+  });
 
   function simpleTranscodeDotNotation(line, counter, loop) { // NOTE: Fuzzy
     let matched =  line.match(/\[\"(\w+)\"\]/);
@@ -100,13 +111,12 @@
     );
     if (xpr && xpr.singleNodeValue) {
       let thisNode = xpr.singleNodeValue;
-      thisNode.removeAttribute("disabled");
 
+      thisNode.removeAttribute("disabled");
       thisNode = thisNode.nextSibling;
       thisNode.removeAttribute("disabled");
     }
   }
-
 
   let throbber = "data:image/gif;base64,"
     + 'R0lGODlhAQABAOMKAMTExMnJyc3NzdLS0tfX19vb2+Dg4OXl5enp6e7u7v//////////////////'
@@ -127,14 +137,14 @@
     var gmc = new GM_configStruct();
     gmc.id = "gmc69307";
 
-    var divNode = document.getElementById("full_description");
+    let divNode = document.getElementById("full_description");
 
     if (divNode && !divNode.firstChild) {
-      var newdivNode = document.createElement("div");
+      let newdivNode = document.createElement("div");
       divNode = divNode.appendChild(newdivNode);
     }
     else {
-      var newdivNode = document.createElement("div");
+      let newdivNode = document.createElement("div");
       if (divNode)
         divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
       else
@@ -144,159 +154,146 @@
     /* Nearest fix for a glitch on USO */
     let scriptNav = document.getElementById("script-nav");
     if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
-      GM_addStyle("div #full_description { width: 98.1%; }");
+      GM_setStyle({
+        node: nodeStyle,
+        data: <><![CDATA[
+
+            div #full_description { width: 98.1%; }
+
+          ]]></>
+      });
 
     let screenShots = document.getElementById("screenshots");
     if (screenShots)
-      GM_addStyle("#full_description { clear: left; }");
+      GM_setStyle({
+        node: nodeStyle,
+        data: <><![CDATA[
+
+            #full_description { clear: left; }
+
+          ]]></>
+      });
 
     /* Nearest fix for userscripts.org Alternate CSS */
     let fullDescription = document.getElementById("full_description");
     if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
-      GM_addStyle("#screenshots { width: 97.5% !important; }");
+      GM_setStyle({
+        node: nodeStyle,
+        data: <><![CDATA[
+
+            #screenshots { width: 97.5% !important; }
+
+          ]]></>
+      });
 
     gmc.init(divNode,
         <><![CDATA[
-          <img src="]]></> + window.location.protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
-          <span style="float: right; margin: 0.4em 0.5em;"><a href="]]></> + window.location.protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config"><img src="]]></> + window.location.protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+          <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
+          <span style="float: right; margin: 0.4em 0.5em;"><a href="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://github.com/sizzlemctwizzle/GM_config"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
         ]]></>.toString(),
         /* Custom CSS */
-        <><![CDATA[
+        GM_setStyle({
+          node: null,
+          data: <><![CDATA[
 
-          /* GM_config specific fixups */
-          #gmc69307 { border: 1px solid #ddd !important; clear: right !important; height: auto !important; max-height: none !important; max-width: 100% !important; margin: 0 0 0.6em 0 !important; position: static !important; width: auto !important; z-index: 0 !important; }
-          #gmc69307_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-          #gmc69307 .config_header { background-color: #333; color: white; font-size: 1.57em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
-          #gmc69307 .config_var { clear: both; margin: 0 1em; padding: 0; }
-          #gmc69307 .field_label { color: #333; font-size: 100%; font-weight: normal; }
-          .section_desc { margin: 0.25em 1em !important; }
+              /* GM_config specific fixups */
+              #gmc69307 { border: 1px solid #ddd !important; clear: right !important; height: auto !important; max-height: none !important; max-width: 100% !important; margin: 0 0 0.6em 0 !important; position: static !important; width: auto !important; z-index: 0 !important; }
+              #gmc69307_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+              #gmc69307 .config_header { background-color: #333; color: white; font-size: 1.57em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
+              #gmc69307 .config_var { clear: both; margin: 0 1em; padding: 0; }
+              #gmc69307 .field_label { color: #333; font-size: 100%; font-weight: normal; }
+              .section_desc { margin: 0.25em 1em !important; }
 
-          #gmc69307_field_showStringsString,
-          #gmc69307_field_showKeysString,
-          #gmc69307_field_hideH6String,
-          #gmc69307_field_hideNavTabString,
-          #gmc69307_field_insertH6String
-          {
-            font-size: 1.0em;
-            margin-left: 1.7em;
-            min-width: 95.1%;
-            max-width: 95.1%;
-          }
+              #gmc69307_field_showStringsString,
+              #gmc69307_field_showKeysString,
+              #gmc69307_field_hideH6String,
+              #gmc69307_field_hideNavTabString,
+              #gmc69307_field_insertH6String
+              {
+                font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }
 
-          #gmc69307_field_showStringsString
-          {
-            min-height: 8em;
-            height: 8em;
-          }
+              #gmc69307_field_showStringsString { min-height: 8em; height: 8em; }
 
-          #gmc69307_field_showKeysString,
-          #gmc69307_field_hideH6String,
-          #gmc69307_field_hideNavTabString,
-          #gmc69307_field_insertH6String
-          {
-            min-height: 1.2em;
-            height: 1.2em;
-            max-height: 5em;
-          }
+              #gmc69307_field_showKeysString,
+              #gmc69307_field_hideH6String,
+              #gmc69307_field_hideNavTabString,
+              #gmc69307_field_insertH6String
+              {
+                min-height: 1.2em; height: 1.2em; max-height: 5em; }
 
-          #gmc69307_field_useGreasefireUrl,
-          #gmc69307_field_showStrings,
-          #gmc69307_field_checkDeobfuscate,
-          #gmc69307_field_checkShowSize,
-          #gmc69307_field_checkTrimSourceCode,
-          #gmc69307_field_showKeys,
-          #gmc69307_field_limitMaxHeight,
-          #gmc69307_field_showOnAboutOnly,
-          #gmc69307_field_checkAgainstHomepageUSO,
-          #gmc69307_field_enableHEAD,
-          #gmc69307_field_checkShowVersionsSource,
-          #gmc69307_field_checkShowLineNumbers,
-          #gmc69307_field_enableQuickReviewsMenu,
-          #gmc69307_field_hideH6,
-          #gmc69307_field_hideNavTab,
-          #gmc69307_field_insertH6,
-          {
-            top: 0.075em;
-          }
+              #gmc69307_field_useGreasefireUrl,
+              #gmc69307_field_showStrings,
+              #gmc69307_field_checkDeobfuscate,
+              #gmc69307_field_checkShowSize,
+              #gmc69307_field_checkTrimSourceCode,
+              #gmc69307_field_showKeys,
+              #gmc69307_field_limitMaxHeight,
+              #gmc69307_field_showOnAboutOnly,
+              #gmc69307_field_checkAgainstHomepageUSO,
+              #gmc69307_field_enableHEAD,
+              #gmc69307_field_checkShowVersionsSource,
+              #gmc69307_field_checkShowLineNumbers,
+              #gmc69307_field_enableQuickReviewsMenu,
+              #gmc69307_field_hideH6,
+              #gmc69307_field_hideNavTab,
+              #gmc69307_field_insertH6,
+              { top: 0.075em; }
 
-          #gmc69307_field_useGreasefireUrl,
-          #gmc69307_field_showStrings,
-          #gmc69307_field_showKeys,
-          #gmc69307_field_limitMaxHeight,
-          #gmc69307_field_showOnAboutOnly,
-          #gmc69307_field_checkShowVersionsSource,
-          #gmc69307_field_checkShowLineNumbers,
-          #gmc69307_field_enableQuickReviewsMenu,
-          #gmc69307_field_hideH6,
-          #gmc69307_field_hideNavTab,
-          #gmc69307_field_insertH6
-          {
-            margin-left: 0;
-          }
+              #gmc69307_field_useGreasefireUrl,
+              #gmc69307_field_showStrings,
+              #gmc69307_field_showKeys,
+              #gmc69307_field_limitMaxHeight,
+              #gmc69307_field_showOnAboutOnly,
+              #gmc69307_field_checkShowVersionsSource,
+              #gmc69307_field_checkShowLineNumbers,
+              #gmc69307_field_enableQuickReviewsMenu,
+              #gmc69307_field_hideH6,
+              #gmc69307_field_hideNavTab,
+              #gmc69307_field_insertH6
+              { margin-left: 0; }
 
-          #gmc69307_field_fontSize,
-          #gmc69307_field_maxHeightList
-          {
-            min-width: 2em;
-            max-width: 4em;
-            width: 2em;
-            min-height: 0.8em;
-            max-height: 2em;
-            height: 1em;
-            text-align: right;
-          }
+              #gmc69307_field_fontSize,
+              #gmc69307_field_maxHeightList
+              { min-width: 2em; max-width: 4em; width: 2em; min-height: 0.8em; max-height: 2em; height: 1em; text-align: right; }
 
-          #gmc69307_field_checkDeobfuscate,
-          #gmc69307_field_checkShowSize,
-          #gmc69307_field_maxHeightList,
-          #gmc69307_field_checkAgainstHomepageUSO
-          {
-            margin-left: 1.5em;
-          }
+              #gmc69307_field_checkDeobfuscate,
+              #gmc69307_field_checkShowSize,
+              #gmc69307_field_maxHeightList,
+              #gmc69307_field_checkAgainstHomepageUSO
+              { margin-left: 1.5em; }
 
-          #gmc69307_field_checkTrimSourceCode,
-          #gmc69307_field_deobMethod,
-          #gmc69307_field_enableHEAD
-          {
-            margin-left: 3.0em;
-          }
+              #gmc69307_field_checkTrimSourceCode,
+              #gmc69307_field_deobMethod,
+              #gmc69307_field_enableHEAD
+              { margin-left: 3.0em; }
 
-          #gmc69307 input[type="radio"]
-          {
-            top: 0.1em;
-          }
+              #gmc69307 input[type="radio"]
+              { top: 0.1em; }
 
-          #gmc69307_hideNavTab_var,
-          #gmc69307_enableQuickReviewsMenu_var,
-          #gmc69307_showStrings_var,
-          #gmc69307_showKeys_var,
-          #gmc69307_fontSize_var
-          {
-            margin-top: 0.5em !important;
-          }
+              #gmc69307_hideNavTab_var,
+              #gmc69307_enableQuickReviewsMenu_var,
+              #gmc69307_showStrings_var,
+              #gmc69307_showKeys_var,
+              #gmc69307_fontSize_var
+              { margin-top: 0.5em !important; }
 
-          .gmc69307-yellownote
-          {
-            background-color: #FFD;
-            font-size: 0.66em !important;
-          }
+              .gmc69307-yellownote { background-color: #FFD; font-size: 0.66em !important; }
 
-          #gmc69307_showStringsString_field_label,
-          #gmc69307_showKeysString_field_label,
-          #gmc69307_hideH6String_field_label,
-          #gmc69307_hideNavTabString_field_label,
-          #gmc69307_insertH6String_field_label
-          {
-            margin: 0 0 0 1.75em;
-          }
+              #gmc69307_showStringsString_field_label,
+              #gmc69307_showKeysString_field_label,
+              #gmc69307_hideH6String_field_label,
+              #gmc69307_hideNavTabString_field_label,
+              #gmc69307_insertH6String_field_label
+              { margin: 0 0 0 1.75em; }
 
-          #gmc69307_buttons_holder { margin-right: 1.0em; }
-          #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
-          #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
-          #gmc69307_closeBtn { display: none; }
+              #gmc69307_buttons_holder { margin-right: 1.0em; }
+              #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
+              #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
+              #gmc69307_closeBtn { display: none; }
 
-        ]]></>.toString(),
 
+            ]]></>
+        }),
         /* Settings object */
         {
           'enableQuickReviewsMenu': {
@@ -448,11 +445,32 @@
       let open = false;
 
         if (gmc.get("limitMaxHeight"))
-          GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
-        else
-          GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
+          GM_setStyle({
+              node: nodeStyle,
+              data: <><![CDATA[
 
-        GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
+                  div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; }
+
+              ]]></>
+          });
+        else
+          GM_setStyle({
+              node: nodeStyle,
+              data: <><![CDATA[
+
+                  div.metadata { max-height: none; }
+
+              ]]></>
+          });
+
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
+
+                li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; }
+
+            ]]></>
+        });
 
         let keys = gmc.get("showKeysString").split(",");
         for (let i = 0, len = keys.length; i < len; ++i) {
@@ -466,35 +484,71 @@
         }
 
       let height;
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; }
+
+          ]]></>
+      });
+
       height = gmc.fields["showStringsString"].node.clientHeight + "px";
         if (height != gmc.get("showStringsStringHeight")) {
           gmc.set("showStringsStringHeight", height);
           write = true;
         }
 
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; }
+
+          ]]></>
+      });
       height = gmc.fields["showKeysString"].node.clientHeight + "px";
         if (height != gmc.get("showKeysStringHeight")) {
           gmc.set("showKeysStringHeight", height);
           write = true;
         }
 
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; }
+
+          ]]></>
+      });
       height = gmc.fields["hideH6String"].node.clientHeight + "px";
         if (height != gmc.get("hideH6StringHeight")) {
           gmc.set("hideH6StringHeight", height);
           write = true;
         }
 
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; } ]]></>);
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; }
+
+          ]]></>
+      });
       height = gmc.fields["hideNavTabString"].node.clientHeight + "px";
         if (height != gmc.get("hideNavTabStringHeight")) {
           gmc.set("hideNavTabStringHeight", height);
           write = true;
         }
 
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; } ]]></>);
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; }
+
+          ]]></>
+      });
       height = gmc.fields["insertH6String"].node.clientHeight + "px";
         if (height != gmc.get("insertH6StringHeight")) {
           gmc.set("insertH6StringHeight", height);
@@ -506,11 +560,18 @@
     }
 
     if (window.location.href.match(/^(?:https?:\/\/userscripts\.org)?\/scripts\/show\/69307\/?/i)) {
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; } ]]></>);
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; } ]]></>);
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; } ]]></>);
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; } ]]></>);
-      GM_addStyle(<><![CDATA[ textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; } ]]></>);
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; }
+              textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; }
+              textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; }
+              textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; }
+              textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; }
+
+          ]]></>
+      });
 
       gmc.open();
       gmc.fields["showStringsString"].node.setAttribute("spellcheck", "false");
@@ -521,13 +582,13 @@
     GM_log('Something may have gone wrong in uso - Count Issues. Please let me know steps to reproduce');
 
   function nsResolver(prefix) {
-    var ns = {
+    let ns = {
       "xhtml": "http://www.w3.org/1999/xhtml"
     };
     return ns[prefix] || null;
   }
 
-  var xpr = document.evaluate(
+  let xpr = document.evaluate(
    "//h2[@class='title']/a|//h2[@class='title']",
     document.body,
     null,
@@ -535,8 +596,9 @@
     null
   );
 
-  var titleNode = xpr.snapshotItem((xpr.snapshotLength > 1) ? 1 : 0);
+  let titleNode = xpr.snapshotItem((xpr.snapshotLength > 1) ? 1 : 0);
 
+  let summaryNode;
   document.evaluate(
    "//div[@id='summary']",
     document.body,
@@ -545,12 +607,10 @@
     xpr
   );
   if (xpr && xpr.singleNodeValue)
-    var summaryNode = xpr.singleNodeValue;
-  else
-    GM_log('Possible DOM change detected or no summaryNode');
+    summaryNode = xpr.singleNodeValue;
 
   function getScriptid() {
-    var scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
+    let scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
     if (!scriptid) {
       if (titleNode)
         scriptid = titleNode.pathname.match(/\/scripts\/show\/(\d+)/i);
@@ -558,28 +618,7 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
-  function addClass(thisNode, thisValue) {
-    let c = thisNode.getAttribute("class");
-    let re = new RegExp("\\b" + thisValue + "\\b");
-    if (!c)
-      thisNode.setAttribute("class", thisValue);
-    else if (!c.match(re))
-      thisNode.setAttribute("class", c + " " + thisValue);
-  }
-
-  function removeClass(thisNode, thisValue) {
-    let c = thisNode.getAttribute("class");
-    let re = new RegExp("\\s{0,1}\\b" + thisValue + "\\b");
-    if (c && c.match(re)) {
-      let newclass = thisNode.getAttribute("class").replace(re, "");
-      if (newclass != "")
-        thisNode.setAttribute("class", newclass);
-      else
-        thisNode.removeAttribute("class");
-    }
-  }
-
-  var scriptid = getScriptid();
+  let scriptid = getScriptid();
   if (scriptid) {
 
     let insNode = document.evaluate(
@@ -590,8 +629,14 @@
       null
     );
     if (insNode && !insNode.singleNodeValue)
-      GM_addStyle(<><![CDATA[ body.scripts.anon #right { margin-top: 0; } ]]></> + "");
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
 
+              body.scripts.anon #right { margin-top: 0; }
+
+          ]]></>
+      });
 
     if (gmc.get("enableQuickReviewsMenu")) {
       let xpr = document.evaluate(
@@ -604,34 +649,40 @@
       if (xpr && xpr.singleNodeValue) {
         let thisNode = xpr.singleNodeValue.parentNode;
 
-        function onmouseover() {
-          GM_addStyle(<><![CDATA[
-            .menu-reviews { display: block; }
-          ]]></> + "");
+        function onmouseover(ev) {
+          this.firstChild.nextSibling.classList.remove("hid");
         }
 
-        function onmouseout() {
-          GM_addStyle(<><![CDATA[
-            .menu-reviews { display: none; }
-          ]]></> + "");
+        function onmouseout(ev) {
+          this.firstChild.nextSibling.classList.add("hid");
         }
 
         thisNode.addEventListener("mouseover", onmouseover, false);
         thisNode.addEventListener("mouseout", onmouseout, false);
 
-        GM_addStyle(<><![CDATA[
-          .menu-reviews { background-color: #eee; display: none; position: fixed; z-index: 1; }
-          .menu-reviews, #divQuickAdmin { border: 1px solid #ccc; }
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
 
-          .menu-reviews ul { list-style: none outside none; margin: 0; padding: 0.6em 0; }
-          .menu-reviews ul li { float: none !important; line-height: 1.4em !important; !important; height: auto !important; }
-          .menu-reviews ul li a { text-decoration: underline !important; }
-        ]]></> + '');
+                .menu-reviews { background-color: #eee; position: absolute; z-index: 1; }
+                .menu-reviews, #divQuickAdmin { border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; }
+
+                .menu-reviews ul { list-style: none outside none; margin: 0; padding: 0.6em 0; }
+                .menu-reviews ul li { float: none !important; line-height: 1.4em !important; !important; height: auto !important; }
+                .menu-reviews ul li a { text-decoration: underline !important; }
+
+            ]]></> + ''
+        });
 
         if (parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("font-size").replace(/px$/, "")) > 12)
-          GM_addStyle(<><![CDATA[
-            .menu-reviews { font-size: 0.9em; }
-          ]]></> + '');
+          GM_setStyle({
+              node: nodeStyle,
+              data: <><![CDATA[
+
+                  .menu-reviews { font-size: 0.9em; }
+
+              ]]></> + ''
+          });
 
         let owned = false;
         document.evaluate(
@@ -681,14 +732,14 @@
 
         let divNode = document.createElement("div");
         divNode.className = "menu-reviews";
+        divNode.classList.add("hid");
 
         divNode.appendChild(ulNode);
         thisNode.appendChild(divNode);
       }
     }
 
-    if (gmc && gmc.get("hideNavTab")) {
-      GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
+    if (gmc.get("hideNavTab")) {
       let tabNodes = document.evaluate(
       "//ul[@id='script-nav']/li",
         document.documentElement,
@@ -702,13 +753,12 @@
           for each (let tab in tabs) {
             let rex = "\\s*" + tab;
             if (thisNode.textContent.match(new RegExp(rex, "")))
-              addClass(thisNode, "hidden");
+              thisNode.classList.add("hid");
           }
         }
     }
 
-    if (gmc && gmc.get("hideH6")) {
-      GM_addStyle(<><![CDATA[ .hidden { display: none; } ]]></> + "");
+    if (gmc.get("hideH6")) {
       let headerNodes = document.evaluate(
       "//h6",
         document.documentElement,
@@ -722,7 +772,7 @@
           for each (let header in headers) {
             let rex = "\\s*" + header;
             if (thisNode.textContent.match(new RegExp(rex, ""))) {
-              addClass(thisNode, "hidden");
+              thisNode.classList.add("hid");
 
               let thatNode = thisNode.nextSibling;
               let loop = true;
@@ -734,7 +784,7 @@
                         break;
                       default:
                         if (thatNode.id != "fans")
-                          addClass(thatNode, "hidden");
+                          thatNode.classList.add("hid");
                         break;
                     }
                   else
@@ -749,29 +799,29 @@
         }
     }
 
-    if (gmc && gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i))
+    if (gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i))
       ;
     else {
-      var hookNode = document.getElementById("right");
+      let hookNode = document.getElementById("right");
       if (hookNode) {
         GM_xmlhttpRequest({
           retry: 5,
-          url: window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ((gmc && gmc.get("showStrings")) ? ".user.js?" : ".meta.js"),
+          url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".meta.js",
           method: "GET",
           onload: function(xhr) {
             switch (xhr.status) {
               case 404:
               case 502:
               case 503:
-                if (--this.retry > 0)
+                if (this.retry-- > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                 break;
               case 200:
-                var metadataBlock = xhr.responseText.toString();
-                var headers = {};
-                var line, name, prefix, header, key, value;
+                let metadataBlock = xhr.responseText.toString();
+                let headers = {};
+                let line, name, prefix, header, key, value;
                   function isKey(e, i, a) { return (e.match(/^\s*\/\/ @\S+/)); }
-                  var lines = metadataBlock.split(/[\r\n]+/).filter(isKey);
+                  let lines = metadataBlock.split(/[\r\n]+/).filter(isKey);
                   for each (line in lines) {
                     [, name, value] = line.match(/^\s*\/\/ @(\S*)\s*(.*)/);
                     value = value.replace(/\s*$/, "");
@@ -801,43 +851,192 @@
                     headers["licence"] = headers["license"];
 
 
-                  var sidebarNode = document.getElementById("script_sidebar");
+                  let sidebarNode = document.getElementById("script_sidebar");
                   if (!sidebarNode) {
                     sidebarNode = document.createElement("div");
                     sidebarNode.setAttribute("id", "script_sidebar");
                     hookNode.appendChild(sidebarNode);
                   }
 
-                  GM_addStyle(<><![CDATA[
+                  GM_setStyle({
+                      node: nodeStyle,
+                      data: <><![CDATA[
 
-                    .metadataforced, .alert { color: red !important; }
-                    .metadataforced:hover { color: orangered !important; }
-                    .metadataunknown { color: black; }
-                    .metadataunknown:hover { color: gray; }
-                    .metadatachecked { color: darkgreen; }
-                    .metadatachecked:hover { color: green; }
-                    span.metadataforced { color: red; }
-                    div.metadata { overflow: auto; }
-                    ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
-                    li.metadata { color: grey; white-space: nowrap; }
-                    span.metadata { color: #666; font-size: 0.7em; }
-                    ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
-                    li.count { color: #666; padding-left: 0.5em; }
-                    span.count { color: grey; font-size: 0.9em; float: right; margin-right: 0.5em; }
-                    li.bar { background-color: #EEE; }
-                    .nameMismatch { color: red !important; }
-                    .resourceName { margin-right: 0.5em; }
-                    ]]></> + "");
+                          .metadataforced, .alert { color: red !important; }
+                          .metadataforced:hover { color: orangered !important; }
+                          .metadataunknown { color: black; }
+                          .metadataunknown:hover { color: gray; }
+                          .metadatachecked { color: darkgreen; }
+                          .metadatachecked:hover { color: green; }
+                          span.metadataforced { color: red; }
+                          div.metadata { overflow: auto; }
+                          ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
+                          li.metadata { color: grey; white-space: nowrap; }
+                          span.metadata { color: #666; font-size: 0.7em; }
+                          ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
+                          li.count { color: #666; padding-left: 0.5em; }
+                          span.count { color: grey; font-size: 0.9em; float: right; margin-right: 0.5em; }
+                          li.bar { background-color: #EEE; }
+                          .nameMismatch { color: red !important; }
+                          .resourceName { margin-right: 0.5em; }
+
+                      ]]></>
+                  });
 
 
-                  if (gmc) {
-                    if (gmc.get("limitMaxHeight"))
-                      GM_addStyle(<><![CDATA[ div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; } ]]></> + "");
-                    else
-                      GM_addStyle(<><![CDATA[ div.metadata { max-height: none; } ]]></> + "");
+                  if (gmc.get("showStrings")) {
+                    GM_xmlhttpRequest({
+                      retry: 5,
+                      url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
+                      method: "GET",
+                      onload: function(xhr) {
+                        switch (xhr.status) {
+                          case 404:
+                          case 502:
+                          case 503:
+                            if (this.retry-- > 0)
+                              setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                            break;
+                          case 200:
+                            function display2(el, obj, filter, title, forced) {
+                              let headerNode = document.createElement("h6");
+                              headerNode.textContent = title + ' ';
+                              //el.appendChild(headerNode);
+                              el.parentNode.insertBefore(headerNode, el);
 
-                    GM_addStyle(<><![CDATA[ li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; } ]]></>);
+                              let spanNodeSection = document.createElement("span");
+                              spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
+                              headerNode.appendChild(spanNodeSection);
+
+                              let divNode = document.createElement("div");
+                              divNode.setAttribute("class", "metadata");
+                              //el.appendChild(divNode);
+                              el.parentNode.insertBefore(divNode, el);
+
+                              let ulNode = document.createElement("ul");
+                              ulNode.setAttribute("class", "count");
+                              divNode.appendChild(ulNode);
+
+                              let objCount = 0;
+                              for (let [name, value] in Iterator(obj)) {
+                                let liNode = document.createElement("li");
+                                liNode.setAttribute("class", "count" + ((objCount % 2) ? " bar" : ""));
+                                liNode.setAttribute("title", name);
+                                liNode.textContent = name;
+
+                                let spanNode = document.createElement("span");
+                                spanNode.setAttribute("class", "count");
+                                spanNode.textContent = " " + value;
+
+                                liNode.appendChild(spanNode);
+                                ulNode.appendChild(liNode);
+
+                                objCount++;
+                              }
+                              spanNodeSection.textContent = objCount;
+                            }
+
+                            let finds = {}, responseText, hexCount;
+
+                            if (gmc.get("checkDeobfuscate")) {
+                              switch (gmc.get("deobMethod")) {
+                                case 'Simple Transcode':
+                                  try {
+                                    [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
+                                  }
+                                  catch(e) {
+                                    GM_log('Too much recursion error encountered. Aborting Transcode');
+                                    responseText = xhr.responseText;
+                                  }
+                                  break;
+                                case 'JsCode':
+                                  try {
+                                    responseText = JsCode.deobfuscate(xhr.responseText);
+                                  }
+                                  catch(e) {
+                                    GM_log('Too much recursion error encountered. Aborting JsCode...fallback to Transcode');
+                                    try {
+                                      [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
+                                    }
+                                    catch(e) {
+                                      GM_log('Too much recursion error encountered. Aborting Transcode');
+                                      responseText = xhr.responseText;
+                                    }
+                                  }
+                                  break;
+                              }
+                            }
+                            else
+                              responseText = xhr.responseText;
+
+                            if (gmc.get("showStringsString")) {
+                              for each (rex in gmc.get("showStringsString").split("\n"))
+                                for each (let match in responseText.match(new RegExp(rex, "gm")))
+                                  finds[match] = (match in finds) ? finds[match] + 1 : 1;
+
+                              if (finds.toSource() != "({})")
+                                display2(mbx, finds, "", "Lost and Found");
+                            }
+
+                            if (gmc.get("checkDeobfuscate") && hexCount)
+                              display2(mbx, { "Hex": hexCount }, "", "Encoding");
+
+                            if (gmc.get("checkShowSize")) {
+                              let sourceNode = document.evaluate(
+                              "//li/a[contains(., 'Source Code')]",
+                                document.body,
+                                null,
+                                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                null
+                              );
+                              if (sourceNode && sourceNode.singleNodeValue) {
+                                let thisNode = sourceNode.singleNodeValue;
+
+                                if (gmc.get("checkTrimSourceCode"))
+                                  thisNode.textContent = thisNode.textContent.replace(" Code", "");
+                                thisNode.textContent += " ";
+                                let spanNode = document.createElement("span");
+                                spanNode.textContent = (xhr.responseText.length > 1024)
+                                  ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
+                                  : xhr.responseText.length;
+                                thisNode.appendChild(spanNode);
+                              }
+                            }
+                            break;
+                          default:
+                            break;
+                        }
+                      }
+                    });
                   }
+
+                  if (gmc.get("limitMaxHeight"))
+                    GM_setStyle({
+                        node: nodeStyle,
+                        data: <><![CDATA[
+
+                            div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; }
+
+                        ]]></>
+                    });
+                  else
+                    GM_setStyle({
+                        node: nodeStyle,
+                        data: <><![CDATA[
+
+                            div.metadata { max-height: none; }
+
+                        ]]></>
+                    });
+
+                  GM_setStyle({
+                      node: nodeStyle,
+                      data: <><![CDATA[
+
+                          li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; }
+
+                      ]]></>
+                  });
 
                   // Pick last name entry and compare it to current Title if derived copy
                   let nameKey;
@@ -857,42 +1056,6 @@
                         titleNode.setAttribute("title", "@uso:name " + nameKey);
                     }
 
-                  function display2(el, obj, filter, title, forced) {
-                    let headerNode = document.createElement("h6");
-                    headerNode.textContent = title + ' ';
-                    el.appendChild(headerNode);
-
-                    let spanNodeSection = document.createElement("span");
-                    spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
-                    headerNode.appendChild(spanNodeSection);
-
-                    let divNode = document.createElement("div");
-                    divNode.setAttribute("class", "metadata");
-                    el.appendChild(divNode);
-
-                    let ulNode = document.createElement("ul");
-                    ulNode.setAttribute("class", "count");
-                    divNode.appendChild(ulNode);
-
-                    let objCount = 0;
-                    for (let [name, value] in Iterator(obj)) {
-                      let liNode = document.createElement("li");
-                      liNode.setAttribute("class", "count" + ((objCount % 2) ? " bar" : ""));
-                      liNode.setAttribute("title", name);
-                      liNode.textContent = name;
-
-                      let spanNode = document.createElement("span");
-                      spanNode.setAttribute("class", "count");
-                      spanNode.textContent = " " + value;
-
-                      liNode.appendChild(spanNode);
-                      ulNode.appendChild(liNode);
-
-                      objCount++;
-                    }
-                    spanNodeSection.textContent = objCount;
-                  }
-
                   function display(el, keys, filter, title, forced) {
                     if (typeof keys == "string")
                       keys = new Array(keys);
@@ -902,7 +1065,7 @@
                     let aNode = document.createElement("a");
                     aNode.style.setProperty("text-decoration", "none", "");
                     aNode.style.setProperty("color", "#000", "");
-                    aNode.href = window.location.protocol + "//sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
+                    aNode.href = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
                     aNode.textContent = title;
 
                     let headerNode = document.createElement("h6");
@@ -929,13 +1092,14 @@
                       let liNode = document.createElement("li");
                       liNode.setAttribute("class", "metadata");
 
+                      let matches;
                       switch(filter) {
                         case "namespace":
                         case "icon":
                           if (++keyCount > 1)
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-                          var matches = key.match(/^(https?:\/\/.*)/i);
+                          matches = key.match(/^(https?:\/\/.*)/i);
                           if (matches) {
                             let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", matches[1]);
@@ -965,23 +1129,23 @@
                           ulNode.appendChild(liNode);
                           break;
                         case "require":
-                          var matches = key.match(/^https?:\/\/.*/i);
+                          matches = key.match(/^https?:\/\/.*/i);
                           if (matches) {
                             let showUrl;
                             matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                             if (matches)
-                              showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+                              showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches[1];
                             else {
                               matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                               if (matches)
-                                showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches[1];
+                                showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches[1];
                             }
 
                             let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
                             anchorNode.setAttribute("rel", "nofollow");
                             anchorNode.textContent = key;
-                            if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
+                            if (gmc.get("checkAgainstHomepageUSO") && showUrl)
                               GM_xmlhttpRequest({
                                 retry: 5,
                                 method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
@@ -990,7 +1154,7 @@
                                   switch (xhr.status) {
                                     case 502:
                                     case 503:
-                                      if (--this.retry > 0)
+                                      if (this.retry-- > 0)
                                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                       else
                                         anchorNode.setAttribute("class", "metadataunknown");
@@ -1010,7 +1174,7 @@
                             break;
                           }
                           else {
-                            var xpr = document.evaluate(
+                            let xpr = document.evaluate(
                               "//div[@id='summary']/p/a[.='Remotely hosted version']",
                               document.documentElement,
                               null,
@@ -1046,16 +1210,16 @@
                           }
                           break;
                         case "resource":
-                          var matches = key.match(/^([\w\.\_\-]+)\s*(https?:\/\/.*)/i);
+                          matches = key.match(/^([\w\.\_\-]+)\s*(https?:\/\/.*)/i);
                           if (matches) {
                             let showUrl;
                             let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                             if (matches2)
-                              showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                              showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches2[1];
                             else {
                               matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                               if (matches2)
-                                showUrl = window.location.protocol + "//userscripts.org/scripts/show/" + matches2[1];
+                                showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches2[1];
                             }
 
                             let spanNode = document.createElement("span");
@@ -1068,7 +1232,7 @@
                             anchorNode.setAttribute("rel", "nofollow");
                             anchorNode.textContent = matches[2];
 
-                            if (gmc && gmc.get("checkAgainstHomepageUSO") && showUrl)
+                            if (gmc.get("checkAgainstHomepageUSO") && showUrl)
                               GM_xmlhttpRequest({
                                 retry: 5,
                                 method: (gmc && gmc.get("enableHEAD") ) ? "HEAD" : "GET",
@@ -1077,7 +1241,7 @@
                                   switch (xhr.status) {
                                     case 502:
                                     case 503:
-                                      if (--this.retry > 0)
+                                      if (this.retry-- > 0)
                                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                       else
                                         anchorNode.setAttribute("class", "metadataunknown");
@@ -1098,7 +1262,7 @@
                             break;
                           }
                           else {
-                            var xpr = document.evaluate(
+                            let xpr = document.evaluate(
                               "//div[@id='summary']/p/a[.='Remotely hosted version']",
                               document.documentElement,
                               null,
@@ -1128,7 +1292,7 @@
                         case 'updateURL':
                         case 'installURL':
                           let rex = new RegExp("^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(\\d+)\\.(meta|user)\\.js", "i");
-                          var matches = key.match(rex);
+                          matches = key.match(rex);
                           if (matches) {
                             if (matches[1] != scriptid || (matches[2] == "user" && filter == "updateURL") || ++keyCount > 1)
                               spanNodeSection.setAttribute("class", "metadata metadataforced");
@@ -1197,81 +1361,12 @@
                     }
                   }
 
-                  var mbx = document.createElement("div");
+                  let mbx = document.createElement("div");
 
-                  if (gmc && gmc.get("showStrings")) {
-                    let finds = {}, responseText, hexCount;
-
-                    if (gmc.get("checkDeobfuscate")) {
-                      switch (gmc.get("deobMethod")) {
-                        case 'Simple Transcode':
-                          try {
-                            [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
-                          }
-                          catch(e) {
-                            GM_log('Too much recursion error encountered. Aborting Transcode');
-                            responseText = xhr.responseText;
-                          }
-                          break;
-                        case 'JsCode':
-                          try {
-                            responseText = JsCode.deobfuscate(xhr.responseText);
-                          }
-                          catch(e) {
-                            GM_log('Too much recursion error encountered. Aborting JsCode...fallback to Transcode');
-                            try {
-                              [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
-                            }
-                            catch(e) {
-                              GM_log('Too much recursion error encountered. Aborting Transcode');
-                              responseText = xhr.responseText;
-                            }
-                          }
-                          break;
-                      }
-                    }
-                    else
-                      responseText = xhr.responseText;
-
-                    if (gmc.get("showStringsString")) {
-                      for each (rex in gmc.get("showStringsString").split("\n"))
-                        for each (let match in responseText.match(new RegExp(rex, "gm")))
-                          finds[match] = (match in finds) ? finds[match] + 1 : 1;
-
-                      if (finds.toSource() != "({})")
-                        display2(mbx, finds, "", "Lost and Found");
-                    }
-
-                    if (gmc.get("checkDeobfuscate") && hexCount)
-                      display2(mbx, { "Hex": hexCount }, "", "Encoding");
-
-                    if (gmc.get("checkShowSize")) {
-                      let sourceNode = document.evaluate(
-                      "//li/a[contains(., 'Source Code')]",
-                        document.body,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                      );
-                      if (sourceNode && sourceNode.singleNodeValue) {
-                        let thisNode = sourceNode.singleNodeValue;
-
-                        if (gmc.get("checkTrimSourceCode"))
-                          thisNode.textContent = thisNode.textContent.replace(" Code", "");
-                        thisNode.textContent += " ";
-                        let spanNode = document.createElement("span");
-                        spanNode.textContent = (xhr.responseText.length > 1024)
-                          ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
-                          : xhr.responseText.length;
-                        thisNode.appendChild(spanNode);
-                      }
-                    }
-                  }
-
-                  if (gmc && gmc.get("showKeys")) {
-                    var keys = gmc.get("showKeysString").split(",");
+                  if (gmc.get("showKeys")) {
+                    let keys = gmc.get("showKeysString").split(",");
                     for (let i = 0, len = keys.length; i < len; ++i) {
-                      var key = keys[i];
+                      let key = keys[i];
 
                       switch (key) {
                         case "name":
@@ -1422,14 +1517,14 @@
 
             GM_xmlhttpRequest({
               retry: 5,
-              url: window.location.protocol + "//userscripts.org/scripts/source/" + scriptid + ".user.js?",
+              url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
               method: "GET",
               onload: function(xhr) {
                 switch (xhr.status) {
                   case 404:
                   case 502:
                   case 503:
-                    if (--this.retry > 0)
+                    if (this.retry-- > 0)
                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                     break;
                   case 200:
@@ -1448,6 +1543,8 @@
       }
     }
 
+
+    // Count Issues
     let xpr = document.evaluate(
       "//ul[@id='script-nav']/li[contains(., 'Issues')]",
       document.body,
@@ -1468,9 +1565,14 @@
           issuesNode.textContent += " ";
 
           if (doc) {
-            GM_addStyle(<><![CDATA[
-              .alert { color: red !important; }
-            ]]></> + "");
+            GM_setStyle({
+                node: nodeStyle,
+                data: <><![CDATA[
+
+                    .alert { color: red !important; }
+
+                ]]></>
+            });
 
             let
               yesCount = 0,
@@ -1517,7 +1619,7 @@
       if (window.location.pathname == ("/scripts/issues/" + scriptid))
         countIssues(document);
       else {
-        issuesNode.style.setProperty("background-image", "url(" + throbber + ")", "");
+        issuesNode.style.setProperty("background-image", "url(" + throbber + ")", ""); // TODO: CSS this
 
         GM_xmlhttpRequest({
           retry: 5,
@@ -1528,7 +1630,7 @@
               case 404:
               case 502:
               case 503:
-                if (--this.retry > 0)
+                if (this.retry-- > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                 else {
                   issuesNode.style.removeProperty("background-image");
@@ -1576,13 +1678,17 @@
 
   }
 
-
   if (gmc.get("checkShowVersionsSource")) {
     if (location.pathname.match(/\/scripts\/review\//)) {
 
-      GM_addStyle(<><![CDATA[
-        div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }
-      ]]></> + '');
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }
+
+          ]]></>
+      });
 
       let xpr = document.evaluate(
         "//pre[@id='source']",
@@ -1596,19 +1702,24 @@
 
         // Create standardized div framing
         let toolbarBottomNode = document.createElement("div");
-        addClass(toolbarBottomNode, "toolbar_menu");
+        toolbarBottomNode.classList.add("toolbar_menu");
 
         let toolbarTopNode = document.createElement("div");
-        addClass(toolbarTopNode, "toolbar_menu");
+        toolbarTopNode.classList.add("toolbar_menu");
 
         let rightNode = document.createElement("div");
-        addClass(rightNode, "right");
+        rightNode.classList.add("right");
 
         let leftNode = document.createElement("div");
         leftNode.id = "left";
-        GM_addStyle(<><![CDATA[
-          #left { float: left; }
-        ]]></> + '');
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
+
+                  #left { float: left; }
+
+            ]]></>
+        });
 
         let topNode = document.createElement("div");
 
@@ -1636,12 +1747,17 @@
         if (xpr && xpr.singleNodeValue) {
           wrap2 = xpr.singleNodeValue;
 
-          GM_addStyle(<><![CDATA[
-            .wrap-button { width: 11.5em; }
-          ]]></> + '');
+          GM_setStyle({
+              node: nodeStyle,
+              data: <><![CDATA[
+
+                  .wrap-button { width: 11.5em; }
+
+              ]]></>
+          });
 
           wrap2.removeAttribute("style");
-          addClass(wrap2, "wrap-button");
+          wrap2.classList.add("wrap-button");
 
           let wrap2DIV = document.createElement("div");
           let wrap2LI = document.createElement("li");
@@ -1663,7 +1779,7 @@
           wrap1 = xpr.singleNodeValue;
 
           wrap1.removeAttribute("style");
-          addClass(wrap1, "wrap-button");
+          wrap1.classList.add("wrap-button");
 
           let wrap1DIV = document.createElement("div");
           let wrap1LI = document.createElement("li");
@@ -1684,18 +1800,23 @@
         if (xpr && xpr.singleNodeValue) {
           let cttsBUTTON = xpr.singleNodeValue;
 
-          GM_addStyle(<><![CDATA[
-            .changetabs-button { width: 13.5em; }
-            .changetabs-input { position: relative; top: 0; width: 1.5em; height: 1.3em; padding: 0 !important; margin: 0 0 !important; margin-left: 0.3em !important; }
-          ]]></> + '');
+          GM_setStyle({
+              node: nodeStyle,
+              data: <><![CDATA[
+
+                  .changetabs-button { width: 13.5em; }
+                  .changetabs-input { position: relative; top: 0; width: 1.5em; height: 1.3em; padding: 0 !important; margin: 0 0 !important; margin-left: 0.3em !important; }
+
+              ]]></>
+          });
 
           cttsBUTTON.removeAttribute("style");
-          addClass(cttsBUTTON, "changetabs-button");
+          cttsBUTTON.classList.add("changetabs-button");
 
 
           let cttsINPUT = cttsBUTTON.nextSibling;
           cttsINPUT.removeAttribute("style");
-          addClass(cttsINPUT, "changetabs-input");
+          cttsINPUT.classList.add("changetabs-input");
 
           let cttsDIV = document.createElement("div");
 
@@ -1717,9 +1838,14 @@
 
           if (gmc.get("checkShowLineNumbers")) {
             renumber(hookNode);
-            GM_addStyle(<><![CDATA[
-              .number { background-color: #fcc; }
-            ]]></> + '');
+            GM_setStyle({
+                node: nodeStyle,
+                data: <><![CDATA[
+
+                    .number { background-color: #fcc; }
+
+                ]]></>
+            });
           }
 
           // If source is < 20KB then autohighlight just like USO does
@@ -1752,9 +1878,14 @@
 
                 if (gmc.get("checkShowLineNumbers")) {
                   renumber(hookNode);
-                  GM_addStyle(<><![CDATA[
-                    .number { background-color: #fcc; }
-                  ]]></> + '');
+                  GM_setStyle({
+                      node: nodeStyle,
+                      data: <><![CDATA[
+
+                          .number { background-color: #fcc; }
+
+                      ]]></>
+                  });
                 }
 
                 // If source is < 20KB then autohighlight just like USO does
@@ -1773,9 +1904,14 @@
 
                 if (gmc.get("checkShowLineNumbers")) {
                   renumber(hookNode);
-                  GM_addStyle(<><![CDATA[
-                    .number { background-color: #fcc; }
-                  ]]></> + '');
+                  GM_setStyle({
+                      node: nodeStyle,
+                      data: <><![CDATA[
+
+                        .number { background-color: #fcc; }
+
+                      ]]></>
+                  });
                 }
 
                 // If source is < 20KB then autohighlight just like USO does
@@ -1826,11 +1962,16 @@
 
             thisNode.removeEventListener("click", onclickVersions, false);
 
-            GM_addStyle(<><![CDATA[
-              .notice { background-image: url(]]></> + throbber + <><![CDATA[);
-            ]]></> + '');
+            GM_setStyle({
+                node: nodeStyle,
+                data: <><![CDATA[
 
-            getVersions(window.location.protocol + "//userscripts.org/scripts/versions/" + scriptid);
+                  .notice { background-image: url(]]></> + throbber + <><![CDATA[);
+
+                ]]></>
+            });
+
+            getVersions("http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/versions/" + scriptid);
           }
 
           function getVersions(url) {
@@ -1843,7 +1984,7 @@
                 switch (xhr.status) {
                   case 502:
                   case 503:
-                    if (--this.retry > 0)
+                    if (this.retry-- > 0)
                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                     break;
                   case 200:
@@ -1872,7 +2013,6 @@
 
                     // doc has been created... start twiddling
 
-
                     // Nab pagination
                     let pagination;
                     let xpr = doc.evaluate(
@@ -1900,10 +2040,15 @@
 
                     let ulNode = document.createElement("ul");
 
-                    GM_addStyle(<><![CDATA[
-                      #versions ul li > a { text-decoration: none; color: black; }
-                      #versions ul li > span { float: right; }
-                    ]]></> + '');
+                    GM_setStyle({
+                        node: nodeStyle,
+                        data: <><![CDATA[
+
+                            #versions ul li > a { text-decoration: none; color: black; }
+                            #versions ul li > span { float: right; }
+
+                        ]]></>
+                    });
 
                     if (xpr)
                       for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
@@ -1928,7 +2073,7 @@
                         aViewNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
 
-                            addClass(ev.target.parentNode.parentNode, "retrieving");
+                            ev.target.parentNode.parentNode.classList.add("retrieving");
 
                             let aNode = ev.target, ulNode, thisNode;
                             GM_xmlhttpRequest({
@@ -1943,7 +2088,7 @@
 
                                     thisNode = ulNode.firstChild;
                                     while(thisNode) {
-                                      removeClass(thisNode, "retrieving");
+                                      thisNode.classList.remove("retrieving");
                                       thisNode = thisNode.nextSibling;
                                     }
                                     break;
@@ -1959,14 +2104,14 @@
 
                                     thisNode = ulNode.firstChild;
                                     while(thisNode) {
-                                      removeClass(thisNode, "current");
-                                      removeClass(thisNode, "retrieving");
+                                      thisNode.classList.remove("current");
+                                      thisNode.classList.remove("retrieving");
                                       thisNode = thisNode.nextSibling;
                                     }
 
                                     // Set current selection marker
                                     let liNode = aNode.parentNode.parentNode;
-                                    addClass(liNode, "current");
+                                    liNode.classList.add("current");
 
                                     // Remove GIJoes disabling
                                     enableCTTS();
@@ -2006,7 +2151,7 @@
 
                                     thisNode = ulNode.firstChild;
                                     while(thisNode) {
-                                      removeClass(thisNode, "retrieving");
+                                      thisNode.classList.remove("retrieving");
                                       thisNode = thisNode.nextSibling;
                                     }
                                     break;
@@ -2053,14 +2198,14 @@
 
                                     thisNode = ulNode.firstChild;
                                     while(thisNode) {
-                                      removeClass(thisNode, "current");
-                                      removeClass(thisNode, "retrieving");
+                                      thisNode.classList.remove("current");
+                                      thisNode.classList.remove("retrieving");
                                       thisNode = thisNode.nextSibling;
                                     }
 
                                     // Set current selection marker
                                     let liNode = aNode.parentNode.parentNode;
-                                    addClass(liNode, "current");
+                                    liNode.classList.add("current");
 
                                     // Remove GIJoes disabling
                                     enableCTTS();
@@ -2068,9 +2213,14 @@
                                     // Remove numbering for now if present
                                     let number = document.getElementById("number");
                                     if (number) {
-                                      GM_addStyle(<><![CDATA[
-                                        #source { margin-left: 0 }
-                                      ]]></> + '');
+                                      GM_setStyle({
+                                          node: nodeStyle,
+                                          data: <><![CDATA[
+
+                                              #source { margin-left: 0 }
+
+                                          ]]></>
+                                      });
                                       number.parentNode.removeChild(number);
                                     }
                                   }
@@ -2102,9 +2252,14 @@
 
                     // Replace pagination NOTE: Scope referenced variable nodes
                     if (pagination) {
-                      GM_addStyle(<><![CDATA[
-                        .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
-                      ]]></> + "");
+                      GM_setStyle({
+                          node: nodeStyle,
+                          data: <><![CDATA[
+
+                              .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+
+                          ]]></>
+                      });
 
                       while (topNode.hasChildNodes())
                         topNode.removeChild(topNode.firstChild);
@@ -2123,7 +2278,7 @@
                           thisNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
 
-                            addClass(ev.target ,"retrieving");
+                            ev.target.classList.add("retrieving");
                             getVersions("http:" + ((window.location.href.match(/^https:\/\/usersripts.org\/.*/i)) ? "s" : "") + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
                           }, false);
                         }
@@ -2139,24 +2294,34 @@
                       versionsDIV = document.createElement("div");
                       versionsDIV.id = "versions";
 
-                      GM_addStyle(<><![CDATA[
-                        #versions { margin-right: 0.5em; }
-                        #versions ul { list-style: none outside none; padding: 0; margin: 0; font-size: 1em; }
-                        #versions ul li a { margin-right: 0.25em; }
-                        #versions ul li span a { margin-right: 0.25em; margin-left: 0.25em; }
-                        #versions ul li.current { background-color: #ddd; }
-                        #versions ul li.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
-                      ]]></> + '');
+                      GM_setStyle({
+                          node: nodeStyle,
+                          data: <><![CDATA[
+
+                              #versions { margin-right: 0.5em; }
+                              #versions ul { list-style: none outside none; padding: 0; margin: 0; font-size: 1em; }
+                              #versions ul li a { margin-right: 0.25em; }
+                              #versions ul li span a { margin-right: 0.25em; margin-left: 0.25em; }
+                              #versions ul li.current { background-color: #ddd; }
+                              #versions ul li.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+
+                          ]]></>
+                      });
                     }
 
                     versionsDIV.appendChild(ulNode);
                     leftDIV.appendChild(versionsDIV);
 
 
-                    GM_addStyle(<><![CDATA[
-                      .notice { background-image: none; }
-                      .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
-                    ]]></> + "");
+                      GM_setStyle({
+                          node: nodeStyle,
+                          data: <><![CDATA[
+
+                              .notice { background-image: none; }
+                              .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+
+                          ]]></>
+                      });
 
                     // Compute left margin of pre and add width
                     document.evaluate(
@@ -2171,10 +2336,15 @@
 
                       let marginLeft = window.getComputedStyle(hookNode, null).getPropertyValue("width").replace(/px$/, "");
 
-                      GM_addStyle(<><![CDATA[
-                        .right { margin-left: ]]></> + marginLeft + <><![CDATA[px; }
-                        #left { padding: 1px; }  // NOTE: Strange first run fix for CSS
-                      ]]></> + '');
+                      GM_setStyle({
+                          node: nodeStyle,
+                          data: <><![CDATA[
+
+                              .right { margin-left: ]]></> + marginLeft + <><![CDATA[px; }
+                              #left { padding: 1px; }  // NOTE: Strange first run fix for CSS
+
+                          ]]></>
+                      });
                     }
 
                 }
@@ -2188,7 +2358,6 @@
       }
     }
   }
-
 
   function renumber(hookNode) {
     let newlines = hookNode.textContent.match(/\n/g);
@@ -2204,18 +2373,31 @@
     for each (let property in properties)
       css += (property + ":" + properties.getPropertyValue(property) + "; ");
     css += " }"
-    GM_addStyle(css);
+    GM_setStyle({
+        node: nodeStyle,
+        data: css
+    });
 
-    GM_addStyle(<><![CDATA[
-      .number { display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
-      .number a { text-decoration: none; color: #888; font-size: 0.8em; }
-      .number a.sharpen { font-size: 1em; color: #000; }
-    ]]></> + '');
+    GM_setStyle({
+        node: nodeStyle,
+        data: <><![CDATA[
+
+            .number { display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
+            .number a { text-decoration: none; color: #888; font-size: 0.8em; }
+            .number a.sharpen { font-size: 1em; color: #000; }
+
+        ]]></>
+    });
 
     let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
-    GM_addStyle(<><![CDATA[
-      .number { width: ]]></> + (textWidth * digits) + <><![CDATA[px; }
-    ]]></> + '');
+    GM_setStyle({
+        node: nodeStyle,
+        data: <><![CDATA[
+
+            .number { width: ]]></> + (textWidth * digits) + <><![CDATA[px; }
+
+        ]]></>
+    });
 
     let preNode = document.getElementById("number") || document.createElement("pre");
 
@@ -2225,7 +2407,7 @@
     }
     else {
       preNode.setAttribute("id", "number");
-      addClass(preNode, "number");
+      preNode.classList.add("number");
     }
 
     let line = 1;
@@ -2235,7 +2417,7 @@
       aNode.setAttribute("href", "#line-" + line);
       aNode.textContent = line;
       if (line % 10 == 0 || line == 1)
-        addClass(aNode, "sharpen");
+        aNode.classList.add("sharpen");
 
       let divNode = document.createElement("div");
 
@@ -2244,9 +2426,14 @@
     } while (line++ <= newlines);
 
     hookNode.parentNode.insertBefore(preNode, hookNode);
-    GM_addStyle(<><![CDATA[
-      #source { margin-left: ]]></> + preNode.offsetWidth + <><![CDATA[px; }
-    ]]></> + '');
+    GM_setStyle({
+        node: nodeStyle,
+        data: <><![CDATA[
+
+            #source { margin-left: ]]></> + preNode.offsetWidth + <><![CDATA[px; }
+
+        ]]></>
+    });
   }
 
   if (gmc.get("checkShowLineNumbers")) {
@@ -2263,10 +2450,15 @@
 
         let preNode = document.createElement("pre");
         preNode.setAttribute("id", "number");
-        addClass(preNode, "number");
-        GM_addStyle(<><![CDATA[
-          .number { display: none; }
-        ]]></> + '');
+        preNode.classList.add("number");
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
+
+                .number { display: none; }
+
+            ]]></>
+        });
 
         let divNode = document.createElement("div");
 
@@ -2281,7 +2473,7 @@
 
           let hash = window.location.hash.match(/^#(line-\d+)/);
           if (hash) {
-            var anchorNode = document.evaluate(
+            let anchorNode = document.evaluate(
               "//a[@id='" + hash[1] + "']",
               document.body,
               null,
