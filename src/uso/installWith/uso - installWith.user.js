@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.10
+// @version       1.0.11
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -527,8 +527,11 @@
                         let currentVersion = (userHeaders["version"] && typeof userHeaders["version"] == "string") ? userHeaders["version"] : userHeaders["version"][0];
                         if (currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
                           installNode.title = "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith";
-                          helpNode.textContent = "How do I use this?";
-                          helpNode.classList.remove("helpWith");
+
+                          if (typeof helpNode != "undefined") {
+                            helpNode.textContent = "How do I use this?";
+                            helpNode.classList.remove("helpWith");
+                          }
 
                           if (typeof selectNode != "undefined")
                             selectNode.parentNode.removeChild(selectNode);
