@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.8
+// @version       1.0.9
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1863,7 +1863,7 @@
                     let sid = require.match(new RegExp(rex  + ".*", "i"));
                     if (sid) {
                       if (sid[1] == scriptid || sid[1] == null) {
-                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : ", ") + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"] : "");
+                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"] : "");
                         installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
                         installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
                         installNode.classList.remove("saBUSY");
@@ -1916,7 +1916,7 @@
 
             if (!gmcHome.get("allowUpdatersOnBadGMSyntax")) {
               if (DDoS) {
-                installNode.title = "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
+                installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
                 installNode.classList.add("saSEVERE");
                 installNode.classList.add("sabSEVERE");
                 if (gmcHome.get("skipEmbeddedScan"))
@@ -1924,7 +1924,7 @@
                 return;
               }
               else if (RHV) {
-                installNode.title = "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
+                installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
                 installNode.classList.add("saHIGH");
                 installNode.classList.add("sabHIGH");
                 if (gmcHome.get("skipEmbeddedScan"))
@@ -2052,11 +2052,11 @@
                   installNode.setAttribute("href", url);
 
                   if (DDoS) {
-                    installNode.title = "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
+                    installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
                     installNode.classList.add("saSEVERE");
                   }
                   else if (RHV) {
-                    installNode.title = "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
+                    installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
                     installNode.classList.add("saHIGH");
                   }
 
