@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.6
+// @version       1.0.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -47,28 +47,34 @@
 
           .hid { display: none; }
 
-          #install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; }
+          #install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; border: 3px solid #a7a7a7;}
           #install_script a.userjs:hover { color: #004; background: #999 -moz-linear-gradient(top, #f5f5f5, #999) no-repeat scroll 0 0; }
 
-          #install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0; }
+          #install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0;}
+          #install_script a.sabLIB { border: 3px solid #fff;}
           #install_script a.saLIB:hover { color: #000; background: #fff none repeat scroll 0 0; }
 
           #install_script a.saLOW { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
+          #install_script a.sabLOW { border: 3px solid #adda63; }
           #install_script a.saLOW:hover { background:  #a2cc5d -moz-linear-gradient(top, #e5f5cb, #a2cc5d) repeat scroll 0 0; }
 
           #install_script a.saGUARDED { background: #8085a0 -moz-linear-gradient(top, #cbd2f5, #8085a0) repeat scroll 0 0; }
+          #install_script a.sabGUARDED { border: 3px solid #99a9ff; }
           #install_script a.saGUARDED:hover { background: #767b94 -moz-linear-gradient(top, #cbd2f5, #767b94) repeat scroll 0 0; }
 
           #install_script a.saELEVATED { background: #e0e36e -moz-linear-gradient(top, #f4f5cb, #e0e36e) repeat scroll 0 0; }
+          #install_script a.sabELEVATED { border: 3px solid #e0e36e; }
           #install_script a.saELEVATED:hover { background: #d3d668 -moz-linear-gradient(top, #f4f5cb, #d3d668) repeat scroll 0 0; }
 
           #install_script a.saHIGH { background: #e0a46d -moz-linear-gradient(top, #f5dfcb, #e0a46d) repeat scroll 0 0; }
+          #install_script a.sabHIGH { border: 3px solid #e0a46d; }
           #install_script a.saHIGH:hover { background: #d49b67 -moz-linear-gradient(top, #f5dfcb, #d49b67) repeat scroll 0 0; }
 
           #install_script a.saSEVERE { background: #e57169 -moz-linear-gradient(top,  #f5cecb, #e57169) repeat scroll 0 0; }
+          #install_script a.sabSEVERE { border: 3px solid #e57169; }
           #install_script a.saSEVERE:hover { background: #d96b63 -moz-linear-gradient(top,  #f5cecb, #d96b63) repeat scroll 0 0; }
 
-          #install_script a.saERROR { color: #fff; background: #000 none repeat scroll 0 0; }
+          #install_script a.saERROR { color: #fff; background: #000 none repeat scroll 0 0; border: 1px solid #888 }
           #install_script a.saERROR:hover { color: #fff; background: #000 none repeat scroll 0 0; }
 
           @-moz-keyframes saBUSY { from { background: #a7a7a7; } to { background: #8c8c8c; } }
@@ -131,7 +137,7 @@
   if (installNode && installNode.singleNodeValue) {
     installNode = installNode.singleNodeValue;
 
-    installNode.title = "Security Advisory: BUSY, Please wait";
+    installNode.title = "";
     installNode.classList.add("saBUSY");
   }
   else
@@ -521,8 +527,31 @@
                         let currentVersion = (userHeaders["version"] && typeof userHeaders["version"] == "string") ? userHeaders["version"] : userHeaders["version"][0];
                         if (currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
                           installNode.title = "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith";
-                          installNode.classList.add("saERROR");
+                          helpNode.textContent = "How do I use this?";
+                          helpNode.classList.remove("helpWith");
+
+                          if (selectNode)
+                            selectNode.parentNode.removeChild(selectNode);
+
+                          installNode.textContent = installNode.textContent.replace(/\swith/, "");
+                          installNode.href = "/scripts/source/" + scriptid + ".user.js";
+                          if (gmcHome.get("forceInstallSecure"))
+                            installNode.protocol = "https:";
+                          installNode.classList.remove("saLIB");
+                          installNode.classList.remove("saLOW");
+                          installNode.classList.remove("saELEVATED");
+                          installNode.classList.remove("saHIGH");
+                          installNode.classList.remove("saSEVERE");
                           installNode.classList.remove("saBUSY");
+                          installNode.classList.remove("sabLIB");
+                          installNode.classList.remove("sabLOW");
+                          installNode.classList.remove("sabELEVATED");
+                          installNode.classList.remove("sabHIGH");
+                          installNode.classList.remove("sabSEVERE");
+                          installNode.classList.remove("sabBUSY");
+                          installNode.classList.remove("installWith");
+
+                          installNode.classList.add("saERROR");
                           return;
                         }
                       }
@@ -586,6 +615,7 @@
                   if (!gmcHome.get("skipVerifyLibs"))
                     installNode.addEventListener("click", nag, true);
                   installNode.classList.add("saLIB");
+                  installNode.classList.add("sabLIB");
                   if (gmcHome.get("skipEmbeddedScan"))
                     installNode.classList.remove("saBUSY");
                   return;
@@ -609,14 +639,14 @@
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "none",
                 "rex": [
-                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)(\\d+)\\.js",
-                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?"  // This is deprecated DO NOT USE
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)(\\d+)\\.js\\?.*?updater\=none",
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?.*?updater\=none"  // This is deprecated DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "updater=none",
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "usoC META"
                 },
                 "separator": true
               },
@@ -635,7 +665,7 @@
                 "qsmax": "days",
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "AAU"
                 },
                 "separator": true
               },
@@ -1537,7 +1567,7 @@
                 "qsmax": "interval",
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": "Possible security risk"
+                  "title": "USOU, Possible security risk"
                 },
                 "separator": true
               },
@@ -1606,7 +1636,7 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": "BETA runtime, MAY NOT ALWAYS WORK! :)"
+                  "title": "usoC BETA, MAY NOT ALWAYS WORK! :)"
                 },
                 "beta": true
               },
@@ -1626,7 +1656,7 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "usoC"
                 }
               },
               "usoCheckupOttoShow": {
@@ -1637,7 +1667,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/82206"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/82206\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&theme=82206,66530,74732&trim=pt&id=usoCheckup",
@@ -1645,7 +1675,7 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "usoC Otto Show Theme"
                 }
               },
               "usoCheckupOttoInstall": {
@@ -1656,7 +1686,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/60926"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60926\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,74732&trim=pt&id=usoCheckup",
@@ -1664,7 +1694,7 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "guarded",
-                  "title": "Implicit trust of script"
+                  "title": "usoC Otto Install Theme, Implicit trust of script"
                 }
               },
               "usoCheckupbottomsUp": {
@@ -1675,7 +1705,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/68506"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/68506\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,74732&custom=yes&trim=pt&id=usoCheckup",
@@ -1683,7 +1713,7 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "usoC bottomsUp Theme"
                 }
               },
               "usoCheckupDOMNotify": {
@@ -1694,7 +1724,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^http:\\/\\/userscripts\\.org\\/scripts\\/show\\/61794"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/61794\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,74732&custom=yes&trim=pt&id=usoCheckup",
@@ -1702,7 +1732,7 @@
                 "qsmin": "minage",
                 "securityAdvisory": {
                   "advisory": "low",
-                  "title": ""
+                  "title": "usoC DOMNotify Theme"
                 }
               },
               "PotentialSpammer": {
@@ -1833,13 +1863,15 @@
                     let sid = require.match(new RegExp(rex  + ".*", "i"));
                     if (sid) {
                       if (sid[1] == scriptid || sid[1] == null) {
-                        installNode.title = "Security Advisory: " + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"]: "");
+                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : ", ") + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"] : "");
                         installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                        installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
                         installNode.classList.remove("saBUSY");
                       }
                       else {
                         installNode.title = "Security Advisory: GUARDED, Possible malformed updater syntax, Possible Security Risk";
                         installNode.classList.add("saGUARDED");
+                        installNode.classList.add("sabGUARDED");
                         installNode.classList.remove("saBUSY");
                         return;
                       }
@@ -1856,6 +1888,7 @@
                     if (include.match(new RegExp(rex  + ".*", "i"))) {
                       installNode.title = "Security Advisory: " + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"]: "");
                       installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                      installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
                       if (gmcHome.get("skipEmbeddedScan"))
                         installNode.classList.remove("saBUSY");
                       return;
@@ -1936,7 +1969,21 @@
               installNode.classList.remove("saHIGH");
               installNode.classList.remove("saSEVERE");
 
-              installNode.classList.add("sa" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
+              installNode.classList.remove("sabLOW");
+              installNode.classList.remove("sabGUARDED");
+              installNode.classList.remove("sabELEVATED");
+              installNode.classList.remove("sabHIGH");
+              installNode.classList.remove("sabSEVERE");
+
+              if (possibleEmbedded) {
+                installNode.classList.remove("saLOW");
+                installNode.classList.remove("saGUARDED");
+                installNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
+              }
+              else {
+                installNode.classList.add("sa" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
+                installNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
+              }
 
               switch (this.value) {
                 case "uso":
