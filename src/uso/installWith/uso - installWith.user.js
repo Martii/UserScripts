@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.7
+// @version       1.0.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1918,6 +1918,7 @@
               if (DDoS) {
                 installNode.title = "Security Advisory: SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
                 installNode.classList.add("saSEVERE");
+                installNode.classList.add("sabSEVERE");
                 if (gmcHome.get("skipEmbeddedScan"))
                   installNode.classList.remove("saBUSY");
                 return;
@@ -1925,6 +1926,7 @@
               else if (RHV) {
                 installNode.title = "Security Advisory: HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
                 installNode.classList.add("saHIGH");
+                installNode.classList.add("sabHIGH");
                 if (gmcHome.get("skipEmbeddedScan"))
                   installNode.classList.remove("saBUSY");
                 return;
