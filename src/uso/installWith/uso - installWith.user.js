@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.9
+// @version       1.0.10
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -530,7 +530,7 @@
                           helpNode.textContent = "How do I use this?";
                           helpNode.classList.remove("helpWith");
 
-                          if (selectNode)
+                          if (typeof selectNode != "undefined")
                             selectNode.parentNode.removeChild(selectNode);
 
                           installNode.textContent = installNode.textContent.replace(/\swith/, "");
