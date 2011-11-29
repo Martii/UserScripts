@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.11
+// @version       1.0.12
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -74,7 +74,7 @@
           #install_script a.sabSEVERE { border: 3px solid #e57169; }
           #install_script a.saSEVERE:hover { background: #d96b63 -moz-linear-gradient(top,  #f5cecb, #d96b63) repeat scroll 0 0; }
 
-          #install_script a.saERROR { color: #fff; background: #000 none repeat scroll 0 0; border: 1px solid #888 }
+          #install_script a.saERROR { color: #fff; background: #000 none repeat scroll 0 0; border: 3px solid #a7a7a7 }
           #install_script a.saERROR:hover { color: #fff; background: #000 none repeat scroll 0 0; }
 
           @-moz-keyframes saBUSY { from { background: #a7a7a7; } to { background: #8c8c8c; } }
@@ -433,7 +433,7 @@
       onload: function(xhr) {
         switch(xhr.status) {
           case 403:
-            installNode.title = "Security Advisory: UNLISTED, Unlisted script";
+            installNode.title = "Security Advisory: ELEVATED, Unlisted script";
             installNode.classList.add("saELEVATED");
             installNode.classList.remove("saBUSY");
             break;
@@ -442,6 +442,10 @@
           case 503:
             if (this.retry-- > 0)
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+            else {
+              installNode.title = "Security Advisory: UNDETERMINED, Unable to retrieve meta.js";
+              installNode.classList.remove("saBUSY");
+            }
             break;
           case 200:
             function parseMeta(aString) {
@@ -503,6 +507,11 @@
                     case 503:
                       if (this.retry-- > 0)
                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      else {
+                        GM_log('WARNING: Embedded scan failed to retrieve current version');
+                        installNode.classList.remove("saBUSY");
+                      }
+
                       break;
                     case 200:
                       let userHeaders = parseMeta(xhr.responseText);
@@ -563,19 +572,20 @@
                       let userJs = xhr.responseText;
                       userJs = userJs.replace(/\s+\/\/\s@(?:updateURL|installURL)\s+.*[^\n\r]/gm, "");
 
-                      if (userJs.match(
-                          "("
-                        +   "\\.meta\\.js"
-                        +   "|" + scriptid + "\\.user\\.js"
-                        +   "|(\"|')https?:\\/\\/userscripts\\.org\\/scripts\\/show\\/" + scriptid
-                        +   "|(\"|')(?:https?:\\/\\/userscripts\\.org\\/)?scripts\\/source\\/.+\\.user\\.js"
-                        +   "|https?:\\/\\/www\\.monkeyupdater\\.com"
-                        +   "|https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?"
-                        +   "|\\/version\\.xml"
-                        +   "|https?:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js"
-                        +   "|https?:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html"
-                        +   "|https?:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts"
-                        +   "|https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
+                      if (userJs.match("("
+                          + [
+                                "\\.meta\\.js",
+                                scriptid + "\\.user\\.js",
+                                "(?:\"|')https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/show\\/\\d+",
+                                "(?:\"|')(?:https?:\\/\\/(?:www\\.)?userscripts\\.org\\/)?scripts\\/source\\/.+\\.user\\.js",
+                                "https?:\\/\\/www\\.monkeyupdater\\.com",
+                                "https?:\\/\\/mekan\\.dreamhosters\\.com\\/eksi\\+\\+\\/version\\.php\\?",
+                                "\\/version\\.xml",
+                                "https?:\\/\\/www\\.playerscripts\\.com\\/rokdownloads\\/mwapmeta.js",
+                                "https?:\\/\\/www\\.SecureWorldHosting\\.com\\/MWAutoHelper\\/Update.html",
+                                "https?:\\/\\/jobmine-plus\\.googlecode\\.com\\/svn\\/trunk\\/scripts",
+                                "https?:\\/\\/pipes\\.yahoo\\.com\\/pipes"
+                            ].join("|")
 
                         + ")", "gmi"))
                           possibleEmbedded = (scriptid == "68219" || scriptid == "69307" || scriptid == "114843") ? false : true;
@@ -594,7 +604,7 @@
                   }
                 },
                 onerror: function (xhr) {
-                  GM_log('ERROR: Some critical unknown error occurred');
+                  GM_log('ERROR: Some critical unknown error occurred or https failure');
                 }
               });
             }
