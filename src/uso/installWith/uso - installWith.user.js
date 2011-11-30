@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.17
+// @version       1.0.18
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -463,6 +463,7 @@
             installNode.classList.remove("saBUSY");
             break;
           case 404:
+          case 500:
           case 502:
           case 503:
             if (this.retry-- > 0)
@@ -583,6 +584,7 @@
                 onload: function (xhr) {
                   switch(xhr.status) {
                     case 404:
+                    case 500:
                     case 502:
                     case 503:
                       if (this.retry-- > 0)
