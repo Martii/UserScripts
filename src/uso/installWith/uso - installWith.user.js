@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.13
+// @version       1.0.14
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -81,7 +81,7 @@
           #install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }
 
           #install_script a.installWith { font-size: 1.0em; }
-          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-size: 11px; font-weight: 900; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; width: 16px; height: 16px; border-radius: 1em; border: 1px solid #999; }
+          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-weight: 900; width: 1.5em; height: 1.5em; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; border-radius: 1em; border: 1px solid #999; }
           #install_script a.helpWith:hover { color: #a00; background: #ec0 -moz-linear-gradient(center top,  #eee, #e6b800) repeat scroll 0 0; }
           #install_script select.updateWith { width: 90%; height: 1.6em; font-size: 0.9em; }
           #install_script select.updateWith option.separator { border-bottom: thin dotted #666; }
@@ -113,17 +113,20 @@
       for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);)
         thisNode.setAttribute("target", "_top");
 
-      GM_setStyle({
-          node: nodeStyle,
-          data: <><![CDATA[
+    GM_setStyle({
+        node: nodeStyle,
+        data: <><![CDATA[
 
-              div.container { width: auto; margin: 0; }
-              div#content { width: 100% !important; left: 0; }
-              div#heading { height: 66px; min-height: 0; }
-              div#details h1.title { max-height: 2.05em; overflow: hidden; }
+            div.container { width: auto; margin: 0; }
+            div#content { width: 100% !important; left: 0; }
+            div#heading { height: 66px; min-height: 0; }
+            div#details h1.title { max-height: 2.05em; overflow: hidden; }
+            #section > .container { width: auto !important; }
+            #section_search { display: none !important; }
+            #install_script { bottom: auto !important; top: 10px !important; margin-right: 5px; }
 
-          ]]></>
-      });
+        ]]></>
+    });
   }
 
   let installNode = document.evaluate(
@@ -242,16 +245,38 @@
       });
 
     /* Nearest fix for userscripts.org Alternate CSS */
-    let fullDescription = document.getElementById("full_description");
-    if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
-      GM_setStyle({
-          node: nodeStyle,
-          data: <><![CDATA[
+    let xpr = document.evaluate(
+      "//div[@id='top']/div[@class='container']",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+    if (xpr && xpr.singleNodeValue) {
+      let thisNode = xpr.singleNodeValue;
 
-              #screenshots { width: 97.5% !important; }
+      let height = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("height").replace(/px$/i, "")); // NOTE: Returns normalized used instead of computed
+      if (height < 24)
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
 
-          ]]></>
-      });
+               #screenshots { width: 97.5% !important; }
+               #install_script a.helpWith { font-size: 0.78em; }
+
+            ]]></>
+        });
+      else
+        GM_setStyle({
+            node: nodeStyle,
+            data: <><![CDATA[
+
+                #install_script a.helpWith { font-size: 0.77em; }
+
+            ]]></>
+        });
+    }
+
 
     // installWith homepage
     var gmcHome = new GM_configStruct();
