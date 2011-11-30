@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.14
+// @version       1.0.15
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -519,6 +519,61 @@
               return;
             }
 
+            function revertInstall () {
+              if (typeof helpNode != "undefined") {
+                helpNode.textContent = "How do I use this?";
+                helpNode.classList.remove("helpWith");
+              }
+
+              if (typeof selectNode != "undefined")
+                selectNode.parentNode.removeChild(selectNode);
+
+              installNode.textContent = installNode.textContent.replace(/\swith/, "");
+              installNode.href = "/scripts/source/" + scriptid + ".user.js";
+              if (gmcHome.get("forceInstallSecure"))
+                installNode.protocol = "https:";
+
+              [
+                  "saLIB",
+                  "saLOW",
+                  "saGUARDED",
+                  "saELEVATED",
+                  "saHIGH",
+                  "saSEVERE",
+
+                  "sabLIB",
+                  "sabLOW",
+                  "sabGUARDED",
+                  "sabELEVATED",
+                  "sabHIGH",
+                  "sabSEVERE",
+
+                  "saBUSY",
+                  "installWith"
+              ].forEach(function (e, i, a) {
+                installNode.classList.remove(e);
+              });
+            }
+
+            // Detect difference in meta.js and page served meta
+            let xpr = document.evaluate(
+            "//meta[@name='uso:version']",
+              document.documentElement,
+              null,
+              XPathResult.FIRST_ORDERED_NODE_TYPE,
+              null
+            );
+            if (xpr && xpr.singleNodeValue) {
+              let thisNode = xpr.singleNodeValue;
+
+              if (headers["uso"]["version"] != thisNode.content) {
+                revertInstall();
+                installNode.title = "Security Advisory: ERROR, meta.js @uso:version " + headers["uso"]["version"] + " and page @uso:version " + thisNode.content + " DO NOT MATCH, Aborting installWith";
+                installNode.classList.add("saERROR");
+                return;
+              }
+            }
+
             let possibleEmbedded, DDoS, RHV;
             if (!gmcHome.get("skipEmbeddedScan")) {
               GM_xmlhttpRequest({
@@ -560,42 +615,8 @@
 
                         let currentVersion = (userHeaders["version"] && typeof userHeaders["version"] == "string") ? userHeaders["version"] : userHeaders["version"][0];
                         if (currentVersion && currentVersion.trim() != thisNode.textContent.trim()) {
+                          revertInstall();
                           installNode.title = "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith";
-
-                          if (typeof helpNode != "undefined") {
-                            helpNode.textContent = "How do I use this?";
-                            helpNode.classList.remove("helpWith");
-                          }
-
-                          if (typeof selectNode != "undefined")
-                            selectNode.parentNode.removeChild(selectNode);
-
-                          installNode.textContent = installNode.textContent.replace(/\swith/, "");
-                          installNode.href = "/scripts/source/" + scriptid + ".user.js";
-                          if (gmcHome.get("forceInstallSecure"))
-                            installNode.protocol = "https:";
-
-                          [
-                              "saLIB",
-                              "saLOW",
-                              "saGUARDED",
-                              "saELEVATED",
-                              "saHIGH",
-                              "saSEVERE",
-
-                              "sabLIB",
-                              "sabLOW",
-                              "sabGUARDED",
-                              "sabELEVATED",
-                              "sabHIGH",
-                              "sabSEVERE",
-
-                              "saBUSY",
-                              "installWith"
-                          ].forEach(function (e, i, a) {
-                            installNode.classList.remove(e);
-                          });
-
                           installNode.classList.add("saERROR");
                           return;
                         }
