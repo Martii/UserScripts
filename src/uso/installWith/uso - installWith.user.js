@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.12
+// @version       1.0.13
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -549,19 +549,27 @@
                           installNode.href = "/scripts/source/" + scriptid + ".user.js";
                           if (gmcHome.get("forceInstallSecure"))
                             installNode.protocol = "https:";
-                          installNode.classList.remove("saLIB");
-                          installNode.classList.remove("saLOW");
-                          installNode.classList.remove("saELEVATED");
-                          installNode.classList.remove("saHIGH");
-                          installNode.classList.remove("saSEVERE");
-                          installNode.classList.remove("saBUSY");
-                          installNode.classList.remove("sabLIB");
-                          installNode.classList.remove("sabLOW");
-                          installNode.classList.remove("sabELEVATED");
-                          installNode.classList.remove("sabHIGH");
-                          installNode.classList.remove("sabSEVERE");
-                          installNode.classList.remove("sabBUSY");
-                          installNode.classList.remove("installWith");
+
+                          [
+                              "saLIB",
+                              "saLOW",
+                              "saGUARDED",
+                              "saELEVATED",
+                              "saHIGH",
+                              "saSEVERE",
+
+                              "sabLIB",
+                              "sabLOW",
+                              "sabGUARDED",
+                              "sabELEVATED",
+                              "sabHIGH",
+                              "sabSEVERE",
+
+                              "saBUSY",
+                              "installWith"
+                          ].forEach(function (e, i, a) {
+                            installNode.classList.remove(e);
+                          });
 
                           installNode.classList.add("saERROR");
                           return;
@@ -591,9 +599,13 @@
                           possibleEmbedded = (scriptid == "68219" || scriptid == "69307" || scriptid == "114843") ? false : true;
 
                       if (possibleEmbedded) {
-                        installNode.classList.remove("saLIB");
-                        installNode.classList.remove("saLOW");
-                        installNode.classList.remove("saGUARDED");
+                        [
+                            "saLIB",
+                            "saLOW",
+                            "saGUARDED"
+                        ].forEach(function (e, i, a) {
+                          installNode.classList.remove(e);
+                        });
                         installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source; " + installNode.title;
                       }
                       installNode.classList.remove("saBUSY");
@@ -1977,24 +1989,24 @@
             selectNode.className = "updateWith";
             selectNode.addEventListener("change", function(ev) {
               let thisUpdater = updaters[this.value];
+              [
+                  "saLOW",
+                  "saGUARDED",
+                  "saELEVATED",
+                  "saHIGH",
+                  "saSEVERE",
 
-              installNode.classList.remove("saLOW");
-              installNode.classList.remove("saGUARDED");
-              installNode.classList.remove("saELEVATED");
-              installNode.classList.remove("saHIGH");
-              installNode.classList.remove("saSEVERE");
+                  "sabLOW",
+                  "sabGUARDED",
+                  "sabELEVATED",
+                  "sabHIGH",
+                  "sabSEVERE"
+              ].forEach(function (e, i, a) {
+                installNode.classList.remove(e);
+              });
 
-              installNode.classList.remove("sabLOW");
-              installNode.classList.remove("sabGUARDED");
-              installNode.classList.remove("sabELEVATED");
-              installNode.classList.remove("sabHIGH");
-              installNode.classList.remove("sabSEVERE");
-
-              if (possibleEmbedded) {
-                installNode.classList.remove("saLOW");
-                installNode.classList.remove("saGUARDED");
+              if (possibleEmbedded)
                 installNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
-              }
               else {
                 installNode.classList.add("sa" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
                 installNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
