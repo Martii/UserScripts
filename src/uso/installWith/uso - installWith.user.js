@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.19
+// @version       1.0.20
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -567,9 +567,10 @@
             if (xpr && xpr.singleNodeValue) {
               let thisNode = xpr.singleNodeValue;
 
-              if (headers["uso"]["version"] != thisNode.content) {
+              let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length - 1] ;
+              if (currentVersion != thisNode.content) {
                 revertInstall();
-                installNode.title = "Security Advisory: ERROR, meta.js @uso:version " + headers["uso"]["version"] + " and page @uso:version " + thisNode.content + " DO NOT MATCH, Aborting installWith";
+                installNode.title = "Security Advisory: ERROR, meta.js @uso:version " + currentVersion + " and page @uso:version " + thisNode.content + " DO NOT MATCH, Aborting installWith";
                 installNode.classList.add("saERROR");
                 return;
               }
