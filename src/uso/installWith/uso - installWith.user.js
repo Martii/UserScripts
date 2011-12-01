@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.18
+// @version       1.0.19
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -47,11 +47,11 @@
 
           .hid { display: none; }
 
-          #install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; border: 3px solid #a7a7a7;}
+          #install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; border: 3px solid #a7a7a7; }
           #install_script a.userjs:hover { color: #004; background: #999 -moz-linear-gradient(top, #f5f5f5, #999) no-repeat scroll 0 0; }
 
-          #install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0;}
-          #install_script a.sabLIB { border: 3px solid #fff;}
+          #install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0; }
+          #install_script a.sabLIB { border: 3px solid #fff; }
           #install_script a.saLIB:hover { color: #000; background: #fff none repeat scroll 0 0; }
 
           #install_script a.saLOW { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
@@ -81,7 +81,7 @@
           #install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }
 
           #install_script a.installWith { font-size: 1.0em; }
-          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-weight: 900; width: 1.5em; height: 1.5em; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; border-radius: 1em; border: 1px solid #999; }
+          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-weight: 900; width: 1.5em; height: 1.5em; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; -moz-border-radius: 1em; border-radius: 1em; border: 1px solid #999; }
           #install_script a.helpWith:hover { color: #a00; background: #ec0 -moz-linear-gradient(center top,  #eee, #e6b800) repeat scroll 0 0; }
           #install_script select.updateWith { width: 90%; height: 1.6em; font-size: 0.9em; }
           #install_script select.updateWith option.separator { border-bottom: thin dotted #666; }
@@ -514,7 +514,7 @@
             }
 
             if (installNode.search.match(/token\=/i) || (headers["uso"] && headers["uso"]["unlisted"] == "")) {
-              installNode.title = "Security Advisory: UNLISTED, Unlisted script";
+              installNode.title = "Security Advisory: ELEVATED, Unlisted script";
               installNode.classList.add("saELEVATED");
               installNode.classList.remove("saBUSY");
               return;
@@ -650,7 +650,10 @@
                         [
                             "saLIB",
                             "saLOW",
-                            "saGUARDED"
+                            "saGUARDED",
+                            "saELEVATED",
+                            "saHIGH",
+                            "saSEVERE"
                         ].forEach(function (e, i, a) {
                           installNode.classList.remove(e);
                         });
