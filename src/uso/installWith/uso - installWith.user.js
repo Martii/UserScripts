@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.20
+// @version       1.0.21
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -557,6 +557,7 @@
             }
 
             // Detect difference in meta.js and page served meta
+            let currentVersion;
             let xpr = document.evaluate(
             "//meta[@name='uso:version']",
               document.documentElement,
@@ -567,7 +568,7 @@
             if (xpr && xpr.singleNodeValue) {
               let thisNode = xpr.singleNodeValue;
 
-              let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length - 1] ;
+              currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length - 1];
               if (currentVersion != thisNode.content) {
                 revertInstall();
                 installNode.title = "Security Advisory: ERROR, meta.js @uso:version " + currentVersion + " and page @uso:version " + thisNode.content + " DO NOT MATCH, Aborting installWith";
@@ -580,7 +581,7 @@
             if (!gmcHome.get("skipEmbeddedScan")) {
               GM_xmlhttpRequest({
                 retry: 5,
-                url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
+                url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
                 method: "GET",
                 onload: function (xhr) {
                   switch(xhr.status) {
