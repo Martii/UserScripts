@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.17.0
+// @version       0.17.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -874,8 +874,8 @@
                           li.metadata { color: grey; white-space: nowrap; }
                           span.metadata { color: #666; font-size: 0.7em; }
                           ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
-                          li.count { color: #666; padding-left: 0.5em; }
-                          span.count { color: grey; font-size: 0.9em; float: right; margin-right: 0.5em; }
+                          li.count { text-align: left; color: #666; padding-left: 0.5em; }
+                          span.count { text-align: right; float: right; color: #fff; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; background-color: #f80; padding-left: 0.7em; padding-right: 0.5em; font-family: serif; }
                           li.bar { background-color: #EEE; }
                           .nameMismatch { color: red !important; }
                           .resourceName { margin-right: 0.5em; }
@@ -922,13 +922,15 @@
                                 let liNode = document.createElement("li");
                                 liNode.setAttribute("class", "count" + ((objCount % 2) ? " bar" : ""));
                                 liNode.setAttribute("title", name);
-                                liNode.textContent = name;
+
+                                let textNode = document.createTextNode(name);
 
                                 let spanNode = document.createElement("span");
                                 spanNode.setAttribute("class", "count");
-                                spanNode.textContent = " " + value;
+                                spanNode.textContent = value;
 
                                 liNode.appendChild(spanNode);
+                                liNode.appendChild(textNode);
                                 ulNode.appendChild(liNode);
 
                                 objCount++;
