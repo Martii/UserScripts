@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.17.1
+// @version       0.17.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -885,9 +885,10 @@
 
 
                   if (gmc.get("showStrings")) {
+                    let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
                     GM_xmlhttpRequest({
                       retry: 5,
-                      url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
+                      url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
                       method: "GET",
                       onload: function(xhr) {
                         switch (xhr.status) {
@@ -1517,9 +1518,10 @@
             let spanNode = document.createElement("span");
             spanNode.style.setProperty("color", "red", "");
 
+            let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
             GM_xmlhttpRequest({
               retry: 5,
-              url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + headers["uso"]["version"] + ".user.js",
+              url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
               method: "GET",
               onload: function(xhr) {
                 switch (xhr.status) {
