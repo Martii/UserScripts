@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       0.5.2
+// @version       0.5.3
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
@@ -79,7 +79,7 @@
     }
 
   // Fix missing recent /posts linkage if still missing
-  if (window.location.pathname.match(/(.*)\/posts$/i)) {
+  if (window.location.pathname.match(/(.*)\/posts\/?$/i)) {
     var xpr = document.evaluate(
         "//tr[starts-with(@id,'posts-')]",
         document.body,
@@ -215,7 +215,7 @@
       }
       break;
 
-    case (portion = pathname.match(/(.*)\/comments$/i)) ? portion[0] : undefined:
+    case (portion = pathname.match(/(.*)\/comments\/?$/i)) ? portion[0] : undefined:
       var contextNode = document.evaluate(
           "//div[contains(@id, 'comment-body')]",
           document.body,
@@ -244,7 +244,7 @@
       break;
 
     case (portion = pathname.match(/^\/groups(.*)/i)) ? portion[0] : undefined:
-      var groupid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      var groupid = (portion = portion[1].match(/^\/(\d+)\/?$/i)) ? portion[1] : undefined;
       if (groupid) {
         var contextNode = document.evaluate(
             "//div[@class='description']",
@@ -261,7 +261,7 @@
       break;
 
     case (portion = pathname.match(/^\/guides(.*)/i)) ? portion[0] : undefined:
-      var guideid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      var guideid = (portion = portion[1].match(/^\/(\d+)\/?$/i)) ? portion[1] : undefined;
       if (guideid) {
         var contextNode = document.evaluate(
             "//div[@id='content']",
@@ -278,7 +278,7 @@
       break;
 
     case (portion = pathname.match(/^\/topics(.*)/i)) ? portion[0] : undefined:
-      var topicid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      var topicid = (portion = portion[1].match(/^\/(\d+)\/?$/i)) ? portion[1] : undefined;
       if (topicid) {
         var contextNode = document.evaluate(
             "//td[contains(@id, 'post-body')]",
@@ -297,7 +297,7 @@
       break;
 
     case (portion = pathname.match(/^\/reviews(.*)/i)) ? portion[0] : undefined:
-      var reviewid = (portion = portion[1].match(/^\/(\d+)$/i)) ? portion[1] : undefined;
+      var reviewid = (portion = portion[1].match(/^\/(\d+)\/?$/i)) ? portion[1] : undefined;
       if (reviewid) {
         var contextNode = document.evaluate(
             "//div[@class='body']",
