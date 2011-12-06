@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.21
+// @version       1.0.22
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -32,8 +32,9 @@
 // @exclude https://userscripts.org/scripts/version/*
 //
 // @updateURL  file:
+// @installURL  file:
 //
-// @require https://secure.dune.net/usocheckup/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
+// @require https://secure.dune.net/usocheckup/68219.js?method=update&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
@@ -282,12 +283,22 @@
     var gmcHome = new GM_configStruct();
     gmcHome.id = "gmc68219home";
 
-    gmcHome.init(divNode,
+      GM_setStyle({
+          media: "print",
+          data: <><![CDATA[
+
+              #gmc68219home, #gmc68219 { display: none !important; }
+
+          ]]></>
+      });
+
+    gmcHome.init(
+        divNode,
         <><![CDATA[
 
             <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
             <span style="float: right; margin: 0 0.5em;">
-              <a href="/guides/24/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
+              <a href="/guides/24/" style="text-decoration: none !important;"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
             </span>
 
         ]]></>.toString(),
@@ -297,11 +308,26 @@
               "label": 'Force Install button to be secure when browsing the site in unsecure and using userscripts.org for installation',
               "default": false
           },
+          'forceInstallRecent': {
+              "type": 'checkbox',
+              "label": 'Force Install button to use the most recently detected version when using userscripts.org for installation',
+              "default": false
+          },
           'mirrorDomain': {
               "label": 'Mirror domain name <em class="gmc68219home-yellownote">Select primary ONLY or secure OPTIONALLY if behind a domain blocklist that prevents the redirect</em>',
               "type": 'radio',
               "options": ['redirect', 'primary', 'secure'],
               "default": 'redirect'
+          },
+          'allowAOU': {
+              "type": 'checkbox',
+              "label": 'Allow Add-on Updater <em class="gmc68219home-yellownote">Greasemonkey versions 0.9.13 through the current HEAD are CURRENTLY UNSAFE due to lack of peer review and notifications</em>',
+              "default": false
+          },
+          'allowUpdatersOnBadAOUSyntax': {
+              "type": 'checkbox',
+              "label": 'Allow updaters to be added on invalid Add-on Updater syntax <em class="gmc68219home-yellownote">Select this ONLY if you have Greasemonkey updating fully DISABLED</em>',
+              "default": false
           },
           'skipVerifyLibs': {
               "type": 'checkbox',
@@ -310,13 +336,8 @@
           },
           'skipEmbeddedScan': {
             "type": "checkbox",
-            "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219home-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan will produce undesired effects when other embedded updaters are present and wrapping a script in an additional updater</em></p>',
+            "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219home-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan may produce undesired effects when other embedded updaters are present and wrapping a script in additional updaters</em></p>',
             "default": false
-          },
-          'allowUpdatersOnBadGMSyntax': {
-              "type": 'checkbox',
-              "label": 'Allow updaters to be added on invalid Greasemonkey updater syntax <em class="gmc68219home-yellownote">Select this ONLY if you have Greasemonkey updating DISABLED</em>',
-              "default": false
           }
         },
         /* Custom CSS */
@@ -339,9 +360,11 @@
                   #gmc68219home_field_mirrorDomain input { top: 0.1em; }
 
                   #gmc68219home_field_forceInstallSecure,
+                  #gmc68219home_field_forceInstallRecent,
+                  #gmc68219home_field_allowAOU,
                   #gmc68219home_field_skipVerifyLibs,
                   #gmc68219home_field_skipEmbeddedScan,
-                  #gmc68219home_field_allowUpdatersOnBadGMSyntax
+                  #gmc68219home_field_allowUpdatersOnBadAOUSyntax
                   { top: 0.08em; margin-right: 0.5em; }
 
               #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
@@ -366,7 +389,7 @@
         ? <><![CDATA[ <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> ]]></>.toString()
         : <><![CDATA[ <a href="/scripts/show/68219"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> ]]></>.toString()
       )
-      + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
+      + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/" style="text-decoration: none !important;"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
       {
         "useGravatarIcon": {
           "type": "checkbox",
@@ -387,6 +410,18 @@
           "type": "unsigned integer",
           "label": 'hour(s) minimum before starting a check for this script',
           "default": 1
+        },
+        'indirectMethod': {
+            "label": 'Method <em class="gmc68219-yellownote">Select update to use the most recently detected version.</em>',
+            "type": 'radio',
+            "options": ['show', 'install', 'update'],
+            "default": 'show'
+        },
+        'directMethod': {
+            "label": 'Method <em class="gmc68219-yellownote">Select update to use the most recently detected version.</em>',
+            "type": 'radio',
+            "options": ['install', 'update'],
+            "default": 'install'
         }
       },
       GM_setStyle({
@@ -404,6 +439,15 @@
                   { width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right; }
 
                   #gmc68219_field_updaterMaxage { margin-top: 0.25em; }
+
+
+                  #gmc68219_field_indirectMethod,
+                  #gmc68219_field_directMethod
+                  { margin-left: 1em; }
+
+                  #gmc68219_field_indirectMethod input,
+                  #gmc68219_field_directMethod input
+                  { top: 0.1em; }
 
                   .gmc68219-yellownote { background-color: #FFD; font-size: 0.66em !important; }
 
@@ -533,6 +577,9 @@
               installNode.href = "/scripts/source/" + scriptid + ".user.js";
               if (gmcHome.get("forceInstallSecure"))
                 installNode.protocol = "https:";
+
+              if (gmcHome.get("forceInstallRecent"))
+                installNode.pathname = installNode.pathname.replace(/\/version\/(\d+)\/\d+\.user.\.js$/i, "/source/$1.user.js")
 
               [
                   "saLIB",
@@ -715,13 +762,13 @@
                 "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
                 "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/814/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
-                "updater": "none",
+                "updater": "usocheckup",
                 "rex": [
                   "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)(\\d+)\\.js\\?.*?updater\=none",
-                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?.*?updater\=none"  // This is deprecated DO NOT USE
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?.*?updater\=none"  // This is EOL DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "updater=none",
+                "qs": "updater=none&method=install",
                 "securityAdvisory": {
                   "advisory": "low",
                   "title": "usoC META"
@@ -1709,7 +1756,7 @@
                   "^http:\\/\\/beta\\.usocheckup\\.dune\\.net\\/(\\d+)\\.js"
                 ],
                 "url": "http://beta.usocheckup.dune.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid,
+                "qs": "wrapperid=" + scriptid + "&method=show",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1726,10 +1773,10 @@
                 "updater": "usocheckup",
                 "rex": [
                   "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)(\\d+)\\.js",
-                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?"  // This is deprecated DO NOT USE
+                  "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)index.php\\?"  // This is EOL DO NOT USE
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid,
+                "qs": "wrapperid=" + scriptid + "&method=show",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1786,7 +1833,7 @@
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/68506\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
-                "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=68506,66530,74732&custom=yes&trim=pt&id=usoCheckup",
+                "qs": "wrapperid=" + scriptid + "&method=show&open=window&theme=68506,66530,74732&custom=yes&trim=pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
@@ -1934,6 +1981,9 @@
             if (window.location.protocol != installNode.protocol || gmcHome.get("forceInstallSecure"))
               installNode.protocol = "https:";
 
+            if (gmcHome.get("forceInstallRecent"))
+              installNode.pathname = installNode.pathname.replace(/\/source\/(\d+)\.user\.js/i, "/version/$1/" + currentVersion + ".user.js");
+
             if (headers["require"])
               for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
                 for each (let updater in updaters)
@@ -1992,7 +2042,7 @@
                 DDoS = true;
             }
 
-            if (!gmcHome.get("allowUpdatersOnBadGMSyntax")) {
+            if (!gmcHome.get("allowUpdatersOnBadAOUSyntax")) {
               if (DDoS) {
                 installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
                 installNode.classList.add("saSEVERE");
@@ -2027,6 +2077,34 @@
               installNode.classList.add("saERROR");
               installNode.classList.remove("saBUSY");
               return;
+            }
+
+            function pingCount (ev) {
+              GM_xmlhttpRequest({
+                retry: 5,
+                url: "http" + ((/^https:$/i.test(window.location.protocol) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".user.js",
+                method: "HEAD",
+                onload: function(xhr) {
+                  switch(xhr.status) {
+                    case 403:
+                      GM_log('WARNING: Recently unlisted script');
+                      break;
+                    case 404:
+                    case 500:
+                    case 502:
+                    case 503:
+                      GM_log('test retry');
+                      if (this.retry-- > 0)
+                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      else
+                        GM_log('WARNING: Unable to increment script count for update method: ' + xhr.status);
+                      break;
+                    case 200:
+                      break;
+                  }
+                },
+                onerror: function (xhr) {}
+              });
             }
 
             let thisNode = installNode;
@@ -2067,11 +2145,17 @@
 
               switch (this.value) {
                 case "uso":
+                  installNode.removeEventListener("click", pingCount, false);
                   GM_deleteValue(":updaterPreference");
                   installNode.title = "";
                   installNode.href = "/scripts/source/" + scriptid + ".user.js";
                   if (gmcHome.get("forceInstallSecure"))
                     installNode.protocol = "https:";
+
+                  if (gmcHome.get("forceInstallRecent")) {
+                    installNode.pathname = installNode.pathname.replace(/\/source\/(\d+)\.user\.js/i, "/version/$1/" + currentVersion + ".user.js");
+                    installNode.addEventListener("click", pingCount, false);
+                  }
 
                   if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                     gmc.close();
@@ -2097,6 +2181,8 @@
                   qs = appendQSP(qs, ((thisUpdater["qsmax"]) ? thisUpdater["qsmax"] + "=" + parseInt(Math.abs(gmc.get("updaterMaxage"))) : ""));
                   if (thisUpdater["qsmin"] && gmc.get("updaterMinage") != 1)
                     qs = appendQSP(qs, (thisUpdater["qsmin"] + "=" + parseInt(Math.abs(gmc.get("updaterMinage")))));
+                  if (gmcHome.get("allowAOU"))
+                    qs = appendQSP(qs, "allow=aou");
                   qs = appendQSP(qs, thisUpdater["qs"]);
 
                   let gravatar = getAvatarid();
@@ -2153,6 +2239,41 @@
                       gmc.fields["updaterMinage"].node.parentNode.classList.remove("hid");
                     else
                       gmc.fields["updaterMinage"].node.parentNode.classList.add("hid");
+
+
+                    installNode.removeEventListener("click", pingCount, false);
+                    if (thisUpdater["updater"] == "usocheckup") {
+                      switch (thisUpdater["value"]) {
+                        case "usoCheckupOttoShow":
+                        case "usoCheckupbottomsUp":
+                          gmc.fields["indirectMethod"].node.parentNode.classList.add("hid");
+                          gmc.fields["directMethod"].node.parentNode.classList.add("hid");
+
+                          installNode.search = installNode.search.replace(/method\=(?:show|install|update)/i, "method=show");
+                          break;
+                        case "usoCheckupOttoInstall":
+                        case "usoCheckupmeta":
+                          gmc.fields["indirectMethod"].node.parentNode.classList.add("hid");
+                          gmc.fields["directMethod"].node.parentNode.classList.remove("hid");
+
+                          installNode.search = installNode.search.replace(/method\=(?:show|install|update)/i, "method=" + gmc.get("directMethod"));
+                          if (gmc.get("directMethod") == "update")
+                            installNode.addEventListener("click", pingCount, false);
+                          break;
+                        default:
+                          gmc.fields["indirectMethod"].node.parentNode.classList.remove("hid");
+                          gmc.fields["directMethod"].node.parentNode.classList.add("hid");
+
+                          installNode.search = installNode.search.replace(/method\=(?:show|install|update)/i, "method=" + gmc.get("indirectMethod"));
+                          if (gmc.get("indirectMethod") == "update")
+                            installNode.addEventListener("click", pingCount, false);
+                          break;
+                      }
+                    }
+                    else {
+                      gmc.fields["indirectMethod"].node.parentNode.classList.add("hid");
+                      gmc.fields["directMethod"].node.parentNode.classList.add("hid");
+                    }
                   }
 
                   if (gmcHome.get("skipEmbeddedScan"))
