@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.26
+// @version       1.0.27
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -2195,7 +2195,7 @@
                   let icontype = getIcontype();
 
                   if (gravatar)
-                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=PG&s=32&default=identicon' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=pg&s=32&default=identicon' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
                   else
                     gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
 
@@ -2304,7 +2304,7 @@
                             ? updater["iconUrl"]
                             : (/^https:$/i.test(window.location.protocol)
                                 ? "https://secure"
-                                : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + updater["iconUrl"] + "&r=PG&s=16&default=identicon")
+                                : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + updater["iconUrl"] + "&r=pg&s=16&default=identicon")
                         : ""
                 ;
 
