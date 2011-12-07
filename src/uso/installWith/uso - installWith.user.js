@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.22
+// @version       1.0.23
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -620,6 +620,7 @@
                 revertInstall();
                 installNode.title = "Security Advisory: ERROR, meta.js @uso:version " + currentVersion + " and page @uso:version " + thisNode.content + " DO NOT MATCH, Aborting installWith";
                 installNode.classList.add("saERROR");
+                installNode.classList.remove("saBUSY");
                 return;
               }
             }
@@ -669,6 +670,7 @@
                           revertInstall();
                           installNode.title = "Security Advisory: ERROR, meta.js @version " + thisNode.textContent.trim() + " and user.js @version " + currentVersion.trim() + " DO NOT MATCH, Aborting installWith";
                           installNode.classList.add("saERROR");
+                          installNode.classList.remove("saBUSY");
                           return;
                         }
                       }
@@ -741,8 +743,7 @@
                     installNode.addEventListener("click", nag, true);
                   installNode.classList.add("saLIB");
                   installNode.classList.add("sabLIB");
-                  if (gmcHome.get("skipEmbeddedScan"))
-                    installNode.classList.remove("saBUSY");
+                  installNode.classList.remove("saBUSY");
                   return;
                 }
 
@@ -1984,44 +1985,6 @@
             if (gmcHome.get("forceInstallRecent"))
               installNode.pathname = installNode.pathname.replace(/\/source\/(\d+)\.user\.js/i, "/version/$1/" + currentVersion + ".user.js");
 
-            if (headers["require"])
-              for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
-                for each (let updater in updaters)
-                  for each (let rex in updater["rex"]) {
-                    let sid = require.match(new RegExp(rex  + ".*", "i"));
-                    if (sid) {
-                      if (sid[1] == scriptid || sid[1] == null) {
-                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"] : "");
-                        installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
-                        installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
-                        installNode.classList.remove("saBUSY");
-                      }
-                      else {
-                        installNode.title = "Security Advisory: GUARDED, Possible malformed updater syntax, Possible Security Risk";
-                        installNode.classList.add("saGUARDED");
-                        installNode.classList.add("sabGUARDED");
-                        installNode.classList.remove("saBUSY");
-                        return;
-                      }
-                    }
-                  }
-
-               if (!installNode.classList.contains("saBUSY"))
-                 return;
-
-            if (headers["include"])
-              for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
-                for each (let updater in updaters)
-                  for each (let rex in updater["rex"])
-                    if (include.match(new RegExp(rex  + ".*", "i"))) {
-                      installNode.title = "Security Advisory: " + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"]: "");
-                      installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
-                      installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
-                      if (gmcHome.get("skipEmbeddedScan"))
-                        installNode.classList.remove("saBUSY");
-                      return;
-                    }
-
             if (headers["installURL"]) {
               let rex = new RegExp("^https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
                   lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
@@ -2042,21 +2005,64 @@
                 DDoS = true;
             }
 
+            if (headers["require"])
+              for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
+                for each (let updater in updaters)
+                  for each (let rex in updater["rex"]) {
+                    let sid = require.match(new RegExp(rex  + ".*", "i"));
+                    if (sid) {
+                      if (sid[1] == scriptid || sid[1] == null) {
+                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"] : "");
+                        installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                        installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                        if (DDoS) {
+                          installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
+                          installNode.classList.add("saSEVERE");
+                        }
+                        else if (RHV) {
+                          installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
+                          installNode.classList.add("saHIGH");
+                        }
+                        installNode.classList.remove("saBUSY");
+                      }
+                      else {
+                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "GUARDED, Possible malformed updater syntax, Possible Security Risk";
+                        installNode.classList.add("saGUARDED");
+                        installNode.classList.add("sabGUARDED");
+                        installNode.classList.remove("saBUSY");
+                        return;
+                      }
+                    }
+                  }
+
+            if (!installNode.classList.contains("saBUSY"))
+              return;
+
+            if (headers["include"])
+              for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
+                for each (let updater in updaters)
+                  for each (let rex in updater["rex"])
+                    if (include.match(new RegExp(rex  + ".*", "i"))) {
+                      installNode.title = "Security Advisory: " + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"]: "");
+                      installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                      installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                      installNode.classList.remove("saBUSY");
+                      return;
+                    }
+
             if (!gmcHome.get("allowUpdatersOnBadAOUSyntax")) {
               if (DDoS) {
                 installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
                 installNode.classList.add("saSEVERE");
                 installNode.classList.add("sabSEVERE");
-                if (gmcHome.get("skipEmbeddedScan"))
-                  installNode.classList.remove("saBUSY");
+                installNode.classList.remove("saBUSY");
                 return;
               }
               else if (RHV) {
                 installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
                 installNode.classList.add("saHIGH");
                 installNode.classList.add("sabHIGH");
-                if (gmcHome.get("skipEmbeddedScan"))
-                  installNode.classList.remove("saBUSY");
+                installNode.classList.remove("saBUSY");
                 return;
               }
             }
