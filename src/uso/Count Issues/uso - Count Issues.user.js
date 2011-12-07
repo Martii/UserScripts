@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.17.2
+// @version       0.17.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -811,6 +811,7 @@
           onload: function(xhr) {
             switch (xhr.status) {
               case 404:
+              case 500:
               case 502:
               case 503:
                 if (this.retry-- > 0)
@@ -893,6 +894,7 @@
                       onload: function(xhr) {
                         switch (xhr.status) {
                           case 404:
+                          case 500:
                           case 502:
                           case 503:
                             if (this.retry-- > 0)
@@ -1242,6 +1244,7 @@
                                 url: showUrl,
                                 onload: function(xhr) {
                                   switch (xhr.status) {
+                                    case 500:
                                     case 502:
                                     case 503:
                                       if (this.retry-- > 0)
@@ -1526,6 +1529,7 @@
               onload: function(xhr) {
                 switch (xhr.status) {
                   case 404:
+                  case 500:
                   case 502:
                   case 503:
                     if (this.retry-- > 0)
@@ -1632,6 +1636,7 @@
           onload: function (xhr) {
             switch (xhr.status) {
               case 404:
+              case 500:
               case 502:
               case 503:
                 if (this.retry-- > 0)
@@ -1986,6 +1991,7 @@
               url: url,
               onload: function(xhr) {
                 switch (xhr.status) {
+                  case 500:
                   case 502:
                   case 503:
                     if (this.retry-- > 0)
@@ -2085,6 +2091,7 @@
                               url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                               onload: function(xhr) {
                                 switch (xhr.status) {
+                                  case 500:
                                   case 502:
                                   case 503:
                                     // Clear retrieving Selection marker
@@ -2148,17 +2155,18 @@
                             url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                             onload: function(xhr) {
                               switch (xhr.status) {
-                                  case 502:
-                                  case 503:
-                                    // Clear retrieving Selection marker
-                                    ulNode = aNode.parentNode.parentNode.parentNode;
+                                case 500:
+                                case 502:
+                                case 503:
+                                  // Clear retrieving Selection marker
+                                  ulNode = aNode.parentNode.parentNode.parentNode;
 
-                                    thisNode = ulNode.firstChild;
-                                    while(thisNode) {
-                                      thisNode.classList.remove("retrieving");
-                                      thisNode = thisNode.nextSibling;
-                                    }
-                                    break;
+                                  thisNode = ulNode.firstChild;
+                                  while(thisNode) {
+                                    thisNode.classList.remove("retrieving");
+                                    thisNode = thisNode.nextSibling;
+                                  }
+                                  break;
                                 case 200:
 
                                   let
