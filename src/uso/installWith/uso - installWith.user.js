@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.27
+// @version       1.0.28
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1979,11 +1979,41 @@
               }
             }
 
+            function pingCount (ev) {
+              GM_xmlhttpRequest({
+                retry: 5,
+                url: "http" + ((/^https:$/i.test(window.location.protocol) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".user.js",
+                method: "HEAD",
+                onload: function(xhr) {
+                  switch(xhr.status) {
+                    case 403:
+                      GM_log('WARNING: Recently unlisted script');
+                      break;
+                    case 404:
+                    case 500:
+                    case 502:
+                    case 503:
+                      GM_log('test retry');
+                      if (this.retry-- > 0)
+                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      else
+                        GM_log('WARNING: Unable to increment script count for update method: ' + xhr.status);
+                      break;
+                    case 200:
+                      break;
+                  }
+                },
+                onerror: function (xhr) {}
+              });
+            }
+
             if (window.location.protocol != installNode.protocol || gmcHome.get("forceInstallSecure"))
               installNode.protocol = "https:";
 
-            if (gmcHome.get("forceInstallRecent"))
+            if (gmcHome.get("forceInstallRecent")) {
               installNode.pathname = installNode.pathname.replace(/\/source\/(\d+)\.user\.js/i, "/version/$1/" + currentVersion + ".user.js");
+              installNode.addEventListener("click", pingCount, false);
+            }
 
             if (headers["installURL"]) {
               let rex = new RegExp("^(?:file:|https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js)", "i"),
@@ -2083,34 +2113,6 @@
               installNode.classList.add("saERROR");
               installNode.classList.remove("saBUSY");
               return;
-            }
-
-            function pingCount (ev) {
-              GM_xmlhttpRequest({
-                retry: 5,
-                url: "http" + ((/^https:$/i.test(window.location.protocol) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".user.js",
-                method: "HEAD",
-                onload: function(xhr) {
-                  switch(xhr.status) {
-                    case 403:
-                      GM_log('WARNING: Recently unlisted script');
-                      break;
-                    case 404:
-                    case 500:
-                    case 502:
-                    case 503:
-                      GM_log('test retry');
-                      if (this.retry-- > 0)
-                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                      else
-                        GM_log('WARNING: Unable to increment script count for update method: ' + xhr.status);
-                      break;
-                    case 200:
-                      break;
-                  }
-                },
-                onerror: function (xhr) {}
-              });
             }
 
             let thisNode = installNode;
