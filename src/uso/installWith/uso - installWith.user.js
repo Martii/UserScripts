@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.24
+// @version       1.0.25
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1986,10 +1986,10 @@
               installNode.pathname = installNode.pathname.replace(/\/source\/(\d+)\.user\.js/i, "/version/$1/" + currentVersion + ".user.js");
 
             if (headers["installURL"]) {
-              let rex = new RegExp("^https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i"),
+              let rex = new RegExp("^(?:file:|https?:\\/\\/(?:www.\)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js)", "i"),
                   lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
 
-              if (lastInstallURL.match(rex))
+              if (!lastInstallURL.match(rex))
                 RHV = true;
             }
 
