@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.30
+// @version       1.0.31
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -33,6 +33,7 @@
 //
 // @updateURL  file:
 // @installURL  file:
+// @downloadURL file:
 //
 // @require https://secure.dune.net/usocheckup/68219.js?method=update&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
@@ -677,7 +678,7 @@
 
                       // Remove some keys
                       let userJs = xhr.responseText;
-                      userJs = userJs.replace(/\s+\/\/\s@(?:updateURL|installURL)\s+.*[^\n\r]/gm, "");
+                      userJs = userJs.replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL)\s+.*[^\n\r]/gm, "");
 
                       if (userJs.match("("
                           + [
@@ -2019,6 +2020,14 @@
                   lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
 
               if (!lastInstallURL.match(rex))
+                RHV = true;
+            }
+
+            if (headers["downloadURL"]) {
+              let rex = new RegExp("^(?:file:|https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js)", "i"),
+                  lastDownloadURL = (typeof headers["downloadURL"] == "string") ? headers["downloadURL"] : headers["downloadURL"][headers["downloadURL"].length - 1];
+
+              if (!lastDownloadURL.match(rex))
                 RHV = true;
             }
 
