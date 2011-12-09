@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.31
+// @version       1.0.32
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -50,6 +50,7 @@
           .hid { display: none; }
 
           #install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; border: 3px solid #a7a7a7; }
+          #install_script select { border: 3px solid #a7a7a7; -moz-border-radius: 5px; }
           #install_script a.userjs:hover { color: #004; background: #999 -moz-linear-gradient(top, #f5f5f5, #999) no-repeat scroll 0 0; }
 
           #install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0; }
@@ -57,15 +58,15 @@
           #install_script a.saLIB:hover { color: #000; background: #fff none repeat scroll 0 0; }
 
           #install_script a.saLOW { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
-          #install_script a.sabLOW { border: 3px solid #adda63; }
+          #install_script a.sabLOW, #install_script select.sabLOW { border: 3px solid #adda63; }
           #install_script a.saLOW:hover { background:  #a2cc5d -moz-linear-gradient(top, #e5f5cb, #a2cc5d) repeat scroll 0 0; }
 
           #install_script a.saGUARDED { background: #8085a0 -moz-linear-gradient(top, #cbd2f5, #8085a0) repeat scroll 0 0; }
-          #install_script a.sabGUARDED { border: 3px solid #99a9ff; }
+          #install_script a.sabGUARDED, #install_script select.sabGUARDED { border: 3px solid #99a9ff; }
           #install_script a.saGUARDED:hover { background: #767b94 -moz-linear-gradient(top, #cbd2f5, #767b94) repeat scroll 0 0; }
 
           #install_script a.saELEVATED { background: #e0e36e -moz-linear-gradient(top, #f4f5cb, #e0e36e) repeat scroll 0 0; }
-          #install_script a.sabELEVATED { border: 3px solid #e0e36e; }
+          #install_script a.sabELEVATED { border: 3px solid #fcff7c; }
           #install_script a.saELEVATED:hover { background: #d3d668 -moz-linear-gradient(top, #f4f5cb, #d3d668) repeat scroll 0 0; }
 
           #install_script a.saHIGH { background: #e0a46d -moz-linear-gradient(top, #f5dfcb, #e0a46d) repeat scroll 0 0; }
@@ -82,11 +83,15 @@
           @-moz-keyframes saBUSY { from { background: #a7a7a7; } to { background: #8c8c8c; } }
           #install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }
 
-          #install_script a.installWith { font-size: 1.0em; }
+          #install_script a.installWith { font-size: 1.0em; background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
+          #install_script a.installWith:hover { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
+
+          #install_script a.pEmbedded, #install_script a.pEmbedded:hover { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; }
+
           #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-weight: 900; width: 1.5em; height: 1.5em; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; -moz-border-radius: 1em; border-radius: 1em; border: 1px solid #999; }
           #install_script a.helpWith:hover { color: #a00; background: #ec0 -moz-linear-gradient(center top,  #eee, #e6b800) repeat scroll 0 0; }
-          #install_script select.updateWith { width: 90%; height: 1.6em; font-size: 0.9em; }
-          #install_script select.updateWith option.separator { border-bottom: thin dotted #666; }
+          #install_script select.updateWith { width: 90%; height: 1.9em; font-size: 0.9em; }
+          #install_script select.updateWith option.separator { border-top: thin dotted #666; }
           #install_script select.updateWith img { vertical-align: middle; margin: 0.25em 0.25em 0.25em 0; width: 16px; height: 16px; background: none no-repeat scroll center center transparent; }
           #install_script select.updateWith img.indent { margin-left: 0.6em; }
 
@@ -626,7 +631,7 @@
               }
             }
 
-            let possibleEmbedded, DDoS, RHV;
+            let KU, usoC, usocMethod, possibleEmbedded, DDoS, RHV;
             if (!gmcHome.get("skipEmbeddedScan")) {
               GM_xmlhttpRequest({
                 retry: 5,
@@ -709,7 +714,8 @@
                         ].forEach(function (e, i, a) {
                           installNode.classList.remove(e);
                         });
-                        installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source; " + installNode.title;
+                        installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source" + ((installNode.title) ? "; " + installNode.title : "");
+                        installNode.classList.add("pEmbedded");
                       }
                       installNode.classList.remove("saBUSY");
 
@@ -751,9 +757,10 @@
             let updaters = {
               "uso": {
                 "value": "uso",
+                "core": true,
                 "textContent": 'userscripts.org (default)',
                 "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/7996/large.png",
-                "title": 'Use native meta.js',
+                "title": 'Use native user.js',
                 "securityAdvisory": {
                   "advisory": "undetermined",
                   "title": ""
@@ -761,9 +768,10 @@
               },
               "usoCheckupmeta": {
                 "value": "usoCheckupmeta",
+                "core": true,
                 "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
                 "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/814/large.png",
-                "title": 'by tHE gREASEmONKEYS (multiple contributors)',
+                "title": 'Use optional filtered meta.js',
                 "updater": "usocheckup",
                 "rex": [
                   "^(?:http:\\/\\/usocheckup\\.(?:redirectme|dune)\\.net\\/|https:\\/\\/secure\\.dune\\.net\\/usocheckup\\/)(\\d+)\\.js\\?.*?updater\=none",
@@ -774,8 +782,7 @@
                 "securityAdvisory": {
                   "advisory": "low",
                   "title": "usoC META"
-                },
-                "separator": true
+                }
               },
               "AnotherAutoUpdater": {
                 "value": "AnotherAutoUpdater",
@@ -1765,7 +1772,8 @@
                   "advisory": "guarded",
                   "title": "usoC BETA, MAY NOT ALWAYS WORK! :)"
                 },
-                "beta": true
+                "beta": true,
+                "separator": true
               },
               "usoCheckup": {
                 "value": "usoCheckup",
@@ -2043,6 +2051,10 @@
                 DDoS = true;
             }
 
+            let messageDDoS = "SEVERE, Possible DDoS attack script via updateURL metadata block key";
+                messageRHV = "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates";
+
+            usocMethod = "show";
             if (headers["require"])
               for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
                 for each (let updater in updaters)
@@ -2051,17 +2063,24 @@
                     if (sid) {
                       if (sid[1] == scriptid || sid[1] == null) {
                         installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"] : "");
-                        installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
                         installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                        KU = true;
+                        if (updater["updater"] == "usocheckup") {
+                          usoC = true;
+                          let method = require.match(/method=(\w+)/);
+                          if (method)
+                            usocMethod = method[1];
+                        }
                         if (DDoS) {
-                          installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
+                          installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + messageDDoS;
                           installNode.classList.add("saSEVERE");
+                          installNode.classList.add("sabSEVERE");
                         }
                         else if (RHV) {
-                          installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
+                          installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + messageRHV;
                           installNode.classList.add("saHIGH");
+                          installNode.classList.add("sabSEVERE");
                         }
-                        installNode.classList.remove("saBUSY");
                       }
                       else {
                         installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "GUARDED, Possible malformed updater syntax, Possible Security Risk";
@@ -2072,9 +2091,6 @@
                       }
                     }
                   }
-
-            if (!installNode.classList.contains("saBUSY"))
-              return;
 
             if (headers["include"])
               for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
@@ -2088,18 +2104,22 @@
                       return;
                     }
 
-            if (!gmcHome.get("allowUpdatersOnBadAOUSyntax")) {
-              if (DDoS) {
-                installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
-                installNode.classList.add("saSEVERE");
-                installNode.classList.add("sabSEVERE");
+            if (DDoS) {
+              if (installNode.title.indexOf(messageDDoS) == -1)
+                installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + messageDDoS;
+              installNode.classList.add("saSEVERE");
+              installNode.classList.add("sabSEVERE");
+              if (!gmcHome.get("allowUpdatersOnBadAOUSyntax")) {
                 installNode.classList.remove("saBUSY");
                 return;
               }
-              else if (RHV) {
-                installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
-                installNode.classList.add("saHIGH");
-                installNode.classList.add("sabHIGH");
+            }
+            else if (RHV) {
+              if (installNode.title.indexOf(messageRHV) == -1)
+                installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + messageRHV;
+              installNode.classList.add("saHIGH");
+              installNode.classList.add("sabHIGH");
+              if (!gmcHome.get("allowUpdatersOnBadAOUSyntax")) {
                 installNode.classList.remove("saBUSY");
                 return;
               }
@@ -2141,29 +2161,33 @@
                   "saGUARDED",
                   "saELEVATED",
                   "saHIGH",
-                  "saSEVERE",
-
-                  "sabLOW",
-                  "sabGUARDED",
-                  "sabELEVATED",
-                  "sabHIGH",
-                  "sabSEVERE"
+                  "saSEVERE"
               ].forEach(function (e, i, a) {
                 installNode.classList.remove(e);
               });
 
-              if (possibleEmbedded)
-                installNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
+              [
+                  "sabLOW",
+                  "sabGUARDED"
+              ].forEach(function (e, i, a) {
+                selectNode.classList.remove(e);
+              });
+
+              if (possibleEmbedded) {
+                selectNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());  // TODO: duplicate statement
+              }
               else {
-                installNode.classList.add("sa" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
-                installNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
+                selectNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
               }
 
               switch (this.value) {
                 case "uso":
                   installNode.removeEventListener("click", pingCount, false);
-                  GM_deleteValue(":updaterPreference");
-                  installNode.title = "";
+                  if (KU)
+                    GM_deleteValue(":providerPreference");
+                  else
+                    GM_deleteValue(":updaterPreference");
+
                   installNode.href = "/scripts/source/" + scriptid + ".user.js";
                   if (gmcHome.get("forceInstallSecure"))
                     installNode.protocol = "https:";
@@ -2173,12 +2197,18 @@
                     installNode.addEventListener("click", pingCount, false);
                   }
 
+//                   if (possibleEmbedded)
+//                     installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source; " + installNode.title;
+
                   if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                     gmc.close();
                   break;
                 default:
-                  GM_setValue(":updaterPreference", this.value);
-                  installNode.title = "Security Advisory: " + thisUpdater["securityAdvisory"]["advisory"].toUpperCase() + ((thisUpdater["securityAdvisory"]["title"]) ? ", " + thisUpdater["securityAdvisory"]["title"]: "");
+                  if (KU)
+                    GM_setValue(":providerPreference", this.value);
+                  else
+                    GM_setValue(":updaterPreference", this.value);
+                  selectNode.title = "Security Advisory: " + thisUpdater["securityAdvisory"]["advisory"].toUpperCase() + ((thisUpdater["securityAdvisory"]["title"]) ? ", " + thisUpdater["securityAdvisory"]["title"]: "");
 
                   function appendQSP(qs, qsp) {
                     if (qsp)
@@ -2205,15 +2235,15 @@
                   let icontype = getIcontype();
 
                   if (gravatar)
-                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=pg&s=32&default=identicon' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=pg&s=32&default=identicon' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
                   else
-                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' alt='Use this authors gravatar when available' title='Use this authors gravatar when available' />";
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
 
 
                   if (icontype)
-                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http" +  (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/large." + icontype + "'  alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
+                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http" +  (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/large." + icontype + "'  alt='Favor this scripts USO icon when available if not present' title='Favor this scripts USO icon when available if not present'/>";
                   else
-                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available' title='Favor this scripts USO icon when available'/>";
+                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available if not present' title='Favor this scripts USO icon when available if not present'/>";
 
                   let icon = "";
                   icon = appendListItem(icon, gravatar);
@@ -2230,18 +2260,6 @@
                   url +=  scriptid + ".user.js" + qs + frag;
 
                   installNode.setAttribute("href", url);
-
-                  if (DDoS) {
-                    installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "SEVERE, Possible DDoS attack script via updateURL metadata block key, Check source for additional embedded updaters";
-                    installNode.classList.add("saSEVERE");
-                  }
-                  else if (RHV) {
-                    installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates, Check source for additional updaters";
-                    installNode.classList.add("saHIGH");
-                  }
-
-                  if (possibleEmbedded)
-                    installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source; " + installNode.title;
 
                   if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
                     gmc.open();
@@ -2267,8 +2285,22 @@
 
                           installNode.search = installNode.search.replace(/method\=(?:show|install|update)/i, "method=show");
                           break;
-                        case "usoCheckupOttoInstall":
                         case "usoCheckupmeta":
+                          if (usoC) {
+                            gmc.fields["indirectMethod"].node.parentNode.classList.add("hid");
+                            gmc.fields["directMethod"].node.parentNode.classList.add("hid");
+                            installNode.search = installNode.search.replace(/method\=(?:show|install|update)/i, "method=" + usocMethod);
+                          }
+                          else {
+                            gmc.fields["directMethod"].node.parentNode.classList.remove("hid");
+                            gmc.fields["indirectMethod"].node.parentNode.classList.add("hid");
+                            installNode.search = installNode.search.replace(/method\=(?:show|install|update)/i, "method=" + gmc.get("directMethod"));
+                          }
+
+                          if (installNode.search.match(/method\=update/))
+                            installNode.addEventListener("click", pingCount, false);
+                          break;
+                        case "usoCheckupOttoInstall":
                           gmc.fields["indirectMethod"].node.parentNode.classList.add("hid");
                           gmc.fields["directMethod"].node.parentNode.classList.remove("hid");
 
@@ -2300,40 +2332,51 @@
 
             thisNode.parentNode.insertBefore(selectNode, thisNode);
 
-            for each (let updater in updaters)
+            function createUpdater (aUpdater) {
+              let textNode = document.createTextNode(aUpdater["textContent"]);
+
+              let iconNode = document.createElement("img");
+              if (aUpdater["derivative"] && aUpdater["derivative"] >= 1)
+                iconNode.className = "indent";
+
+              iconNode.src =
+                  (aUpdater["iconUrl"])
+                      ? (aUpdater["iconUrl"].match(/^(?:https?:|data:)/)
+                          ? aUpdater["iconUrl"]
+                          : (/^https:$/i.test(window.location.protocol)
+                              ? "https://secure"
+                              : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + aUpdater["iconUrl"] + "&r=pg&s=16&default=identicon")
+                      : ""
+              ;
+
+              let updaterNode = document.createElement("option");
+              updaterNode.setAttribute("value", aUpdater["value"]);
+              updaterNode.className = "updateWith";
+              if (aUpdater["separator"])
+                updaterNode.classList.add("separator");
+              updaterNode.title = aUpdater["title"];
+
+              updaterNode.appendChild(iconNode);
+              updaterNode.appendChild(textNode);
+
+              selectNode.appendChild(updaterNode);
+            }
+
+            for each (let updater in updaters) {
               if (updater["value"]) {
-                let textNode = document.createTextNode(updater["textContent"]);
-
-                let iconNode = document.createElement("img");
-                if (updater["derivative"] && updater["derivative"] >= 1)
-                  iconNode.className = "indent";
-
-                iconNode.src =
-                    (updater["iconUrl"])
-                        ? (updater["iconUrl"].match(/^(?:https?:|data:)/)
-                            ? updater["iconUrl"]
-                            : (/^https:$/i.test(window.location.protocol)
-                                ? "https://secure"
-                                : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + updater["iconUrl"] + "&r=pg&s=16&default=identicon")
-                        : ""
-                ;
-
-                let updaterNode = document.createElement("option");
-                updaterNode.setAttribute("value", updater["value"]);
-                updaterNode.className = "updateWith";
-                if (updater["separator"])
-                  updaterNode.classList.add("separator");
-                updaterNode.title = updater["title"];
-
-                updaterNode.appendChild(iconNode);
-                updaterNode.appendChild(textNode);
-
-                selectNode.appendChild(updaterNode);
+                if (KU) {
+                  if (updater["core"])
+                    createUpdater(updater);
+                }
+                else {
+                  createUpdater(updater);
+                }
               }
+            }
 
             selectNode.selectedIndex = 0;
 
-            let updaterPreference = GM_getValue(":updaterPreference", "uso");
+            let updaterPreference = (KU) ? GM_getValue(":providerPreference", "uso") : GM_getValue(":updaterPreference", "uso");
             for (let i = 0, len = selectNode.options.length; i < len; ++i)
               if (selectNode.options[i].value == updaterPreference) {
                 selectNode.selectedIndex = i;
