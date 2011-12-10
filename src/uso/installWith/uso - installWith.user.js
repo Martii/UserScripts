@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.32
+// @version       1.0.33
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -2173,15 +2173,11 @@
                 selectNode.classList.remove(e);
               });
 
-              if (possibleEmbedded) {
-                selectNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());  // TODO: duplicate statement
-              }
-              else {
-                selectNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
-              }
+              selectNode.classList.add("sab" + thisUpdater["securityAdvisory"]["advisory"].toUpperCase());
 
               switch (this.value) {
                 case "uso":
+                  selectNode.title = "";
                   installNode.removeEventListener("click", pingCount, false);
                   if (KU)
                     GM_deleteValue(":providerPreference");
@@ -2196,9 +2192,6 @@
                     installNode.pathname = installNode.pathname.replace(/\/source\/(\d+)\.user\.js/i, "/version/$1/" + currentVersion + ".user.js");
                     installNode.addEventListener("click", pingCount, false);
                   }
-
-//                   if (possibleEmbedded)
-//                     installNode.title = "POSSIBLE EMBEDDED UPDATER FOUND: Please check source; " + installNode.title;
 
                   if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                     gmc.close();
