@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.17.4
+// @version       0.17.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -1173,6 +1173,8 @@
                                 url: showUrl,
                                 onload: function(xhr) {
                                   switch (xhr.status) {
+                                    case 404:
+                                    case 500:
                                     case 502:
                                     case 503:
                                       if (this.retry-- > 0)
@@ -1260,6 +1262,7 @@
                                 url: showUrl,
                                 onload: function(xhr) {
                                   switch (xhr.status) {
+                                    case 404:
                                     case 500:
                                     case 502:
                                     case 503:
@@ -2010,6 +2013,7 @@
               url: url,
               onload: function(xhr) {
                 switch (xhr.status) {
+                  case 404:
                   case 500:
                   case 502:
                   case 503:
@@ -2106,20 +2110,26 @@
 
                             let aNode = ev.target, ulNode, thisNode;
                             GM_xmlhttpRequest({
+                              retry: 5,
                               method: "GET",
                               url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                               onload: function(xhr) {
                                 switch (xhr.status) {
+                                  case 404:
                                   case 500:
                                   case 502:
                                   case 503:
-                                    // Clear retrieving Selection marker
-                                    ulNode = aNode.parentNode.parentNode.parentNode;
+                                    if (this.retry-- > 0)
+                                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                                    else {
+                                      // Clear retrieving Selection marker
+                                      ulNode = aNode.parentNode.parentNode.parentNode;
 
-                                    thisNode = ulNode.firstChild;
-                                    while(thisNode) {
-                                      thisNode.classList.remove("retrieving");
-                                      thisNode = thisNode.nextSibling;
+                                      thisNode = ulNode.firstChild;
+                                      while(thisNode) {
+                                        thisNode.classList.remove("retrieving");
+                                        thisNode = thisNode.nextSibling;
+                                      }
                                     }
                                     break;
                                   case 200:
@@ -2170,20 +2180,26 @@
 
                           let aNode = ev.target, ulNode, thisNode;
                           GM_xmlhttpRequest({
+                            retry: 5,
                             method: "GET",
                             url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                             onload: function(xhr) {
                               switch (xhr.status) {
+                                case 404:
                                 case 500:
                                 case 502:
                                 case 503:
-                                  // Clear retrieving Selection marker
-                                  ulNode = aNode.parentNode.parentNode.parentNode;
+                                  if (this.retry-- > 0)
+                                    setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                                  else {
+                                    // Clear retrieving Selection marker
+                                    ulNode = aNode.parentNode.parentNode.parentNode;
 
-                                  thisNode = ulNode.firstChild;
-                                  while(thisNode) {
-                                    thisNode.classList.remove("retrieving");
-                                    thisNode = thisNode.nextSibling;
+                                    thisNode = ulNode.firstChild;
+                                    while(thisNode) {
+                                      thisNode.classList.remove("retrieving");
+                                      thisNode = thisNode.nextSibling;
+                                    }
                                   }
                                   break;
                                 case 200:
