@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.17.3
+// @version       0.17.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -24,8 +24,10 @@
 // @exclude https://userscripts.org/scripts/version/*
 //
 // @updateURL  file:
+// @installURL file:
+// @downloadURL file:
 //
-// @require https://secure.dune.net/usocheckup/69307.js?method=install&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
+// @require https://secure.dune.net/usocheckup/69307.js?method=update&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
@@ -1115,10 +1117,24 @@
                             liNode.appendChild(anchorNode);
 
                             ulNode.appendChild(liNode);
-                          } else {
-                            liNode.setAttribute("title", key);
-                            liNode.textContent = key;
-                            ulNode.appendChild(liNode);
+                          }
+                          else {
+                            matches = key.match(/^(data:image\/.*)/i);
+                            if (matches) {
+                              let imgNode = document.createElement("img");
+                              imgNode.setAttribute("src", matches[1]);
+                              imgNode.style.setProperty("width", "32px", "");
+                              imgNode.style.setProperty("width", "32px", "");
+                              imgNode.setAttribute("title", "~" + parseInt(matches[1].length / 1024 * 10) / 10 + "K " + matches[1].match(/^data:(?:\w*\/.*?[;,])?/i) + "\u2026");
+                              liNode.appendChild(imgNode);
+
+                              ulNode.appendChild(liNode);
+                            }
+                            else {
+                              liNode.setAttribute("title", key);
+                              liNode.textContent = key;
+                              ulNode.appendChild(liNode);
+                            }
                           }
                           break;
                         case "include":
@@ -1708,6 +1724,9 @@
       );
       if (xpr && xpr.singleNodeValue) {
         let hookNode = xpr.singleNodeValue;
+
+        if (!hookNode.hasChildNodes()) // NOTE: Caching issue on USO so reload until it is present
+          window.location.reload();
 
         // Create standardized div framing
         let toolbarBottomNode = document.createElement("div");
@@ -2459,6 +2478,9 @@
       );
       if (xpr && xpr.singleNodeValue) {
         let hookNode = xpr.singleNodeValue;
+
+        if (!hookNode.hasChildNodes()) // NOTE: Caching issue on USO so reload until it is present
+          window.location.reload();
 
         let preNode = document.createElement("pre");
         preNode.setAttribute("id", "number");
