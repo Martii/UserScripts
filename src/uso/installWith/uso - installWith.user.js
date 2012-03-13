@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.33
+// @version       1.0.34
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -327,7 +327,7 @@
           },
           'allowAOU': {
               "type": 'checkbox',
-              "label": 'Allow Add-on Updater <em class="gmc68219home-yellownote">Greasemonkey versions 0.9.13 through the current HEAD are CURRENTLY UNSAFE due to lack of peer review and notifications</em>',
+              "label": 'Allow Add-on Updater <em class="gmc68219home-yellownote">WARNING: Greasemonkey versions 0.9.13+ are <em>CURRENTLY UNSAFE</em></em>',
               "default": false
           },
           'allowUpdatersOnBadAOUSyntax': {
