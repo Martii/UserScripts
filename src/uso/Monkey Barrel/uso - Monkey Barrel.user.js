@@ -8,12 +8,16 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.20
+// @version       0.0.21
 // @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
-// @include   /https?:\/\/userscripts\.org\/.*/
-// @require   http://userscripts.org/scripts/source/115323.user.js
+// @include   /^https?:\/\/userscripts\.org\/.*/
+// @include   http://userscripts.org/*
+// @include   https://userscripts.org/*
+//
+// @require   https://userscripts.org/scripts/source/115323.user.js
 // @require   https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
+//
 // ==/UserScript==
 
 /*
@@ -241,12 +245,14 @@ Please note this script uses native JSON and native classList which requires Fir
                     "Monkey Barrel": [
                       "/scripts/show/114843",
                       {
-                      "recent posts": "/posts",
                       "recent comments": "/comments",
+                      "recent posts": "/posts",
                       "recent reviews": "/reviews",
+                      "recent spam votes": "/spam",
                       "recent images": "/images",
                       "spam and malware \u00bb": "/topics/9#posts-last",
-                      "cookie stealing scripts \u00bb": "/topics/704#posts-last"
+                      "cookie stealing scripts \u00bb": "/topics/704#posts-last",
+                      "custom search": "/search"
                       }
                      ]
                     }
