@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.17.5
+// @version       0.18.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -31,9 +31,18 @@
 // @require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
-// @require https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
+// @require https://raw.github.com/sizzlemctwizzle/GM_config/7e5dfecf8759719053e1dac71a1a8ee929eb6c8c/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
 // @require https://userscripts.org/scripts/version/87269/317283.user.js
+//
+// @grant GM_addStyle
+// @grant GM_getValue
+// @grant GM_log
+// @grant GM_openInTab
+// @grant GM_registerMenuCommand
+// @grant GM_setValue
+// @grant GM_xmlhttpRequest
+//
 // ==/UserScript==
 
 
@@ -211,17 +220,16 @@
               #gmc69307_field_hideH6String,
               #gmc69307_field_hideNavTabString,
               #gmc69307_field_insertH6String
-              {
-                font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }
+              { font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }
 
-              #gmc69307_field_showStringsString { min-height: 8em; height: 8em; }
+              #gmc69307_field_showStringsString
+              { height: 8em; min-height: 8em; }
 
               #gmc69307_field_showKeysString,
               #gmc69307_field_hideH6String,
               #gmc69307_field_hideNavTabString,
               #gmc69307_field_insertH6String
-              {
-                min-height: 1.2em; height: 1.2em; max-height: 5em; }
+              { height: 1.2em; max-height: 6em; min-height: 1.2em; }
 
               #gmc69307_field_useGreasefireUrl,
               #gmc69307_field_showStrings,
@@ -238,7 +246,7 @@
               #gmc69307_field_enableQuickReviewsMenu,
               #gmc69307_field_hideH6,
               #gmc69307_field_hideNavTab,
-              #gmc69307_field_insertH6,
+              #gmc69307_field_insertH6
               { top: 0.075em; }
 
               #gmc69307_field_useGreasefireUrl,
@@ -256,7 +264,7 @@
 
               #gmc69307_field_fontSize,
               #gmc69307_field_maxHeightList
-              { min-width: 2em; max-width: 4em; width: 2em; min-height: 0.8em; max-height: 2em; height: 1em; text-align: right; }
+              { height: 1em; max-height: 2em; min-height: 0.8em; max-width: 4em; min-width: 2em; text-align: right; width: 2em; }
 
               #gmc69307_field_checkDeobfuscate,
               #gmc69307_field_checkShowSize,
@@ -361,7 +369,7 @@
           'showKeysString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
-              "default": "name,icon,description,version,copyright,license,namespace,installURL,updateURL,require,resource,run-at,include,match,exclude,userInclude,userExclude"
+              "default": "name,icon,description,version,copyright,license,namespace,installURL,updateURL,grant,require,resource,run-at,include,match,exclude"
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
@@ -406,7 +414,7 @@
           'useGreasefireUrl': {
               "section": [, ""],
               "type": 'checkbox',
-              "label": 'Use greasefire USO urls whenever possible <em class="gmc69307-yellownote">useful for bandwidth conservation but not properly secured</em>',
+              "label": 'Use greasefire USO urls whenever possible <em class="gmc69307-yellownote">useful for bandwidth conservation but not properly secured nor always available</em>',
               "default": false
           },
           'showStringsStringHeight': {
@@ -2428,9 +2436,10 @@
     GM_setStyle({
         node: nodeStyle,
         data: <><![CDATA[
+            pre#source { white-space: pre !important; overflow: scroll; width: auto; }
 
-            .number { display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
-            .number a { text-decoration: none; color: #888; font-size: 0.8em; }
+            .number { height: auto; overflow: hidden !important; display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
+            .number a { text-decoration: none; color: #888; font-size: 0.8em; padding-right: 2px; }
             .number a.sharpen { font-size: 1em; color: #000; }
 
         ]]></>
