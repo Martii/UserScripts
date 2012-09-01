@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.34
+// @version       1.0.35
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -40,7 +40,17 @@
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
 //
-// @require https://raw.github.com/sizzlemctwizzle/GM_config/165a1f15d907c21d389cb037c24824885d278693/gm_config.js
+// @require https://raw.github.com/sizzlemctwizzle/GM_config/7e5dfecf8759719053e1dac71a1a8ee929eb6c8c/gm_config.js
+//
+// @grant GM_addStyle
+// @grant GM_deleteValue
+// @grant GM_getValue
+// @grant GM_log
+// @grant GM_openInTab
+// @grant GM_registerMenuCommand
+// @grant GM_setValue
+// @grant GM_xmlhttpRequest
+//
 // ==/UserScript==
 
   let nodeStyle = GM_setStyle({
@@ -311,12 +321,12 @@
         {
           'forceInstallSecure': {
               "type": 'checkbox',
-              "label": 'Force Install button to be secure when browsing the site in unsecure and using userscripts.org for installation',
+              "label": 'Force Install to secure when browsing the site in unsecure and using userscripts.org for installation',
               "default": false
           },
           'forceInstallRecent': {
               "type": 'checkbox',
-              "label": 'Force Install button to use the most recently detected version when using userscripts.org for installation',
+              "label": 'Force Install to use the most recently detected version when using userscripts.org for installation',
               "default": false
           },
           'mirrorDomain': {
@@ -332,7 +342,12 @@
           },
           'allowUpdatersOnBadAOUSyntax': {
               "type": 'checkbox',
-              "label": 'Allow updaters to be added on invalid Add-on Updater syntax <em class="gmc68219home-yellownote">Select this ONLY if you have Greasemonkey updating fully DISABLED</em>',
+              "label": 'Allow updaters to be added on invalid Add-on Updater syntax <em class="gmc68219home-yellownote">Select ONLY if Greasemonkey updating is DISABLED</em>',
+              "default": false
+          },
+          'allowUpdatersOnAOUgrantnone': {
+              "type": 'checkbox',
+              "label": 'Allow updaters to be added on scripts that have <code>&lt;a class=&quot;gmc68219home-invisilink&quot; href=&quot;http://sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40grant&quot;&gt;@grant&lt;/a&gt; none</code> <em class="gmc68219home-yellownote">WARNING: Some scripts may not work properly</em>',
               "default": false
           },
           'skipVerifyLibs': {
@@ -360,6 +375,8 @@
               .section_desc { margin: 0.25em 1.5em !important; }
 
                   .gmc68219home-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+                  .gmc68219home-invisilink { text-decoration: none; color: black; }
+                  .gmc68219home-invisilink:hover { color: black; }
 
                   #gmc68219home_field_mirrorDomain { margin-left: 1em; }
 
@@ -368,6 +385,7 @@
                   #gmc68219home_field_forceInstallSecure,
                   #gmc68219home_field_forceInstallRecent,
                   #gmc68219home_field_allowAOU,
+                  #gmc68219home_field_allowUpdatersOnAOUgrantnone,
                   #gmc68219home_field_skipVerifyLibs,
                   #gmc68219home_field_skipEmbeddedScan,
                   #gmc68219home_field_allowUpdatersOnBadAOUSyntax
@@ -631,7 +649,7 @@
               }
             }
 
-            let KU, usoC, usocMethod, possibleEmbedded, DDoS, RHV;
+            let KU, usoC, usocMethod, possibleEmbedded, DDoS, RHV, RCS;
             if (!gmcHome.get("skipEmbeddedScan")) {
               GM_xmlhttpRequest({
                 retry: 5,
@@ -1689,7 +1707,6 @@
                 }
               },
               "USOUpdater": {
-                "value": "USOUpdater",
                 "textContent": 'USO Updater',
                 "iconUrl": "05f6e5c5e440e8513c86538ddb834096",
                 "title": 'by Tim Smart (63868)',
@@ -1700,8 +1717,8 @@
                 "url": "http://updater.usotools.co.cc/" + scriptid + ".js",
                 "qsmax": "interval",
                 "securityAdvisory": {
-                  "advisory": "guarded",
-                  "title": "USOU, Possible security risk"
+                  "advisory": "severe",
+                  "title": "USOU, Possible security risk, Deprecated and EOL"
                 },
                 "separator": true
               },
@@ -2051,8 +2068,14 @@
                 DDoS = true;
             }
 
-            let messageDDoS = "SEVERE, Possible DDoS attack script via updateURL metadata block key";
-                messageRHV = "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates";
+            // Grant none check here
+            for each (let grant in (typeof headers["grant"] == "string") ? [headers["grant"]] : headers["grant"])
+              if (grant.toLowerCase() == "none")
+                RCS = true;
+
+            let messageDDoS = "SEVERE, Possible DDoS attack script via updateURL metadata block key",
+                messageRHV = "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates",
+                messageRCS = "ELEVATED, Restricted (content) scope script";
 
             usocMethod = "show";
             if (headers["require"])
@@ -2080,6 +2103,11 @@
                           installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + messageRHV;
                           installNode.classList.add("saHIGH");
                           installNode.classList.add("sabSEVERE");
+                        }
+                        else if (RCS && gmcHome.get("allowUpdatersOnAOUgrantnone")) {
+                          installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + messageRCS;
+                          installNode.classList.add("saELEVATED");
+                          installNode.classList.add("sabELEVATED");
                         }
                       }
                       else {
@@ -2123,6 +2151,20 @@
                 installNode.classList.remove("saBUSY");
                 return;
               }
+            }
+            else if (RCS && gmcHome.get("allowUpdatersOnAOUgrantnone")) {
+              if (installNode.title.indexOf(messageRCS) == -1)
+                installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + messageRCS;
+              installNode.classList.add("saELEVATED");
+              installNode.classList.add("sabELEVATED");
+            }
+
+            if (KU && RCS) {
+                revertInstall();
+                installNode.title = "Security Advisory: ERROR, Known updater and restricted (content) scope are incompatible";
+                installNode.classList.add("saERROR");
+                installNode.classList.remove("saBUSY");
+                return;
             }
 
             let helpNode = document.evaluate(
@@ -2181,6 +2223,8 @@
                   installNode.removeEventListener("click", pingCount, false);
                   if (KU)
                     GM_deleteValue(":providerPreference");
+                  else if (RCS)
+                    GM_deleteValue(":overridePreference");
                   else
                     GM_deleteValue(":updaterPreference");
 
@@ -2199,6 +2243,8 @@
                 default:
                   if (KU)
                     GM_setValue(":providerPreference", this.value);
+                  else if (RCS)
+                    GM_setValue(":overridePreference", this.value);
                   else
                     GM_setValue(":updaterPreference", this.value);
                   selectNode.title = "Security Advisory: " + thisUpdater["securityAdvisory"]["advisory"].toUpperCase() + ((thisUpdater["securityAdvisory"]["title"]) ? ", " + thisUpdater["securityAdvisory"]["title"]: "");
@@ -2357,7 +2403,7 @@
 
             for each (let updater in updaters) {
               if (updater["value"]) {
-                if (KU) {
+                if (KU || (RCS && !gmcHome.get("allowUpdatersOnAOUgrantnone"))) {
                   if (updater["core"])
                     createUpdater(updater);
                 }
@@ -2370,6 +2416,14 @@
             selectNode.selectedIndex = 0;
 
             let updaterPreference = (KU) ? GM_getValue(":providerPreference", "uso") : GM_getValue(":updaterPreference", "uso");
+
+            if (KU)
+              updaterPreference = GM_getValue(":providerPreference", "uso");
+            else if (RCS)
+              updaterPreference = GM_getValue(":overridePreference", "uso");
+            else
+              updaterPreference = GM_getValue(":updaterPreference", "uso");
+            
             for (let i = 0, len = selectNode.options.length; i < len; ++i)
               if (selectNode.options[i].value == updaterPreference) {
                 selectNode.selectedIndex = i;
