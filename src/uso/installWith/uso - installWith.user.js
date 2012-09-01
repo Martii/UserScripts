@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.35
+// @version       1.0.36
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -347,7 +347,7 @@
           },
           'allowUpdatersOnAOUgrantnone': {
               "type": 'checkbox',
-              "label": 'Allow updaters to be added on scripts that have <code>&lt;a class=&quot;gmc68219home-invisilink&quot; href=&quot;http://sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40grant&quot;&gt;@grant&lt;/a&gt; none</code> <em class="gmc68219home-yellownote">WARNING: Some scripts may not work properly</em>',
+              "label": 'Allow updaters to be added on scripts that have <code><a class="gmc68219home-invisilink" href="http://sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40grant">@grant</a> none</code> <em class="gmc68219home-yellownote">WARNING: Some scripts may not work properly</em>',
               "default": false
           },
           'skipVerifyLibs': {
@@ -2423,7 +2423,7 @@
               updaterPreference = GM_getValue(":overridePreference", "uso");
             else
               updaterPreference = GM_getValue(":updaterPreference", "uso");
-            
+
             for (let i = 0, len = selectNode.options.length; i < len; ++i)
               if (selectNode.options[i].value == updaterPreference) {
                 selectNode.selectedIndex = i;
