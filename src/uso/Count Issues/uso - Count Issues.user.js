@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.0
+// @version       0.18.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -985,7 +985,7 @@
                               responseText = xhr.responseText;
 
                             if (gmc.get("showStringsString")) {
-                              for each (rex in gmc.get("showStringsString").split("\n"))
+                              for each (let rex in gmc.get("showStringsString").split("\n"))
                                 for each (let match in responseText.match(new RegExp(rex, "gm")))
                                   finds[match] = (match in finds) ? finds[match] + 1 : 1;
 
@@ -2141,11 +2141,13 @@
                                     }
                                     break;
                                   case 200:
-                                    if (xhr.responseText.match(/[\r\n]$/))
-                                      xhr.responseText = xhr.responseText.replace(/[\r\n]*$/, "");
+                                    let responseText = xhr.responseText;
+
+                                    if (responseText.match(/[\r\n]$/))
+                                      responseText = responseText.replace(/[\r\n]*$/, "");
 
                                     let preNode = document.getElementById("source");
-                                    preNode.textContent = xhr.responseText;
+                                    preNode.textContent = responseText;
 
                                     // Clear all Selection markers
                                     ulNode = aNode.parentNode.parentNode.parentNode;
