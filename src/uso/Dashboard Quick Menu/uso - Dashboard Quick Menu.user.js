@@ -8,11 +8,16 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @icon          http://s3.amazonaws.com/uso_ss/icon/105402/large.png
-// @version       0.1.7
+// @version       0.1.8
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
 // @require http://userscripts.org/scripts/source/115323.user.js
+//
+// @grant GM_addStyle
+// @grant GM_getValue
+// @grant GM_setValue
+//
 // ==/UserScript==
 
 /*
