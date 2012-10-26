@@ -8,7 +8,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.1
+// @version       0.18.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   http://userscripts.org/scripts/*/*
@@ -51,6 +51,7 @@
       data: <><![CDATA[
 
           .hid { display: none; }
+          .hidimp { display: none !important }
 
       ]]></>
   });
@@ -245,6 +246,7 @@
               #gmc69307_field_checkShowLineNumbers,
               #gmc69307_field_enableQuickReviewsMenu,
               #gmc69307_field_hideH6,
+              #gmc69307_field_hideH6Reinforce,
               #gmc69307_field_hideNavTab,
               #gmc69307_field_insertH6
               { top: 0.075em; }
@@ -272,6 +274,7 @@
               #gmc69307_field_checkAgainstHomepageUSO
               { margin-left: 1.5em; }
 
+              #gmc69307_field_hideH6Reinforce,
               #gmc69307_field_checkTrimSourceCode,
               #gmc69307_field_deobMethod,
               #gmc69307_field_enableHEAD
@@ -291,6 +294,7 @@
 
               #gmc69307_showStringsString_field_label,
               #gmc69307_showKeysString_field_label,
+              #gmc69307_field_hideH6Reinforce_field_label,
               #gmc69307_hideH6String_field_label,
               #gmc69307_hideNavTabString_field_label,
               #gmc69307_insertH6String_field_label
@@ -331,6 +335,11 @@
               "label": '<em class="gmc69307-yellownote">use commas to separate headers</em>',
               "default": "Share"
           },
+          'hideH6Reinforce': {
+              "type": 'checkbox',
+              "label": 'Reinforce hidden status',
+              "default": true
+          },
           'showStrings': {
               "type": 'checkbox',
               "label": 'Show "Lost and Found" string(s) if present in sidebar',
@@ -369,7 +378,7 @@
           'showKeysString': {
               "type": 'textarea',
               "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
-              "default": "name,icon,description,version,copyright,license,namespace,installURL,updateURL,grant,require,resource,run-at,include,match,exclude"
+              "default": "name,icon,description,version,copyright,license,namespace,updateURL,downloadURL,installURL,grant,require,resource,run-at,include,match,exclude"
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
@@ -794,7 +803,10 @@
                         break;
                       default:
                         if (thatNode.id != "fans")
-                          thatNode.classList.add("hid");
+                          if (gmc.get("hideH6Reinforce"))
+                            thatNode.classList.add("hidimp");
+                          else
+                            thatNode.classList.add("hid");
                         break;
                     }
                   else
@@ -2187,6 +2199,8 @@
                         aDiffNode.textContent = "changes";
                         aDiffNode.addEventListener("click", function(ev) {
                           ev.preventDefault();
+
+                          ev.target.parentNode.parentNode.classList.add("retrieving");
 
                           let aNode = ev.target, ulNode, thisNode;
                           GM_xmlhttpRequest({
