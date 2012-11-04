@@ -1,6 +1,7 @@
 (function() {
 
 // ==UserScript==
+//
 // @name          uso - Count Issues
 // @namespace     http://userscripts.org/users/37004
 // @description   Counts issues on USO
@@ -8,8 +9,14 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.2
+// @version       0.18.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
+//
+// @include   /https?:\/\/userscripts\.org\/scripts\/.*/
+// @include   /https?:\/\/userscripts\.org\/topics\/.*/
+// @include   /https?:\/\/userscripts\.org\/reviews\/.*/
+// @exclude   /https?:\/\/userscripts\.org\/scripts\/diff\/.*/
+// @exclude   /https?:\/\/userscripts\.org\/scripts\/version\/.*/
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -17,7 +24,6 @@
 // @include   https://userscripts.org/topics/*
 // @include   http://userscripts.org/reviews/*
 // @include   https://userscripts.org/reviews/*
-//
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
@@ -46,12 +52,24 @@
 // ==/UserScript==
 
 
+  let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
+
+  function getScriptid() {
+    let sid = location.pathname.match(/\/scripts\/.+\/(\d+)/i);
+    if (!sid) {
+      if (titleNode)
+        sid = titleNode.pathname.match(/\/scripts\/show\/(\d+)/i);
+    }
+    return (sid) ? sid[1] : undefined;
+  };
+  let scriptid = getScriptid();
+
   let nodeStyle = GM_setStyle({
       media: "screen, projection",
       data: <><![CDATA[
 
           .hid { display: none; }
-          .hidimp { display: none !important }
+          .HID { display: none !important }
 
       ]]></>
   });
@@ -198,113 +216,127 @@
           ]]></>
       });
 
-    gmc.init(divNode,
-        <><![CDATA[
-          <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11760/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" alt="uso - Count Issues" title="uso - Count Issues" /> Preferences
-          <span style="float: right; margin: 0.4em 0.5em;"><a href="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://github.com/sizzlemctwizzle/GM_config"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
-        ]]></>.toString(),
+    gmc.init(
+      divNode,
+      <><![CDATA[
+          <img alt="uso &ndash; Count Issues" title="uso &ndash; Count Issues" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11760/medium.png" />
+          <p>Preferences</p>
+          <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config">
+              <img alt="Powered in part by GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
+          </a>
+      ]]></>.toString(),
+
         /* Custom CSS */
         GM_setStyle({
           node: null,
           data: <><![CDATA[
+              /* Homepage */
+              @media screen, projection {
+                  /* GM_config USO styling fixups */
+                  #gmc69307 { border: 1px solid #ddd; clear: right; }
+                  #gmc69307_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 43px; }
+                  #gmc69307_header > p { display: inline; }
+                  #gmc69307_header > a { float: right; margin: 0.4em 0.5em; }
+                  #gmc69307_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+                  #gmc69307 .config_header { background-color: #333; color: #fff; font-size: 1.55em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
+                  #gmc69307 .config_var { clear: both; margin: 0 1em; padding: 0; }
+                  #gmc69307 .field_label { color: #333; font-size: 100%; font-weight: normal; }
+                  .section_desc { margin: 0.25em 1em !important; }
+                  .gmc-yellownote { background-color: #ffd; font-size: 0.66em; }
 
-              /* GM_config specific fixups */
-              #gmc69307 { border: 1px solid #ddd !important; clear: right !important; height: auto !important; max-height: none !important; max-width: 100% !important; margin: 0 0 0.6em 0 !important; position: static !important; width: auto !important; z-index: 0 !important; }
-              #gmc69307_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-              #gmc69307 .config_header { background-color: #333; color: white; font-size: 1.57em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
-              #gmc69307 .config_var { clear: both; margin: 0 1em; padding: 0; }
-              #gmc69307 .field_label { color: #333; font-size: 100%; font-weight: normal; }
-              .section_desc { margin: 0.25em 1em !important; }
+                  /* Preferences panel */
+                  #gmc69307_field_showStringsString,
+                  #gmc69307_field_showKeysString,
+                  #gmc69307_field_hideH6String,
+                  #gmc69307_field_hideNavTabString,
+                  #gmc69307_field_insertH6String
+                  { font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }
 
-              #gmc69307_field_showStringsString,
-              #gmc69307_field_showKeysString,
-              #gmc69307_field_hideH6String,
-              #gmc69307_field_hideNavTabString,
-              #gmc69307_field_insertH6String
-              { font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }
+                  #gmc69307_field_showStringsString
+                  { height: 8em; min-height: 8em; }
 
-              #gmc69307_field_showStringsString
-              { height: 8em; min-height: 8em; }
+                  #gmc69307_field_showKeysString,
+                  #gmc69307_field_hideH6String,
+                  #gmc69307_field_hideNavTabString,
+                  #gmc69307_field_insertH6String
+                  { height: 1.2em; max-height: 6em; min-height: 1.2em; }
 
-              #gmc69307_field_showKeysString,
-              #gmc69307_field_hideH6String,
-              #gmc69307_field_hideNavTabString,
-              #gmc69307_field_insertH6String
-              { height: 1.2em; max-height: 6em; min-height: 1.2em; }
+                  #gmc69307_field_useGreasefireUrl,
+                  #gmc69307_field_showStrings,
+                  #gmc69307_field_checkDeobfuscate,
+                  #gmc69307_field_checkShowSize,
+                  #gmc69307_field_checkTrimSourceCode,
+                  #gmc69307_field_showKeys,
+                  #gmc69307_field_limitMaxHeight,
+                  #gmc69307_field_showOnAboutOnly,
+                  #gmc69307_field_checkAgainstHomepageUSO,
+                  #gmc69307_field_enableHEAD,
+                  #gmc69307_field_checkShowVersionsSource,
+                  #gmc69307_field_checkShowLineNumbers,
+                  #gmc69307_field_enableQuickReviewsMenu,
+                  #gmc69307_field_hideH6,
+                  #gmc69307_field_hideH6Reinforce,
+                  #gmc69307_field_hideNavTab,
+                  #gmc69307_field_insertH6
+                  { top: 0.075em; }
 
-              #gmc69307_field_useGreasefireUrl,
-              #gmc69307_field_showStrings,
-              #gmc69307_field_checkDeobfuscate,
-              #gmc69307_field_checkShowSize,
-              #gmc69307_field_checkTrimSourceCode,
-              #gmc69307_field_showKeys,
-              #gmc69307_field_limitMaxHeight,
-              #gmc69307_field_showOnAboutOnly,
-              #gmc69307_field_checkAgainstHomepageUSO,
-              #gmc69307_field_enableHEAD,
-              #gmc69307_field_checkShowVersionsSource,
-              #gmc69307_field_checkShowLineNumbers,
-              #gmc69307_field_enableQuickReviewsMenu,
-              #gmc69307_field_hideH6,
-              #gmc69307_field_hideH6Reinforce,
-              #gmc69307_field_hideNavTab,
-              #gmc69307_field_insertH6
-              { top: 0.075em; }
+                  #gmc69307_field_useGreasefireUrl,
+                  #gmc69307_field_showStrings,
+                  #gmc69307_field_showKeys,
+                  #gmc69307_field_limitMaxHeight,
+                  #gmc69307_field_showOnAboutOnly,
+                  #gmc69307_field_checkShowVersionsSource,
+                  #gmc69307_field_checkShowLineNumbers,
+                  #gmc69307_field_enableQuickReviewsMenu,
+                  #gmc69307_field_hideH6,
+                  #gmc69307_field_hideNavTab,
+                  #gmc69307_field_insertH6
+                  { margin-left: 0; }
 
-              #gmc69307_field_useGreasefireUrl,
-              #gmc69307_field_showStrings,
-              #gmc69307_field_showKeys,
-              #gmc69307_field_limitMaxHeight,
-              #gmc69307_field_showOnAboutOnly,
-              #gmc69307_field_checkShowVersionsSource,
-              #gmc69307_field_checkShowLineNumbers,
-              #gmc69307_field_enableQuickReviewsMenu,
-              #gmc69307_field_hideH6,
-              #gmc69307_field_hideNavTab,
-              #gmc69307_field_insertH6
-              { margin-left: 0; }
+                  #gmc69307_field_fontSize,
+                  #gmc69307_field_maxHeightList
+                  { height: 1em; max-height: 2em; min-height: 0.8em; max-width: 4em; min-width: 2em; text-align: right; width: 2em; }
 
-              #gmc69307_field_fontSize,
-              #gmc69307_field_maxHeightList
-              { height: 1em; max-height: 2em; min-height: 0.8em; max-width: 4em; min-width: 2em; text-align: right; width: 2em; }
+                  #gmc69307_field_checkDeobfuscate,
+                  #gmc69307_field_checkShowSize,
+                  #gmc69307_field_maxHeightList,
+                  #gmc69307_field_checkAgainstHomepageUSO
+                  { margin-left: 1.5em; }
 
-              #gmc69307_field_checkDeobfuscate,
-              #gmc69307_field_checkShowSize,
-              #gmc69307_field_maxHeightList,
-              #gmc69307_field_checkAgainstHomepageUSO
-              { margin-left: 1.5em; }
+                  #gmc69307_field_hideH6Reinforce,
+                  #gmc69307_field_checkTrimSourceCode,
+                  #gmc69307_field_deobMethod,
+                  #gmc69307_field_enableHEAD
+                  { margin-left: 3.0em; }
 
-              #gmc69307_field_hideH6Reinforce,
-              #gmc69307_field_checkTrimSourceCode,
-              #gmc69307_field_deobMethod,
-              #gmc69307_field_enableHEAD
-              { margin-left: 3.0em; }
+                  #gmc69307 input[type="radio"]
+                  { top: 0.1em; }
 
-              #gmc69307 input[type="radio"]
-              { top: 0.1em; }
+                  #gmc69307_hideNavTab_var,
+                  #gmc69307_enableQuickReviewsMenu_var,
+                  #gmc69307_showStrings_var,
+                  #gmc69307_showKeys_var,
+                  #gmc69307_fontSize_var
+                  { margin-top: 0.5em !important; }
 
-              #gmc69307_hideNavTab_var,
-              #gmc69307_enableQuickReviewsMenu_var,
-              #gmc69307_showStrings_var,
-              #gmc69307_showKeys_var,
-              #gmc69307_fontSize_var
-              { margin-top: 0.5em !important; }
 
-              .gmc69307-yellownote { background-color: #FFD; font-size: 0.66em !important; }
+                  #gmc69307_showStringsString_field_label,
+                  #gmc69307_showKeysString_field_label,
+                  #gmc69307_field_hideH6Reinforce_field_label,
+                  #gmc69307_hideH6String_field_label,
+                  #gmc69307_hideNavTabString_field_label,
+                  #gmc69307_insertH6String_field_label
+                  { margin: 0 0 0 1.75em; }
 
-              #gmc69307_showStringsString_field_label,
-              #gmc69307_showKeysString_field_label,
-              #gmc69307_field_hideH6Reinforce_field_label,
-              #gmc69307_hideH6String_field_label,
-              #gmc69307_hideNavTabString_field_label,
-              #gmc69307_insertH6String_field_label
-              { margin: 0 0 0 1.75em; }
+                  #gmc69307_buttons_holder { margin-right: 1.0em; }
+                  #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
+                  #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
+                  #gmc69307_closeBtn { display: none; }
+              }
 
-              #gmc69307_buttons_holder { margin-right: 1.0em; }
-              #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
-              #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
-              #gmc69307_closeBtn { display: none; }
-
+              @media print {
+                  .hid, #gmc69307 { display: none; }
+              }
 
             ]]></>
         }),
@@ -322,7 +354,7 @@
           },
           'hideNavTabString': {
               "type": 'textarea',
-              "label": '<em class="gmc69307-yellownote">use commas to separate tabs</em>',
+              "label": '<em class="gmc-yellownote">use commas to separate tabs</em>',
               "default": "Share"
           },
           'hideH6': {
@@ -332,7 +364,7 @@
           },
           'hideH6String': {
               "type": 'textarea',
-              "label": '<em class="gmc69307-yellownote">use commas to separate headers</em>',
+              "label": '<em class="gmc-yellownote">use commas to separate headers</em>',
               "default": "Share"
           },
           'hideH6Reinforce': {
@@ -347,7 +379,7 @@
           },
           'showStringsString': {
               "type": 'textarea',
-              "label": '<em class="gmc69307-yellownote">use newlines to separate regular expression strings</em>',
+              "label": '<em class="gmc-yellownote">use newlines to separate regular expression strings</em>',
               "default": "cookie\nGM_xmlhttpRequest\nXMLHttpRequest\nlocation\nexport\n\\b(?:un)?eval\\b\n(?:https?:\\/\\/.*?\\.google\\.com)?\\/?blank\\.html?"
           },
           'checkDeobfuscate': {
@@ -367,7 +399,7 @@
           },
           'checkTrimSourceCode': {
               "type": 'checkbox',
-              "label": 'Trim " Code" from "Source Code" tab <em class="gmc69307-yellownote">useful for more screen real estate</em>',
+              "label": 'Trim " Code" from "Source Code" tab <em class="gmc-yellownote">useful for more screen real estate</em>',
               "default": false
           },
           'showKeys': {
@@ -377,12 +409,12 @@
           },
           'showKeysString': {
               "type": 'textarea',
-              "label": '<em class="gmc69307-yellownote">use commas to separate keys</em>',
+              "label": '<em class="gmc-yellownote">use commas to separate keys</em>',
               "default": "name,icon,description,version,copyright,license,namespace,updateURL,downloadURL,installURL,grant,require,resource,run-at,include,match,exclude"
           },
           'checkAgainstHomepageUSO': {
               "type": 'checkbox',
-              "label": 'Check USO require and resource urls against USO script homepage <em class="gmc69307-yellownote">Rate and Limiting may limit accuracy</em>',
+              "label": 'Check USO require and resource urls against USO script homepage <em class="gmc-yellownote">Rate and Limiting may limit accuracy</em>',
               "default": false
           },
           'enableHEAD': {
@@ -407,44 +439,44 @@
           },
           'showOnAboutOnly': {
               "type": 'checkbox',
-              "label": 'Show sidebar on script homepage only <em class="gmc69307-yellownote">useful for CPU conservation when examining large scripts</em>',
+              "label": 'Show sidebar on script homepage only <em class="gmc-yellownote">useful for CPU conservation when examining large scripts</em>',
               "default": true
           },
           'insertH6': {
               "type": 'checkbox',
-              "label": 'Insert item types before these headers if present <em class="gmc69307-yellownote">leave blank for first - disable for last</em>',
+              "label": 'Insert item types before these headers if present <em class="gmc-yellownote">leave blank for first - disable for last</em>',
               "default": false
           },
           'insertH6String': {
               "type": 'textarea',
-              "label": '<em class="gmc69307-yellownote">use commas to separate headers</em>',
+              "label": '<em class="gmc-yellownote">use commas to separate headers</em>',
               "default": ""
           },
           'useGreasefireUrl': {
               "section": [, ""],
               "type": 'checkbox',
-              "label": 'Use greasefire USO urls whenever possible <em class="gmc69307-yellownote">useful for bandwidth conservation but not properly secured nor always available</em>',
+              "label": 'Use greasefire USO urls whenever possible <em class="gmc-yellownote">useful for bandwidth conservation but not properly secured nor always available</em>',
               "default": false
           },
           'showStringsStringHeight': {
             "type": 'hidden',
-            "default": "7em"
+            "default": "8em"
           },
           'showKeysStringHeight': {
               "type": 'hidden',
-              "default": "1em"
+              "default": "1.2em"
           },
           'hideH6StringHeight': {
               "type": 'hidden',
-              "default": "1em"
+              "default": "1.2em"
           },
           'hideNavTabStringHeight': {
               "type": 'hidden',
-              "default": "1em"
+              "default": "1.2em"
           },
           'insertH6StringHeight': {
               "type": 'hidden',
-              "default": "1em"
+              "default": "1.2em"
           },
           'checkShowVersionsSource': {
               "type": 'checkbox',
@@ -453,13 +485,28 @@
           },
           'checkShowLineNumbers': {
               "type": 'checkbox',
-              "label": 'Show line numbers on Source Code page <em class="gmc69307-yellownote">BETA</em>',
+              "label": 'Show line numbers on Source Code page <em class="gmc-yellownote">BETA</em>',
               "default": false
           }
         }
     );
 
-    gmc.onSave = function() {
+    gmc.onReset = function () {
+      GM_setStyle({
+          node: nodeStyle,
+          data: <><![CDATA[
+
+              textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.fields["hideNavTabStringHeight"].settings.default + <><![CDATA[; }
+              textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.fields["hideH6StringHeight"].settings.default + <><![CDATA[; }
+              textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.fields["showStringsStringHeight"].settings.default + <><![CDATA[; }
+              textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.fields["showKeysStringHeight"].settings.default + <><![CDATA[; }
+              textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.fields["insertH6StringHeight"].settings.default + <><![CDATA[; }
+
+          ]]></>
+      });
+    }
+
+    gmc.onSave = function () {
       let write = false;
       let open = false;
 
@@ -578,6 +625,12 @@
       if (open) { gmc.close(); gmc.open(); }
     }
 
+
+
+
+
+
+
     if (window.location.href.match(/^(?:https?:\/\/userscripts\.org)?\/scripts\/show\/69307\/?/i)) {
       GM_setStyle({
           node: nodeStyle,
@@ -593,6 +646,8 @@
       });
 
       gmc.open();
+      document.getElementById("gmc69307").removeAttribute("style");
+
       gmc.fields["showStringsString"].node.setAttribute("spellcheck", "false");
       gmc.fields["showKeysString"].node.setAttribute("spellcheck", "false");
     }
@@ -804,7 +859,7 @@
                       default:
                         if (thatNode.id != "fans")
                           if (gmc.get("hideH6Reinforce"))
-                            thatNode.classList.add("hidimp");
+                            thatNode.classList.add("HID");
                           else
                             thatNode.classList.add("hid");
                         break;
@@ -828,7 +883,7 @@
       if (hookNode) {
         GM_xmlhttpRequest({
           retry: 5,
-          url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".meta.js",
+          url: protocol + "//userscripts.org/scripts/source/" + scriptid + ".meta.js",
           method: "GET",
           onload: function(xhr) {
             switch (xhr.status) {
@@ -873,7 +928,6 @@
                   if (headers["license"])
                     headers["licence"] = headers["license"];
 
-
                   let sidebarNode = document.getElementById("script_sidebar");
                   if (!sidebarNode) {
                     sidebarNode = document.createElement("div");
@@ -911,7 +965,7 @@
                     let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
                     GM_xmlhttpRequest({
                       retry: 5,
-                      url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
+                      url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
                       method: "GET",
                       onload: function(xhr) {
                         switch (xhr.status) {
@@ -926,7 +980,6 @@
                             function display2(el, obj, filter, title, forced) {
                               let headerNode = document.createElement("h6");
                               headerNode.textContent = title + ' ';
-                              //el.appendChild(headerNode);
                               el.parentNode.insertBefore(headerNode, el);
 
                               let spanNodeSection = document.createElement("span");
@@ -935,7 +988,6 @@
 
                               let divNode = document.createElement("div");
                               divNode.setAttribute("class", "metadata");
-                              //el.appendChild(divNode);
                               el.parentNode.insertBefore(divNode, el);
 
                               let ulNode = document.createElement("ul");
@@ -1092,7 +1144,7 @@
                     let aNode = document.createElement("a");
                     aNode.style.setProperty("text-decoration", "none", "");
                     aNode.style.setProperty("color", "#000", "");
-                    aNode.href = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
+                    aNode.href = protocol + "//sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
                     aNode.textContent = title;
 
                     let headerNode = document.createElement("h6");
@@ -1175,11 +1227,11 @@
                             let showUrl;
                             matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                             if (matches)
-                              showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches[1];
+                              showUrl = protocol + "//userscripts.org/scripts/show/" + matches[1];
                             else {
                               matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                               if (matches)
-                                showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches[1];
+                                showUrl = protocol + "//userscripts.org/scripts/show/" + matches[1];
                             }
 
                             let anchorNode = document.createElement("a");
@@ -1258,11 +1310,11 @@
                             let showUrl;
                             let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                             if (matches2)
-                              showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches2[1];
+                              showUrl = protocol + "//userscripts.org/scripts/show/" + matches2[1];
                             else {
                               matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                               if (matches2)
-                                showUrl = "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/show/" + matches2[1];
+                                showUrl = protocol + "//userscripts.org/scripts/show/" + matches2[1];
                             }
 
                             let spanNode = document.createElement("span");
@@ -1513,7 +1565,7 @@
                         xpe = "//div[@id='script_sidebar']//h6[contains(., '" + items[i]+ "')]";
                       else
                         xpe += "|//div[@id='script_sidebar']//h6[contains(., '" + items[i]+ "')]";
-                    }
+                    }headers
 
                     let hookmbxNode = document.evaluate(
                       xpe,
@@ -1556,35 +1608,38 @@
 
             if (gmc.get("checkTrimSourceCode"))
               thisNode.textContent = thisNode.textContent.replace(" Code", "");
-            thisNode.textContent += " ";
-            let spanNode = document.createElement("span");
-            spanNode.style.setProperty("color", "red", "");
 
-            let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
-            GM_xmlhttpRequest({
-              retry: 5,
-              url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
-              method: "GET",
-              onload: function(xhr) {
-                switch (xhr.status) {
-                  case 404:
-                  case 500:
-                  case 502:
-                  case 503:
-                    if (this.retry-- > 0)
-                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                    break;
-                  case 200:
-                    spanNode.style.setProperty("color", "#666", "");
-                    spanNode.textContent = (xhr.responseText.length > 1024)
-                      ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
-                      : xhr.responseText.length;
-                    break;
+            if (typeof headers != "undefined") {
+              thisNode.textContent += " ";
+              let spanNode = document.createElement("span");
+              spanNode.style.setProperty("color", "red", "");
+
+              let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
+              GM_xmlhttpRequest({
+                retry: 5,
+                url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
+                method: "GET",
+                onload: function(xhr) {
+                  switch (xhr.status) {
+                    case 404:
+                    case 500:
+                    case 502:
+                    case 503:
+                      if (this.retry-- > 0)
+                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      break;
+                    case 200:
+                      spanNode.style.setProperty("color", "#666", "");
+                      spanNode.textContent = (xhr.responseText.length > 1024)
+                        ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
+                        : xhr.responseText.length;
+                      break;
+                  }
                 }
-              }
-            });
-            spanNode.textContent = "0";
-            thisNode.appendChild(spanNode);
+              });
+              spanNode.textContent = "0";
+              thisNode.appendChild(spanNode);
+            }
           }
         }
       }
@@ -1671,7 +1726,7 @@
         GM_xmlhttpRequest({
           retry: 5,
           method: "GET",
-          url: "http:" + ((window.location.href.match(/^https:\/\/usersripts.org\/.*/i)) ? "s" : "") + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,  // NOTE: Greasefire not SSLd properly
+          url: protocol + "//" + (gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,  // NOTE: Greasefire not SSLd properly TODO: Recheck
           onload: function (xhr) {
             switch (xhr.status) {
               case 404:
@@ -2022,7 +2077,9 @@
                 ]]></>
             });
 
-            getVersions("http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/versions/" + scriptid);
+            getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid);
+
+            thisNode.parentNode.parentNode.removeChild(thisNode.parentNode);
           }
 
           function getVersions(url) {
@@ -2097,7 +2154,7 @@
                         node: nodeStyle,
                         data: <><![CDATA[
 
-                            #versions ul li > a { text-decoration: none; color: black; }
+                            #versions ul li > a { text-decoration: none; color: #000; }
                             #versions ul li > span { float: right; }
 
                         ]]></>
@@ -2186,6 +2243,7 @@
 
                                     if (gmc.get("checkShowLineNumbers"))
                                       renumber(preNode);
+
                                     break;
                                 }
                               }
@@ -2278,6 +2336,20 @@
                                     let liNode = aNode.parentNode.parentNode;
                                     liNode.classList.add("current");
 
+                                    // NOTE: Think about doing this directly... may save some time vs heap allocation
+                                    let xpr2 = document.evaluate(
+                                      "//input[@name='sourceUrl']",
+                                      document.body,
+                                      null,
+                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                      null
+                                    );
+                                    if (xpr2 && xpr.singleNodeValue) {
+                                      let thisNode = xpr2.singleNodeValue;
+
+                                      thisNode.setAttribute("placeholder", this.url);
+                                    }
+
                                     // Remove GIJoes disabling
                                     enableCTTS();
 
@@ -2350,7 +2422,7 @@
                             ev.preventDefault();
 
                             ev.target.classList.add("retrieving");
-                            getVersions("http:" + ((window.location.href.match(/^https:\/\/usersripts.org\/.*/i)) ? "s" : "") + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
+                            getVersions(protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
                           }, false);
                         }
                     }
@@ -2452,6 +2524,7 @@
     GM_setStyle({
         node: nodeStyle,
         data: <><![CDATA[
+
             pre#source { white-space: pre !important; overflow: scroll; width: auto; }
 
             .number { height: auto; overflow: hidden !important; display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
