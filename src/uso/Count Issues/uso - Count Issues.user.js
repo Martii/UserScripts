@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.3
+// @version       0.18.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1565,7 +1565,7 @@
                         xpe = "//div[@id='script_sidebar']//h6[contains(., '" + items[i]+ "')]";
                       else
                         xpe += "|//div[@id='script_sidebar']//h6[contains(., '" + items[i]+ "')]";
-                    }headers
+                    }
 
                     let hookmbxNode = document.evaluate(
                       xpe,
@@ -2335,20 +2335,6 @@
                                     // Set current selection marker
                                     let liNode = aNode.parentNode.parentNode;
                                     liNode.classList.add("current");
-
-                                    // NOTE: Think about doing this directly... may save some time vs heap allocation
-                                    let xpr2 = document.evaluate(
-                                      "//input[@name='sourceUrl']",
-                                      document.body,
-                                      null,
-                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                                      null
-                                    );
-                                    if (xpr2 && xpr.singleNodeValue) {
-                                      let thisNode = xpr2.singleNodeValue;
-
-                                      thisNode.setAttribute("placeholder", this.url);
-                                    }
 
                                     // Remove GIJoes disabling
                                     enableCTTS();
