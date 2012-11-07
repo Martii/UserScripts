@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.5
+// @version       0.18.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -53,17 +53,6 @@
 
 
   let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
-
-  function getScriptid() {
-    let sid = location.pathname.match(/\/scripts\/.+\/(\d+)/i);
-    if (!sid) {
-      if (titleNode)
-        sid = titleNode.pathname.match(/\/scripts\/show\/(\d+)/i);
-    }
-    return (sid) ? sid[1] : undefined;
-  };
-  let scriptid = getScriptid();
-
   let nodeStyle = GM_setStyle({
       media: "screen, projection",
       data: <><![CDATA[
@@ -625,6 +614,12 @@
       if (open) { gmc.close(); gmc.open(); }
     }
 
+
+
+
+
+
+
     if (window.location.href.match(/^(?:https?:\/\/userscripts\.org)?\/scripts\/show\/69307\/?/i)) {
       GM_setStyle({
           node: nodeStyle,
@@ -677,6 +672,16 @@
   if (xpr && xpr.singleNodeValue)
     summaryNode = xpr.singleNodeValue;
 
+  function getScriptid() {
+    let scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
+    if (!scriptid) {
+      if (titleNode)
+        scriptid = titleNode.pathname.match(/\/scripts\/show\/(\d+)/i);
+    }
+    return (scriptid) ? scriptid[1] : undefined;
+  }
+
+  let scriptid = getScriptid();
   if (scriptid) {
 
     let insNode = document.evaluate(
