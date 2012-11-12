@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.6
+// @version       0.18.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -613,12 +613,6 @@
       if (write) gmc.write();
       if (open) { gmc.close(); gmc.open(); }
     }
-
-
-
-
-
-
 
     if (window.location.href.match(/^(?:https?:\/\/userscripts\.org)?\/scripts\/show\/69307\/?/i)) {
       GM_setStyle({
@@ -1377,6 +1371,7 @@
                           }
                         case 'updateURL':
                         case 'installURL':
+                        case 'downloadURL':
                           let rex = new RegExp("^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(\\d+)\\.(meta|user)\\.js", "i");
                           matches = key.match(rex);
                           if (matches) {
@@ -1395,9 +1390,9 @@
                             break;
                           }
                           else {
-                            spanNodeSection.setAttribute("class", "metadata metadataforced");
-
                             if (key.match(/^https?:\/\/.*/)) {  // NOTE: Offsite
+                              spanNodeSection.setAttribute("class", "metadata metadataforced");
+
                               let anchorNode = document.createElement("a");
                               anchorNode.setAttribute("href", key);
                               anchorNode.setAttribute("rel", "nofollow");
@@ -1409,7 +1404,7 @@
                               ulNode.appendChild(liNode);
                               break;
                             }
-                            else { // NOTE: Relative (which may not be supported yet)
+                            else { // NOTE: Any other protocol or relative (which may not be supported yet)
                               let xpr = document.evaluate(
                                 "//div[@id='summary']/p/a[.='Remotely hosted version']",
                                 document.documentElement,
@@ -1419,6 +1414,9 @@
                               );
                               if (xpr && xpr.singleNodeValue) {
                                 let thisNode = xpr.singleNodeValue;
+
+                                spanNodeSection.setAttribute("class", "metadata metadataforced");
+
                                 let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                                 if (url) {
                                   let anchorNode = document.createElement("a");
