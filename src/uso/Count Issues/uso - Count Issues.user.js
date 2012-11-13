@@ -1261,17 +1261,17 @@
                             );
                             if (xpr && xpr.singleNodeValue) {
                               let thisNode = xpr.singleNodeValue;
-                              let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
-                              if (url) {
+                              let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                              if (baseUrl) {
                                 spanNodeSection.setAttribute("class", "metadata metadataforced");
 
                                 let anchorNode = document.createElement("a");
-                                anchorNode.setAttribute("href", url[1] + key);
+                                anchorNode.setAttribute("href", baseUrl[1] + key);
                                 anchorNode.setAttribute("rel", "nofollow");
                                 anchorNode.style.setProperty("color", "red", "");
                                 anchorNode.textContent = key;
 
-                                liNode.setAttribute("title", url[1] + key);
+                                liNode.setAttribute("title", baseUrl[1] + key);
                                 liNode.appendChild(anchorNode);
 
                                 ulNode.appendChild(liNode);
@@ -1351,17 +1351,25 @@
                             );
                             if (xpr && xpr.singleNodeValue) {
                               let thisNode = xpr.singleNodeValue;
-                              let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
-                              if (url) {
+                              let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                              if (baseUrl) {
                                 spanNodeSection.setAttribute("class", "metadata metadataforced");
 
+                                let resourceName = key.match(/(.*)[\s\t]/i)[1];
+                                let targetUrl = key.match(/[\s\t](.*)$/i)[1];
+
+                                let spanNode = document.createElement("span");
+                                spanNode.setAttribute("class", "resourceName");
+                                spanNode.textContent = resourceName;
+                                liNode.appendChild(spanNode);
+
                                 let anchorNode = document.createElement("a");
-                                anchorNode.setAttribute("href", url[1] + key);
+                                anchorNode.setAttribute("href", baseUrl[1] + targetUrl);
                                 anchorNode.setAttribute("rel", "nofollow");
                                 anchorNode.style.setProperty("color", "red", "");
-                                anchorNode.textContent = key;
+                                anchorNode.textContent = targetUrl;
 
-                                liNode.setAttribute("title", url[1]);
+                                liNode.setAttribute("title", baseUrl[1] + targetUrl);
                                 liNode.appendChild(anchorNode);
 
                                 ulNode.appendChild(liNode);
@@ -1417,15 +1425,15 @@
 
                                 spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-                                let url = thisNode.href.match(/(.*\/).*\.user\.js$/i);
-                                if (url) {
+                                let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
+                                if (baseUrl) {
                                   let anchorNode = document.createElement("a");
-                                  anchorNode.setAttribute("href", url[1] + key);
+                                  anchorNode.setAttribute("href", baseUrl[1] + key);
                                   anchorNode.setAttribute("rel", "nofollow");
                                   anchorNode.style.setProperty("color", "red", "");
                                   anchorNode.textContent = key;
 
-                                  liNode.setAttribute("title", url[1] + key);
+                                  liNode.setAttribute("title", baseUrl[1] + key);
                                   liNode.appendChild(anchorNode);
 
                                   ulNode.appendChild(liNode);
