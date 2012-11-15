@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.18.7
+// @version       0.19.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -39,7 +39,7 @@
 // @require https://userscripts.org/scripts/source/115323.user.js
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/7e5dfecf8759719053e1dac71a1a8ee929eb6c8c/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
-// @require https://userscripts.org/scripts/version/87269/317283.user.js
+// @require http://userscripts.org/scripts/version/87269/525804.user.js
 //
 // @grant GM_addStyle
 // @grant GM_getValue
@@ -1721,7 +1721,7 @@
         GM_xmlhttpRequest({
           retry: 5,
           method: "GET",
-          url: protocol + "//" + (gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,  // NOTE: Greasefire not SSLd properly TODO: Recheck
+          url: protocol + "//" + (gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,  // NOTE: Greasefire not SSLd properly... recheck periodically
           onload: function (xhr) {
             switch (xhr.status) {
               case 404:
@@ -2058,6 +2058,8 @@
         if (xpr && xpr.singleNodeValue) {
           let thisNode = xpr.singleNodeValue;
 
+          let previousVersions = thisNode.textContent;
+
           function onclickVersions(ev) {
             ev.preventDefault();
 
@@ -2073,8 +2075,6 @@
             });
 
             getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid);
-
-            thisNode.parentNode.parentNode.removeChild(thisNode.parentNode);
           }
 
           function getVersions(url) {
@@ -2145,30 +2145,18 @@
 
                     let ulNode = document.createElement("ul");
 
-                    GM_setStyle({
-                        node: nodeStyle,
-                        data: <><![CDATA[
-
-                            #versions ul li > a { text-decoration: none; color: #000; }
-                            #versions ul li > span { float: right; }
-
-                        ]]></>
-                    });
-
                     if (xpr)
                       for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
                         let dateNode = thisNode.firstChild;
                         let diffNode = thisNode.firstChild.nextSibling;
 
-                        let dateid = dateNode.textContent.replace(/\n\[/, "");
+                        let dateid = dateNode.textContent.replace(/\n\[/, "").trim();
                         let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
 
 
                         let aInstallNode = document.createElement("a");
                         aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
                         aInstallNode.textContent = dateid;
-
-                        let spanNode = document.createElement("span");
 
                         let leftText = document.createTextNode("[")
 
@@ -2178,7 +2166,7 @@
                         aViewNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
 
-                            ev.target.parentNode.parentNode.classList.add("retrieving");
+                            ev.target.parentNode.classList.add("retrieving");
 
                             let aNode = ev.target, ulNode, thisNode;
                             GM_xmlhttpRequest({
@@ -2194,8 +2182,8 @@
                                     if (this.retry-- > 0)
                                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                     else {
-                                      // Clear retrieving Selection marker
-                                      ulNode = aNode.parentNode.parentNode.parentNode;
+                                      // Clear retrieving Selection markers
+                                      ulNode = aNode.parentNode.parentNode;
 
                                       thisNode = ulNode.firstChild;
                                       while(thisNode) {
@@ -2214,7 +2202,7 @@
                                     preNode.textContent = responseText;
 
                                     // Clear all Selection markers
-                                    ulNode = aNode.parentNode.parentNode.parentNode;
+                                    ulNode = aNode.parentNode.parentNode;
 
                                     thisNode = ulNode.firstChild;
                                     while(thisNode) {
@@ -2224,7 +2212,7 @@
                                     }
 
                                     // Set current selection marker
-                                    let liNode = aNode.parentNode.parentNode;
+                                    let liNode = aNode.parentNode;
                                     liNode.classList.add("current");
 
                                     // Remove GIJoes disabling
@@ -2253,7 +2241,7 @@
                         aDiffNode.addEventListener("click", function(ev) {
                           ev.preventDefault();
 
-                          ev.target.parentNode.parentNode.classList.add("retrieving");
+                          ev.target.parentNode.classList.add("retrieving");
 
                           let aNode = ev.target, ulNode, thisNode;
                           GM_xmlhttpRequest({
@@ -2269,8 +2257,8 @@
                                   if (this.retry-- > 0)
                                     setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                   else {
-                                    // Clear retrieving Selection marker
-                                    ulNode = aNode.parentNode.parentNode.parentNode;
+                                    // Clear retrieving Selection markers
+                                    ulNode = aNode.parentNode.parentNode;
 
                                     thisNode = ulNode.firstChild;
                                     while(thisNode) {
@@ -2318,7 +2306,7 @@
 
 
                                     // Clear all Selection markers
-                                    ulNode = aNode.parentNode.parentNode.parentNode;
+                                    ulNode = aNode.parentNode.parentNode;
 
                                     thisNode = ulNode.firstChild;
                                     while(thisNode) {
@@ -2328,7 +2316,7 @@
                                     }
 
                                     // Set current selection marker
-                                    let liNode = aNode.parentNode.parentNode;
+                                    let liNode = aNode.parentNode;
                                     liNode.classList.add("current");
 
                                     // Remove GIJoes disabling
@@ -2358,21 +2346,61 @@
 
                         let liNode = document.createElement("li");
 
+                        liNode.appendChild(leftText);
+                        liNode.appendChild(aViewNode);
+                        liNode.appendChild(middleText);
+                        liNode.appendChild(aDiffNode);
+                        liNode.appendChild(rightText);
                         liNode.appendChild(aInstallNode);
-
-                        spanNode.appendChild(leftText);
-                        spanNode.appendChild(aViewNode);
-                        spanNode.appendChild(middleText);
-                        spanNode.appendChild(aDiffNode);
-                        spanNode.appendChild(rightText);
-
-                        liNode.appendChild(spanNode);
 
                         ulNode.appendChild(liNode);
                       }
 
 
-                    let leftDIV = document.getElementById("left");
+                    let versionsContainerNode;
+                    document.evaluate(
+                      "//div[@id='section']/div[@class='container']",
+                      document.body,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      xpr
+                    );
+                    if (xpr && xpr.singleNodeValue) {
+                      versionsContainerNode = xpr.singleNodeValue;
+                    }
+
+
+                    let versionsDIV = document.getElementById("versions");
+
+                    if (versionsDIV) {
+                      while (versionsDIV.hasChildNodes())
+                        versionsDIV.removeChild(versionsDIV.firstChild);
+                    }
+                    else {
+                      versionsDIV = document.createElement("div");
+                      versionsDIV.id = "versions";
+
+                      GM_setStyle({
+                          node: nodeStyle,
+                          data: <><![CDATA[
+
+                              #fans_content { border-bottom-style: dotted !important; margin-bottom: 0 !important; }
+
+                              #versions { background-color: #fff; border-bottom: 1px dotted #ccc; font-size: 13px; margin-bottom: 0.9em; padding: 10px; }
+                              #versions p  { margin: 0; }
+                              #versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }
+                              #versions p > span { color: #666; font-size: 0.8em; }
+                              #versions ul { -moz-column-count: 3; list-style: none; }
+                              #versions ul a { margin-left: 0.25em; margin-right: 0.25em; }
+                              #versions ul a:last-child { color: #000; text-decoration: none; margin-left: 0.5em; }
+                              #versions ul li.current { background-color: #ddd; }
+                              #versions ul li.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+
+                          ]]></>
+                      });
+                    }
+
+                    versionsContainerNode.appendChild(versionsDIV);
 
                     // Replace pagination NOTE: Scope referenced variable nodes
                     if (pagination) {
@@ -2385,10 +2413,10 @@
                           ]]></>
                       });
 
-                      while (topNode.hasChildNodes())
-                        topNode.removeChild(topNode.firstChild);
+                      while (versionsDIV.hasChildNodes())
+                        versionsDIV.removeChild(versionsDIV.firstChild);
 
-                      topNode.appendChild(pagination);
+                      versionsDIV.appendChild(pagination);
 
                       document.evaluate(
                         "//div[@class='pagination']/a",
@@ -2408,34 +2436,24 @@
                         }
                     }
 
-                    let versionsDIV = document.getElementById("versions");
+                    let spanNode = document.createElement("span");
+                    spanNode.textContent = parseInt(previousVersions.match(/(\d+)\s/)[1]) + 1;
 
-                    if (versionsDIV) {
-                      while (versionsDIV.hasChildNodes())
-                        versionsDIV.removeChild(versionsDIV.firstChild);
-                    }
-                    else {
-                      versionsDIV = document.createElement("div");
-                      versionsDIV.id = "versions";
+                    let aNode = document.createElement("a");
+                    aNode.href = "/scripts/versions/" + scriptid;
+                    aNode.textContent = "Source versions and diffs:";
 
-                      GM_setStyle({
-                          node: nodeStyle,
-                          data: <><![CDATA[
+                    let pNode = document.createElement("p");
 
-                              #versions { margin-right: 0.5em; }
-                              #versions ul { list-style: none outside none; padding: 0; margin: 0; font-size: 1em; }
-                              #versions ul li a { margin-right: 0.25em; }
-                              #versions ul li span a { margin-right: 0.25em; margin-left: 0.25em; }
-                              #versions ul li.current { background-color: #ddd; }
-                              #versions ul li.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
+                    pNode.appendChild(aNode);
+                    pNode.appendChild(spanNode);
 
-                          ]]></>
-                      });
-                    }
+                    if (pagination)
+                      versionsDIV.insertBefore(pNode, pagination);
+                    else
+                      versionsDIV.appendChild(pNode);
 
                     versionsDIV.appendChild(ulNode);
-                    leftDIV.appendChild(versionsDIV);
-
 
                       GM_setStyle({
                           node: nodeStyle,
@@ -2470,7 +2488,7 @@
                           ]]></>
                       });
                     }
-
+                    thisNode.parentNode.parentNode.removeChild(thisNode.parentNode);
                 }
               }
             });
