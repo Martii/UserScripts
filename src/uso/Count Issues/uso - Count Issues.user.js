@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.19.1
+// @version       0.19.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -39,7 +39,7 @@
 // @require https://userscripts.org/scripts/source/115323.user.js
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/7e5dfecf8759719053e1dac71a1a8ee929eb6c8c/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
-// @require http://userscripts.org/scripts/version/87269/525804.user.js
+// @require https://userscripts.org/scripts/version/87269/525804.user.js
 //
 // @grant GM_addStyle
 // @grant GM_getValue
