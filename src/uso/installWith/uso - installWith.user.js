@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.36
+// @version       1.0.37
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -803,7 +803,7 @@
                 }
               },
               "AnotherAutoUpdater": {
-                "value": "AnotherAutoUpdater",
+//                 "value": "AnotherAutoUpdater",
                 "textContent": 'Another Auto Updater',
                 "iconUrl": "8603ded5ba12590f2231b13d5c07c45b",
                 "title": 'by sizzlemctwizzle (27715)',
@@ -816,8 +816,8 @@
                 "qs": "show&uso",
                 "qsmax": "days",
                 "securityAdvisory": {
-                  "advisory": "low",
-                  "title": "AAU"
+                  "advisory": "severe",
+                  "title": "AAU, Temporarily unavailable until further notice"
                 },
                 "separator": true
               },
