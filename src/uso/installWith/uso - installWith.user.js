@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.37
+// @version       1.0.38
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -52,6 +52,8 @@
 // @grant GM_xmlhttpRequest
 //
 // ==/UserScript==
+
+  let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
 
   let nodeStyle = GM_setStyle({
       media: "screen, projection",
@@ -219,24 +221,19 @@
     // Reclaim some memory
     delete GM_config;
 
-    function insertDiv() {
-      let divNode = document.getElementById("full_description");
-      if (divNode && !divNode.firstChild) {
-        let newdivNode = document.createElement("div");
-        divNode = divNode.appendChild(newdivNode);
-      }
-      else {
-        let newdivNode = document.createElement("div");
-        if (divNode)
-          divNode = divNode.insertBefore(newdivNode, divNode.firstChild);
-        else
-          divNode = document.body.appendChild(newdivNode);
-      }
-      return divNode;
+    function insertHook() {
+      let hookNode = document.getElementById("full_description");
+
+      if (hookNode && !hookNode.firstChild)
+        return hookNode.appendChild(document.createElement("div"));
+      else
+        return (hookNode)
+            ? hookNode.insertBefore(document.createElement("div"), hookNode.firstChild)
+            : document.body.appendChild(document.createElement("div"));
     }
 
     /* Common */
-    let divNode = insertDiv();
+    let divNode = insertHook();
 
     /* Nearest fix for a glitch on USO */
     let scriptNav = document.getElementById("script-nav");
@@ -310,14 +307,70 @@
 
     gmcHome.init(
         divNode,
-        <><![CDATA[
+        (<><![CDATA[
 
-            <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> Preferences
-            <span style="float: right; margin: 0 0.5em;">
-              <a href="/guides/24/" style="text-decoration: none !important;"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a>
+            <img alt="installWith" title="uso - installWith" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11759/medium.png" />
+            <p>Preferences</p>
+            <span>
+              <a href="/guides/24/">
+                <img alt="usoCheckup" title="Powered in part by usoCheckup" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/1359/large.png" />
+              </a>
+              <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki">
+                <img alt="GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
+              </a>
             </span>
 
-        ]]></>.toString(),
+        ]]></>).toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
+
+        /* Custom CSS */
+        GM_setStyle({
+            node: null,
+            data: <><![CDATA[
+
+              @media screen, projection {
+                    #gmc68219home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+
+                    #gmc68219home_header a { display: inline; }
+                    #gmc68219home_header img { vertical-align: middle; }
+                    #gmc68219home_header > img { height: 32px; margin-right: 0.25em; width: 43px; }
+                    #gmc68219home_header > p { display: inline; margin: 0; vertical-align: middle; }
+                    #gmc68219home_header span { float: right; }
+                    #gmc68219home_header span > a { display: inline; margin-left: 0.25em; }
+                    #gmc68219home_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+                    #gmc68219home .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0; padding: 0 0.5em; text-align: left; }
+                    #gmc68219home .config_var { clear: both; margin: 0.5em; padding: 0; }
+                    #gmc68219home .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; }
+                    .section_desc { margin: 0.25em 1.5em !important; }
+
+                        .gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+                        .gmc68219home-invisilink { text-decoration: none; color: #000; }
+                        .gmc68219home-invisilink:hover { color: #000; }
+
+                        #gmc68219home_field_mirrorDomain { margin-left: 1em; margin-right: 1em; }
+                        #gmc68219home_field_mirrorDomain input { margin: 0.25em !important; top: 0.1em; }
+                        #gmc68219home_field_mirrorDomain span { margin-left: 0.25em; margin-right: 0.5em; }
+
+                        #gmc68219home_field_forceInstallSecure,
+                        #gmc68219home_field_forceInstallRecent,
+                        #gmc68219home_field_allowAOU,
+                        #gmc68219home_field_allowUpdatersOnAOUgrantnone,
+                        #gmc68219home_field_skipVerifyLibs,
+                        #gmc68219home_field_skipEmbeddedScan,
+                        #gmc68219home_field_allowUpdatersOnBadAOUSyntax
+                        { top: 0.07em; }
+
+                        #gmc68219home_skipEmbeddedScan_field_label p { margin: 0 1.75em; }
+
+                    #gmc68219home_buttons_holder { margin: 0.5em; }
+                    #gmc68219home_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }
+                    #gmc68219home_resetLink { margin-right: 1.5em; }
+                    #gmc68219home_closeBtn { display: none; }
+              }
+
+            ]]></>
+        }),
+
+        /* Settings object */
         {
           'forceInstallSecure': {
               "type": 'checkbox',
@@ -330,73 +383,37 @@
               "default": false
           },
           'mirrorDomain': {
-              "label": 'Mirror domain name <em class="gmc68219home-yellownote">Select primary ONLY or secure OPTIONALLY if behind a domain blocklist that prevents the redirect</em>',
+              "label": 'Mirror domain name <em class="gmc-yellownote">Select primary ONLY or secure OPTIONALLY if behind a domain blocklist that prevents the redirect</em>',
               "type": 'radio',
               "options": ['redirect', 'primary', 'secure'],
               "default": 'redirect'
           },
           'allowAOU': {
               "type": 'checkbox',
-              "label": 'Allow Add-on Updater <em class="gmc68219home-yellownote">WARNING: Greasemonkey versions 0.9.13+ are <em>CURRENTLY UNSAFE</em></em>',
+              "label": 'Allow Add-on Updater <em class="gmc-yellownote">WARNING: Greasemonkey versions 0.9.13+ are <strong>CURRENTLY UNSAFE</strong></em>',
               "default": false
           },
           'allowUpdatersOnBadAOUSyntax': {
               "type": 'checkbox',
-              "label": 'Allow updaters to be added on invalid Add-on Updater syntax <em class="gmc68219home-yellownote">Select ONLY if Greasemonkey updating is DISABLED</em>',
+              "label": 'Allow updaters to be added on invalid Add-on Updater syntax <em class="gmc-yellownote">Select ONLY if Greasemonkey updating is DISABLED</em>',
               "default": false
           },
           'allowUpdatersOnAOUgrantnone': {
               "type": 'checkbox',
-              "label": 'Allow updaters to be added on scripts that have <code><a class="gmc68219home-invisilink" href="http://sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40grant">@grant</a> none</code> <em class="gmc68219home-yellownote">WARNING: Some scripts may not work properly</em>',
+              "label": 'Allow updaters to be added on scripts that have <code><a class="gmc68219home-invisilink" href="' + protocol + '//sf.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40grant">@grant</a> none</code> <em class="gmc-yellownote">WARNING: Some scripts may not work properly</em>',
               "default": false
           },
           'skipVerifyLibs': {
               "type": 'checkbox',
-              "label": 'Skip verify for installation of library scripts <em class="gmc68219home-yellownote">Not recommended</em>',
+              "label": 'Skip verify for installation of library scripts <em class="gmc-yellownote">Not recommended</em>',
               "default": false
           },
           'skipEmbeddedScan': {
             "type": "checkbox",
-            "label": 'Skip the embedded updater scan<p style="margin: 0 0 0 2.0em;"><em class="gmc68219home-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan may produce undesired effects when other embedded updaters are present and wrapping a script in additional updaters</em></p>',
+            "label": 'Skip the embedded updater scan<p><em class="gmc-yellownote"><strong>WARNING</strong>: Skipping the embedded updater scan may produce undesired effects when other embedded updaters are present and wrapping a script in additional updaters</em></p>',
             "default": false
           }
-        },
-        /* Custom CSS */
-
-      GM_setStyle({
-          node: null,
-          data: <><![CDATA[
-
-              #gmc68219home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
-              #gmc68219home_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-              #gmc68219home .config_header { color: white; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
-              #gmc68219home .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
-              #gmc68219home .field_label { color: #333; font-weight: normal; font-size: 100%; }
-              .section_desc { margin: 0.25em 1.5em !important; }
-
-                  .gmc68219home-yellownote { background-color: #ffd; font-size: 0.66em !important; }
-                  .gmc68219home-invisilink { text-decoration: none; color: black; }
-                  .gmc68219home-invisilink:hover { color: black; }
-
-                  #gmc68219home_field_mirrorDomain { margin-left: 1em; }
-
-                  #gmc68219home_field_mirrorDomain input { top: 0.1em; }
-
-                  #gmc68219home_field_forceInstallSecure,
-                  #gmc68219home_field_forceInstallRecent,
-                  #gmc68219home_field_allowAOU,
-                  #gmc68219home_field_allowUpdatersOnAOUgrantnone,
-                  #gmc68219home_field_skipVerifyLibs,
-                  #gmc68219home_field_skipEmbeddedScan,
-                  #gmc68219home_field_allowUpdatersOnBadAOUSyntax
-                  { top: 0.08em; margin-right: 0.5em; }
-
-              #gmc68219home_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-              #gmc68219home_resetLink { margin-right: 2.5em; }
-              #gmc68219home_closeBtn { display: none; }
-
-          ]]></>
-      })
+        }
     );
 
     if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
@@ -407,13 +424,97 @@
     var gmc = new GM_configStruct();
     gmc.id = "gmc68219";
 
-    gmc.init(insertDiv(),
+    gmc.init(
+      insertHook(),
       (
-        (window.location.pathname.match(/\/scripts\/show\/68219\/?/i))
-        ? <><![CDATA[ <img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/> ]]></>.toString()
-        : <><![CDATA[ <a href="/scripts/show/68219"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/11759/medium.png" style="vertical-align: middle; width: 43px; height: 32px;" title="uso - installWith" alt="uso - installWith"/></a> ]]></>.toString()
-      )
-      + <><![CDATA[ Options <span style="float: right; margin: 0 0.5em;"><a href="/guides/24/" style="text-decoration: none !important;"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/1359/large.png" title="Powered in part by usoCheckup" /> <a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http]]></> + (/^https:$/i.test(window.location.protocol) ? "s" : "") + <><![CDATA[://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>]]></>.toString(),
+        (
+          (location.pathname.match(/\/scripts\/show\/68219\/?/i))
+          ? <><![CDATA[
+
+              <img alt="installWith" title="uso - installWith" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11759/medium.png" />
+
+            ]]></>
+          : <><![CDATA[
+
+              <a href="/scripts/show/68219">
+                <img alt="installWith" title="uso - installWith" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11759/medium.png" />
+              </a>
+
+            ]]></>
+        )
+        + <><![CDATA[
+
+            <p>Options</p>
+            <span>
+              <a href="/guides/24/">
+                <img alt="usoCheckup" title="Powered in part by usoCheckup" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/1359/large.png" />
+              </a>
+              <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki">
+                <img alt="GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
+              </a>
+            </span>
+
+        ]]></>).toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
+      /* Custom CSS */
+      GM_setStyle({
+          node: null,
+          data: <><![CDATA[
+
+              @media screen, projection {
+                    #gmc68219 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+
+                    #gmc68219_header a { display: inline; }
+                    #gmc68219_header img { vertical-align: middle; }
+                    #gmc68219_header > img,
+                    #gmc68219_header > a > img
+                    { height: 32px; margin-right: 0.25em; width: 43px; }
+                    #gmc68219_header > p { display: inline; margin: 0; vertical-align: middle; }
+                    #gmc68219_header span { float: right; }
+                    #gmc68219_header span > a { display: inline; margin-left: 0.25em; }
+                    #gmc68219_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+                    #gmc68219 .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0 0 0.5em; padding: 0 0.5em; text-align: left; }
+                    #gmc68219 .config_var { clear: both; margin: 0.5em; padding: 0; }
+                    #gmc68219 .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; }
+                    .section_desc { margin: 0.25em 1.5em !important; }
+                    .gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+
+                      #gmc68219_field_useGravatarIcon,
+                      #gmc68219_field_useScriptIcon
+                      { top: 0.07em }
+
+                      #gmc68219_useGravatarIcon_var,
+                      #gmc68219_useScriptIcon_var
+                      { display: inline !important; }
+
+                      #gmc68219_useGravatarIcon_field_label img,
+                      #gmc68219_useScriptIcon_field_label img
+                      { height: 48px; vertical-align: middle; width: 48px; }
+
+                      #gmc68219_field_updaterMaxage,
+                      #gmc68219_field_updaterMinage
+                      { height: 1em; margin: 0 0.25em; min-height: 0.8em; max-height: 2.1em; text-align: right; width: 2.5em; }
+
+                      #gmc68219_field_indirectMethod,
+                      #gmc68219_field_directMethod
+                      { margin-left: 1em; margin-right: 1em; }
+
+                      #gmc68219_field_indirectMethod input,
+                      #gmc68219_field_directMethod input
+                      { margin: 0.25em !important; top: 0.1em; }
+
+                      #gmc68219_field_indirectMethod span,
+                      #gmc68219_field_directMethod span
+                      { margin-left: 0.25em; margin-right: 0.5em; }
+
+                    #gmc68219_buttons_holder { margin: 0.5em; }
+                    #gmc68219_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }
+                    #gmc68219_resetLink { margin-right: 1.5em; }
+                    #gmc68219_closeBtn { display: none; }
+              }
+
+          ]]></>
+      }),
+      /* Settings Object */
       {
         "useGravatarIcon": {
           "type": "checkbox",
@@ -436,62 +537,18 @@
           "default": 1
         },
         'indirectMethod': {
-            "label": 'Method <em class="gmc68219-yellownote">Select update to use the most recently detected version.</em>',
+            "label": 'Method <em class="gmc-yellownote">Select update to use the most recently detected version.</em>',
             "type": 'radio',
             "options": ['show', 'install', 'update'],
             "default": 'show'
         },
         'directMethod': {
-            "label": 'Method <em class="gmc68219-yellownote">Select update to use the most recently detected version.</em>',
+            "label": 'Method <em class="gmc-yellownote">Select update to use the most recently detected version.</em>',
             "type": 'radio',
             "options": ['install', 'update'],
             "default": 'install'
         }
-      },
-      GM_setStyle({
-          node: null,
-          data: <><![CDATA[
-              #gmc68219 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
-              #gmc68219_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-              #gmc68219 .config_header { color: #fff; background-color: #333; text-align: left; margin: 0 0 0.4em 0; padding: 0 0 0 0.5em; font-size: 1.57em; }
-              #gmc68219 .config_var { margin: 0.5em 1em; padding: 0; clear: both; }
-              #gmc68219 .field_label { color: #333; font-weight: normal; font-size: 100%; }
-              .section_desc { margin: 0.25em 1.5em !important; }
-
-                  #gmc68219_field_updaterMaxage,
-                  #gmc68219_field_updaterMinage
-                  { width: 2.5em; min-height: 0.8em; max-height: 2.1em; height: 1em; margin: -0.35em 0.25em 0.25em; text-align: right; }
-
-                  #gmc68219_field_updaterMaxage { margin-top: 0.25em; }
-
-
-                  #gmc68219_field_indirectMethod,
-                  #gmc68219_field_directMethod
-                  { margin-left: 1em; }
-
-                  #gmc68219_field_indirectMethod input,
-                  #gmc68219_field_directMethod input
-                  { top: 0.1em; }
-
-                  .gmc68219-yellownote { background-color: #FFD; font-size: 0.66em !important; }
-
-                  #gmc68219_field_useGravatarIcon,
-                  #gmc68219_field_useScriptIcon,
-                  #gmc68219_field_skipEmbeddedScan
-                  { top: 0.05em; margin-right: 0.5em; }
-
-                  #gmc68219_useGravatarIcon_var,
-                  #gmc68219_useScriptIcon_var
-                  { margin-right: 0 !important; display: inline !important; }
-
-                  #gmc68219_useScriptIcon_var { margin-left: 0 !important; }
-
-              #gmc68219_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-              #gmc68219_resetLink { margin-right: 2.5em; }
-              #gmc68219_closeBtn { display: none; }
-
-          ]]></>
-      })
+      }
     );
 
     gmc.onSave = function() {
@@ -521,7 +578,7 @@
   if ((scriptid = getScriptid())) {
     GM_xmlhttpRequest({
       retry: 5,
-      url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".meta.js",
+      url: protocol + "//userscripts.org/scripts/source/" + scriptid + ".meta.js",
       method: "GET",
       onload: function(xhr) {
         switch(xhr.status) {
@@ -653,7 +710,7 @@
             if (!gmcHome.get("skipEmbeddedScan")) {
               GM_xmlhttpRequest({
                 retry: 5,
-                url: "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
+                url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + currentVersion + ".user.js",
                 method: "GET",
                 onload: function (xhr) {
                   switch(xhr.status) {
@@ -777,7 +834,7 @@
                 "value": "uso",
                 "core": true,
                 "textContent": 'userscripts.org (default)',
-                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/7996/large.png",
+                "iconUrl": protocol + "//s3.amazonaws.com/uso_ss/7996/large.png",
                 "title": 'Use native user.js',
                 "securityAdvisory": {
                   "advisory": "undetermined",
@@ -788,7 +845,7 @@
                 "value": "usoCheckupmeta",
                 "core": true,
                 "textContent": 'usoCheckup \u039C\u03B5\u03C4\u03B1',
-                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/814/large.png",
+                "iconUrl": protocol + "//s3.amazonaws.com/uso_ss/814/large.png",
                 "title": 'Use optional filtered meta.js',
                 "updater": "usocheckup",
                 "rex": [
@@ -1775,7 +1832,7 @@
               "usoCheckupbeta": {
                 "value": "usoCheckupbeta",
                 "textContent": 'usoCheckup \u03B2\u03B5\u03C4\u03B1',
-                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/9785/large.png",
+                "iconUrl": protocol + "//s3.amazonaws.com/uso_ss/9785/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -1795,7 +1852,7 @@
               "usoCheckup": {
                 "value": "usoCheckup",
                 "textContent": 'usoCheckup',
-                "iconUrl": "http" + (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/814/large.png",
+                "iconUrl": protocol + "//s3.amazonaws.com/uso_ss/814/large.png",
                 "title": 'by tHE gREASEmONKEYS (multiple contributors)',
                 "updater": "usocheckup",
                 "rex": [
@@ -2075,7 +2132,7 @@
 
             let messageDDoS = "SEVERE, Possible DDoS attack script via updateURL metadata block key",
                 messageRHV = "HIGH, Possible Remotely Hosted Version or incorrect scriptid on USO applied on Greasemonkey 0.9.12+ updates",
-                messageRCS = "ELEVATED, Restricted (content) scope script";
+                messageRCS = "ELEVATED, Restricted (content scope) namespace script";
 
             usocMethod = "show";
             if (headers["require"])
@@ -2161,7 +2218,7 @@
 
             if (KU && RCS) {
                 revertInstall();
-                installNode.title = "Security Advisory: ERROR, Known updater and restricted (content) scope are incompatible";
+                installNode.title = "Security Advisory: ERROR, Known updater and restricted (content scope) namespace are incompatible";
                 installNode.classList.add("saERROR");
                 installNode.classList.remove("saBUSY");
                 return;
@@ -2274,15 +2331,15 @@
                   let icontype = getIcontype();
 
                   if (gravatar)
-                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=pg&s=32&default=identicon' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=pg&s=48&default=identicon' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
                   else
-                    gmc.fields["useGravatarIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px; margin-right: 0.5em;' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='margin-right: 0.5em;' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
 
 
                   if (icontype)
-                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' src='http" +  (/^https:$/i.test(window.location.protocol) ? "s" : "") + "://s3.amazonaws.com/uso_ss/icon/" + scriptid + "/large." + icontype + "'  alt='Favor this scripts USO icon when available if not present' title='Favor this scripts USO icon when available if not present'/>";
+                    gmc.fields["useScriptIcon"].settings.label = "<img src='" +  protocol + "//s3.amazonaws.com/uso_ss/icon/" + scriptid + "/large." + icontype + "'  alt='Favor this scripts USO icon when available if not present' title='Favor this scripts USO icon when available if not present'/>";
                   else
-                    gmc.fields["useScriptIcon"].settings.label = "<img style='vertical-align: middle; width: 32px; height: 32px;' alt='Favor this scripts USO icon when available if not present' title='Favor this scripts USO icon when available if not present'/>";
+                    gmc.fields["useScriptIcon"].settings.label = "<img alt='Favor this scripts USO icon when available if not present' title='Favor this scripts USO icon when available if not present'/>";
 
                   let icon = "";
                   icon = appendListItem(icon, gravatar);
