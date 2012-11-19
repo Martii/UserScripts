@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.19.2
+// @version       0.19.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -210,10 +210,10 @@
       <><![CDATA[
           <img alt="uso &ndash; Count Issues" title="uso &ndash; Count Issues" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11760/medium.png" />
           <p>Preferences</p>
-          <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config">
+          <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki">
               <img alt="Powered in part by GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
           </a>
-      ]]></>.toString(),
+      ]]></>.toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
 
         /* Custom CSS */
         GM_setStyle({
