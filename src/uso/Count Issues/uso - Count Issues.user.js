@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.19.5
+// @version       0.19.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -2187,7 +2187,7 @@
                         let aViewNode = document.createElement("a");
                         aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
                         aViewNode.textContent = "view";
-                        aViewNode.title = "intersection view";
+                        aViewNode.title = "\u2229 (intersection) view";
                         aViewNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
 
@@ -2263,7 +2263,7 @@
                         let aDiffNode = document.createElement("a");
                         aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
                         aDiffNode.textContent = "changes";
-                        aDiffNode.title = "symmetric difference changes";
+                        aDiffNode.title = "\u2206 (symmetric difference) changes";
                         aDiffNode.addEventListener("click", function(ev) {
                           ev.preventDefault();
 
