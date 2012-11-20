@@ -8,8 +8,8 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.23
-// @icon          http://s3.amazonaws.com/uso_ss/icon/114843/large.png
+// @version       0.0.24
+// @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/.*/
 // @include   http://userscripts.org/*
@@ -32,6 +32,8 @@ http://userscripts.org/topics/89961
 Please note this script uses native JSON and native classList which requires Firefox 3.6.x+ and Greasemonkey 0.9.8+
 
 */
+
+  let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
 
   function findlastPost(aTopicid) {
     if (document && document.body)
@@ -182,56 +184,72 @@ Please note this script uses native JSON and native classList which requires Fir
             ]]></>
         });
 
+      // TODO: Here or in @media rule???
       GM_setStyle({
           media: "print",
           data: <><![CDATA[
 
+              .hid { display: none; }
               #gmc114843 { display: none !important; }
 
           ]]></>
       });
 
+      let onInit = function (doc) {
+        /* Cleanup unused style in the GMC div portion of the DOM */
+        if (doc) {
+          let thisNode = doc.getElementById("gmc114843");
+          if (thisNode)
+            thisNode.removeAttribute("style");
+        }
+      }
+
       gmc.init(
           divNode,
+//           gmc.onInit, // NOTE: Destruction of this function occurs after initial open with GMC 7e5dfecf87- so don't currently use
           <><![CDATA[
 
-              <img src="http://s3.amazonaws.com/uso_ss/icon/114843/large.png" alt="uso - Monkey Barrel" title="uso - Monkey Barrel" /> Preferences
-              <span><a href="http://gmconfig.sizzlemctwizzle.com/"><img src="http://s3.amazonaws.com/uso_ss/9849/large.png" title="Powered in part by GM_config" /></a></span>
+              <img alt="Monkey Barrel" title="uso - Monkey Barrel" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/icon/114843/large.png" />
+              <p>Preferences</p>
+              <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki/">
+                <img alt="GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
+              </a>
 
-          ]]></> + '',
+          ]]></>.toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
           /* Custom CSS */
           GM_setStyle({
               node: null,
               data: <><![CDATA[
+                  /* Homepage */
+                  @media screen, projection {
+                      /* GM_config USO styling fixups */
+                      #gmc114843 { border: 1px solid #ddd; clear: right; margin: 0 0 0.5em; }
+                      #gmc114843_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 32px; }
+                      #gmc114843_header > p { display: inline; margin: auto; }
+                      #gmc114843_header > a { float: right; margin: 0.4em 0.5em; }
+                      #gmc114843_wrapper { background-color: #eee; padding-bottom: 0.25em; }
+                      #gmc114843 .config_header { background-color: #333; color: #fff; font-size: 1.55em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
+                      #gmc114843 .config_var { clear: both; margin: 0 1em; padding: 0; }
+                      #gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; }
+                      .section_desc { margin: 0.25em 1em !important; }
+                      .gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }
 
-                  /* GM_config specific fixups */
-                  #gmc114843 { border: 1px solid #ddd !important; clear: right !important; height: auto !important; max-height: none !important; max-width: 100% !important; margin: 0 0 0.6em 0 !important; position: static !important; width: auto !important; z-index: 0 !important; }
-                  #gmc114843_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-                  #gmc114843 .config_header { background-color: #333; color: white; font-size: 1.57em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
-                  #gmc114843 .config_var { clear: both; margin: 0 1em; padding: 0; }
-                  #gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; }
-                  .section_desc { margin: 0.25em 1em !important; }
+                        #gmc114843_section_header_0 { background-color: inherit !important; border-style: none !important; color: inherit !important; font-size: inherit !important; text-align: left !important; }
+                        #gmc114843_section_0 { margin: 0 1em; }
 
-                  .gmc114843-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+                        #gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }
+                        #gmc114843_field_jsonMenus { font-size: 1em; height: 15.2em; margin-top: 1em; max-width: 98.28%; min-width: 98.28%; min-height: 15.2em; }
 
-                  #gmc114843_header > img { vertical-align: middle; width: 32px; height: 32px; }
-                  #gmc114843_header > span { float: right; margin: 0.4em 0.5em; }
+                    #gmc114843_buttons_holder { margin-right: 1.0em; }
+                    #gmc114843_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
+                    #gmc114843_resetLink { margin: 0.25em 1.25em 0.25em 0; }
+                    #gmc114843_closeBtn { display: none; }
+                  }
 
-                  #gmc114843_section_header_0 { color: inherit !important; background-color: inherit !important; font-size: inherit !important; border-style: none !important; text-align: left !important; }
-                  #gmc114843_section_0 { margin: 0 1em; }
-                  #gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }
-
-                  #gmc114843_field_jsonMenus { font-size: 1em; min-width: 98.28%; max-width: 98.28%; margin-top: 1em; min-height: 15.2em; height: 15.2em; }
-
-                  #gmc114843_field_importGroups,
-                  #gmc114843_field_enableUnstick
-                  { top: 0.07em; }
-
-                  #gmc114843_importGroups_field_label p { margin-left: 1.5em; }
-
-                  #gmc114843_saveBtn { margin: 0.4em 1.2em !important; padding: 0 3.0em !important; }
-                  #gmc114843_resetLink { margin-right: 2.5em; }
-                  #gmc114843_closeBtn { display: none; }
+                  @media print {
+                      .hid { display: none; }
+                      #gmc114843 { display: none !important; }
+                  }
 
               ]]></>
           }),
@@ -241,7 +259,7 @@ Please note this script uses native JSON and native classList which requires Fir
             'jsonMenus': {
                 "section": ["Main menus"],
                 "type": 'textarea',
-                "label": "<p><em class='gmc114843-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format.</em></p>",
+                "label": "<p><em class='gmc-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format.</em></p>",
                 "default": JSON.stringify(JSON.parse(<><![CDATA[
 
                     {
@@ -249,10 +267,11 @@ Please note this script uses native JSON and native classList which requires Fir
                       "/scripts/show/114843",
                       {
                       "recent comments": "/comments",
+                      "recent images": "/images",
                       "recent posts": "/posts",
                       "recent reviews": "/reviews",
                       "recent spam votes": "/spam",
-                      "recent images": "/images",
+                      "recent topics": "/topics",
                       "spam and malware \u00bb": "/topics/9#posts-last",
                       "cookie stealing scripts \u00bb": "/topics/704#posts-last",
                       "custom search": "/search"
@@ -275,7 +294,9 @@ Please note this script uses native JSON and native classList which requires Fir
           }
       );
 
+
       gmc.onOpen = function () {
+        onInit(document);
         gmc.fields["jsonMenus"].node.setAttribute("spellcheck", "false");
       }
 
@@ -292,7 +313,7 @@ Please note this script uses native JSON and native classList which requires Fir
       }
 
       if (window.location.pathname.match(/\/scripts\/show\/114843/i)) {
-        gmc.open();
+        gmc.open(); // NOTE: First open
       }
 
       // -------------------------------------------------------------------------------------------------------------------------------------------------
