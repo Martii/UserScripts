@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.19.4
+// @version       0.19.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -210,7 +210,7 @@
       <><![CDATA[
           <img alt="uso &ndash; Count Issues" title="uso &ndash; Count Issues" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11760/medium.png" />
           <p>Preferences</p>
-          <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki">
+          <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki/">
               <img alt="Powered in part by GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
           </a>
       ]]></>.toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
@@ -261,6 +261,7 @@
                   #gmc69307_field_checkAgainstHomepageUSO,
                   #gmc69307_field_enableHEAD,
                   #gmc69307_field_checkShowVersionsSource,
+                  #gmc69307_field_checkShowVersionsLocale,
                   #gmc69307_field_checkShowLineNumbers,
                   #gmc69307_field_enableQuickReviewsMenu,
                   #gmc69307_field_hideH6,
@@ -289,7 +290,8 @@
                   #gmc69307_field_checkDeobfuscate,
                   #gmc69307_field_checkShowSize,
                   #gmc69307_field_maxHeightList,
-                  #gmc69307_field_checkAgainstHomepageUSO
+                  #gmc69307_field_checkAgainstHomepageUSO,
+                  #gmc69307_field_checkShowVersionsLocale
                   { margin-left: 1.5em; }
 
                   #gmc69307_field_hideH6Reinforce,
@@ -470,6 +472,11 @@
           'checkShowVersionsSource': {
               "type": 'checkbox',
               "label": 'Show inline Versions and Diffs on Source Code page',
+              "default": true
+          },
+          'checkShowVersionsLocale': {
+              "type": 'checkbox',
+              "label": 'Use Locale instead of UTC when logged out',
               "default": true
           },
           'checkShowLineNumbers': {
@@ -2153,8 +2160,23 @@
                         let diffNode = thisNode.firstChild.nextSibling;
 
                         let dateid = dateNode.textContent.replace(/\n\[/, "").trim();
-                        let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
 
+                        if (gmc.get("checkShowVersionsLocale")) {
+                          // Adjust if logged out
+                          let xpr = doc.evaluate(
+                            "//ul[@class='login_status']//a[starts-with(@href, '/login')]",
+                            doc.body,
+                            null,
+                            XPathResult.FIRST_ORDERED_NODE_TYPE,
+                            null
+                          );
+                          if (xpr && xpr.singleNodeValue) {
+                            let utc = new Date(dateid + " UTC");
+                            dateid = utc.toLocaleFormat("%b %d, %Y %H:%M %Z");
+                          }
+                        }
+
+                        let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
 
                         let aInstallNode = document.createElement("a");
                         aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
@@ -2165,6 +2187,7 @@
                         let aViewNode = document.createElement("a");
                         aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
                         aViewNode.textContent = "view";
+                        aViewNode.title = "intersection view";
                         aViewNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
 
@@ -2240,6 +2263,7 @@
                         let aDiffNode = document.createElement("a");
                         aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
                         aDiffNode.textContent = "changes";
+                        aDiffNode.title = "symmetric difference changes";
                         aDiffNode.addEventListener("click", function(ev) {
                           ev.preventDefault();
 
@@ -2392,7 +2416,7 @@
                               #versions p  { margin: 0; }
                               #versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }
                               #versions p > span { color: #666; font-size: 0.8em; }
-                              #versions ul { -moz-column-count: 3; list-style: none; }
+                              #versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; }
                               #versions ul a { margin-left: 0.25em; margin-right: 0.25em; }
                               #versions ul a:last-child { color: #000; text-decoration: none; margin-left: 0.5em; }
                               #versions ul li.current { background-color: #ddd; }
