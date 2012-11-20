@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.19.3
+// @version       0.19.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -222,7 +222,7 @@
               /* Homepage */
               @media screen, projection {
                   /* GM_config USO styling fixups */
-                  #gmc69307 { border: 1px solid #ddd; clear: right; }
+                  #gmc69307 { border: 1px solid #ddd; clear: right; margin: 0 0 0.5em; }
                   #gmc69307_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 43px; }
                   #gmc69307_header > p { display: inline; }
                   #gmc69307_header > a { float: right; margin: 0.4em 0.5em; }
