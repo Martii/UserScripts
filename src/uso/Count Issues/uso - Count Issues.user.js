@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.0
+// @version       0.20.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -33,9 +33,8 @@
 // @installURL file:
 // @downloadURL file:
 //
-// @require https://secure.dune.net/usocheckup/69307.js?maxage=1&topicid=46434
-//@require https://secure.dune.net/usocheckup/69307.js?method=update&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
-//@require https://userscripts.org/scripts/source/61794.user.js
+// @require https://secure.dune.net/usocheckup/69307.js?method=update&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
+// @require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/7e5dfecf8759719053e1dac71a1a8ee929eb6c8c/gm_config.js
