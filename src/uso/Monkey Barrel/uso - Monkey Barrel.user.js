@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.24
+// @version       0.0.30
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/.*/
@@ -154,22 +154,22 @@ Please note this script uses native JSON and native classList which requires Fir
       if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
         GM_setStyle({
             node: gCSS,
-            data: <><![CDATA[
+            data:
+              [
+                "div #full_description { width: 98.1%; }"
 
-                div #full_description { width: 98.1%; }
-
-            ]]></>
+              ].join("\n")
         });
 
       let screenShots = document.getElementById("screenshots");
       if (screenShots)
         GM_setStyle({
             node: gCSS,
-            data: <><![CDATA[
+            data:
+              [
+                "#full_description { clear: left; }"
 
-                #full_description { clear: left; }
-
-            ]]></>
+              ].join("\n")
         });
 
       /* Nearest fix for userscripts.org Alternate CSS */
@@ -177,22 +177,22 @@ Please note this script uses native JSON and native classList which requires Fir
       if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
         GM_setStyle({
             node: gCSS,
-            data: <><![CDATA[
+            data:
+              [
+                "#screenshots { width: 97.5% !important; }"
 
-                #screenshots { width: 97.5% !important; }
-
-            ]]></>
+              ].join("\n")
         });
 
       // TODO: Here or in @media rule???
       GM_setStyle({
           media: "print",
-          data: <><![CDATA[
+          data:
+            [
+              ".hid { display: none; }",
+              "#gmc114843 { display: none !important; }"
 
-              .hid { display: none; }
-              #gmc114843 { display: none !important; }
-
-          ]]></>
+            ].join("\n")
       });
 
       let onInit = function (doc) {
@@ -207,51 +207,51 @@ Please note this script uses native JSON and native classList which requires Fir
       gmc.init(
           divNode,
 //           gmc.onInit, // NOTE: Destruction of this function occurs after initial open with GMC 7e5dfecf87- so don't currently use
-          <><![CDATA[
+          [
+              '<img alt="Monkey Barrel" title="uso - Monkey Barrel" src="' + protocol + '//s3.amazonaws.com/uso_ss/icon/114843/large.png" />',
+              '<p>Preferences</p>',
+              '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki/">',
+                '<img alt="GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
+              '</a>'
 
-              <img alt="Monkey Barrel" title="uso - Monkey Barrel" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/icon/114843/large.png" />
-              <p>Preferences</p>
-              <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki/">
-                <img alt="GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
-              </a>
-
-          ]]></>.toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
+          ].join(""),
           /* Custom CSS */
           GM_setStyle({
               node: null,
-              data: <><![CDATA[
+              data:
+                [
                   /* Homepage */
-                  @media screen, projection {
+                  "@media screen, projection {",
                       /* GM_config USO styling fixups */
-                      #gmc114843 { border: 1px solid #ddd; clear: right; margin: 0 0 0.5em; }
-                      #gmc114843_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 32px; }
-                      #gmc114843_header > p { display: inline; margin: auto; }
-                      #gmc114843_header > a { float: right; margin: 0.4em 0.5em; }
-                      #gmc114843_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-                      #gmc114843 .config_header { background-color: #333; color: #fff; font-size: 1.55em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
-                      #gmc114843 .config_var { clear: both; margin: 0 1em; padding: 0; }
-                      #gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; }
-                      .section_desc { margin: 0.25em 1em !important; }
-                      .gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+                      "#gmc114843 { border: 1px solid #ddd; clear: right; margin: 0 0 0.5em; }",
+                      "#gmc114843_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 32px; }",
+                      "#gmc114843_header > p { display: inline; margin: auto; }",
+                      "#gmc114843_header > a { float: right; margin: 0.4em 0.5em; }",
+                      "#gmc114843_wrapper { background-color: #eee; padding-bottom: 0.25em; }",
+                      "#gmc114843 .config_header { background-color: #333; color: #fff; font-size: 1.55em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }",
+                      "#gmc114843 .config_var { clear: both; margin: 0 1em; padding: 0; }",
+                      "#gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; }",
+                      ".section_desc { margin: 0.25em 1em !important; }",
+                      ".gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }",
 
-                        #gmc114843_section_header_0 { background-color: inherit !important; border-style: none !important; color: inherit !important; font-size: inherit !important; text-align: left !important; }
-                        #gmc114843_section_0 { margin: 0 1em; }
+                        "#gmc114843_section_header_0 { background-color: inherit !important; border-style: none !important; color: inherit !important; font-size: inherit !important; text-align: left !important; }",
+                        "#gmc114843_section_0 { margin: 0 1em; }",
 
-                        #gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }
-                        #gmc114843_field_jsonMenus { font-size: 1em; height: 15.2em; margin-top: 1em; max-width: 98.28%; min-width: 98.28%; min-height: 15.2em; }
+                        "#gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }",
+                        "#gmc114843_field_jsonMenus { font-size: 1em; height: 15.2em; margin-top: 1em; max-width: 98.28%; min-width: 98.28%; min-height: 15.2em; }",
 
-                    #gmc114843_buttons_holder { margin-right: 1.0em; }
-                    #gmc114843_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
-                    #gmc114843_resetLink { margin: 0.25em 1.25em 0.25em 0; }
-                    #gmc114843_closeBtn { display: none; }
-                  }
+                    "#gmc114843_buttons_holder { margin-right: 1.0em; }",
+                    "#gmc114843_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }",
+                    "#gmc114843_resetLink { margin: 0.25em 1.25em 0.25em 0; }",
+                    "#gmc114843_closeBtn { display: none; }",
+                  "}",
 
-                  @media print {
-                      .hid { display: none; }
-                      #gmc114843 { display: none !important; }
-                  }
+                  "@media print {",
+                      ".hid { display: none; }",
+                      "#gmc114843 { display: none !important; }",
+                  "}"
 
-              ]]></>
+                ].join("\n")
           }),
 
           /* Settings object */
@@ -260,26 +260,28 @@ Please note this script uses native JSON and native classList which requires Fir
                 "section": ["Main menus"],
                 "type": 'textarea',
                 "label": "<p><em class='gmc-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format.</em></p>",
-                "default": JSON.stringify(JSON.parse(<><![CDATA[
+                "default": JSON.stringify(
+                             JSON.parse(
+                                [
+                                  '{',
+                                    '"Monkey Barrel": [',
+                                      '"/scripts/show/114843",',
+                                      '{',
+                                      '"recent comments": "/comments",',
+                                      '"recent images": "/images",',
+                                      '"recent posts": "/posts",',
+                                      '"recent reviews": "/reviews",',
+                                      '"recent spam votes": "/spam",',
+                                      '"recent topics": "/topics",',
+                                      '"spam and malware \u00bb": "/topics/9#posts-last",',
+                                      '"cookie stealing scripts \u00bb": "/topics/704#posts-last",',
+                                      '"custom search": "/search"',
+                                      '}',
+                                    ']',
+                                  '}'
 
-                    {
-                    "Monkey Barrel": [
-                      "/scripts/show/114843",
-                      {
-                      "recent comments": "/comments",
-                      "recent images": "/images",
-                      "recent posts": "/posts",
-                      "recent reviews": "/reviews",
-                      "recent spam votes": "/spam",
-                      "recent topics": "/topics",
-                      "spam and malware \u00bb": "/topics/9#posts-last",
-                      "cookie stealing scripts \u00bb": "/topics/704#posts-last",
-                      "custom search": "/search"
-                      }
-                     ]
-                    }
-
-                ]]></> + ''), null, " ")
+                                ].join("\n")
+                             ), null, " ")
             },
             'enableUnstick': {
                 "type": 'checkbox',
@@ -319,16 +321,17 @@ Please note this script uses native JSON and native classList which requires Fir
       // -------------------------------------------------------------------------------------------------------------------------------------------------
       GM_setStyle({
         node: gCSS,
-        data: <><![CDATA[
+        data:
+          [
+            /* Fix USO */
+            "#header #mainmenu { padding-top: 0; }",
 
-            #header #mainmenu { padding-top: 0; } /* Fix USO */
+            ".hid { display: none; }",
+            ".mainmenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; }",
+            ".mainmenu- li { -moz-border-radius: 0 !important; border-radius: 0 !important; margin: 0 !important; float: none !important; background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }",
+            ".mainmenu- li a { color: #fff !important; }"
 
-            .hid { display: none; }
-            .mainmenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; }
-            .mainmenu- li { -moz-border-radius: 0 !important; border-radius: 0 !important; margin: 0 !important; float: none !important; background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }
-            .mainmenu- li a { color: #fff !important; }
-
-          ]]></>
+          ].join("\n")
       });
 
       function onresize(ev) {
@@ -359,12 +362,12 @@ Please note this script uses native JSON and native classList which requires Fir
       if (gmc.get("enableUnstick")) {
         GM_setStyle({
           node: gCSS,
-          data: <><![CDATA[
+          data:
+            [
+              "#header > .container { position: static; }",
+              ".mainmenu- { position: absolute; }"
 
-              #header > .container { position: static; }
-              .mainmenu- { position: absolute; }
-
-          ]]></>
+            ].join("\n")
         });
 
       if (!onresize())
