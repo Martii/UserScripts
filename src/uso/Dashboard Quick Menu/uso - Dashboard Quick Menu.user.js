@@ -7,14 +7,15 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @icon          http://s3.amazonaws.com/uso_ss/icon/105402/large.png
-// @version       0.1.8
+// @version       1.0.0
+// @icon          https://s3.amazonaws.com/uso_ss/icon/105402/large.png
 //
+// @include /http:\/\/userscripts\.org/.*/
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
-// @require http://userscripts.org/scripts/source/115323.user.js
 //
-// @grant GM_addStyle
+// @require https://userscripts.org/scripts/source/115323.user.js
+//
 // @grant GM_getValue
 // @grant GM_setValue
 //
@@ -71,18 +72,18 @@ Please note this script uses native JSON and native classList which requires Fir
 
     GM_setStyle({
       media: "screen, projection",
-      data: <><![CDATA[
-
+      data:
+        [
           /* Fix USO */
-          #top > .container { position: static; }
-          #header #mainmenu { padding-top: 0; }
+          "#top > .container { position: static; }",
+          "#header #mainmenu { padding-top: 0; }",
 
-          .hid { display: none; }
-          .usermenu- { position: absolute; z-index: 1; margin: 0; list-style: none outside none; margin-left: -1.5em; }
-          .usermenu- li { border-radius: 0 !important; margin: 0 !important; float: none !important; background: #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; padding: 0 1.5em; }
-          .usermenu- li a { color: #fff !important; }
+          ".hid { display: none; }",
+          ".usermenu- { position: absolute; z-index: 1; margin: 0; list-style: none outside none; margin-left: -1.5em; }",
+          ".usermenu- li { border-radius: 0 !important; margin: 0 !important; float: none !important; background: #ff7c00 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; padding: 0 1.5em; }",
+          ".usermenu- li a { color: #fff !important; }"
 
-      ]]></>
+        ].join("\n")
     });
 
     let ulNode = document.createElement("ul");
