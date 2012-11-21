@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.38
+// @version       1.1.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -36,7 +36,7 @@
 // @downloadURL file:
 //
 // @require https://secure.dune.net/usocheckup/68219.js?method=update&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
-// @require https://userscripts.org/scripts/source/61794.user.js
+//@require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
 //
@@ -57,57 +57,57 @@
 
   let nodeStyle = GM_setStyle({
       media: "screen, projection",
-      data: <><![CDATA[
+      data:
+        [
+          ".hid { display: none; }",
 
-          .hid { display: none; }
+          "#install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; border: 3px solid #a7a7a7; }",
+          "#install_script select { border: 3px solid #a7a7a7; -moz-border-radius: 5px; }",
+          "#install_script a.userjs:hover { color: #004; background: #999 -moz-linear-gradient(top, #f5f5f5, #999) no-repeat scroll 0 0; }",
 
-          #install_script a.userjs { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; border: 3px solid #a7a7a7; }
-          #install_script select { border: 3px solid #a7a7a7; -moz-border-radius: 5px; }
-          #install_script a.userjs:hover { color: #004; background: #999 -moz-linear-gradient(top, #f5f5f5, #999) no-repeat scroll 0 0; }
+          "#install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0; }",
+          "#install_script a.sabLIB { border: 3px solid #fff; }",
+          "#install_script a.saLIB:hover { color: #000; background: #fff none repeat scroll 0 0; }",
 
-          #install_script a.saLIB { color: #000; background: #fff none repeat scroll 0 0; }
-          #install_script a.sabLIB { border: 3px solid #fff; }
-          #install_script a.saLIB:hover { color: #000; background: #fff none repeat scroll 0 0; }
+          "#install_script a.saLOW { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }",
+          "#install_script a.sabLOW, #install_script select.sabLOW { border: 3px solid #adda63; }",
+          "#install_script a.saLOW:hover { background:  #a2cc5d -moz-linear-gradient(top, #e5f5cb, #a2cc5d) repeat scroll 0 0; }",
 
-          #install_script a.saLOW { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
-          #install_script a.sabLOW, #install_script select.sabLOW { border: 3px solid #adda63; }
-          #install_script a.saLOW:hover { background:  #a2cc5d -moz-linear-gradient(top, #e5f5cb, #a2cc5d) repeat scroll 0 0; }
+          "#install_script a.saGUARDED { background: #8085a0 -moz-linear-gradient(top, #cbd2f5, #8085a0) repeat scroll 0 0; }",
+          "#install_script a.sabGUARDED, #install_script select.sabGUARDED { border: 3px solid #99a9ff; }",
+          "#install_script a.saGUARDED:hover { background: #767b94 -moz-linear-gradient(top, #cbd2f5, #767b94) repeat scroll 0 0; }",
 
-          #install_script a.saGUARDED { background: #8085a0 -moz-linear-gradient(top, #cbd2f5, #8085a0) repeat scroll 0 0; }
-          #install_script a.sabGUARDED, #install_script select.sabGUARDED { border: 3px solid #99a9ff; }
-          #install_script a.saGUARDED:hover { background: #767b94 -moz-linear-gradient(top, #cbd2f5, #767b94) repeat scroll 0 0; }
+          "#install_script a.saELEVATED { background: #e0e36e -moz-linear-gradient(top, #f4f5cb, #e0e36e) repeat scroll 0 0; }",
+          "#install_script a.sabELEVATED { border: 3px solid #fcff7c; }",
+          "#install_script a.saELEVATED:hover { background: #d3d668 -moz-linear-gradient(top, #f4f5cb, #d3d668) repeat scroll 0 0; }",
 
-          #install_script a.saELEVATED { background: #e0e36e -moz-linear-gradient(top, #f4f5cb, #e0e36e) repeat scroll 0 0; }
-          #install_script a.sabELEVATED { border: 3px solid #fcff7c; }
-          #install_script a.saELEVATED:hover { background: #d3d668 -moz-linear-gradient(top, #f4f5cb, #d3d668) repeat scroll 0 0; }
+          "#install_script a.saHIGH { background: #e0a46d -moz-linear-gradient(top, #f5dfcb, #e0a46d) repeat scroll 0 0; }",
+          "#install_script a.sabHIGH { border: 3px solid #e0a46d; }",
+          "#install_script a.saHIGH:hover { background: #d49b67 -moz-linear-gradient(top, #f5dfcb, #d49b67) repeat scroll 0 0; }",
 
-          #install_script a.saHIGH { background: #e0a46d -moz-linear-gradient(top, #f5dfcb, #e0a46d) repeat scroll 0 0; }
-          #install_script a.sabHIGH { border: 3px solid #e0a46d; }
-          #install_script a.saHIGH:hover { background: #d49b67 -moz-linear-gradient(top, #f5dfcb, #d49b67) repeat scroll 0 0; }
+          "#install_script a.saSEVERE { background: #e57169 -moz-linear-gradient(top,  #f5cecb, #e57169) repeat scroll 0 0; }",
+          "#install_script a.sabSEVERE { border: 3px solid #e57169; }",
+          "#install_script a.saSEVERE:hover { background: #d96b63 -moz-linear-gradient(top,  #f5cecb, #d96b63) repeat scroll 0 0; }",
 
-          #install_script a.saSEVERE { background: #e57169 -moz-linear-gradient(top,  #f5cecb, #e57169) repeat scroll 0 0; }
-          #install_script a.sabSEVERE { border: 3px solid #e57169; }
-          #install_script a.saSEVERE:hover { background: #d96b63 -moz-linear-gradient(top,  #f5cecb, #d96b63) repeat scroll 0 0; }
+          "#install_script a.saERROR { color: #fff; background: #000 none repeat scroll 0 0; border: 3px solid #a7a7a7 }",
+          "#install_script a.saERROR:hover { color: #fff; background: #000 none repeat scroll 0 0; }",
 
-          #install_script a.saERROR { color: #fff; background: #000 none repeat scroll 0 0; border: 3px solid #a7a7a7 }
-          #install_script a.saERROR:hover { color: #fff; background: #000 none repeat scroll 0 0; }
+          "@-moz-keyframes saBUSY { from { background: #a7a7a7; } to { background: #8c8c8c; } }",
+          "#install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }",
 
-          @-moz-keyframes saBUSY { from { background: #a7a7a7; } to { background: #8c8c8c; } }
-          #install_script a.saBUSY { background: transparent none repeat scroll 0 0; -moz-animation: 1s ease 0s alternate none infinite saBUSY; }
+          "#install_script a.installWith { font-size: 1.0em; background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }",
+          "#install_script a.installWith:hover { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }",
 
-          #install_script a.installWith { font-size: 1.0em; background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
-          #install_script a.installWith:hover { background:  #adda63 -moz-linear-gradient(top, #e5f5cb, #adda63) repeat scroll 0 0; }
+          "#install_script a.pEmbedded, #install_script a.pEmbedded:hover { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; }",
 
-          #install_script a.pEmbedded, #install_script a.pEmbedded:hover { background: #a7a7a7 -moz-linear-gradient(top, #f5f5f5, #a7a7a7) no-repeat scroll 0 0; }
+          "#install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-weight: 900; width: 1.5em; height: 1.5em; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; -moz-border-radius: 1em; border-radius: 1em; border: 1px solid #999; }",
+          "#install_script a.helpWith:hover { color: #a00; background: #ec0 -moz-linear-gradient(center top,  #eee, #e6b800) repeat scroll 0 0; }",
+          "#install_script select.updateWith { width: 90%; height: 1.9em; font-size: 0.9em; }",
+          "#install_script select.updateWith option.separator { border-top: thin dotted #666; }",
+          "#install_script select.updateWith img { vertical-align: middle; margin: 0.25em 0.25em 0.25em 0; width: 16px; height: 16px; background: none no-repeat scroll center center transparent; }",
+          "#install_script select.updateWith img.indent { margin-left: 0.6em; }"
 
-          #install_script a.helpWith { float: right; margin-top: 6px; text-decoration: none; font-weight: 900; width: 1.5em; height: 1.5em; color: #c00; background: #fc0 -moz-linear-gradient(center top, #eee, #fc0) repeat scroll 0 0; -moz-border-radius: 1em; border-radius: 1em; border: 1px solid #999; }
-          #install_script a.helpWith:hover { color: #a00; background: #ec0 -moz-linear-gradient(center top,  #eee, #e6b800) repeat scroll 0 0; }
-          #install_script select.updateWith { width: 90%; height: 1.9em; font-size: 0.9em; }
-          #install_script select.updateWith option.separator { border-top: thin dotted #666; }
-          #install_script select.updateWith img { vertical-align: middle; margin: 0.25em 0.25em 0.25em 0; width: 16px; height: 16px; background: none no-repeat scroll center center transparent; }
-          #install_script select.updateWith img.indent { margin-left: 0.6em; }
-
-      ]]></>
+        ].join("\n")
   });
 
   let frameless = false;
@@ -134,17 +134,17 @@
 
     GM_setStyle({
         node: nodeStyle,
-        data: <><![CDATA[
+        data:
+          [
+            "div.container { width: auto; margin: 0; }",
+            "div#content { width: 100% !important; left: 0; }",
+            "div#heading { height: 66px; min-height: 0; }",
+            "div#details h1.title { max-height: 2.05em; overflow: hidden; }",
+            "#section > .container { width: auto !important; }",
+            "#section_search { display: none !important; }",
+            "#install_script { bottom: auto !important; top: 10px !important; margin-right: 5px; }"
 
-            div.container { width: auto; margin: 0; }
-            div#content { width: 100% !important; left: 0; }
-            div#heading { height: 66px; min-height: 0; }
-            div#details h1.title { max-height: 2.05em; overflow: hidden; }
-            #section > .container { width: auto !important; }
-            #section_search { display: none !important; }
-            #install_script { bottom: auto !important; top: 10px !important; margin-right: 5px; }
-
-        ]]></>
+          ].join("\n")
     });
   }
 
@@ -240,22 +240,22 @@
     if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "div #full_description { width: 98.1%; }"
 
-              div #full_description { width: 98.1%; }
-
-          ]]></>
+            ].join("\n")
       });
 
     let screenShots = document.getElementById("screenshots");
     if (screenShots)
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "#full_description { clear: left; }"
 
-              #full_description { clear: left; }
-
-          ]]></>
+            ].join("\n")
       });
 
     /* Nearest fix for userscripts.org Alternate CSS */
@@ -273,21 +273,21 @@
       if (height < 24)
         GM_setStyle({
             node: nodeStyle,
-            data: <><![CDATA[
+            data:
+              [
+                "#screenshots { width: 97.5% !important; }",
+                "#install_script a.helpWith { font-size: 0.78em; }"
 
-               #screenshots { width: 97.5% !important; }
-               #install_script a.helpWith { font-size: 0.78em; }
-
-            ]]></>
+              ].join("\n")
         });
       else
         GM_setStyle({
             node: nodeStyle,
-            data: <><![CDATA[
+            data:
+              [
+                "#install_script a.helpWith { font-size: 0.77em; }"
 
-                #install_script a.helpWith { font-size: 0.77em; }
-
-            ]]></>
+              ].join("\n")
         });
     }
 
@@ -298,76 +298,75 @@
 
       GM_setStyle({
           media: "print",
-          data: <><![CDATA[
+          data:
+            [
+              "#gmc68219home, #gmc68219 { display: none !important; }"
 
-              #gmc68219home, #gmc68219 { display: none !important; }
-
-          ]]></>
+            ].join("\n")
       });
 
     gmcHome.init(
         divNode,
-        (<><![CDATA[
+        ([
+            '<img alt="installWith" title="uso - installWith" src="' + protocol + '//s3.amazonaws.com/uso_ss/11759/medium.png" />',
+            '<p>Preferences</p>',
+            '<span>',
+              '<a href="/guides/24/">',
+                '<img alt="usoCheckup" title="Powered in part by usoCheckup" src="' + protocol + '//s3.amazonaws.com/uso_ss/1359/large.png" />',
+              '</a>',
+              '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki">',
+                '<img alt="GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
+              '</a>',
+            '</span>'
 
-            <img alt="installWith" title="uso - installWith" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11759/medium.png" />
-            <p>Preferences</p>
-            <span>
-              <a href="/guides/24/">
-                <img alt="usoCheckup" title="Powered in part by usoCheckup" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/1359/large.png" />
-              </a>
-              <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki">
-                <img alt="GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
-              </a>
-            </span>
-
-        ]]></>).toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
+         ]).join(""),
 
         /* Custom CSS */
         GM_setStyle({
             node: null,
-            data: <><![CDATA[
+            data:
+              [
+                "@media screen, projection {",
+                      "#gmc68219home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }",
 
-              @media screen, projection {
-                    #gmc68219home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+                      "#gmc68219home_header a { display: inline; }",
+                      "#gmc68219home_header img { vertical-align: middle; }",
+                      "#gmc68219home_header > img { height: 32px; margin-right: 0.25em; width: 43px; }",
+                      "#gmc68219home_header > p { display: inline; margin: 0; vertical-align: middle; }",
+                      "#gmc68219home_header span { float: right; }",
+                      "#gmc68219home_header span > a { display: inline; margin-left: 0.25em; }",
+                      "#gmc68219home_wrapper { background-color: #eee; padding-bottom: 0.25em; }",
+                      "#gmc68219home .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0; padding: 0 0.5em; text-align: left; }",
+                      "#gmc68219home .config_var { clear: both; margin: 0.5em; padding: 0; }",
+                      "#gmc68219home .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; }",
+                      ".section_desc { margin: 0.25em 1.5em !important; }",
 
-                    #gmc68219home_header a { display: inline; }
-                    #gmc68219home_header img { vertical-align: middle; }
-                    #gmc68219home_header > img { height: 32px; margin-right: 0.25em; width: 43px; }
-                    #gmc68219home_header > p { display: inline; margin: 0; vertical-align: middle; }
-                    #gmc68219home_header span { float: right; }
-                    #gmc68219home_header span > a { display: inline; margin-left: 0.25em; }
-                    #gmc68219home_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-                    #gmc68219home .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0; padding: 0 0.5em; text-align: left; }
-                    #gmc68219home .config_var { clear: both; margin: 0.5em; padding: 0; }
-                    #gmc68219home .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; }
-                    .section_desc { margin: 0.25em 1.5em !important; }
+                          ".gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }",
+                          ".gmc68219home-invisilink { text-decoration: none; color: #000; }",
+                          ".gmc68219home-invisilink:hover { color: #000; }",
 
-                        .gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }
-                        .gmc68219home-invisilink { text-decoration: none; color: #000; }
-                        .gmc68219home-invisilink:hover { color: #000; }
+                          "#gmc68219home_field_mirrorDomain { margin-left: 1em; margin-right: 1em; }",
+                          "#gmc68219home_field_mirrorDomain input { margin: 0.25em !important; top: 0.1em; }",
+                          "#gmc68219home_field_mirrorDomain span { margin-left: 0.25em; margin-right: 0.5em; }",
 
-                        #gmc68219home_field_mirrorDomain { margin-left: 1em; margin-right: 1em; }
-                        #gmc68219home_field_mirrorDomain input { margin: 0.25em !important; top: 0.1em; }
-                        #gmc68219home_field_mirrorDomain span { margin-left: 0.25em; margin-right: 0.5em; }
+                          "#gmc68219home_field_forceInstallSecure,",
+                          "#gmc68219home_field_forceInstallRecent,",
+                          "#gmc68219home_field_allowAOU,",
+                          "#gmc68219home_field_allowUpdatersOnAOUgrantnone,",
+                          "#gmc68219home_field_skipVerifyLibs,",
+                          "#gmc68219home_field_skipEmbeddedScan,",
+                          "#gmc68219home_field_allowUpdatersOnBadAOUSyntax",
+                          "{ top: 0.07em; }",
 
-                        #gmc68219home_field_forceInstallSecure,
-                        #gmc68219home_field_forceInstallRecent,
-                        #gmc68219home_field_allowAOU,
-                        #gmc68219home_field_allowUpdatersOnAOUgrantnone,
-                        #gmc68219home_field_skipVerifyLibs,
-                        #gmc68219home_field_skipEmbeddedScan,
-                        #gmc68219home_field_allowUpdatersOnBadAOUSyntax
-                        { top: 0.07em; }
+                          "#gmc68219home_skipEmbeddedScan_field_label p { margin: 0 1.75em; }",
 
-                        #gmc68219home_skipEmbeddedScan_field_label p { margin: 0 1.75em; }
+                      "#gmc68219home_buttons_holder { margin: 0.5em; }",
+                      "#gmc68219home_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }",
+                      "#gmc68219home_resetLink { margin-right: 1.5em; }",
+                      "#gmc68219home_closeBtn { display: none; }",
+                "}"
 
-                    #gmc68219home_buttons_holder { margin: 0.5em; }
-                    #gmc68219home_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }
-                    #gmc68219home_resetLink { margin-right: 1.5em; }
-                    #gmc68219home_closeBtn { display: none; }
-              }
-
-            ]]></>
+              ].join("\n")
         }),
 
         /* Settings object */
@@ -429,90 +428,87 @@
       (
         (
           (location.pathname.match(/\/scripts\/show\/68219\/?/i))
-          ? <><![CDATA[
+          ? [
+              '<img alt="installWith" title="uso - installWith" src="' + protocol + '//s3.amazonaws.com/uso_ss/11759/medium.png" />'
 
-              <img alt="installWith" title="uso - installWith" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11759/medium.png" />
+            ].join("")
+          : [
+              '<a href="/scripts/show/68219">',
+                '<img alt="installWith" title="uso - installWith" src="' + protocol + '//s3.amazonaws.com/uso_ss/11759/medium.png" />',
+              '</a>'
 
-            ]]></>
-          : <><![CDATA[
-
-              <a href="/scripts/show/68219">
-                <img alt="installWith" title="uso - installWith" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11759/medium.png" />
-              </a>
-
-            ]]></>
+            ].join("")
         )
-        + <><![CDATA[
-
-            <p>Options</p>
-            <span>
-              <a href="/guides/24/">
-                <img alt="usoCheckup" title="Powered in part by usoCheckup" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/1359/large.png" />
-              </a>
-              <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki">
-                <img alt="GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
-              </a>
-            </span>
-
-        ]]></>).toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
+        + [
+            '<p>Options</p>',
+            '<span>',
+              '<a href="/guides/24/">',
+                '<img alt="usoCheckup" title="Powered in part by usoCheckup" src="' + protocol + '//s3.amazonaws.com/uso_ss/1359/large.png" />',
+              '</a>',
+              '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki">',
+                '<img alt="GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
+              '</a>',
+            '</span>'
+          ].join("")
+        ),
       /* Custom CSS */
       GM_setStyle({
           node: null,
-          data: <><![CDATA[
+          data:
+            [
+              "@media screen, projection {",
+                    "#gmc68219 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }",
 
-              @media screen, projection {
-                    #gmc68219 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }
+                    "#gmc68219_header a { display: inline; }",
+                    "#gmc68219_header img { vertical-align: middle; }",
+                    "#gmc68219_header > img,",
+                    "#gmc68219_header > a > img",
+                    "{ height: 32px; margin-right: 0.25em; width: 43px; }",
+                    "#gmc68219_header > p { display: inline; margin: 0; vertical-align: middle; }",
+                    "#gmc68219_header span { float: right; }",
+                    "#gmc68219_header span > a { display: inline; margin-left: 0.25em; }",
+                    "#gmc68219_wrapper { background-color: #eee; padding-bottom: 0.25em; }",
+                    "#gmc68219 .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0 0 0.5em; padding: 0 0.5em; text-align: left; }",
+                    "#gmc68219 .config_var { clear: both; margin: 0.5em; padding: 0; }",
+                    "#gmc68219 .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; }",
+                    ".section_desc { margin: 0.25em 1.5em !important; }",
+                    ".gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }",
 
-                    #gmc68219_header a { display: inline; }
-                    #gmc68219_header img { vertical-align: middle; }
-                    #gmc68219_header > img,
-                    #gmc68219_header > a > img
-                    { height: 32px; margin-right: 0.25em; width: 43px; }
-                    #gmc68219_header > p { display: inline; margin: 0; vertical-align: middle; }
-                    #gmc68219_header span { float: right; }
-                    #gmc68219_header span > a { display: inline; margin-left: 0.25em; }
-                    #gmc68219_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-                    #gmc68219 .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0 0 0.5em; padding: 0 0.5em; text-align: left; }
-                    #gmc68219 .config_var { clear: both; margin: 0.5em; padding: 0; }
-                    #gmc68219 .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; }
-                    .section_desc { margin: 0.25em 1.5em !important; }
-                    .gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }
+                      "#gmc68219_field_useGravatarIcon,",
+                      "#gmc68219_field_useScriptIcon",
+                      "{ top: 0.07em }",
 
-                      #gmc68219_field_useGravatarIcon,
-                      #gmc68219_field_useScriptIcon
-                      { top: 0.07em }
+                      "#gmc68219_useGravatarIcon_var,",
+                      "#gmc68219_useScriptIcon_var",
+                      "{ display: inline !important; }",
 
-                      #gmc68219_useGravatarIcon_var,
-                      #gmc68219_useScriptIcon_var
-                      { display: inline !important; }
+                      "#gmc68219_useGravatarIcon_field_label img,",
+                      "#gmc68219_useScriptIcon_field_label img",
+                      "{ height: 48px; vertical-align: middle; width: 48px; }",
 
-                      #gmc68219_useGravatarIcon_field_label img,
-                      #gmc68219_useScriptIcon_field_label img
-                      { height: 48px; vertical-align: middle; width: 48px; }
+                      "#gmc68219_field_updaterMaxage,",
+                      "#gmc68219_field_updaterMinage",
+                      "{ height: 1em; margin: 0 0.25em; min-height: 0.8em; max-height: 2.1em; text-align: right; width: 2.5em; }",
 
-                      #gmc68219_field_updaterMaxage,
-                      #gmc68219_field_updaterMinage
-                      { height: 1em; margin: 0 0.25em; min-height: 0.8em; max-height: 2.1em; text-align: right; width: 2.5em; }
+                      "#gmc68219_field_indirectMethod,",
+                      "#gmc68219_field_directMethod",
+                      "{ margin-left: 1em; margin-right: 1em; }",
 
-                      #gmc68219_field_indirectMethod,
-                      #gmc68219_field_directMethod
-                      { margin-left: 1em; margin-right: 1em; }
+                      "#gmc68219_field_indirectMethod input,",
+                      "#gmc68219_field_directMethod input",
+                      "{ margin: 0.25em !important; top: 0.1em; }",
 
-                      #gmc68219_field_indirectMethod input,
-                      #gmc68219_field_directMethod input
-                      { margin: 0.25em !important; top: 0.1em; }
+                      "#gmc68219_field_indirectMethod span,",
+                      "#gmc68219_field_directMethod span",
+                      "{ margin-left: 0.25em; margin-right: 0.5em; }",
 
-                      #gmc68219_field_indirectMethod span,
-                      #gmc68219_field_directMethod span
-                      { margin-left: 0.25em; margin-right: 0.5em; }
+                    "#gmc68219_buttons_holder { margin: 0.5em; }",
+                    "#gmc68219_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }",
+                    "#gmc68219_resetLink { margin-right: 1.5em; }",
+                    "#gmc68219_closeBtn { display: none; }",
+              "}"
 
-                    #gmc68219_buttons_holder { margin: 0.5em; }
-                    #gmc68219_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }
-                    #gmc68219_resetLink { margin-right: 1.5em; }
-                    #gmc68219_closeBtn { display: none; }
-              }
-
-          ]]></>
+            ].join("\n")
       }),
       /* Settings Object */
       {
@@ -1907,7 +1903,7 @@
                 }
               },
               "usoCheckupbottomsUp": {
-                "value": "usoCheckupbottomsUp",
+//                 "value": "usoCheckupbottomsUp",
                 "textContent": 'usoCheckup + bottomsUp',
                 "derivative": 1,
                 "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
@@ -1926,7 +1922,7 @@
                 }
               },
               "usoCheckupDOMNotify": {
-                "value": "usoCheckupDOMNotify",
+//                 "value": "usoCheckupDOMNotify",
                 "textContent": 'usoCheckup + DOMNotify',
                 "derivative": 1,
                 "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
