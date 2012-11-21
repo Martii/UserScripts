@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.19.6
+// @version       0.20.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -33,8 +33,9 @@
 // @installURL file:
 // @downloadURL file:
 //
-// @require https://secure.dune.net/usocheckup/69307.js?method=update&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
-// @require https://userscripts.org/scripts/source/61794.user.js
+// @require https://secure.dune.net/usocheckup/69307.js?maxage=1&topicid=46434
+//@require https://secure.dune.net/usocheckup/69307.js?method=update&open=window&maxage=1&custom=yes&topicid=46434&id=usoCheckup
+//@require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/7e5dfecf8759719053e1dac71a1a8ee929eb6c8c/gm_config.js
@@ -55,12 +56,13 @@
   let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
   let nodeStyle = GM_setStyle({
       media: "screen, projection",
-      data: <><![CDATA[
+      data:
+        [
 
-          .hid { display: none; }
-          .HID { display: none !important }
+          ".hid { display: none; }",
+          ".HID { display: none !important }"
 
-      ]]></>
+        ].join("\n")
   });
 
   function simpleTranscodeDotNotation(line, counter, loop) { // NOTE: Fuzzy
@@ -175,22 +177,22 @@
     if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
       GM_setStyle({
         node: nodeStyle,
-        data: <><![CDATA[
+        data:
+          [
+            "div #full_description { width: 98.1%; }"
 
-            div #full_description { width: 98.1%; }
-
-          ]]></>
+          ].join("\n")
       });
 
     let screenShots = document.getElementById("screenshots");
     if (screenShots)
       GM_setStyle({
         node: nodeStyle,
-        data: <><![CDATA[
+        data:
+          [
+            "#full_description { clear: left; }"
 
-            #full_description { clear: left; }
-
-          ]]></>
+          ].join("\n")
       });
 
     /* Nearest fix for userscripts.org Alternate CSS */
@@ -198,138 +200,139 @@
     if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
       GM_setStyle({
         node: nodeStyle,
-        data: <><![CDATA[
+        data:
+          [
+            "#screenshots { width: 97.5% !important; }"
 
-            #screenshots { width: 97.5% !important; }
-
-          ]]></>
+          ].join("\n")
       });
 
     gmc.init(
       divNode,
-      <><![CDATA[
-          <img alt="uso &ndash; Count Issues" title="uso &ndash; Count Issues" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/11760/medium.png" />
-          <p>Preferences</p>
-          <a href="]]></> + protocol + <><![CDATA[//github.com/sizzlemctwizzle/GM_config/wiki/">
-              <img alt="Powered in part by GM_config" title="Powered in part by GM_config" src="]]></> + protocol + <><![CDATA[//s3.amazonaws.com/uso_ss/9849/large.png" />
-          </a>
-      ]]></>.toString().trim().split(/\n/).map(function (e) { return e.trim(); }).join(""),
+      [
+          '<img alt="uso &ndash; Count Issues" title="uso &ndash; Count Issues" src="' + protocol + '//s3.amazonaws.com/uso_ss/11760/medium.png" />',
+          '<p>Preferences</p>',
+          '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki/">',
+              '<img alt="Powered in part by GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
+          '</a>',
+      ].join(""),
 
         /* Custom CSS */
         GM_setStyle({
           node: null,
-          data: <><![CDATA[
-              /* Homepage */
-              @media screen, projection {
-                  /* GM_config USO styling fixups */
-                  #gmc69307 { border: 1px solid #ddd; clear: right; margin: 0 0 0.5em; }
-                  #gmc69307_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 43px; }
-                  #gmc69307_header > p { display: inline; }
-                  #gmc69307_header > a { float: right; margin: 0.4em 0.5em; }
-                  #gmc69307_wrapper { background-color: #eee; padding-bottom: 0.25em; }
-                  #gmc69307 .config_header { background-color: #333; color: #fff; font-size: 1.55em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }
-                  #gmc69307 .config_var { clear: both; margin: 0 1em; padding: 0; }
-                  #gmc69307 .field_label { color: #333; font-size: 100%; font-weight: normal; }
-                  .section_desc { margin: 0.25em 1em !important; }
-                  .gmc-yellownote { background-color: #ffd; font-size: 0.66em; }
+          data:
+            [
+              "/* Homepage */",
+              "@media screen, projection {",
+                  "/* GM_config USO styling fixups */",
+                  "#gmc69307 { border: 1px solid #ddd; clear: right; margin: 0 0 0.5em; }",
+                  "#gmc69307_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 43px; }",
+                  "#gmc69307_header > p { display: inline; }",
+                  "#gmc69307_header > a { float: right; margin: 0.4em 0.5em; }",
+                  "#gmc69307_wrapper { background-color: #eee; padding-bottom: 0.25em; }",
+                  "#gmc69307 .config_header { background-color: #333; color: #fff; font-size: 1.55em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }",
+                  "#gmc69307 .config_var { clear: both; margin: 0 1em; padding: 0; }",
+                  "#gmc69307 .field_label { color: #333; font-size: 100%; font-weight: normal; }",
+                  ".section_desc { margin: 0.25em 1em !important; }",
+                  ".gmc-yellownote { background-color: #ffd; font-size: 0.66em; }",
 
-                  /* Preferences panel */
-                  #gmc69307_field_showStringsString,
-                  #gmc69307_field_showKeysString,
-                  #gmc69307_field_hideH6String,
-                  #gmc69307_field_hideNavTabString,
-                  #gmc69307_field_insertH6String
-                  { font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }
+                  "/* Preferences panel */",
+                  "#gmc69307_field_showStringsString,",
+                  "#gmc69307_field_showKeysString,",
+                  "#gmc69307_field_hideH6String,",
+                  "#gmc69307_field_hideNavTabString,",
+                  "#gmc69307_field_insertH6String",
+                  "{ font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }",
 
-                  #gmc69307_field_showStringsString
-                  { height: 8em; min-height: 8em; }
+                  "#gmc69307_field_showStringsString",
+                  "{ height: 8em; min-height: 8em; }",
 
-                  #gmc69307_field_showKeysString,
-                  #gmc69307_field_hideH6String,
-                  #gmc69307_field_hideNavTabString,
-                  #gmc69307_field_insertH6String
-                  { height: 1.2em; max-height: 6em; min-height: 1.2em; }
+                  "#gmc69307_field_showKeysString,",
+                  "#gmc69307_field_hideH6String,",
+                  "#gmc69307_field_hideNavTabString,",
+                  "#gmc69307_field_insertH6String",
+                  "{ height: 1.2em; max-height: 6em; min-height: 1.2em; }",
 
-                  #gmc69307_field_useGreasefireUrl,
-                  #gmc69307_field_showStrings,
-                  #gmc69307_field_checkDeobfuscate,
-                  #gmc69307_field_checkShowSize,
-                  #gmc69307_field_checkTrimSourceCode,
-                  #gmc69307_field_showKeys,
-                  #gmc69307_field_limitMaxHeight,
-                  #gmc69307_field_showOnAboutOnly,
-                  #gmc69307_field_checkAgainstHomepageUSO,
-                  #gmc69307_field_enableHEAD,
-                  #gmc69307_field_checkShowVersionsSource,
-                  #gmc69307_field_checkShowVersionsLocale,
-                  #gmc69307_field_checkShowLineNumbers,
-                  #gmc69307_field_enableQuickReviewsMenu,
-                  #gmc69307_field_hideH6,
-                  #gmc69307_field_hideH6Reinforce,
-                  #gmc69307_field_hideNavTab,
-                  #gmc69307_field_insertH6
-                  { top: 0.075em; }
+                  "#gmc69307_field_useGreasefireUrl,",
+                  "#gmc69307_field_showStrings,",
+                  "#gmc69307_field_checkDeobfuscate,",
+                  "#gmc69307_field_checkShowSize,",
+                  "#gmc69307_field_checkTrimSourceCode,",
+                  "#gmc69307_field_showKeys,",
+                  "#gmc69307_field_limitMaxHeight,",
+                  "#gmc69307_field_showOnAboutOnly,",
+                  "#gmc69307_field_checkAgainstHomepageUSO,",
+                  "#gmc69307_field_enableHEAD,",
+                  "#gmc69307_field_checkShowVersionsSource,",
+                  "#gmc69307_field_checkShowVersionsLocale,",
+                  "#gmc69307_field_checkShowLineNumbers,",
+                  "#gmc69307_field_enableQuickReviewsMenu,",
+                  "#gmc69307_field_hideH6,",
+                  "#gmc69307_field_hideH6Reinforce,",
+                  "#gmc69307_field_hideNavTab,",
+                  "#gmc69307_field_insertH6",
+                  "{ top: 0.075em; }",
 
-                  #gmc69307_field_useGreasefireUrl,
-                  #gmc69307_field_showStrings,
-                  #gmc69307_field_showKeys,
-                  #gmc69307_field_limitMaxHeight,
-                  #gmc69307_field_showOnAboutOnly,
-                  #gmc69307_field_checkShowVersionsSource,
-                  #gmc69307_field_checkShowLineNumbers,
-                  #gmc69307_field_enableQuickReviewsMenu,
-                  #gmc69307_field_hideH6,
-                  #gmc69307_field_hideNavTab,
-                  #gmc69307_field_insertH6
-                  { margin-left: 0; }
+                  "#gmc69307_field_useGreasefireUrl,",
+                  "#gmc69307_field_showStrings,",
+                  "#gmc69307_field_showKeys,",
+                  "#gmc69307_field_limitMaxHeight,",
+                  "#gmc69307_field_showOnAboutOnly,",
+                  "#gmc69307_field_checkShowVersionsSource,",
+                  "#gmc69307_field_checkShowLineNumbers,",
+                  "#gmc69307_field_enableQuickReviewsMenu,",
+                  "#gmc69307_field_hideH6,",
+                  "#gmc69307_field_hideNavTab,",
+                  "#gmc69307_field_insertH6",
+                  "{ margin-left: 0; }",
 
-                  #gmc69307_field_fontSize,
-                  #gmc69307_field_maxHeightList
-                  { height: 1em; max-height: 2em; min-height: 0.8em; max-width: 4em; min-width: 2em; text-align: right; width: 2em; }
+                  "#gmc69307_field_fontSize,",
+                  "#gmc69307_field_maxHeightList",
+                  "{ height: 1em; max-height: 2em; min-height: 0.8em; max-width: 4em; min-width: 2em; text-align: right; width: 2em; }",
 
-                  #gmc69307_field_checkDeobfuscate,
-                  #gmc69307_field_checkShowSize,
-                  #gmc69307_field_maxHeightList,
-                  #gmc69307_field_checkAgainstHomepageUSO,
-                  #gmc69307_field_checkShowVersionsLocale
-                  { margin-left: 1.5em; }
+                  "#gmc69307_field_checkDeobfuscate,",
+                  "#gmc69307_field_checkShowSize,",
+                  "#gmc69307_field_maxHeightList,",
+                  "#gmc69307_field_checkAgainstHomepageUSO,",
+                  "#gmc69307_field_checkShowVersionsLocale",
+                  "{ margin-left: 1.5em; }",
 
-                  #gmc69307_field_hideH6Reinforce,
-                  #gmc69307_field_checkTrimSourceCode,
-                  #gmc69307_field_deobMethod,
-                  #gmc69307_field_enableHEAD
-                  { margin-left: 3.0em; }
+                  "#gmc69307_field_hideH6Reinforce,",
+                  "#gmc69307_field_checkTrimSourceCode,",
+                  "#gmc69307_field_deobMethod,",
+                  "#gmc69307_field_enableHEAD",
+                  "{ margin-left: 3.0em; }",
 
-                  #gmc69307 input[type="radio"]
-                  { top: 0.1em; }
+                  "#gmc69307 input[type='radio']",
+                  "{ top: 0.1em; }",
 
-                  #gmc69307_hideNavTab_var,
-                  #gmc69307_enableQuickReviewsMenu_var,
-                  #gmc69307_showStrings_var,
-                  #gmc69307_showKeys_var,
-                  #gmc69307_fontSize_var
-                  { margin-top: 0.5em !important; }
+                  "#gmc69307_hideNavTab_var,",
+                  "#gmc69307_enableQuickReviewsMenu_var,",
+                  "#gmc69307_showStrings_var,",
+                  "#gmc69307_showKeys_var,",
+                  "#gmc69307_fontSize_var",
+                  "{ margin-top: 0.5em !important; }",
 
 
-                  #gmc69307_showStringsString_field_label,
-                  #gmc69307_showKeysString_field_label,
-                  #gmc69307_field_hideH6Reinforce_field_label,
-                  #gmc69307_hideH6String_field_label,
-                  #gmc69307_hideNavTabString_field_label,
-                  #gmc69307_insertH6String_field_label
-                  { margin: 0 0 0 1.75em; }
+                  "#gmc69307_showStringsString_field_label,",
+                  "#gmc69307_showKeysString_field_label,",
+                  "#gmc69307_field_hideH6Reinforce_field_label,",
+                  "#gmc69307_hideH6String_field_label,",
+                  "#gmc69307_hideNavTabString_field_label,",
+                  "#gmc69307_insertH6String_field_label",
+                  "{ margin: 0 0 0 1.75em; }",
 
-                  #gmc69307_buttons_holder { margin-right: 1.0em; }
-                  #gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }
-                  #gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }
-                  #gmc69307_closeBtn { display: none; }
-              }
+                  "#gmc69307_buttons_holder { margin-right: 1.0em; }",
+                  "#gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }",
+                  "#gmc69307_resetLink { margin: 0.25em 1.25em 0.25em 0; }",
+                  "#gmc69307_closeBtn { display: none; }",
+              "}",
 
-              @media print {
-                  .hid, #gmc69307 { display: none; }
-              }
+              "@media print {",
+                  ".hid, #gmc69307 { display: none; }",
+              "}"
 
-            ]]></>
+            ].join("\n")
         }),
         /* Settings object */
         {
@@ -490,15 +493,15 @@
     gmc.onReset = function () {
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "textarea#gmc69307_field_hideNavTabString { height: " + gmc.fields["hideNavTabStringHeight"].settings.default + "; }",
+              "textarea#gmc69307_field_hideH6String { height: " + gmc.fields["hideH6StringHeight"].settings.default + "; }",
+              "textarea#gmc69307_field_showStringsString { height: " + gmc.fields["showStringsStringHeight"].settings.default + "; }",
+              "textarea#gmc69307_field_showKeysString { height: " + gmc.fields["showKeysStringHeight"].settings.default + "; }",
+              "textarea#gmc69307_field_insertH6String { height: " + gmc.fields["insertH6StringHeight"].settings.default + "; }"
 
-              textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.fields["hideNavTabStringHeight"].settings.default + <><![CDATA[; }
-              textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.fields["hideH6StringHeight"].settings.default + <><![CDATA[; }
-              textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.fields["showStringsStringHeight"].settings.default + <><![CDATA[; }
-              textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.fields["showKeysStringHeight"].settings.default + <><![CDATA[; }
-              textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.fields["insertH6StringHeight"].settings.default + <><![CDATA[; }
-
-          ]]></>
+            ].join("\n")
       });
     }
 
@@ -509,29 +512,29 @@
         if (gmc.get("limitMaxHeight"))
           GM_setStyle({
               node: nodeStyle,
-              data: <><![CDATA[
+              data:
+                [
+                  "div.metadata { max-height: " + gmc.get("maxHeightList") + "em; }"
 
-                  div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; }
-
-              ]]></>
+                ].join("\n")
           });
         else
           GM_setStyle({
               node: nodeStyle,
-              data: <><![CDATA[
+              data:
+                [
+                  "div.metadata { max-height: none; }"
 
-                  div.metadata { max-height: none; }
-
-              ]]></>
+                ].join("\n")
           });
 
         GM_setStyle({
             node: nodeStyle,
-            data: <><![CDATA[
+            data:
+              [
+                "li.metadata, li.count { font-size: " + gmc.get("fontSize") + "em ; }"
 
-                li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; }
-
-            ]]></>
+              ].join("\n")
         });
 
         let keys = gmc.get("showKeysString").split(",");
@@ -548,11 +551,11 @@
       let height;
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "textarea#gmc69307_field_showStringsString { height: " + gmc.get("showStringsStringHeight") + "; }"
 
-              textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; }
-
-          ]]></>
+            ].join("\n")
       });
 
       height = gmc.fields["showStringsString"].node.clientHeight + "px";
@@ -563,11 +566,11 @@
 
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "textarea#gmc69307_field_showKeysString { height: " + gmc.get("showKeysStringHeight") + "; }"
 
-              textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; }
-
-          ]]></>
+            ].join("\n")
       });
       height = gmc.fields["showKeysString"].node.clientHeight + "px";
         if (height != gmc.get("showKeysStringHeight")) {
@@ -577,11 +580,11 @@
 
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "textarea#gmc69307_field_hideH6String { height: " + gmc.get("hideH6StringHeight") + "; }"
 
-              textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; }
-
-          ]]></>
+            ].join("\n")
       });
       height = gmc.fields["hideH6String"].node.clientHeight + "px";
         if (height != gmc.get("hideH6StringHeight")) {
@@ -591,11 +594,11 @@
 
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "textarea#gmc69307_field_hideNavTabString { height: " + gmc.get("hideNavTabStringHeight") + "; }"
 
-              textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; }
-
-          ]]></>
+            ].join("\n")
       });
       height = gmc.fields["hideNavTabString"].node.clientHeight + "px";
         if (height != gmc.get("hideNavTabStringHeight")) {
@@ -605,11 +608,11 @@
 
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "textarea#gmc69307_field_insertH6String { height: " + gmc.get("insertH6StringHeight") + "; }"
 
-              textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; }
-
-          ]]></>
+            ].join("\n")
       });
       height = gmc.fields["insertH6String"].node.clientHeight + "px";
         if (height != gmc.get("insertH6StringHeight")) {
@@ -624,15 +627,15 @@
     if (window.location.href.match(/^(?:https?:\/\/userscripts\.org)?\/scripts\/show\/69307\/?/i)) {
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "textarea#gmc69307_field_showStringsString { height: " + gmc.get("showStringsStringHeight") + "; }",
+              "textarea#gmc69307_field_showKeysString { height: " + gmc.get("showKeysStringHeight") + "; }",
+              "textarea#gmc69307_field_hideH6String { height: " + gmc.get("hideH6StringHeight") + "; }",
+              "textarea#gmc69307_field_hideNavTabString { height: " + gmc.get("hideNavTabStringHeight") + "; }",
+              "textarea#gmc69307_field_insertH6String { height: " + gmc.get("insertH6StringHeight") + "; }"
 
-              textarea#gmc69307_field_showStringsString { height: ]]></> + gmc.get("showStringsStringHeight") + <><![CDATA[; }
-              textarea#gmc69307_field_showKeysString { height: ]]></> + gmc.get("showKeysStringHeight") + <><![CDATA[; }
-              textarea#gmc69307_field_hideH6String { height: ]]></> + gmc.get("hideH6StringHeight") + <><![CDATA[; }
-              textarea#gmc69307_field_hideNavTabString { height: ]]></> + gmc.get("hideNavTabStringHeight") + <><![CDATA[; }
-              textarea#gmc69307_field_insertH6String { height: ]]></> + gmc.get("insertH6StringHeight") + <><![CDATA[; }
-
-          ]]></>
+            ].join("\n")
       });
 
       gmc.open();
@@ -695,11 +698,11 @@
     if (insNode && !insNode.singleNodeValue)
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "body.scripts.anon #right { margin-top: 0; }"
 
-              body.scripts.anon #right { margin-top: 0; }
-
-          ]]></>
+            ].join("\n")
       });
 
     if (gmc.get("enableQuickReviewsMenu")) {
@@ -726,26 +729,26 @@
 
         GM_setStyle({
             node: nodeStyle,
-            data: <><![CDATA[
+            data:
+              [
+                ".menu-reviews { background-color: #eee; position: absolute; z-index: 1; }",
+                ".menu-reviews, #divQuickAdmin { border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; }",
 
-                .menu-reviews { background-color: #eee; position: absolute; z-index: 1; }
-                .menu-reviews, #divQuickAdmin { border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; }
+                ".menu-reviews ul { list-style: none outside none; margin: 0; padding: 0.6em 0; }",
+                ".menu-reviews ul li { float: none !important; line-height: 1.4em !important; !important; height: auto !important; }",
+                ".menu-reviews ul li a { text-decoration: underline !important; }"
 
-                .menu-reviews ul { list-style: none outside none; margin: 0; padding: 0.6em 0; }
-                .menu-reviews ul li { float: none !important; line-height: 1.4em !important; !important; height: auto !important; }
-                .menu-reviews ul li a { text-decoration: underline !important; }
-
-            ]]></> + ''
+              ].join("\n")
         });
 
         if (parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("font-size").replace(/px$/, "")) > 12)
           GM_setStyle({
               node: nodeStyle,
-              data: <><![CDATA[
+              data:
+                [
+                  ".menu-reviews { font-size: 0.9em; }"
 
-                  .menu-reviews { font-size: 0.9em; }
-
-              ]]></> + ''
+                ].join("\n")
           });
 
         let owned = false;
@@ -927,27 +930,27 @@
 
                   GM_setStyle({
                       node: nodeStyle,
-                      data: <><![CDATA[
+                      data:
+                        [
+                          ".metadataforced, .alert { color: red !important; }",
+                          ".metadataforced:hover { color: orangered !important; }",
+                          ".metadataunknown { color: black; }",
+                          ".metadataunknown:hover { color: gray; }",
+                          ".metadatachecked { color: darkgreen; }",
+                          ".metadatachecked:hover { color: green; }",
+                          "span.metadataforced { color: red; }",
+                          "div.metadata { overflow: auto; }",
+                          "ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }",
+                          "li.metadata { color: grey; white-space: nowrap; }",
+                          "span.metadata { color: #666; font-size: 0.7em; }",
+                          "ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }",
+                          "li.count { text-align: left; color: #666; padding-left: 0.5em; }",
+                          "span.count { text-align: right; float: right; color: #fff; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; background-color: #f80; padding-left: 0.7em; padding-right: 0.5em; font-family: serif; }",
+                          "li.bar { background-color: #EEE; }",
+                          ".nameMismatch { color: red !important; }",
+                          ".resourceName { margin-right: 0.5em; }"
 
-                          .metadataforced, .alert { color: red !important; }
-                          .metadataforced:hover { color: orangered !important; }
-                          .metadataunknown { color: black; }
-                          .metadataunknown:hover { color: gray; }
-                          .metadatachecked { color: darkgreen; }
-                          .metadatachecked:hover { color: green; }
-                          span.metadataforced { color: red; }
-                          div.metadata { overflow: auto; }
-                          ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
-                          li.metadata { color: grey; white-space: nowrap; }
-                          span.metadata { color: #666; font-size: 0.7em; }
-                          ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }
-                          li.count { text-align: left; color: #666; padding-left: 0.5em; }
-                          span.count { text-align: right; float: right; color: #fff; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; background-color: #f80; padding-left: 0.7em; padding-right: 0.5em; font-family: serif; }
-                          li.bar { background-color: #EEE; }
-                          .nameMismatch { color: red !important; }
-                          .resourceName { margin-right: 0.5em; }
-
-                      ]]></>
+                        ].join("\n")
                   });
 
 
@@ -1082,29 +1085,29 @@
                   if (gmc.get("limitMaxHeight"))
                     GM_setStyle({
                         node: nodeStyle,
-                        data: <><![CDATA[
+                        data:
+                          [
+                            "div.metadata { max-height: " + gmc.get("maxHeightList") + "em; }"
 
-                            div.metadata { max-height: ]]></> + gmc.get("maxHeightList") + <><![CDATA[em; }
-
-                        ]]></>
+                          ].join("\n")
                     });
                   else
                     GM_setStyle({
                         node: nodeStyle,
-                        data: <><![CDATA[
+                        data:
+                          [
+                            "div.metadata { max-height: none; }"
 
-                            div.metadata { max-height: none; }
-
-                        ]]></>
+                          ].join("\n")
                     });
 
                   GM_setStyle({
                       node: nodeStyle,
-                      data: <><![CDATA[
+                      data:
+                        [
+                          "li.metadata, li.count { font-size: " + gmc.get("fontSize") + "em ; }"
 
-                          li.metadata, li.count { font-size: ]]></> + gmc.get("fontSize") + <><![CDATA[em ; }
-
-                      ]]></>
+                        ].join("\n")
                   });
 
                   // Pick last name entry and compare it to current Title if derived copy
@@ -1671,11 +1674,11 @@
           if (doc) {
             GM_setStyle({
                 node: nodeStyle,
-                data: <><![CDATA[
+                data:
+                  [
+                    ".alert { color: red !important; }"
 
-                    .alert { color: red !important; }
-
-                ]]></>
+                  ].join("\n")
             });
 
             let
@@ -1788,11 +1791,11 @@
 
       GM_setStyle({
           node: nodeStyle,
-          data: <><![CDATA[
+          data:
+            [
+              "div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }"
 
-              div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }
-
-          ]]></>
+            ].join("\n")
       });
 
       let xpr = document.evaluate(
@@ -1822,11 +1825,11 @@
         leftNode.id = "left";
         GM_setStyle({
             node: nodeStyle,
-            data: <><![CDATA[
+            data:
+              [
+                  "#left { float: left; }"
 
-                  #left { float: left; }
-
-            ]]></>
+              ].join("\n")
         });
 
         let topNode = document.createElement("div");
@@ -1857,11 +1860,11 @@
 
           GM_setStyle({
               node: nodeStyle,
-              data: <><![CDATA[
+              data:
+                [
+                  ".wrap-button { width: 11.5em; }"
 
-                  .wrap-button { width: 11.5em; }
-
-              ]]></>
+                ].join("\n")
           });
 
           wrap2.removeAttribute("style");
@@ -1910,12 +1913,12 @@
 
           GM_setStyle({
               node: nodeStyle,
-              data: <><![CDATA[
+              data:
+                [
+                  ".changetabs-button { width: 13.5em; }",
+                  ".changetabs-input { position: relative; top: 0; width: 1.5em; height: 1.3em; padding: 0 !important; margin: 0 0 !important; margin-left: 0.3em !important; }"
 
-                  .changetabs-button { width: 13.5em; }
-                  .changetabs-input { position: relative; top: 0; width: 1.5em; height: 1.3em; padding: 0 !important; margin: 0 0 !important; margin-left: 0.3em !important; }
-
-              ]]></>
+                ].join("\n")
           });
 
           cttsBUTTON.removeAttribute("style");
@@ -1948,11 +1951,11 @@
             renumber(hookNode);
             GM_setStyle({
                 node: nodeStyle,
-                data: <><![CDATA[
+                data:
+                  [
+                    ".number { background-color: #fcc; }"
 
-                    .number { background-color: #fcc; }
-
-                ]]></>
+                  ].join("\n")
             });
           }
 
@@ -1988,11 +1991,11 @@
                   renumber(hookNode);
                   GM_setStyle({
                       node: nodeStyle,
-                      data: <><![CDATA[
+                      data:
+                        [
+                          ".number { background-color: #fcc; }"
 
-                          .number { background-color: #fcc; }
-
-                      ]]></>
+                        ].join("\n")
                   });
                 }
 
@@ -2014,11 +2017,11 @@
                   renumber(hookNode);
                   GM_setStyle({
                       node: nodeStyle,
-                      data: <><![CDATA[
+                      data:
+                        [
+                          ".number { background-color: #fcc; }"
 
-                        .number { background-color: #fcc; }
-
-                      ]]></>
+                        ].join("\n")
                   });
                 }
 
@@ -2074,11 +2077,11 @@
 
             GM_setStyle({
                 node: nodeStyle,
-                data: <><![CDATA[
+                data:
+                  [
+                    ".notice { background-image: url(" + throbber + "); }"
 
-                  .notice { background-image: url(]]></> + throbber + <><![CDATA[);
-
-                ]]></>
+                  ].join("\n")
             });
 
             getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid);
@@ -2353,11 +2356,11 @@
                                     if (number) {
                                       GM_setStyle({
                                           node: nodeStyle,
-                                          data: <><![CDATA[
+                                          data:
+                                            [
+                                              "#source { margin-left: 0 }"
 
-                                              #source { margin-left: 0 }
-
-                                          ]]></>
+                                            ].join("\n")
                                       });
                                       number.parentNode.removeChild(number);
                                     }
@@ -2408,21 +2411,21 @@
 
                       GM_setStyle({
                           node: nodeStyle,
-                          data: <><![CDATA[
+                          data:
+                            [
+                              "#fans_content { border-bottom-style: dotted !important; margin-bottom: 0 !important; }",
 
-                              #fans_content { border-bottom-style: dotted !important; margin-bottom: 0 !important; }
+                              "#versions { background-color: #fff; border-bottom: 1px dotted #ccc; font-size: 13px; margin-bottom: 0.9em; padding: 10px; }",
+                              "#versions p  { margin: 0; }",
+                              "#versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }",
+                              "#versions p > span { color: #666; font-size: 0.8em; }",
+                              "#versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; }",
+                              "#versions ul a { margin-left: 0.25em; margin-right: 0.25em; }",
+                              "#versions ul a:last-child { color: #000; text-decoration: none; margin-left: 0.5em; }",
+                              "#versions ul li.current { background-color: #ddd; }",
+                              "#versions ul li.retrieving { background-image: url(" + throbber + "); }"
 
-                              #versions { background-color: #fff; border-bottom: 1px dotted #ccc; font-size: 13px; margin-bottom: 0.9em; padding: 10px; }
-                              #versions p  { margin: 0; }
-                              #versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }
-                              #versions p > span { color: #666; font-size: 0.8em; }
-                              #versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; }
-                              #versions ul a { margin-left: 0.25em; margin-right: 0.25em; }
-                              #versions ul a:last-child { color: #000; text-decoration: none; margin-left: 0.5em; }
-                              #versions ul li.current { background-color: #ddd; }
-                              #versions ul li.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
-
-                          ]]></>
+                            ].join("\n")
                       });
                     }
 
@@ -2432,11 +2435,11 @@
                     if (pagination) {
                       GM_setStyle({
                           node: nodeStyle,
-                          data: <><![CDATA[
+                          data:
+                            [
+                              ".pagination a.retrieving { background-image: url(" + throbber + "); }"
 
-                              .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
-
-                          ]]></>
+                            ].join("\n")
                       });
 
                       while (versionsDIV.hasChildNodes())
@@ -2483,12 +2486,12 @@
 
                       GM_setStyle({
                           node: nodeStyle,
-                          data: <><![CDATA[
+                          data:
+                            [
+                              ".notice { background-image: none; }",
+                              ".pagination a.retrieving { background-image: url(" + throbber + "); }"
 
-                              .notice { background-image: none; }
-                              .pagination a.retrieving { background-image: url(]]></> + throbber + <><![CDATA[); }
-
-                          ]]></>
+                            ].join("\n")
                       });
 
                     // Compute left margin of pre and add width
@@ -2506,12 +2509,12 @@
 
                       GM_setStyle({
                           node: nodeStyle,
-                          data: <><![CDATA[
+                          data:
+                            [
+                              ".right { margin-left: " + marginLeft + "px; }",
+                              "#left { padding: 1px; }"  // NOTE: Strange first run fix for CSS
 
-                              .right { margin-left: ]]></> + marginLeft + <><![CDATA[px; }
-                              #left { padding: 1px; }  // NOTE: Strange first run fix for CSS
-
-                          ]]></>
+                            ].join("\n")
                       });
                     }
                 }
@@ -2547,25 +2550,25 @@
 
     GM_setStyle({
         node: nodeStyle,
-        data: <><![CDATA[
+        data:
+          [
+            "pre#source { white-space: pre !important; overflow: scroll; width: auto; }",
 
-            pre#source { white-space: pre !important; overflow: scroll; width: auto; }
+            ".number { height: auto; overflow: hidden !important; display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }",
+            ".number a { text-decoration: none; color: #888; font-size: 0.8em; padding-right: 2px; }",
+            ".number a.sharpen { font-size: 1em; color: #000; }"
 
-            .number { height: auto; overflow: hidden !important; display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }
-            .number a { text-decoration: none; color: #888; font-size: 0.8em; padding-right: 2px; }
-            .number a.sharpen { font-size: 1em; color: #000; }
-
-        ]]></>
+          ].join("\n")
     });
 
     let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
     GM_setStyle({
         node: nodeStyle,
-        data: <><![CDATA[
+        data:
+          [
+            ".number { width: " + (textWidth * digits) + "px; }"
 
-            .number { width: ]]></> + (textWidth * digits) + <><![CDATA[px; }
-
-        ]]></>
+          ].join("\n")
     });
 
     let preNode = document.getElementById("number") || document.createElement("pre");
@@ -2597,11 +2600,11 @@
     hookNode.parentNode.insertBefore(preNode, hookNode);
     GM_setStyle({
         node: nodeStyle,
-        data: <><![CDATA[
+        data:
+          [
+            "#source { margin-left: " + preNode.offsetWidth + "px; }"
 
-            #source { margin-left: ]]></> + preNode.offsetWidth + <><![CDATA[px; }
-
-        ]]></>
+          ].join("\n")
     });
   }
 
@@ -2625,11 +2628,11 @@
         preNode.classList.add("number");
         GM_setStyle({
             node: nodeStyle,
-            data: <><![CDATA[
+            data:
+              [
+                ".number { display: none; }"
 
-                .number { display: none; }
-
-            ]]></>
+              ].join("\n")
         });
 
         let divNode = document.createElement("div");
