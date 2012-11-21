@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.1
+// @version       1.1.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -35,9 +35,8 @@
 // @installURL  file:
 // @downloadURL file:
 //
-// @require https://secure.dune.net/usocheckup/68219.js?maxage=1&topicid=45479
-//@require https://secure.dune.net/usocheckup/68219.js?method=update&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
-//@require https://userscripts.org/scripts/source/61794.user.js
+// @require https://secure.dune.net/usocheckup/68219.js?method=update&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
+// @require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
 //
@@ -1923,7 +1922,7 @@
                 }
               },
               "usoCheckupDOMNotify": {
-//                 "value": "usoCheckupDOMNotify",
+                "value": "usoCheckupDOMNotify",
                 "textContent": 'usoCheckup + DOMNotify',
                 "derivative": 1,
                 "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
