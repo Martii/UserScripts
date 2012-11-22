@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.2
+// @version       1.1.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -40,7 +40,7 @@
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
 //
-// @require https://raw.github.com/sizzlemctwizzle/GM_config/7e5dfecf8759719053e1dac71a1a8ee929eb6c8c/gm_config.js
+// @require https://raw.github.com/Martii/GM_config/4238cab16c26e0397ab92ae6c41606f02de1562b/gm_config.js
 //
 // @grant GM_addStyle
 // @grant GM_deleteValue
