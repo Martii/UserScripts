@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.2
+// @version       0.20.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -2174,7 +2174,7 @@
                           );
                           if (xpr && xpr.singleNodeValue) {
                             let utc = new Date(dateid + " UTC");
-                            dateid = utc.toLocaleFormat("%b %d, %Y %H:%M %Z");
+                            dateid = utc.toLocaleFormat("%b %d, %Y %H:%M");
                           }
                         }
 
