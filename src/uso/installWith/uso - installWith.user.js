@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.4
+// @version       1.1.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -988,7 +988,7 @@
                 "textContent": 'Another Auto Updater',
                 "title": 'by Starrow Pan (http://userscripts.org/users/157466)',
                 "rex": [
-                  "^https?:\/\/userscripts\.org\/scripts\/source\/111662"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/111662(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1000,7 +1000,7 @@
                 "iconUrl": 'df1c1d7d1c968bc8ea4324d1d4d3f557',
                 "title": 'by ArmEagle (111132)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/75442\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/75442(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -1012,7 +1012,7 @@
                 "iconUrl": 'b4f3c9552954780fb7b2eb68bb043297',
                 "title": 'by TastyFlySoup (39661)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16338\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/16338(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1024,7 +1024,7 @@
                 "iconUrl": '2d5c92476e067787fc7e06f5970dda22',
                 "title": 'by shoecream (74855)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45904\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/45904(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1036,7 +1036,7 @@
                 "iconUrl": '9fffdbad0ef6d1493ed098c9ae5b619a',
                 "title": 'by thomd (43919)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45266\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/45266(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1048,7 +1048,7 @@
                 "iconUrl": '0b7d633463490424d235837976a4f915',
                 "title": 'by Sylvain Comte (21175)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/35611\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/35611(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1060,7 +1060,7 @@
                 "iconUrl": 'e2b29bd68eb03763a0e18c691ecf9fa5',
                 "title": 'by IzzySoft (89585)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/51513\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/51513(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -1073,7 +1073,7 @@
                 "iconUrl": '83a4ca755e04b8b00d15ec02e2146e9d',
                 "title": 'by phoenix7C2 (411307)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/116461\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/116461(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -1096,7 +1096,7 @@
                 "iconUrl": '81269f79d21e612f9f307d16b09ee82b',
                 "title": 'by w35l3y (55607)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/38788\\.user\\.js"
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/38788(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1108,8 +1108,7 @@
                 "iconUrl": 'c1eeac01273ee6125e79b2948f184c8b',
                 "title": 'by Aquilax (28612)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/33024\\.user\\.js",
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/version\\/33024\\/(?:\\d+)\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?33024(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -1122,7 +1121,7 @@
                 "iconUrl": '2c0ccbb35186e3ccfb59c9bb49fcde76',
                 "title": 'by BlackDiamond (75873)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/47852\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?47852(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -1167,7 +1166,7 @@
                 "iconUrl": 'bb3f204908e461a17a0efebbe8907ad8',
                 "title": 'by Eyal Soha (8105)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/36259\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?36259(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1179,7 +1178,7 @@
                 "iconUrl": 'bee96081cd4a9e03a60d362c48da7f04',
                 "title": 'by Jarett (38602)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/20145\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?20145(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1191,7 +1190,7 @@
                 "iconUrl": '1fbd08e29b195146539a4e2c04746cbc',
                 "title": 'by alien scum (8158)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/8857\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?8857(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
@@ -1203,7 +1202,7 @@
                 "iconUrl": 'ba841339fac46cbddd6e571550500946',
                 "title": 'by littlespark (75320)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/41075\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?41075(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
@@ -1215,7 +1214,7 @@
                 "iconUrl": 'f9695e2508d5064bb5fb781416913759',
                 "title": 'by ScroogeMcPump (51934)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29878\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?29878(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1227,7 +1226,7 @@
                 "iconUrl": 'f9695e2508d5064bb5fb781416913759',
                 "title": 'by ScroogeMcPump (51934)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/29880\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?29880(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1239,7 +1238,7 @@
                 "iconUrl": 'f93d3a59adb946dad69f577531cb5701',
                 "title": 'by Karandaras (265255)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94511\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?94511(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
@@ -1262,7 +1261,7 @@
                 "iconUrl": '8c298802a4b4aa3d68217b3dc7ccd529',
                 "title": 'by devnull69 (75950)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/45989\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?45989(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1274,7 +1273,7 @@
                 "iconUrl": '4c2fe87eefaf73fb1c12e7d2ea09c2f5',
                 "title": 'by realfree (77866)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/42456\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?42456(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1286,7 +1285,7 @@
                 "iconUrl": '9aca9fe2994da1a9ddd5ebd8aa23d4f0',
                 "title": 'by abcdefgh (151532)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94712\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?94712(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
@@ -1298,7 +1297,7 @@
                 "iconUrl": '9aca9fe2994da1a9ddd5ebd8aa23d4f0',
                 "title": 'by abcdefgh (151532)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94713\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?94713(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
@@ -1310,7 +1309,7 @@
                 "iconUrl": 'e112ac971d83dd545268142bc2320a3c',
                 "title": 'by hirak99 (36905)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/62036\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?62036(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1322,7 +1321,7 @@
                 "iconUrl": '7f3bb64a80ac40cfb3eeb72aca9ab4c3',
                 "title": 'by psycadelik (41688)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/22372\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?22372(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1345,7 +1344,7 @@
                 "iconUrl": '5e6ac8007e5f74f23bc55815ac4092ee',
                 "title": 'by oneweirdkid90 (73205)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/50390\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?50390(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1371,7 +1370,7 @@
                 "rex": [
                   "^http:\\/\\/buzzy\\.260mb\\.com\\/AutoUpdater\\.js",
                   "^http:\\/\\/buzzy\\.hostoi\\.com\\/AutoUpdater\\.js",
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/52251\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?52251(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
@@ -1384,7 +1383,7 @@
                 "iconUrl": 'd1591dc87321de30c9504e7793779db1',
                 "title": 'by w35l3y (55607)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/87942\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?87942(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1397,7 +1396,7 @@
                 "iconUrl": 'd1591dc87321de30c9504e7793779db1',
                 "title": 'by PhasmaExMachina (106144)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/57756\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?57756(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
@@ -1409,7 +1408,7 @@
                 "iconUrl": 'd1591dc87321de30c9504e7793779db1',
                 "title": 'by PhasmaExMachina (106144)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(?:56757|56765|56817|56869|57148|57197|57377|57786|57849|57995|58160|58179|58191|58203|58205|58710|58855|59008|59720|59879|59936|60601|62718|67294|80545)\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?(?:56757|56765|56817|56869|57148|57197|57377|57786|57849|57995|58160|58179|58191|58203|58205|58710|58855|59008|59720|59879|59936|60601|62718|67294|80545)(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "severe",
@@ -1422,7 +1421,7 @@
                 "iconUrl": '5abb7219be469df175c3da5f6c3d1257',
                 "title": 'by pitmm (278057)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/98729\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?98729(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1435,7 +1434,7 @@
                 "iconUrl": 'd5dc66cdb6f419bfeb3a04ee5e9190c1',
                 "title": 'by deniz-1 (287110)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95997\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?95997(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1448,7 +1447,7 @@
                 "iconUrl": 'fc8c1777adb39ee3002a31e448afeaba',
                 "title": 'by Sathington Willoughby (281685)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95992\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?95992(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1461,7 +1460,7 @@
                 "iconUrl": '5f2c16e2998a1b3c470697a791d3ad54',
                 "title": 'by hachichin (128042)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94724\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?94724(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1474,7 +1473,7 @@
                 "iconUrl": 'a5716130c063f76ddb42c9e93d33f5f6',
                 "title": 'by AubergineAnodyne (127662)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94662\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?94662(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1487,7 +1486,7 @@
                 "iconUrl": '5922688ad6ad825fe6f4ed612f220c43',
                 "title": 'by MaiD450 (130846)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/94703\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?94703(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1500,7 +1499,7 @@
                 "iconUrl": '8f6a0c6feceb4a71de649d89e31c5776',
                 "title": 'by mindfox (69388)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/95007\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?95007(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1513,7 +1512,7 @@
                 "iconUrl": '17ab6e678b7d5079a6d3a7a5d7f3a2ac',
                 "title": 'by Isgard (118652)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/99735\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?99735(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1526,7 +1525,7 @@
                 "iconUrl": '22dda30f2e2fcf88a42ab1dcb0f4d65a',
                 "title": 'by thejackal454 (177652)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/103196\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?103196(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1629,7 +1628,7 @@
                 "iconUrl": '335a5b24fbf27c9e20989a053e42f11c',
                 "title": 'by Juampi_yoel (99372) es-ES',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60663\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?60663(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1642,7 +1641,7 @@
                 "iconUrl": '6eb8cf6b5065df1306ea572147ac11c7',
                 "title": 'by TheSpy (106188)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/74144\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?74144(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1655,7 +1654,7 @@
                 "iconUrl": 'f9e36c9af86d922678ac91b037201d5f',
                 "title": 'by liquid ghost (126462) ru-RU',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/66255\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?66255(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1668,7 +1667,7 @@
                 "iconUrl": '09f914766759c13acf6b88d093e0ef27',
                 "title": 'by ibobalo (237833) ua-UA',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/88544\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?88544(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1692,7 +1691,7 @@
                 "textContent": 'Script Updater (userscripts.org)',
                 "title": 'by Piyush Soni (105136)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/91400\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?91400(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1704,7 +1703,7 @@
                 "iconUrl": '620d4d8ec857b915057847eeb7f248b9',
                 "title": 'by jerone (31497)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/37853\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?37853(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1716,7 +1715,7 @@
                 "iconUrl": '068b7fb5725f061512446cf09aa0599e',
                 "title": 'by lazyttrick (20871)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/26062\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?26062(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1728,7 +1727,7 @@
                 "iconUrl": '0796a8386f0889176a443c8ddeef113c',
                 "title": 'by Seifer (33118)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/12193\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?12193(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1740,11 +1739,11 @@
                 "iconUrl": 'f16d4602c1c90646438a0b534ff61889',
                 "title": 'by Richard Gibson (336)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/2296\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?2296(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "high",
-                  "title": "Doesn't use meta.js routine - Bandwidth waster"
+                  "title": "Probable excessive bandwidth usage"
                 }
               },
               "39678": {
@@ -1752,7 +1751,7 @@
                 "iconUrl": '620d4d8ec857b915057847eeb7f248b9',
                 "title": 'by jerone (31497)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/39678\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?39678(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1780,7 +1779,7 @@
                 "iconUrl": '620d4d8ec857b915057847eeb7f248b9',
                 "title": 'by jerone (31497)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/16144\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?16144(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "low",
@@ -1792,7 +1791,7 @@
                 "iconUrl": 'ad95a3d96cd1986fafe1bbff032bfe1d',
                 "title": 'by bluflonalgul (75209)',
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/46384\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?46384(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "elevated",
@@ -1872,7 +1871,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/82206\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?82206(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&theme=82206,66530,74732&trim=pt&id=usoCheckup",
@@ -1891,7 +1890,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/60926\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?60926(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=60926,66530,74732&trim=pt&id=usoCheckup",
@@ -1903,22 +1902,22 @@
                 }
               },
               "usoCheckupbottomsUp": {
-//                 "value": "usoCheckupbottomsUp",
+                "value": "usoCheckupbottomsUp",
                 "textContent": 'usoCheckup + bottomsUp',
                 "derivative": 1,
                 "iconUrl": "e615596ec6d7191ab628a1f0cec0006d",
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/68506\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?68506(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=show&open=window&theme=68506,66530,74732&custom=yes&trim=pt&id=usoCheckup",
                 "qsmax": "maxage",
                 "qsmin": "minage",
                 "securityAdvisory": {
-                  "advisory": "low",
-                  "title": "usoC bottomsUp Theme"
+                  "advisory": "guarded",
+                  "title": "usoC bottomsUp Theme, BETA, Experimental and may not always work"
                 }
               },
               "usoCheckupDOMNotify": {
@@ -1929,7 +1928,7 @@
                 "title": 'themed by Marti Martz (37004)',
                 "updater": "usocheckup",
                 "rex": [
-                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/61794\\.user\\.js"
+                  "^(?:https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/)?61794(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "url": "http://usocheckup.redirectme.net/" + scriptid + ".js",
                 "qs": "wrapperid=" + scriptid + "&method=install&open=window&theme=61794,66530,74732&custom=yes&trim=pt&id=usoCheckup",
@@ -2094,7 +2093,7 @@
             }
 
             if (headers["installURL"]) {
-              let rex = new RegExp("^(?:file:|https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js)", "i"),
+              let rex = new RegExp("^(?:about:|data:|file:|unmht:|(?:https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/(?:source|version)\\/)?" + scriptid + "(?:\\/\d+)?\\.user\\.js)", "i"),
                   lastInstallURL = (typeof headers["installURL"] == "string") ? headers["installURL"] : headers["installURL"][headers["installURL"].length - 1];
 
               if (!lastInstallURL.match(rex))
@@ -2102,7 +2101,7 @@
             }
 
             if (headers["downloadURL"]) {
-              let rex = new RegExp("^(?:file:|https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js)", "i"),
+              let rex = new RegExp("^(?:about:|data:|file:|unmht:|(?:https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/(?:source|version)\\/)?" + scriptid + "(?:\\/\d+)?\\.user\\.js)", "i"),
                   lastDownloadURL = (typeof headers["downloadURL"] == "string") ? headers["downloadURL"] : headers["downloadURL"][headers["downloadURL"].length - 1];
 
               if (!lastDownloadURL.match(rex))
@@ -2110,13 +2109,13 @@
             }
 
             if (headers["updateURL"]) {
-              let rex = new RegExp("^(?:file:.*|https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.meta\\.js)", "i"),
+              let rex = new RegExp("^(?:about:|data:|file:|unmht:|(?:https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/)?" + scriptid + "\\.meta\\.js)", "i"),
                   lastUpdateURL = (typeof headers["updateURL"] == "string") ? headers["updateURL"] : headers["updateURL"][headers["updateURL"].length - 1];
 
               if (!lastUpdateURL.match(rex))
                 RHV = true;
 
-              rex = new RegExp("^https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/" + scriptid + "\\.user\\.js", "i");
+              rex = new RegExp("^(?:https?:\\/\\/(?:www\\.)?userscripts\\.org\\/scripts\\/source\\/)?" + scriptid + "\\.user\\.js", "i");
               if (lastUpdateURL.match(rex))
                 DDoS = true;
             }
