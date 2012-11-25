@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.3
+// @version       0.20.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1948,14 +1948,9 @@
 
           if (gmc.get("checkShowLineNumbers")) {
             renumber(hookNode);
-            GM_setStyle({
-                node: nodeStyle,
-                data:
-                  [
-                    ".number { background-color: #fcc; }"
-
-                  ].join("\n")
-            });
+            let preNode = document.getElementById("number");
+            if (preNode)  // TODO: Class this
+              preNode.style.setProperty("background-color", "#fcc", "");
           }
 
           // If source is < 20KB then autohighlight just like USO does
@@ -1988,14 +1983,9 @@
 
                 if (gmc.get("checkShowLineNumbers")) {
                   renumber(hookNode);
-                  GM_setStyle({
-                      node: nodeStyle,
-                      data:
-                        [
-                          ".number { background-color: #fcc; }"
-
-                        ].join("\n")
-                  });
+                  let preNode = document.getElementById("number");
+                  if (preNode) // TODO: Class this
+                    preNode.style.setProperty("background-color", "#fcc", "");
                 }
 
                 // If source is < 20KB then autohighlight just like USO does
@@ -2014,14 +2004,9 @@
 
                 if (gmc.get("checkShowLineNumbers")) {
                   renumber(hookNode);
-                  GM_setStyle({
-                      node: nodeStyle,
-                      data:
-                        [
-                          ".number { background-color: #fcc; }"
-
-                        ].join("\n")
-                  });
+                  let preNode = document.getElementById("number");
+                  if (preNode) // TODO: Class this
+                    preNode.style.setProperty("background-color", "#fcc", "");
                 }
 
                 // If source is < 20KB then autohighlight just like USO does
@@ -2350,19 +2335,14 @@
                                     // Remove GIJoes disabling
                                     enableCTTS();
 
-                                    // Remove numbering for now if present
+                                    // Hide numbering and reset margin for now if present
                                     let number = document.getElementById("number");
-                                    if (number) {
-                                      GM_setStyle({
-                                          node: nodeStyle,
-                                          data:
-                                            [
-                                              "#source { margin-left: 0 }"
+                                    if (number)
+                                      number.style.setProperty("display", "none", "");
 
-                                            ].join("\n")
-                                      });
-                                      number.parentNode.removeChild(number);
-                                    }
+                                    let source =  document.getElementById("source");
+                                    if (source)
+                                      source.style.removeProperty("margin-left");
                                   }
                                   break;
                               }
@@ -2529,6 +2509,15 @@
   }
 
   function renumber(hookNode) {
+    let preNode = document.getElementById("number");
+
+    if (preNode.hasChildNodes())
+      while (preNode.hasChildNodes())
+        preNode.removeChild(preNode.firstChild);
+
+    preNode.style.removeProperty("background-color"); // TODO: Class this
+
+    // Calculate width of numbers
     let newlines = hookNode.textContent.match(/\n/g);
     if (newlines)
       newlines = newlines.length;
@@ -2536,51 +2525,11 @@
       newlines = 0;
 
     let digits = (parseInt(newlines) + 1).toString().length;
-
-    let css = ".number { ";
-    let properties = window.getComputedStyle(hookNode, null);
-    for each (let property in properties)
-      css += (property + ":" + properties.getPropertyValue(property) + "; ");
-    css += " }"
-    GM_setStyle({
-        node: nodeStyle,
-        data: css
-    });
-
-    GM_setStyle({
-        node: nodeStyle,
-        data:
-          [
-            "pre#source { white-space: pre !important; overflow: scroll; width: auto; }",
-
-            ".number { height: auto; overflow: hidden !important; display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }",
-            ".number a { text-decoration: none; color: #888; font-size: 0.8em; padding-right: 2px; }",
-            ".number a.sharpen { font-size: 1em; color: #000; }"
-
-          ].join("\n")
-    });
-
     let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
-    GM_setStyle({
-        node: nodeStyle,
-        data:
-          [
-            ".number { width: " + (textWidth * digits) + "px; }"
 
-          ].join("\n")
-    });
+    preNode.style.setProperty("width", (textWidth * digits) + "px", "");
 
-    let preNode = document.getElementById("number") || document.createElement("pre");
-
-    if (preNode.hasChildNodes()) {
-      while (preNode.hasChildNodes())
-        preNode.removeChild(preNode.firstChild);
-    }
-    else {
-      preNode.setAttribute("id", "number");
-      preNode.classList.add("number");
-    }
-
+    // Create numbers
     let line = 1;
     do {
       let aNode = document.createElement("a");
@@ -2596,15 +2545,11 @@
       preNode.appendChild(divNode);
     } while (line++ <= newlines);
 
-    hookNode.parentNode.insertBefore(preNode, hookNode);
-    GM_setStyle({
-        node: nodeStyle,
-        data:
-          [
-            "#source { margin-left: " + preNode.offsetWidth + "px; }"
+    // Show numbers
+    preNode.style.removeProperty("display");
 
-          ].join("\n")
-    });
+    hookNode.parentNode.insertBefore(preNode, hookNode);
+    hookNode.style.setProperty("margin-left", preNode.offsetWidth + "px", "");
   }
 
   if (gmc.get("checkShowLineNumbers")) {
@@ -2625,11 +2570,36 @@
         let preNode = document.createElement("pre");
         preNode.setAttribute("id", "number");
         preNode.classList.add("number");
+
+        // Override CSS and ensure that element is invisible while maninpulating... prevents flicker later
+        preNode.style.setProperty("display", "none", "");
+
+        // Copy once selector rules from #source element
+        let css = ".number { ";
+            let properties = window.getComputedStyle(hookNode, null);
+            for each (let property in properties)
+              css += (property + ":" + properties.getPropertyValue(property) + "; ");
+        css += " }";
+
+        GM_setStyle({
+            node: nodeStyle,
+            data: css
+        });
+
+        // Apply custom styling
         GM_setStyle({
             node: nodeStyle,
             data:
               [
-                ".number { display: none; }"
+                ".number { height: auto; overflow: hidden !important; display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }",
+                ".number a { text-decoration: none; color: #888; font-size: 0.8em; padding-right: 2px; }",
+                ".number a.sharpen { font-size: 1em; color: #000; }",
+
+                "#source[wrap='off'] { white-space: pre; overflow-x: auto !important; }",
+                "#source[wrap='on'] {  margin-left: 0 !important; white-space: pre-wrap; }",
+
+                "#number[wrap='off'] { display: inline; }",
+                "#number[wrap='on'] { display: none; }"
 
               ].join("\n")
         });
