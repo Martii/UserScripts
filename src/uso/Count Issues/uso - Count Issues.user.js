@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.5
+// @version       0.20.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -53,11 +53,11 @@
 
 
   let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
+
   let nodeStyle = GM_setStyle({
       media: "screen, projection",
       data:
         [
-
           ".hid { display: none; }",
           ".HID { display: none !important }"
 
@@ -214,6 +214,7 @@
           '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki/">',
               '<img alt="Powered in part by GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
           '</a>',
+
       ].join(""),
 
         /* Custom CSS */
@@ -644,8 +645,13 @@
       gmc.fields["showKeysString"].node.setAttribute("spellcheck", "false");
     }
   }
-  else
-    GM_log('Something may have gone wrong in uso - Count Issues. Please let me know steps to reproduce');
+  else {
+    let msg = 'GM_config failed to initialize';
+    console.error(msg);
+    GM_log(msg);
+
+    return;
+  }
 
   function nsResolver(prefix) {
     let ns = {
@@ -816,7 +822,7 @@
       if (tabNodes)
         for (let i = 0, thisNode; thisNode = tabNodes.snapshotItem(i++);) {
           let tabs = gmc.get("hideNavTabString").split(",");
-          for each (let tab in tabs) {
+          for each (let tab in tabs) { // DEPRECATED
             let rex = "\\s*" + tab;
             if (thisNode.textContent.match(new RegExp(rex, "")))
               thisNode.classList.add("hid");
@@ -835,7 +841,7 @@
       if (headerNodes)
         for (let i = 0, thisNode; thisNode = headerNodes.snapshotItem(i++);) {
           let headers = gmc.get("hideH6String").split(",");
-          for each (let header in headers) {
+          for each (let header in headers) { // DEPRECATED
             let rex = "\\s*" + header;
             if (thisNode.textContent.match(new RegExp(rex, ""))) {
               thisNode.classList.add("hid");
@@ -892,7 +898,7 @@
                 let line, name, prefix, header, key, value;
                   function isKey(e, i, a) { return (e.match(/^\s*\/\/ @\S+/)); }
                   let lines = metadataBlock.split(/[\r\n]+/).filter(isKey);
-                  for each (line in lines) {
+                  for each (line in lines) { // DEPRECATED
                     [, name, value] = line.match(/^\s*\/\/ @(\S*)\s*(.*)/);
                     value = value.replace(/\s*$/, "");
 
@@ -1016,7 +1022,10 @@
                                     [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
                                   }
                                   catch(e) {
-                                    GM_log('Too much recursion error encountered. Aborting Transcode');
+                                    let msg = 'Too much recursion error encountered. Aborting Transcode';
+                                    console.warn(msg);
+                                    GM_log(msg);
+
                                     responseText = xhr.responseText;
                                   }
                                   break;
@@ -1025,12 +1034,18 @@
                                     responseText = JsCode.deobfuscate(xhr.responseText);
                                   }
                                   catch(e) {
-                                    GM_log('Too much recursion error encountered. Aborting JsCode...fallback to Transcode');
+                                    let msg = 'Too much recursion error encountered. Aborting JsCode...fallback to Transcode';
+                                    console.warn(msg);
+                                    GM_log(msg);
+
                                     try {
                                       [responseText, hexCount] = simpleTranscode(xhr.responseText, 0);
                                     }
-                                    catch(e) {
-                                      GM_log('Too much recursion error encountered. Aborting Transcode');
+                                    catch (e) {
+                                      let msg = 'Too much recursion error encountered. Aborting Transcode';
+                                      console.warn(msg);
+                                      GM_log(msg);
+
                                       responseText = xhr.responseText;
                                     }
                                   }
@@ -1041,8 +1056,8 @@
                               responseText = xhr.responseText;
 
                             if (gmc.get("showStringsString")) {
-                              for each (let rex in gmc.get("showStringsString").split("\n"))
-                                for each (let match in responseText.match(new RegExp(rex, "gm")))
+                              for each (let rex in gmc.get("showStringsString").split("\n")) // DEPRECATED
+                                for each (let match in responseText.match(new RegExp(rex, "gm"))) // DEPRECATED
                                   finds[match] = (match in finds) ? finds[match] + 1 : 1;
 
                               if (finds.toSource() != "({})")
@@ -1159,7 +1174,7 @@
                     divNode.appendChild(ulNode);
 
                     let keyCount = 0;
-                    for each (let key in keys) {
+                    for each (let key in keys) { // DEPRECATED
                       let liNode = document.createElement("li");
                       liNode.setAttribute("class", "metadata");
 
@@ -1499,8 +1514,11 @@
                                   break;
                                 }
                               }
-                              else
-                                GM_log('Possible DOM change detected or no Script Summary');
+                              else {
+                                let msg = 'Possible DOM change detected or no Script Summary';
+                                console.warn(msg);
+                                GM_log(msg);
+                              }
                             }
                             if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
                               display(mbx, headers[key], key, "@description");
@@ -1525,8 +1543,11 @@
                                   break;
                                 }
                               }
-                              else
-                                GM_log('Possible DOM change detected');
+                              else {
+                                let msg = 'Possible DOM change detected';
+                                console.warn(msg);
+                                GM_log(msg);
+                              }
                             }
                             if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
                               display(mbx, headers[key], key, "@version");
@@ -1535,7 +1556,7 @@
                         case "include":
                           let notify = true;
                           if (headers["exclude"])
-                            for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"])
+                            for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"]) // DEPRECATED
                               if (exclude == "*") {
                                 notify = false;
                                 break;
@@ -1786,8 +1807,6 @@
   }
 
   if (location.pathname.match(/\/scripts\/review\//)) {
-
-    // TODO: draw it anyhow
     let xpr = document.evaluate(
       "//div[@id='section']//div[@class='container']",
       document.body,
@@ -1847,7 +1866,7 @@
               method: "GET",
               url: aUrl + "#", // TODO: Better fix for this
               onerror: function (xhr) {
-                // TODO: Do something on invalid url
+                // TODO: Do something on err
               },
               onload: function (xhr) {
                 switch (xhr.status) {
@@ -1871,10 +1890,8 @@
                     enableCTTS();
 
                     // If source is < 20KB then autohighlight just like USO does
-                    if (xhr.responseText.length < 20480) {
-                      let win = window.wrappedJSObject || window;
-                      win.sh_highlightDocument();
-                    }
+                    if (xhr.responseText.length < 20480)
+                      (window.wrappedJSObject || window).sh_highlightDocument();
 
                     if (gmc.get("checkShowLineNumbers"))
                       renumber(source);
@@ -2128,10 +2145,8 @@
           }
 
           // If source is < 20KB then autohighlight just like USO does
-          if (hookNode.textContent.length < 20480) {
-            let win = window.wrappedJSObject || window;
-            win.sh_highlightDocument();
-          }
+          if (hookNode.textContent.length < 20480)
+            (window.wrappedJSObject || window).sh_highlightDocument();
 
           enableCTTS();
           ev.target.blur();
@@ -2163,13 +2178,14 @@
                 }
 
                 // If source is < 20KB then autohighlight just like USO does
-                if (hookNode.textContent.length < 20480) {
-                  let win = window.wrappedJSObject || window;
-                  win.sh_highlightDocument();
-                }
+                if (hookNode.textContent.length < 20480)
+                  (window.wrappedJSObject || window).sh_highlightDocument();
+
               }
               catch(e) {
-                GM_log('Too much recursion error encountered. Aborting transcode');
+                let msg = 'Too much recursion error encountered. Aborting transcode';
+                console.warn(msg);
+                GM_log(msg);
               }
               break;
             case 'JsCode':
@@ -2184,13 +2200,14 @@
                 }
 
                 // If source is < 20KB then autohighlight just like USO does
-                if (hookNode.textContent.length < 20480) {
-                  let win = window.wrappedJSObject || window;
-                  win.sh_highlightDocument();
-                }
+                if (hookNode.textContent.length < 20480)
+                  (window.wrappedJSObject || window).sh_highlightDocument();
+
               }
-              catch(e) {
-                GM_log('Too much recursion error encountered. Aborting JsCode');
+              catch (e) {
+                let msg = 'Too much recursion error encountered. Aborting JsCode';
+                console.warn(msg);
+                GM_log(msg);
               }
               break;
           }
@@ -2405,10 +2422,8 @@
                                     enableCTTS();
 
                                     // If source is < 20KB then autohighlight just like USO does
-                                    if (xhr.responseText.length < 20480) {
-                                      let win = window.wrappedJSObject || window;
-                                      win.sh_highlightDocument();
-                                    }
+                                    if (xhr.responseText.length < 20480)
+                                      (window.wrappedJSObject || window).sh_highlightDocument();
 
                                     if (gmc.get("checkShowLineNumbers"))
                                       renumber(preNode);
@@ -2759,7 +2774,7 @@
         // Copy once selector rules from #source element
         let css = ".number { ";
             let properties = window.getComputedStyle(hookNode, null);
-            for each (let property in properties)
+            for each (let property in properties) // DEPRECATED
               css += (property + ":" + properties.getPropertyValue(property) + "; ");
         css += " }";
 
