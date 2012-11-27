@@ -9,14 +9,14 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.4
+// @version       0.20.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
-// @include   /https?:\/\/userscripts\.org\/scripts\/.*/
-// @include   /https?:\/\/userscripts\.org\/topics\/.*/
-// @include   /https?:\/\/userscripts\.org\/reviews\/.*/
-// @exclude   /https?:\/\/userscripts\.org\/scripts\/diff\/.*/
-// @exclude   /https?:\/\/userscripts\.org\/scripts\/version\/.*/
+// @include   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
+// @include   /https?:\/\/(.*?\.)?userscripts\.org\/topics\/.*/
+// @include   /https?:\/\/(.*?\.)?userscripts\.org\/reviews\/.*/
+// @exclude   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/diff\/.*/
+// @exclude   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/version\/.*/
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -1785,9 +1785,183 @@
 
   }
 
-  if (gmc.get("checkShowVersionsSource")) {
-    if (location.pathname.match(/\/scripts\/review\//)) {
+  if (location.pathname.match(/\/scripts\/review\//)) {
 
+    // TODO: draw it anyhow
+    let xpr = document.evaluate(
+      "//div[@id='section']//div[@class='container']",
+      document.body,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    );
+    if (xpr && xpr.singleNodeValue) {
+      let hookNode = xpr.singleNodeValue;
+
+      GM_setStyle({
+          node: nodeStyle,
+          data:
+            [
+              "#fans_content { border-bottom-style: dotted !important; margin-bottom: 0 !important; }",
+
+              ".pagetear {",
+                "background-color: #fff;",
+                "border-bottom: 1px dotted #ccc;",
+                "font-size: 13px;",
+                "padding: 10px;",
+              "}",
+
+              "#sourceurl {",
+                "margin-bottom: 0.9em;",
+              "}",
+
+              "#sourceurl div {",
+                "margin: 0;",
+                "border: 1px solid #ccc;",
+                "border-radius: 3px;",
+              "}",
+
+              "#sourceurl input[name='currenturl'] {",
+                "width: 99%;",
+                "border-style: none;",
+                "margin: 3px 0 3px 3px;",
+                "color: #999;",
+              "}",
+
+              "#sourceurl input[name='refresh'] {",
+                "position: absolute;",
+                "right: 1.5em;",
+                "margin-top: 0.4em;",
+              "}",
+
+              ".err { background-color: #fcc; }"
+
+
+            ].join("\n")
+      });
+
+      function loadUrl(aUrl) {
+          try {
+            GM_xmlhttpRequest({
+              retry: 5,
+              method: "GET",
+              url: aUrl + "#", // TODO: Better fix for this
+              onerror: function (xhr) {
+                // TODO: Do something on invalid url
+              },
+              onload: function (xhr) {
+                switch (xhr.status) {
+                  case 404:
+                  case 500:
+                  case 502:
+                  case 503:
+                    if (this.retry-- > 0)
+                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                    break;
+                  case 200:
+                    // start twiddling
+                    let source = document.getElementById("source");
+
+                    while(source.hasChildNodes())
+                      source.removeChild(source.firstChild);
+
+                    source.textContent = xhr.responseText.trim();
+
+                    // Remove GIJoes disabling
+                    enableCTTS();
+
+                    // If source is < 20KB then autohighlight just like USO does
+                    if (xhr.responseText.length < 20480) {
+                      let win = window.wrappedJSObject || window;
+                      win.sh_highlightDocument();
+                    }
+
+                    if (gmc.get("checkShowLineNumbers"))
+                      renumber(source);
+
+                    let els = document.getElementsByName("currenturl");
+                    if (els) {
+                      els[0].setAttribute("placeholder", xhr.finalUrl.replace(/\#+$/i, "")); // TODO: proof this better
+                      els[0].value = "";
+
+                      let currenturls = document.getElementById("currenturls");
+                      if (currenturls) {
+                        // TODO: Only add it if it's not already in there
+                        let optionNode = document.createElement("option");
+                        optionNode.value = xhr.finalUrl.replace(/\#+$/i, "");
+
+                        currenturls.insertBefore(optionNode, currenturls.firstChild);
+                      }
+                    }
+                }
+              }
+            });
+          }
+          catch (e) {
+            let els = document.getElementsByName("currenturl");
+            if (els) {
+              els[0].classList.add("err");
+              els[0].parentNode.classList.add("err");
+            }
+          }
+      }
+
+      let inputImageNode = document.createElement("input");
+      inputImageNode.type = "image";
+      inputImageNode.name = "refresh";
+      inputImageNode.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAXNSR0IArs4c6QAAAXxJREFUKM+FkM1L0wEcxh9yhzrYZd265l/gLRA9hCAe8tL/4NLCFxi62ZpMlt+fh0q6CL6QGFjgIRInsbUixBi+0EEssOWEGpL95i9pU3R+PDgVuvR8rp/D8zxCCEV9zm0bsZzlbcmZceqGai1jqcGbSAjF/ZaaJ88hZQ7Y4SX2J8cyzgISshonu0GZIh4FPIqU2QJcjFPh7Q8OKZBmjKeMsohL6UIYanrFMTtMYe+t0VqcdWOKX4DLI5As8ZsiH7Bk1IcsleUsLjGQbK2IxwhOPUIDmVXccyIg2e4+BR4T9yPUXxtZf0AffYQJ0QtSPO/hMU6s4fSRf1Fs4jN7fOJheriqctrl8JPwZmg8WI2QIncm2OUv04TehW+Frvc292TmyPGcYAAhRX096Vk89vnCGDEmyVLG4wVdnQgJdV8Lfk/iUuKIY44o4TLN/bXOKxUBddzoSMT5yFd+skGCQdre3LtaKXnWtr2x7fXdlcB24Fvrs9am6KXzFfyHE+iiW4Oaaf3TAAAAAElFTkSuQmCC";
+      inputImageNode.alt = "refresh";
+      inputImageNode.addEventListener("click", function (ev) {
+        loadUrl(ev.target.previousSibling.placeholder);
+      }, false);
+
+      let datalistNode = document.createElement("datalist");
+      datalistNode.id = "currenturls";
+
+      [
+        "http://userscripts.org/scripts/source/",
+        "https://userscripts.org/scripts/source/",
+        "http://",
+        "https://",
+        location.protocol + "//" + location.hostname + "/scripts/source/"
+
+      ].forEach(function (e, i, a) {
+        let optionNode = document.createElement("option");
+        optionNode.value = e;
+
+        datalistNode.appendChild(optionNode);
+      });
+
+      let inputUrlNode = document.createElement("input");
+      inputUrlNode.type = "url";
+      inputUrlNode.placeholder = location.protocol + "//" + location.hostname + "/scripts/source/" + scriptid + ".user.js";
+      inputUrlNode.name = "currenturl";
+      inputUrlNode.setAttribute("list", "currenturls");
+      inputUrlNode.addEventListener("keypress", function (ev) {
+        ev.target.classList.remove("err");
+        ev.target.parentNode.classList.remove("err");
+
+        if (ev.keyCode == 13)
+          loadUrl(ev.target.value);
+      }, false);
+
+      let divNode = document.createElement("div");
+
+      let containerNode = document.createElement("div");
+      containerNode.id = "sourceurl";
+      containerNode.className = "pagetear";
+
+      divNode.appendChild(inputUrlNode);
+      divNode.appendChild(inputImageNode);
+      divNode.appendChild(datalistNode);
+
+      containerNode.appendChild(divNode);
+
+      hookNode.appendChild(containerNode);
+
+    }
+
+    if (gmc.get("checkShowVersionsSource")) {
       GM_setStyle({
           node: nodeStyle,
           data:
@@ -2239,6 +2413,10 @@
                                     if (gmc.get("checkShowLineNumbers"))
                                       renumber(preNode);
 
+                                    let els = document.getElementsByName("currenturl");
+                                    if (els)
+                                      els[0].setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
+
                                     break;
                                 }
                               }
@@ -2344,6 +2522,11 @@
                                     if (source)
                                       source.style.removeProperty("margin-left");
                                   }
+
+                                  let els = document.getElementsByName("currenturl");
+                                  if (els)
+                                    els[0].setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
+
                                   break;
                               }
                             }
@@ -2379,7 +2562,6 @@
 
 
                     let versionsDIV = document.getElementById("versions");
-
                     if (versionsDIV) {
                       while (versionsDIV.hasChildNodes())
                         versionsDIV.removeChild(versionsDIV.firstChild);
@@ -2387,18 +2569,16 @@
                     else {
                       versionsDIV = document.createElement("div");
                       versionsDIV.id = "versions";
+                      versionsDIV.className = "pagetear";
 
                       GM_setStyle({
                           node: nodeStyle,
                           data:
                             [
-                              "#fans_content { border-bottom-style: dotted !important; margin-bottom: 0 !important; }",
-
-                              "#versions { background-color: #fff; border-bottom: 1px dotted #ccc; font-size: 13px; margin-bottom: 0.9em; padding: 10px; }",
                               "#versions p  { margin: 0; }",
                               "#versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }",
                               "#versions p > span { color: #666; font-size: 0.8em; }",
-                              "#versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; }",
+                              "#versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; margin-bottom: 0.5em; }",
                               "#versions ul a { margin-left: 0.25em; margin-right: 0.25em; }",
                               "#versions ul a:last-child { color: #000; text-decoration: none; margin-left: 0.5em; }",
                               "#versions ul li.current { background-color: #ddd; }",
@@ -2408,7 +2588,9 @@
                       });
                     }
 
-                    versionsContainerNode.appendChild(versionsDIV);
+                    versionsContainerNode = document.getElementById("sourceurl"); // TODO: Above xpath is unnecessary now
+                    // TODO: Check for existance
+                    versionsContainerNode.parentNode.insertBefore(versionsDIV, versionsContainerNode); // TODO: Very wrong identifiers
 
                     // Replace pagination NOTE: Scope referenced variable nodes
                     if (pagination) {
