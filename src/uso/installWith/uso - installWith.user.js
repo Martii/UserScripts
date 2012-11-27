@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.6
+// @version       1.1.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -596,17 +596,16 @@
             break;
           case 200:
             function parseMeta(aString) {
-              function isKey(e, i, a) { return (e.match(/^\s*\/\/ @\S+/)); }
               let
-                metadataBlock = aString,
-                headers = {},
-                name, prefix, header, key, value,
-                lines = metadataBlock.split(/[\r\n]+/).filter(isKey)
+                  re = /\/\/ @(\S+)(?:\s+(.*))?/,
+                  headers = {},
+                  name, prefix, header, key, value,
+                  lines = aString.split(/[\r\n]+/).filter(function (e, i, a) {
+                    return (e.match(re));
+                  })
               ;
-
-              for each (let line in lines) {
-                [, name, value] = line.match(/^\s*\/\/\s@(\S*)\s*(.*)/);
-                // value = value.trim(); // NOTE: Match GMs current handling in config.xml and NOT USOs // TODO: Raw handling for now... regress test
+              for (let line in lines) {
+                [, name, value] = lines[line].replace(/\s+$/, "").match(re);
                 [key, prefix] = name.split(/:/).reverse();
                 if (prefix) {
                   if (!headers[prefix])
@@ -615,15 +614,16 @@
                 }
                 else
                   header = headers;
+
                 if (header[key]) {
                   if (!(header[key] instanceof Array))
                     header[key] = new Array(header[key]);
-                  header[key].push(value);
+                  header[key].push(value || "");
                 }
                 else
-                  header[key] = value;
+                  header[key] = value || "";
               }
-              return (headers.toSource() == "({})") ? undefined : headers;
+              return (headers.toSource() != "({})") ? headers : undefined;
             }
 
             let headers = parseMeta(xhr.responseText);
