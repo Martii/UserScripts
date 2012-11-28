@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.6
+// @version       0.20.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -822,8 +822,8 @@
       if (tabNodes)
         for (let i = 0, thisNode; thisNode = tabNodes.snapshotItem(i++);) {
           let tabs = gmc.get("hideNavTabString").split(",");
-          for each (let tab in tabs) { // DEPRECATED
-            let rex = "\\s*" + tab;
+          for (let tab in tabs) {
+            let rex = "\\s*" + tabs[tab];
             if (thisNode.textContent.match(new RegExp(rex, "")))
               thisNode.classList.add("hid");
           }
@@ -841,8 +841,8 @@
       if (headerNodes)
         for (let i = 0, thisNode; thisNode = headerNodes.snapshotItem(i++);) {
           let headers = gmc.get("hideH6String").split(",");
-          for each (let header in headers) { // DEPRECATED
-            let rex = "\\s*" + header;
+          for (let header in headers) {
+            let rex = "\\s*" + headers[header];
             if (thisNode.textContent.match(new RegExp(rex, ""))) {
               thisNode.classList.add("hid");
 
@@ -893,15 +893,18 @@
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                 break;
               case 200:
-                let metadataBlock = xhr.responseText.toString();
-                let headers = {};
-                let line, name, prefix, header, key, value;
-                  function isKey(e, i, a) { return (e.match(/^\s*\/\/ @\S+/)); }
-                  let lines = metadataBlock.split(/[\r\n]+/).filter(isKey);
-                  for each (line in lines) { // DEPRECATED
-                    [, name, value] = line.match(/^\s*\/\/ @(\S*)\s*(.*)/);
-                    value = value.replace(/\s*$/, "");
-
+                function parseMeta(aString) {
+                  aString = aString.toString();
+                  let
+                      re = /\/\/ @(\S+)(?:\s+(.*))?/,
+                      headers = {},
+                      name, prefix, header, key, value,
+                      lines = aString.split(/[\r\n]+/).filter(function (e, i, a) {
+                        return (e.match(re));
+                      })
+                  ;
+                  for (let line in lines) {
+                    [, name, value] = lines[line].replace(/\s+$/, "").match(re);
                     switch (name) {
                       case "licence":
                         name = "license";
@@ -915,17 +918,30 @@
                     }
                     else
                       header = headers;
+
                     if (header[key]) {
                       if (!(header[key] instanceof Array))
                         header[key] = new Array(header[key]);
-                      header[key].push(value);
+                      header[key].push(value || "");
                     }
                     else
-                      header[key] = value;
+                      header[key] = value || "";
                   }
                   if (headers["license"])
                     headers["licence"] = headers["license"];
 
+                  return (headers.toSource() != "({})") ? headers : undefined;
+                }
+
+                let headers = parseMeta(xhr.responseText);
+                if (!headers) {
+                  let msg = 'Metadata block is missing';
+                  GM_log(msg);
+                  console.error(msg)
+                  return; // die this function
+                }
+
+                // Start twiddling
                   let sidebarNode = document.getElementById("script_sidebar");
                   if (!sidebarNode) {
                     sidebarNode = document.createElement("div");
@@ -1056,9 +1072,13 @@
                               responseText = xhr.responseText;
 
                             if (gmc.get("showStringsString")) {
-                              for each (let rex in gmc.get("showStringsString").split("\n")) // DEPRECATED
-                                for each (let match in responseText.match(new RegExp(rex, "gm"))) // DEPRECATED
-                                  finds[match] = (match in finds) ? finds[match] + 1 : 1;
+                              let rexes = gmc.get("showStringsString").split("\n");
+                              for (let rex in rexes) {
+                                let matches = responseText.match(new RegExp(rexes[rex], "gm"));
+                                for (let match in matches) {
+                                  finds[matches[match]] = (matches[match] in finds) ? finds[matches[match]] + 1 : 1;
+                                }
+                              }
 
                               if (finds.toSource() != "({})")
                                 display2(mbx, finds, "", "Lost and Found");
@@ -1146,6 +1166,9 @@
                     if (typeof keys == "string")
                       keys = new Array(keys);
 
+                    if (!Array.isArray(keys)) // NOTE: Needed for prefixed with null postfix
+                      return;
+
                     let textNode = document.createTextNode(" ");
 
                     let aNode = document.createElement("a");
@@ -1174,7 +1197,7 @@
                     divNode.appendChild(ulNode);
 
                     let keyCount = 0;
-                    for each (let key in keys) { // DEPRECATED
+                    for (let key in keys) {
                       let liNode = document.createElement("li");
                       liNode.setAttribute("class", "metadata");
 
@@ -1185,7 +1208,7 @@
                           if (++keyCount > 1)
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-                          matches = key.match(/^(https?:\/\/.*)/i);
+                          matches = keys[key].match(/^(https?:\/\/.*)/i);
                           if (matches) {
                             let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", matches[1]);
@@ -1198,7 +1221,7 @@
                             ulNode.appendChild(liNode);
                           }
                           else {
-                            matches = key.match(/^(data:image\/.*)/i);
+                            matches = keys[key].match(/^(data:image\/.*)/i);
                             if (matches) {
                               let imgNode = document.createElement("img");
                               imgNode.setAttribute("src", matches[1]);
@@ -1210,8 +1233,8 @@
                               ulNode.appendChild(liNode);
                             }
                             else {
-                              liNode.setAttribute("title", key);
-                              liNode.textContent = key;
+                              liNode.setAttribute("title", keys[key]);
+                              liNode.textContent = keys[key];
                               ulNode.appendChild(liNode);
                             }
                           }
@@ -1220,31 +1243,31 @@
                         case "exclude":
                         case "userInclude":
                         case "userExclude":
-                          if (key.match(/\s/)) {
+                          if (keys[key].match(/\s/)) {
                             spanNodeSection.setAttribute("class", "metadata metadataforced");
                             liNode.setAttribute("class", "metadata metadataforced");
                           }
-                          liNode.setAttribute("title", key);
-                          liNode.textContent = key;
+                          liNode.setAttribute("title", keys[key]);
+                          liNode.textContent = keys[key];
                           ulNode.appendChild(liNode);
                           break;
                         case "require":
-                          matches = key.match(/^https?:\/\/.*/i);
+                          matches = keys[key].match(/^https?:\/\/.*/i);
                           if (matches) {
                             let showUrl;
-                            matches = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
+                            matches = keys[key].match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                             if (matches)
                               showUrl = protocol + "//userscripts.org/scripts/show/" + matches[1];
                             else {
-                              matches = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
+                              matches = keys[key].match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                               if (matches)
                                 showUrl = protocol + "//userscripts.org/scripts/show/" + matches[1];
                             }
 
                             let anchorNode = document.createElement("a");
-                            anchorNode.setAttribute("href", (showUrl) ? showUrl : key);
+                            anchorNode.setAttribute("href", (showUrl) ? showUrl : keys[key]);
                             anchorNode.setAttribute("rel", "nofollow");
-                            anchorNode.textContent = key;
+                            anchorNode.textContent = keys[key];
                             if (gmc.get("checkAgainstHomepageUSO") && showUrl)
                               GM_xmlhttpRequest({
                                 retry: 5,
@@ -1270,7 +1293,7 @@
                                   }
                               }});
 
-                            liNode.setAttribute("title", key);
+                            liNode.setAttribute("title", keys[key]);
                             liNode.appendChild(anchorNode);
                             ulNode.appendChild(liNode);
                             break;
@@ -1290,36 +1313,36 @@
                                 spanNodeSection.setAttribute("class", "metadata metadataforced");
 
                                 let anchorNode = document.createElement("a");
-                                anchorNode.setAttribute("href", baseUrl[1] + key);
+                                anchorNode.setAttribute("href", baseUrl[1] + keys[key]);
                                 anchorNode.setAttribute("rel", "nofollow");
                                 anchorNode.style.setProperty("color", "red", "");
-                                anchorNode.textContent = key;
+                                anchorNode.textContent = keys[key];
 
-                                liNode.setAttribute("title", baseUrl[1] + key);
+                                liNode.setAttribute("title", baseUrl[1] + keys[key]);
                                 liNode.appendChild(anchorNode);
 
                                 ulNode.appendChild(liNode);
                               } else {
-                                liNode.setAttribute("title", key);
-                                liNode.textContent = key;
+                                liNode.setAttribute("title", keys[key]);
+                                liNode.textContent = keys[key];
                                 ulNode.appendChild(liNode);
                               }
                             } else {
-                              liNode.setAttribute("title", key);
-                              liNode.textContent = key;
+                              liNode.setAttribute("title", keys[key]);
+                              liNode.textContent = keys[key];
                               ulNode.appendChild(liNode);
                             }
                           }
                           break;
                         case "resource":
-                          matches = key.match(/^([\w\.\_\-]+)\s*(https?:\/\/.*)/i);
+                          matches = keys[key].match(/^([\w\.\_\-]+)\s*(https?:\/\/.*)/i);
                           if (matches) {
                             let showUrl;
-                            let matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
+                            let matches2 = keys[key].match(/https?:\/\/userscripts\.org\/scripts\/source\/(\d+)\.user\.js/i);
                             if (matches2)
                               showUrl = protocol + "//userscripts.org/scripts/show/" + matches2[1];
                             else {
-                              matches2 = key.match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
+                              matches2 = keys[key].match(/https?:\/\/userscripts\.org\/scripts\/version\/(\d+)\/\d+\.user\.js/i);
                               if (matches2)
                                 showUrl = protocol + "//userscripts.org/scripts/show/" + matches2[1];
                             }
@@ -1379,8 +1402,8 @@
                               if (baseUrl) {
                                 spanNodeSection.setAttribute("class", "metadata metadataforced");
 
-                                let resourceName = key.match(/(.*)[\s\t]/i)[1];
-                                let targetUrl = key.match(/[\s\t](.*)$/i)[1];
+                                let resourceName = keys[key].match(/(.*)[\s\t]/i)[1];
+                                let targetUrl = keys[key].match(/[\s\t](.*)$/i)[1];
 
                                 let spanNode = document.createElement("span");
                                 spanNode.setAttribute("class", "resourceName");
@@ -1405,7 +1428,7 @@
                         case 'installURL':
                         case 'downloadURL':
                           let rex = new RegExp("^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(\\d+)\\.(meta|user)\\.js", "i");
-                          matches = key.match(rex);
+                          matches = keys[key].match(rex);
                           if (matches) {
                             if (matches[1] != scriptid || (matches[2] == "user" && filter == "updateURL") || ++keyCount > 1)
                               spanNodeSection.setAttribute("class", "metadata metadataforced");
@@ -1413,24 +1436,24 @@
                             let anchorNode = document.createElement("a");
                             anchorNode.setAttribute("href", "/scripts/show/" + matches[1]);
                             anchorNode.setAttribute("rel", "nofollow");
-                            anchorNode.textContent = key;
+                            anchorNode.textContent = keys[key];
 
-                            liNode.setAttribute("title", key);
+                            liNode.setAttribute("title", keys[key]);
                             liNode.appendChild(anchorNode);
 
                             ulNode.appendChild(liNode);
                             break;
                           }
                           else {
-                            if (key.match(/^https?:\/\/.*/)) {  // NOTE: Offsite
+                            if (keys[key].match(/^https?:\/\/.*/)) {  // NOTE: Offsite
                               spanNodeSection.setAttribute("class", "metadata metadataforced");
 
                               let anchorNode = document.createElement("a");
-                              anchorNode.setAttribute("href", key);
+                              anchorNode.setAttribute("href", keys[key]);
                               anchorNode.setAttribute("rel", "nofollow");
-                              anchorNode.textContent = key;
+                              anchorNode.textContent = keys[key];
 
-                              liNode.setAttribute("title", key);
+                              liNode.setAttribute("title", keys[key]);
                               liNode.appendChild(anchorNode);
 
                               ulNode.appendChild(liNode);
@@ -1455,9 +1478,9 @@
                                   anchorNode.setAttribute("href", baseUrl[1] + key);
                                   anchorNode.setAttribute("rel", "nofollow");
                                   anchorNode.style.setProperty("color", "red", "");
-                                  anchorNode.textContent = key;
+                                  anchorNode.textContent = keys[key];
 
-                                  liNode.setAttribute("title", baseUrl[1] + key);
+                                  liNode.setAttribute("title", baseUrl[1] + keys[key]);
                                   liNode.appendChild(anchorNode);
 
                                   ulNode.appendChild(liNode);
@@ -1467,10 +1490,10 @@
                             }
                           }
                         default:
-                          if (key == "")
+                          if (keys[key] == "")
                             spanNodeSection.textContent = parseInt(spanNodeSection.textContent) + 1;
-                          liNode.setAttribute("title", key);
-                          liNode.textContent = key;
+                          liNode.setAttribute("title", keys[key]);
+                          liNode.textContent = keys[key];
                           ulNode.appendChild(liNode);
                           break;
                       }
@@ -1544,23 +1567,25 @@
                                 }
                               }
                               else {
-                                let msg = 'Possible DOM change detected';
+                                let msg = 'Possible DOM change detected or missing Version';
                                 console.warn(msg);
                                 GM_log(msg);
                               }
                             }
-                            if (!window.location.pathname.match(/\/scripts\/show\/.+/i))
+                            if (!location.pathname.match(/\/scripts\/show\/.+/i))
                               display(mbx, headers[key], key, "@version");
                           }
                           break;
                         case "include":
                           let notify = true;
-                          if (headers["exclude"])
-                            for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"]) // DEPRECATED
-                              if (exclude == "*") {
+                          if (headers["exclude"]) {
+                            let excludes = (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"];
+                            for (let exclude in excludes)
+                              if (excludes[exclude] == "*") {
                                 notify = false;
                                 break;
                               }
+                          }
 
                           if (headers[key])
                             display(mbx, headers[key], key, "@include");
@@ -1898,16 +1923,36 @@
 
                     let els = document.getElementsByName("currenturl");
                     if (els) {
-                      els[0].setAttribute("placeholder", xhr.finalUrl.replace(/\#+$/i, "")); // TODO: proof this better
+                      let finalUrl = xhr.finalUrl.replace(/\#+$/i, "");  // TODO: proof this better
+
+                      els[0].setAttribute("placeholder", finalUrl);
                       els[0].value = "";
 
                       let currenturls = document.getElementById("currenturls");
                       if (currenturls) {
-                        // TODO: Only add it if it's not already in there
-                        let optionNode = document.createElement("option");
-                        optionNode.value = xhr.finalUrl.replace(/\#+$/i, "");
+                        let
+                            found = false,
+                            xpr = document.evaluate(
+                              "./option",
+                              currenturls,
+                              null,
+                              XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                              null
+                            )
+                        ;
+                        if (xpr)
+                          for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);)
+                            if (thisNode.value == finalUrl) {
+                              found = true;
+                              break;
+                            }
 
-                        currenturls.insertBefore(optionNode, currenturls.firstChild);
+                        if (!found) {
+                          let optionNode = document.createElement("option");
+                          optionNode.value = finalUrl;
+
+                          currenturls.insertBefore(optionNode, currenturls.firstChild);
+                        }
                       }
                     }
                 }
@@ -2562,20 +2607,6 @@
                         ulNode.appendChild(liNode);
                       }
 
-
-                    let versionsContainerNode;
-                    document.evaluate(
-                      "//div[@id='section']/div[@class='container']",
-                      document.body,
-                      null,
-                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                      xpr
-                    );
-                    if (xpr && xpr.singleNodeValue) {
-                      versionsContainerNode = xpr.singleNodeValue;
-                    }
-
-
                     let versionsDIV = document.getElementById("versions");
                     if (versionsDIV) {
                       while (versionsDIV.hasChildNodes())
@@ -2603,9 +2634,15 @@
                       });
                     }
 
-                    versionsContainerNode = document.getElementById("sourceurl"); // TODO: Above xpath is unnecessary now
-                    // TODO: Check for existance
-                    versionsContainerNode.parentNode.insertBefore(versionsDIV, versionsContainerNode); // TODO: Very wrong identifiers
+                    let versionsContainerNode = document.getElementById("sourceurl");
+                    if (versionsContainerNode)
+                      versionsContainerNode.parentNode.insertBefore(versionsDIV, versionsContainerNode); // TODO: Change identifier names
+                    else {
+                      let msg = 'Hook node for versions and diffs not found';
+                      GM_log(msg);
+                      console.error(msg);
+                      return; // die this function
+                    }
 
                     // Replace pagination NOTE: Scope referenced variable nodes
                     if (pagination) {
@@ -2774,8 +2811,8 @@
         // Copy once selector rules from #source element
         let css = ".number { ";
             let properties = window.getComputedStyle(hookNode, null);
-            for each (let property in properties) // DEPRECATED
-              css += (property + ":" + properties.getPropertyValue(property) + "; ");
+            for (let property in properties)
+              css += (properties[property] + ":" + properties.getPropertyValue(properties[property]) + "; ");
         css += " }";
 
         GM_setStyle({
