@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.7
+// @version       0.20.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -911,21 +911,23 @@
                         break;
                     }
                     [key, prefix] = name.split(/:/).reverse();
-                    if (prefix) {
-                      if (!headers[prefix])
-                        headers[prefix] = new Object;
-                      header = headers[prefix];
-                    }
-                    else
-                      header = headers;
+                    if (key) {
+                      if (prefix) {
+                        if (!headers[prefix])
+                          headers[prefix] = new Object;
+                        header = headers[prefix];
+                      }
+                      else
+                        header = headers;
 
-                    if (header[key]) {
-                      if (!(header[key] instanceof Array))
-                        header[key] = new Array(header[key]);
-                      header[key].push(value || "");
+                      if (header[key]) {
+                        if (!(header[key] instanceof Array))
+                          header[key] = new Array(header[key]);
+                        header[key].push(value || "");
+                      }
+                      else
+                        header[key] = value || "";
                     }
-                    else
-                      header[key] = value || "";
                   }
                   if (headers["license"])
                     headers["licence"] = headers["license"];
@@ -1165,9 +1167,6 @@
                   function display(el, keys, filter, title, forced) {
                     if (typeof keys == "string")
                       keys = new Array(keys);
-
-                    if (!Array.isArray(keys)) // NOTE: Needed for prefixed with null postfix
-                      return;
 
                     let textNode = document.createTextNode(" ");
 
@@ -1597,6 +1596,7 @@
                               typeof headers[key] == "string" && (key == "version" || key == "copyright" || key == "license" || key == "licence"))
                             break;
 
+                          let prefix;
                           [key, prefix] = key.split(/:/).reverse();
 
                           if (!prefix && typeof headers[key] != "undefined")
