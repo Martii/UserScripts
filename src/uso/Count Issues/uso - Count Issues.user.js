@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.8
+// @version       0.20.9
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -1846,11 +1846,11 @@
           node: nodeStyle,
           data:
             [
-              "#fans_content { border-bottom-style: dotted !important; margin-bottom: 0 !important; }",
+              "#fans_content { border-bottom: 1px dotted #ddd !important; margin-bottom: 0 !important; }",
 
               ".pagetear {",
                 "background-color: #fff;",
-                "border-bottom: 1px dotted #ccc;",
+                "border-bottom: 1px dotted #ddd;",
                 "font-size: 13px;",
                 "padding: 10px;",
               "}",
@@ -1865,44 +1865,117 @@
                 "border-radius: 3px;",
               "}",
 
-              "#sourceurl input[name='currenturl'] {",
-                "width: 99%;",
+              "#sourceurl #currenturl {",
+                "width: 98%;",
                 "border-style: none;",
-                "margin: 3px 0 3px 3px;",
+                "margin: 0 3px;",
                 "color: #999;",
               "}",
 
-              "#sourceurl input[name='refresh'] {",
+              "#sourceurl #refreshurl {",
                 "position: absolute;",
                 "right: 1.5em;",
                 "margin-top: 0.4em;",
+                "width: 16px;",
+                "height: 16px;",
               "}",
 
-              ".err { background-color: #fcc; }"
+              ".reload { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAXNSR0IArs4c6QAAAXxJREFUKM+FkM1L0wEcxh9yhzrYZd265l/gLRA9hCAe8tL/4NLCFxi62ZpMlt+fh0q6CL6QGFjgIRInsbUixBi+0EEssOWEGpL95i9pU3R+PDgVuvR8rp/D8zxCCEV9zm0bsZzlbcmZceqGai1jqcGbSAjF/ZaaJ88hZQ7Y4SX2J8cyzgISshonu0GZIh4FPIqU2QJcjFPh7Q8OKZBmjKeMsohL6UIYanrFMTtMYe+t0VqcdWOKX4DLI5As8ZsiH7Bk1IcsleUsLjGQbK2IxwhOPUIDmVXccyIg2e4+BR4T9yPUXxtZf0AffYQJ0QtSPO/hMU6s4fSRf1Fs4jN7fOJheriqctrl8JPwZmg8WI2QIncm2OUv04TehW+Frvc292TmyPGcYAAhRX096Vk89vnCGDEmyVLG4wVdnQgJdV8Lfk/iUuKIY44o4TLN/bXOKxUBddzoSMT5yFd+skGCQdre3LtaKXnWtr2x7fXdlcB24Fvrs9am6KXzFfyHE+iiW4Oaaf3TAAAAAElFTkSuQmCC); }",
+              ".connecting { background-image: url(chrome://browser/skin/tabbrowser/connecting.png); }",
+              ".loading { background-image: url(chrome://browser/skin/tabbrowser/loading.png); }",
+              ".processing { background-image: url(chrome://global/skin/icons/loading_16.png); }",
 
+              ".err { background-color: #fcc !important; }"
 
             ].join("\n")
       });
 
+      function setUrlErr(aMsg) {
+        let refreshurl = document.getElementById("refreshurl");
+        if (refreshurl) {
+          refreshurl.classList.add("err");
+          refreshurl.classList.remove("connecting");
+          refreshurl.classList.remove("loading");
+        }
+
+        let currenturl = document.getElementById("currenturl");
+        if (currenturl) currenturl.classList.add("err");
+
+        let urlbar = document.getElementById("urlbar");
+        if (urlbar) urlbar.classList.add("err");
+
+        if (aMsg) {
+          GM_log(aMsg);
+          console.error(aMsg);
+        }
+      }
+
+      function clearUrlErr() {
+        let refreshurl = document.getElementById("refreshurl");
+        if (refreshurl) refreshurl.classList.remove("err");
+
+        let currenturl = document.getElementById("currenturl");
+        if (currenturl) currenturl.classList.remove("err");
+
+        let urlbar = document.getElementById("urlbar");
+        if (urlbar) urlbar.classList.remove("err");
+      }
+
       function loadUrl(aUrl) {
+          let refreshurl = document.getElementById("refreshurl");
+          if (refreshurl)
+            refreshurl.classList.add("connecting");
+
           try {
             GM_xmlhttpRequest({
+              state: "connecting",
               retry: 5,
               method: "GET",
               url: aUrl + "#", // TODO: Better fix for this
+              onabort: function (xhr) {
+                this.state = "reload";
+                setUrlErr('Error aborted ' + this.url + ' url');
+              },
               onerror: function (xhr) {
-                // TODO: Do something on err
+                this.state = "reload";
+                setUrlErr('Error retrieving ' + this.url + ' url');
+              },
+              ontimeout: function (xhr) {
+                this.state = "reload";
+                setUrlErr('Error timed out ' + this.url + ' url');
+              },
+              onprogress: function (xhr) {
+                if (this.state == "connecting") {
+                  this.state = "loading";
+                  let refreshurl = document.getElementById("refreshurl")
+                  if (refreshurl)
+                    refreshurl.classList.add("loading");
+                }
               },
               onload: function (xhr) {
                 switch (xhr.status) {
-                  case 404:
+//                   case 404: // NOTE: Sometimes USO needs this trapped
                   case 500:
                   case 502:
                   case 503:
-                    if (this.retry-- > 0)
+                    if (this.retry-- > 0) {
+                      this.state = "connecting";
+                      let refreshurl = document.getElementById("refreshurl")
+                      if (refreshurl)
+                        refreshurl.classList.remove("loading");
                       setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                    }
+                    else {
+                      this.state = "reload";
+                      setUrlErr('Error retrying ' + xhr.finalUrl + ' url');
+                    }
                     break;
                   case 200:
+                    this.state = "processing";
+                    let refreshurl = document.getElementById("refreshurl")
+                    if (refreshurl)
+                      refreshurl.classList.add("processing");
+
                     // start twiddling
                     let source = document.getElementById("source");
 
@@ -1921,12 +1994,12 @@
                     if (gmc.get("checkShowLineNumbers"))
                       renumber(source);
 
-                    let els = document.getElementsByName("currenturl");
-                    if (els) {
+                    let currenturl = document.getElementById("currenturl");
+                    if (currenturl) {
                       let finalUrl = xhr.finalUrl.replace(/\#+$/i, "");  // TODO: proof this better
 
-                      els[0].setAttribute("placeholder", finalUrl);
-                      els[0].value = "";
+                      currenturl.setAttribute("placeholder", finalUrl);
+                      currenturl.value = "";
 
                       let currenturls = document.getElementById("currenturls");
                       if (currenturls) {
@@ -1955,26 +2028,37 @@
                         }
                       }
                     }
+
+                    this.state = "reload";
+                    if (refreshurl) {
+                      refreshurl.classList.remove("connecting");
+                      refreshurl.classList.remove("loading");
+                      refreshurl.classList.remove("processing");
+                    }
+
+                    break;
+                  default:
+                    this.state = "reload";
+                    setUrlErr('Error reponse ' + xhr.status + ' for ' + xhr.finalUrl + ' url');
+                    break;
                 }
               }
             });
           }
           catch (e) {
-            let els = document.getElementsByName("currenturl");
-            if (els) {
-              els[0].classList.add("err");
-              els[0].parentNode.classList.add("err");
-            }
+            setUrlErr();
           }
       }
 
       let inputImageNode = document.createElement("input");
       inputImageNode.type = "image";
-      inputImageNode.name = "refresh";
-      inputImageNode.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAXNSR0IArs4c6QAAAXxJREFUKM+FkM1L0wEcxh9yhzrYZd265l/gLRA9hCAe8tL/4NLCFxi62ZpMlt+fh0q6CL6QGFjgIRInsbUixBi+0EEssOWEGpL95i9pU3R+PDgVuvR8rp/D8zxCCEV9zm0bsZzlbcmZceqGai1jqcGbSAjF/ZaaJ88hZQ7Y4SX2J8cyzgISshonu0GZIh4FPIqU2QJcjFPh7Q8OKZBmjKeMsohL6UIYanrFMTtMYe+t0VqcdWOKX4DLI5As8ZsiH7Bk1IcsleUsLjGQbK2IxwhOPUIDmVXccyIg2e4+BR4T9yPUXxtZf0AffYQJ0QtSPO/hMU6s4fSRf1Fs4jN7fOJheriqctrl8JPwZmg8WI2QIncm2OUv04TehW+Frvc292TmyPGcYAAhRX096Vk89vnCGDEmyVLG4wVdnQgJdV8Lfk/iUuKIY44o4TLN/bXOKxUBddzoSMT5yFd+skGCQdre3LtaKXnWtr2x7fXdlcB24Fvrs9am6KXzFfyHE+iiW4Oaaf3TAAAAAElFTkSuQmCC";
+      inputImageNode.id = "refreshurl";
+      inputImageNode.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+      inputImageNode.classList.add("reload");
       inputImageNode.alt = "refresh";
       inputImageNode.addEventListener("click", function (ev) {
-        loadUrl(ev.target.previousSibling.placeholder);
+        if (!ev.target.previousSibling.value && ev.target.previousSibling.placeholder != "Load url")
+          loadUrl(ev.target.previousSibling.placeholder, ev.target);
       }, false);
 
       let datalistNode = document.createElement("datalist");
@@ -1984,8 +2068,7 @@
         "http://userscripts.org/scripts/source/",
         "https://userscripts.org/scripts/source/",
         "http://",
-        "https://",
-        location.protocol + "//" + location.hostname + "/scripts/source/"
+        "https://"
 
       ].forEach(function (e, i, a) {
         let optionNode = document.createElement("option");
@@ -1995,19 +2078,20 @@
       });
 
       let inputUrlNode = document.createElement("input");
-      inputUrlNode.type = "url";
-      inputUrlNode.placeholder = location.protocol + "//" + location.hostname + "/scripts/source/" + scriptid + ".user.js";
-      inputUrlNode.name = "currenturl";
+      inputUrlNode.type = "text";
+      inputUrlNode.placeholder = "Load url";
+      inputUrlNode.id = "currenturl";
       inputUrlNode.setAttribute("list", "currenturls");
       inputUrlNode.addEventListener("keypress", function (ev) {
-        ev.target.classList.remove("err");
-        ev.target.parentNode.classList.remove("err");
+        clearUrlErr();
 
         if (ev.keyCode == 13)
-          loadUrl(ev.target.value);
+          if (ev.target.value)
+            loadUrl(ev.target.value, inputImageNode);
       }, false);
 
       let divNode = document.createElement("div");
+      divNode.id = "urlbar";
 
       let containerNode = document.createElement("div");
       containerNode.id = "sourceurl";
@@ -2020,7 +2104,6 @@
       containerNode.appendChild(divNode);
 
       hookNode.appendChild(containerNode);
-
     }
 
     if (gmc.get("checkShowVersionsSource")) {
@@ -2473,9 +2556,9 @@
                                     if (gmc.get("checkShowLineNumbers"))
                                       renumber(preNode);
 
-                                    let els = document.getElementsByName("currenturl");
-                                    if (els)
-                                      els[0].setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
+                                    let currenturl = document.getElementById("currenturl");
+                                    if (currenturl)
+                                      currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
 
                                     break;
                                 }
@@ -2583,9 +2666,9 @@
                                       source.style.removeProperty("margin-left");
                                   }
 
-                                  let els = document.getElementsByName("currenturl");
-                                  if (els)
-                                    els[0].setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
+                                  let currenturl = document.getElementById("currenturl");
+                                  if (currenturl)
+                                    currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
 
                                   break;
                               }
