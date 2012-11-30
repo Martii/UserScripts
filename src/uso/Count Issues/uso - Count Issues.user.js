@@ -9,14 +9,14 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.9
+// @version       0.20.10
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
-// @include   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
-// @include   /https?:\/\/(.*?\.)?userscripts\.org\/topics\/.*/
-// @include   /https?:\/\/(.*?\.)?userscripts\.org\/reviews\/.*/
-// @exclude   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/diff\/.*/
-// @exclude   /https?:\/\/(.*?\.)?userscripts\.org\/scripts\/version\/.*/
+// @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
+// @include   /^https?:\/\/(.*?\.)?userscripts\.org\/topics\/.*/
+// @include   /^https?:\/\/(.*?\.)?userscripts\.org\/reviews\/.*/
+// @exclude   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/diff\/.*/
+// @exclude   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/version\/.*/
 //
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -54,12 +54,25 @@
 
   let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
 
-  let nodeStyle = GM_setStyle({
+  let throbber = "data:image/gif;base64,"
+    + 'R0lGODlhAQABAOMKAMTExMnJyc3NzdLS0tfX19vb2+Dg4OXl5enp6e7u7v//////////////////'
+    + '/////yH/C05FVFNDQVBFMi4wAwEAAAAh+QQICgD/ACwAAAAAAQABAAAEAjBFACH5BAgKAP8ALAAA'
+    + 'AAABAAEAAAQCEEUAIfkECAoA/wAsAAAAAAEAAQAABALwRAAh+QQICgD/ACwAAAAAAQABAAAEAtBE'
+    + 'ACH5BAgKAP8ALAAAAAABAAEAAAQCsEQAIfkECAoA/wAsAAAAAAEAAQAABAKQRAAh+QQICgD/ACwA'
+    + 'AAAAAQABAAAEAnBEACH5BAgKAP8ALAAAAAABAAEAAAQCUEQAIfkECAoA/wAsAAAAAAEAAQAABAIw'
+    + 'RAAh+QQICgD/ACwAAAAAAQABAAAEAhBEACH5BAgKAP8ALAAAAAABAAEAAAQCMEQAIfkECAoA/wAs'
+    + 'AAAAAAEAAQAABAJQRAAh+QQICgD/ACwAAAAAAQABAAAEAnBEACH5BAgKAP8ALAAAAAABAAEAAAQC'
+    + 'kEQAIfkECAoA/wAsAAAAAAEAAQAABAKwRAAh+QQICgD/ACwAAAAAAQABAAAEAtBEACH5BAgKAP8A'
+    + 'LAAAAAABAAEAAAQC8EQAIfkEAAoA/wAsAAAAAAEAAQAABAIQRQA7'
+  ;
+
+  let gCSS = GM_setStyle({
       media: "screen, projection",
       data:
         [
           ".hid { display: none; }",
-          ".HID { display: none !important }"
+          ".HID { display: none !important }",
+          ".throbber { background-image: url(" + throbber + ") !important;}"
 
         ].join("\n")
   });
@@ -138,18 +151,6 @@
     }
   }
 
-  let throbber = "data:image/gif;base64,"
-    + 'R0lGODlhAQABAOMKAMTExMnJyc3NzdLS0tfX19vb2+Dg4OXl5enp6e7u7v//////////////////'
-    + '/////yH/C05FVFNDQVBFMi4wAwEAAAAh+QQICgD/ACwAAAAAAQABAAAEAjBFACH5BAgKAP8ALAAA'
-    + 'AAABAAEAAAQCEEUAIfkECAoA/wAsAAAAAAEAAQAABALwRAAh+QQICgD/ACwAAAAAAQABAAAEAtBE'
-    + 'ACH5BAgKAP8ALAAAAAABAAEAAAQCsEQAIfkECAoA/wAsAAAAAAEAAQAABAKQRAAh+QQICgD/ACwA'
-    + 'AAAAAQABAAAEAnBEACH5BAgKAP8ALAAAAAABAAEAAAQCUEQAIfkECAoA/wAsAAAAAAEAAQAABAIw'
-    + 'RAAh+QQICgD/ACwAAAAAAQABAAAEAhBEACH5BAgKAP8ALAAAAAABAAEAAAQCMEQAIfkECAoA/wAs'
-    + 'AAAAAAEAAQAABAJQRAAh+QQICgD/ACwAAAAAAQABAAAEAnBEACH5BAgKAP8ALAAAAAABAAEAAAQC'
-    + 'kEQAIfkECAoA/wAsAAAAAAEAAQAABAKwRAAh+QQICgD/ACwAAAAAAQABAAAEAtBEACH5BAgKAP8A'
-    + 'LAAAAAABAAEAAAQC8EQAIfkEAAoA/wAsAAAAAAEAAQAABAIQRQA7'
-  ;
-
   if (typeof GM_configStruct != "undefined") {
     // Save some memory
     delete GM_config;
@@ -175,7 +176,7 @@
     let scriptNav = document.getElementById("script-nav");
     if (scriptNav && divNode && scriptNav.clientWidth != divNode.clientWidth)
       GM_setStyle({
-        node: nodeStyle,
+        node: gCSS,
         data:
           [
             "div #full_description { width: 98.1%; }"
@@ -186,7 +187,7 @@
     let screenShots = document.getElementById("screenshots");
     if (screenShots)
       GM_setStyle({
-        node: nodeStyle,
+        node: gCSS,
         data:
           [
             "#full_description { clear: left; }"
@@ -198,7 +199,7 @@
     let fullDescription = document.getElementById("full_description");
     if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
       GM_setStyle({
-        node: nodeStyle,
+        node: gCSS,
         data:
           [
             "#screenshots { width: 97.5% !important; }"
@@ -492,7 +493,7 @@
 
     gmc.onReset = function () {
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "textarea#gmc69307_field_hideNavTabString { height: " + gmc.fields["hideNavTabStringHeight"].settings.default + "; }",
@@ -511,7 +512,7 @@
 
         if (gmc.get("limitMaxHeight"))
           GM_setStyle({
-              node: nodeStyle,
+              node: gCSS,
               data:
                 [
                   "div.metadata { max-height: " + gmc.get("maxHeightList") + "em; }"
@@ -520,7 +521,7 @@
           });
         else
           GM_setStyle({
-              node: nodeStyle,
+              node: gCSS,
               data:
                 [
                   "div.metadata { max-height: none; }"
@@ -529,7 +530,7 @@
           });
 
         GM_setStyle({
-            node: nodeStyle,
+            node: gCSS,
             data:
               [
                 "li.metadata, li.count { font-size: " + gmc.get("fontSize") + "em ; }"
@@ -550,7 +551,7 @@
 
       let height;
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "textarea#gmc69307_field_showStringsString { height: " + gmc.get("showStringsStringHeight") + "; }"
@@ -565,7 +566,7 @@
         }
 
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "textarea#gmc69307_field_showKeysString { height: " + gmc.get("showKeysStringHeight") + "; }"
@@ -579,7 +580,7 @@
         }
 
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "textarea#gmc69307_field_hideH6String { height: " + gmc.get("hideH6StringHeight") + "; }"
@@ -593,7 +594,7 @@
         }
 
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "textarea#gmc69307_field_hideNavTabString { height: " + gmc.get("hideNavTabStringHeight") + "; }"
@@ -607,7 +608,7 @@
         }
 
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "textarea#gmc69307_field_insertH6String { height: " + gmc.get("insertH6StringHeight") + "; }"
@@ -626,7 +627,7 @@
 
     if (window.location.href.match(/^(?:https?:\/\/userscripts\.org)?\/scripts\/show\/69307\/?/i)) {
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "textarea#gmc69307_field_showStringsString { height: " + gmc.get("showStringsStringHeight") + "; }",
@@ -690,8 +691,1142 @@
     return (scriptid) ? scriptid[1] : undefined;
   }
 
+  if (gmc.get("hideH6")) {
+    let headerNodes = document.evaluate(
+    "//h6",
+      document.documentElement,
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      null
+    );
+    if (headerNodes)
+      for (let i = 0, thisNode; thisNode = headerNodes.snapshotItem(i++);) {
+        let headers = gmc.get("hideH6String").split(",");
+        for (let header in headers) {
+          let rex = "\\s*" + headers[header];
+          if (thisNode.textContent.match(new RegExp(rex, ""))) {
+            thisNode.classList.add("hid");
+
+            let thatNode = thisNode.nextSibling;
+            let loop = true;
+            while(loop) {
+              if (thatNode.tagName)
+                if (thatNode.tagName.toLowerCase() != "h6")
+                  switch (thatNode.tagName.toLowerCase()) {
+                    case "script":
+                      break;
+                    default:
+                      if (thatNode.id != "fans")
+                        if (gmc.get("hideH6Reinforce"))
+                          thatNode.classList.add("HID");
+                        else
+                          thatNode.classList.add("hid");
+                      break;
+                  }
+                else
+                  loop = false;
+              thatNode = thatNode.nextSibling;
+              if (!thatNode)
+                loop = false;
+            }
+
+          }
+        }
+      }
+  }
+
   let scriptid = getScriptid();
   if (scriptid) {
+
+    // TODO: Drop parseMeta in here... has scriptid dependency (usually)
+
+    function renumber(hookNode) {
+      let preNode = document.getElementById("number");
+
+      if (preNode.hasChildNodes())
+        while (preNode.hasChildNodes())
+          preNode.removeChild(preNode.firstChild);
+
+      preNode.classList.remove("err");
+
+      // Calculate width of numbers
+      let newlines = hookNode.textContent.match(/\n/g);
+      if (newlines)
+        newlines = newlines.length;
+      else
+        newlines = 0;
+
+      let digits = (parseInt(newlines) + 1).toString().length;
+      let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
+
+      preNode.style.setProperty("width", (textWidth * digits) + "px", "");
+
+      // Create numbers
+      let line = 1;
+      do {
+        let aNode = document.createElement("a");
+        aNode.id = "line-" + line;
+        aNode.href = "#line-" + line;
+        aNode.textContent = line;
+        if (line % 10 == 0 || line == 1)
+          aNode.classList.add("sharpen");
+
+        let divNode = document.createElement("div");
+
+        divNode.appendChild(aNode);
+        preNode.appendChild(divNode);
+      } while (line++ <= newlines);
+
+      // Show numbers
+      preNode.classList.remove("HID");
+
+      hookNode.parentNode.insertBefore(preNode, hookNode);
+      hookNode.style.setProperty("margin-left", preNode.offsetWidth + "px", "");
+    }
+
+    if (gmc.get("checkShowLineNumbers")) { // NOTE: Currently no scriptid dependency  but only called inside of it
+      if (location.pathname.match(/\/scripts\/review\//)) {
+        let xpr = document.evaluate(
+          "//pre[@id='source']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (xpr && xpr.singleNodeValue) {
+          let hookNode = xpr.singleNodeValue;
+
+          if (!hookNode.hasChildNodes()) // NOTE: Caching issue on USO so reload until it is present
+            window.location.reload();
+
+          let preNode = document.createElement("pre");
+          preNode.id = "number";
+          preNode.classList.add("number");
+
+          // Override CSS and ensure that element is invisible while maninpulating... prevents flicker later
+          preNode.classList.add("HID");
+
+          // Copy once selector rules from #source element
+          let css = ".number { ";
+              let properties = window.getComputedStyle(hookNode, null);
+              for (let property in properties)
+                css += (properties[property] + ":" + properties.getPropertyValue(properties[property]) + "; ");
+          css += " }";
+
+          GM_setStyle({
+              node: gCSS,
+              data: css
+          });
+
+          // Apply custom styling
+          GM_setStyle({
+              node: gCSS,
+              data:
+                [
+                  ".number { background-color: #eee; border-right-style: none !important; display: inline; float: left; height: auto; margin: 0 !important; margin-top: 0 !important; overflow: hidden !important; padding-left: 2px; padding-right: 2px; text-align: right;  }",
+                  ".number a { color: #888; font-size: 0.8em; padding-right: 2px; text-decoration: none; }",
+                  ".number a.sharpen { color: #000; font-size: 1em; }",
+
+                  "#source { margin-top: 0; }",
+                  "#source[wrap='off'] { overflow-x: auto !important; white-space: pre; }",
+                  "#source[wrap='on'] {  margin-left: 0 !important; white-space: pre-wrap; }",
+
+                  "#number[wrap='off'] { display: inline; }",
+                  "#number[wrap='on'] { display: none; }"
+
+                ].join("\n")
+          });
+
+          let divNode = document.createElement("div");
+
+          divNode.appendChild(preNode);
+
+          hookNode.parentNode.insertBefore(divNode, hookNode);
+          divNode.appendChild(hookNode);
+
+          function loadNumber() {
+            window.removeEventListener("load", loadNumber, false);
+            renumber(hookNode);
+
+            let hash = window.location.hash.match(/^#(line-\d+)/);
+            if (hash) {
+              let anchorNode = document.evaluate(
+                "//a[@id='" + hash[1] + "']",
+                document.body,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+              );
+              if (anchorNode && anchorNode.singleNodeValue)
+                anchorNode.singleNodeValue.scrollIntoView();
+            }
+          }
+          window.addEventListener("load", loadNumber, false);
+        }
+      }
+    }
+
+    // scriptid review
+    if (location.pathname.match(/\/scripts\/review\//)) {
+      let xpr = document.evaluate(
+        "//div[@id='section']//div[@class='container']",
+        document.body,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      );
+      if (xpr && xpr.singleNodeValue) {
+        let hookNode = xpr.singleNodeValue;
+
+        GM_setStyle({
+            node: gCSS,
+            data:
+              [
+                "#fans_content { border-bottom: 1px dotted #ddd !important; margin-bottom: 0 !important; }",
+
+                ".pagetear {",
+                  "background-color: #fff;",
+                  "border-bottom: 1px dotted #ddd;",
+                  "font-size: 13px;",
+                  "padding: 10px;",
+                "}",
+
+                "#sourceurl {",
+                  "margin-bottom: 0.9em;",
+                "}",
+
+                "#sourceurl div {",
+                  "margin: 0;",
+                  "border: 1px solid #ccc;",
+                  "border-radius: 3px;",
+                "}",
+
+                "#sourceurl #currenturl {",
+                  "border-style: none;",
+                  "background-color: transparent;",
+                  "color: #999;",
+                  "margin: 0 3px;",
+                  "width: 98%;",
+                "}",
+
+                "#sourceurl #refreshurl {",
+                  "background-color: transparent;",
+                  "height: 16px;",
+                  "margin-top: 0.4em;",
+                  "position: absolute;",
+                  "right: 1.5em;",
+                  "width: 16px;",
+                "}",
+
+                ".reload { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAXNSR0IArs4c6QAAAXxJREFUKM+FkM1L0wEcxh9yhzrYZd265l/gLRA9hCAe8tL/4NLCFxi62ZpMlt+fh0q6CL6QGFjgIRInsbUixBi+0EEssOWEGpL95i9pU3R+PDgVuvR8rp/D8zxCCEV9zm0bsZzlbcmZceqGai1jqcGbSAjF/ZaaJ88hZQ7Y4SX2J8cyzgISshonu0GZIh4FPIqU2QJcjFPh7Q8OKZBmjKeMsohL6UIYanrFMTtMYe+t0VqcdWOKX4DLI5As8ZsiH7Bk1IcsleUsLjGQbK2IxwhOPUIDmVXccyIg2e4+BR4T9yPUXxtZf0AffYQJ0QtSPO/hMU6s4fSRf1Fs4jN7fOJheriqctrl8JPwZmg8WI2QIncm2OUv04TehW+Frvc292TmyPGcYAAhRX096Vk89vnCGDEmyVLG4wVdnQgJdV8Lfk/iUuKIY44o4TLN/bXOKxUBddzoSMT5yFd+skGCQdre3LtaKXnWtr2x7fXdlcB24Fvrs9am6KXzFfyHE+iiW4Oaaf3TAAAAAElFTkSuQmCC); }",
+                ".connecting { background-image: url(chrome://browser/skin/tabbrowser/connecting.png); }",
+                ".loading { background-image: url(chrome://browser/skin/tabbrowser/loading.png); }",
+                ".processing { background-image: url(chrome://global/skin/icons/loading_16.png); }",
+
+                ".err { background-color: #fdd !important; border-color: #dbb !important; }"
+
+              ].join("\n")
+        });
+
+        function setUrlErr(aMsg) {
+          let refreshurl = document.getElementById("refreshurl");
+          if (refreshurl) {
+            refreshurl.classList.remove("connecting");
+            refreshurl.classList.remove("loading");
+          }
+
+          let urlbar = document.getElementById("urlbar");
+          if (urlbar) urlbar.classList.add("err");
+
+          if (aMsg) {
+            GM_log(aMsg);
+            console.error(aMsg);
+          }
+        }
+
+        function clearUrlErr() {
+          let urlbar = document.getElementById("urlbar");
+          if (urlbar) urlbar.classList.remove("err");
+        }
+
+        function loadUrl(aUrl) {
+            let refreshurl = document.getElementById("refreshurl");
+            if (refreshurl)
+              refreshurl.classList.add("connecting");
+
+            try {
+              GM_xmlhttpRequest({
+                state: "connecting",
+                retry: 5,
+                method: "GET",
+                url: aUrl,
+                onabort: function (xhr) {
+                  this.state = "reload";
+                  setUrlErr('Error aborted ' + this.url + ' url');
+                },
+                onerror: function (xhr) {
+                  this.state = "reload";
+                  setUrlErr('Error retrieving ' + this.url + ' url');
+                },
+                ontimeout: function (xhr) {
+                  this.state = "reload";
+                  setUrlErr('Error timed out ' + this.url + ' url');
+                },
+                onprogress: function (xhr) {
+                  if (this.state == "connecting") {
+                    this.state = "loading";
+                    let refreshurl = document.getElementById("refreshurl")
+                    if (refreshurl)
+                      refreshurl.classList.add("loading");
+                  }
+                },
+                onload: function (xhr) {
+                  switch (xhr.status) {
+  //                   case 404: // NOTE: Sometimes USO needs this trapped
+                    case 500:
+                    case 502:
+                    case 503:
+                      if (this.retry-- > 0) {
+                        this.state = "connecting";
+                        let refreshurl = document.getElementById("refreshurl")
+                        if (refreshurl)
+                          refreshurl.classList.remove("loading");
+                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      }
+                      else {
+                        this.state = "reload";
+                        setUrlErr('Error retrying ' + xhr.finalUrl + ' url');
+                      }
+                      break;
+                    case 200:
+                      this.state = "processing";
+                      let refreshurl = document.getElementById("refreshurl")
+                      if (refreshurl)
+                        refreshurl.classList.add("processing");
+
+                      // start twiddling
+                      let source = document.getElementById("source");
+
+                      while(source.hasChildNodes())
+                        source.removeChild(source.firstChild);
+
+                      source.textContent = xhr.responseText.trim();
+
+                      // Remove GIJoes disabling
+                      enableCTTS();
+
+                      // If source is < 20KB then autohighlight just like USO does
+                      if (xhr.responseText.length < 20480)
+                        (window.wrappedJSObject || window).sh_highlightDocument();
+
+                      if (gmc.get("checkShowLineNumbers"))
+                        renumber(source);
+
+                      let currenturl = document.getElementById("currenturl");
+                      if (currenturl) {
+                        let finalUrl = xhr.finalUrl;
+
+                        currenturl.setAttribute("placeholder", finalUrl);
+                        currenturl.value = "";
+
+                        let currenturls = document.getElementById("currenturls");
+                        if (currenturls) {
+                          let
+                              found = false,
+                              xpr = document.evaluate(
+                                "./option",
+                                currenturls,
+                                null,
+                                XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                                null
+                              )
+                          ;
+                          if (xpr)
+                            for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);)
+                              if (thisNode.value == finalUrl) {
+                                found = true;
+                                break;
+                              }
+
+                          if (!found) {
+                            let optionNode = document.createElement("option");
+                            optionNode.value = finalUrl;
+
+                            currenturls.insertBefore(optionNode, currenturls.firstChild);
+                          }
+                        }
+                      }
+
+                      this.state = "reload";
+                      if (refreshurl) {
+                        refreshurl.classList.remove("connecting");
+                        refreshurl.classList.remove("loading");
+                        refreshurl.classList.remove("processing");
+                      }
+
+                      break;
+                    default:
+                      this.state = "reload";
+                      setUrlErr('Error reponse ' + xhr.status + ' for ' + xhr.finalUrl + ' url');
+                      break;
+                  }
+                }
+              });
+            }
+            catch (e) {
+              setUrlErr();
+            }
+        }
+
+        let inputImageNode = document.createElement("input");
+        inputImageNode.type = "image";
+        inputImageNode.id = "refreshurl";
+        inputImageNode.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+        inputImageNode.classList.add("reload");
+        inputImageNode.alt = "refresh";
+        inputImageNode.addEventListener("click", function (ev) {
+          if (!ev.target.previousSibling.value && ev.target.previousSibling.placeholder != "Load url")
+            loadUrl(ev.target.previousSibling.placeholder, ev.target);
+        }, false);
+
+        let datalistNode = document.createElement("datalist");
+        datalistNode.id = "currenturls";
+
+        [
+          "http://userscripts.org/scripts/source/",
+          "https://userscripts.org/scripts/source/",
+          "http://",
+          "https://"
+
+        ].forEach(function (e, i, a) {
+          let optionNode = document.createElement("option");
+          optionNode.value = e;
+
+          datalistNode.appendChild(optionNode);
+        });
+
+        let inputUrlNode = document.createElement("input");
+        inputUrlNode.type = "text";
+        inputUrlNode.placeholder = "Load url";
+        inputUrlNode.id = "currenturl";
+        inputUrlNode.setAttribute("list", "currenturls");
+        inputUrlNode.addEventListener("keypress", function (ev) {
+          clearUrlErr();
+
+          if (ev.keyCode == 13)
+            if (ev.target.value)
+              loadUrl(ev.target.value, inputImageNode);
+        }, false);
+
+        let divNode = document.createElement("div");
+        divNode.id = "urlbar";
+
+        let containerNode = document.createElement("div");
+        containerNode.id = "sourceurl";
+        containerNode.className = "pagetear";
+
+        divNode.appendChild(inputUrlNode);
+        divNode.appendChild(inputImageNode);
+        divNode.appendChild(datalistNode);
+
+        containerNode.appendChild(divNode);
+
+        hookNode.appendChild(containerNode);
+      }
+
+      if (gmc.get("checkShowVersionsSource")) {
+        GM_setStyle({
+            node: gCSS,
+            data:
+              [
+                "div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }"
+
+              ].join("\n")
+        });
+
+        let xpr = document.evaluate(
+          "//pre[@id='source']",
+          document.body,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        if (xpr && xpr.singleNodeValue) {
+          let hookNode = xpr.singleNodeValue;
+
+          if (!hookNode.hasChildNodes()) // NOTE: Caching issue on USO so reload until it is present
+            window.location.reload();
+
+          // Create standardized div framing
+          let toolbarBottomNode = document.createElement("div");
+          toolbarBottomNode.classList.add("toolbar_menu");
+
+          let toolbarTopNode = document.createElement("div");
+          toolbarTopNode.classList.add("toolbar_menu");
+
+          let rightNode = document.createElement("div");
+          rightNode.classList.add("right");
+
+          let leftNode = document.createElement("div");
+          leftNode.id = "left";
+          GM_setStyle({
+              node: gCSS,
+              data:
+                [
+                    "#left { float: left; }"
+
+                ].join("\n")
+          });
+
+          let topNode = document.createElement("div");
+
+          let subcontentNode = document.createElement("div");
+
+          subcontentNode.appendChild(topNode);
+          subcontentNode.appendChild(leftNode);
+          subcontentNode.appendChild(rightNode);
+
+          hookNode.parentNode.insertBefore(subcontentNode, hookNode);
+
+          rightNode.appendChild(toolbarTopNode);
+          rightNode.appendChild(hookNode);
+          rightNode.appendChild(toolbarBottomNode);
+
+          // Check for GIJoes buttons and modify them
+          let wrap2;
+          document.evaluate(
+            "//button[@id='wrap-button2']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            xpr
+          );
+          if (xpr && xpr.singleNodeValue) {
+            wrap2 = xpr.singleNodeValue;
+
+            GM_setStyle({
+                node: gCSS,
+                data:
+                  [
+                    ".wrap-button { width: 11.5em; }"
+
+                  ].join("\n")
+            });
+
+            wrap2.removeAttribute("style");
+            wrap2.classList.add("wrap-button");
+
+            let wrap2DIV = document.createElement("div");
+            let wrap2LI = document.createElement("li");
+
+            wrap2DIV.appendChild(wrap2);
+            wrap2LI.appendChild(wrap2DIV);
+            wrap2 = wrap2LI;
+          }
+
+          let wrap1;
+          document.evaluate(
+            "//button[@id='wrap-button1']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            xpr
+          );
+          if (xpr && xpr.singleNodeValue) {
+            wrap1 = xpr.singleNodeValue;
+
+            wrap1.removeAttribute("style");
+            wrap1.classList.add("wrap-button");
+
+            let wrap1DIV = document.createElement("div");
+            let wrap1LI = document.createElement("li");
+
+            wrap1DIV.appendChild(wrap1);
+            wrap1LI.appendChild(wrap1DIV);
+            wrap1 = wrap1LI;
+          }
+
+          let ctts;
+          document.evaluate(
+            "//button[.='Change Tabs to Spaces']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            xpr
+          );
+          if (xpr && xpr.singleNodeValue) {
+            let cttsBUTTON = xpr.singleNodeValue;
+
+            GM_setStyle({
+                node: gCSS,
+                data:
+                  [
+                    ".changetabs-button { width: 13.5em; }",
+                    ".changetabs-input { height: 1.3em; margin: 0 0 !important; margin-left: 0.3em !important; padding: 0 !important; position: relative; top: 0; width: 1.5em; }"
+
+                  ].join("\n")
+            });
+
+            cttsBUTTON.removeAttribute("style");
+            cttsBUTTON.classList.add("changetabs-button");
+
+
+            let cttsINPUT = cttsBUTTON.nextSibling;
+            cttsINPUT.removeAttribute("style");
+            cttsINPUT.classList.add("changetabs-input");
+
+            let cttsDIV = document.createElement("div");
+
+            let cttsLI = document.createElement("li");
+
+            cttsDIV.appendChild(cttsBUTTON);
+            cttsDIV.appendChild(cttsINPUT);
+            cttsLI.appendChild(cttsDIV);
+
+            ctts = cttsLI;
+          }
+
+          // Create beautify
+          let beautifyBUTTON = document.createElement("button");
+          beautifyBUTTON.type = "button";
+          beautifyBUTTON.textContent = "Beautify";
+          beautifyBUTTON.addEventListener("click", function(ev) {
+            hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
+
+            if (gmc.get("checkShowLineNumbers")) {
+              renumber(hookNode);
+              let preNode = document.getElementById("number");
+              if (preNode)
+                preNode.classList.add("err");
+            }
+
+            // If source is < 20KB then autohighlight just like USO does
+            if (hookNode.textContent.length < 20480)
+              (window.wrappedJSObject || window).sh_highlightDocument();
+
+            enableCTTS();
+            ev.target.blur();
+          }, false);
+
+          let beautifyDIV = document.createElement("div");
+
+          let beautifyLI = document.createElement("li");
+
+          beautifyDIV.appendChild(beautifyBUTTON);
+          beautifyLI.appendChild(beautifyDIV);
+
+
+          // Create deobfuscate
+          let deobfuscateBUTTON = document.createElement("button");
+          deobfuscateBUTTON.type = "button";
+          deobfuscateBUTTON.textContent = "Deobfuscate";
+          deobfuscateBUTTON.addEventListener("click", function(ev) {
+            switch (gmc.get("deobMethod")) {
+              case 'Simple Transcode':
+                try {
+                  [hookNode.textContent] = simpleTranscode(hookNode.textContent, 0);
+
+                  if (gmc.get("checkShowLineNumbers")) {
+                    renumber(hookNode);
+                    let preNode = document.getElementById("number");
+                    if (preNode)
+                      preNode.classList.add("err");
+                  }
+
+                  // If source is < 20KB then autohighlight just like USO does
+                  if (hookNode.textContent.length < 20480)
+                    (window.wrappedJSObject || window).sh_highlightDocument();
+
+                }
+                catch(e) {
+                  let msg = 'Too much recursion error encountered. Aborting transcode';
+                  console.warn(msg);
+                  GM_log(msg);
+                }
+                break;
+              case 'JsCode':
+                try {
+                  hookNode.textContent = JsCode.deobfuscate(hookNode.textContent);
+
+                  if (gmc.get("checkShowLineNumbers")) {
+                    renumber(hookNode);
+                    let preNode = document.getElementById("number");
+                    if (preNode)
+                      preNode.classList.add("err");
+                  }
+
+                  // If source is < 20KB then autohighlight just like USO does
+                  if (hookNode.textContent.length < 20480)
+                    (window.wrappedJSObject || window).sh_highlightDocument();
+
+                }
+                catch (e) {
+                  let msg = 'Too much recursion error encountered. Aborting JsCode';
+                  console.warn(msg);
+                  GM_log(msg);
+                }
+                break;
+            }
+            enableCTTS();
+            ev.target.blur();
+          }, false);
+
+          let deobfuscateDIV = document.createElement("div");
+
+          let deobfuscateLI = document.createElement("li");
+
+          deobfuscateDIV.appendChild(deobfuscateBUTTON);
+          deobfuscateLI.appendChild(deobfuscateDIV);
+
+
+          // Add buttons
+          if (wrap1) toolbarTopNode.appendChild(wrap1);
+          if (ctts) toolbarTopNode.appendChild(ctts);
+          toolbarTopNode.appendChild(beautifyLI);
+          toolbarTopNode.appendChild(deobfuscateLI);
+
+          if (wrap2)
+            toolbarBottomNode.appendChild(wrap2);
+
+          // Virtual link versions if present
+          document.evaluate(
+            "//a[@href='/scripts/versions/" + scriptid + "']",
+            document.body,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            xpr
+          );
+          if (xpr && xpr.singleNodeValue) {
+            let thisNode = xpr.singleNodeValue;
+
+            let previousVersions = thisNode.textContent;
+
+            function onclickVersions(ev) {
+              ev.preventDefault();
+
+              thisNode.removeEventListener("click", onclickVersions, false);
+
+              let pNode = ev.target.parentNode;
+              pNode.classList.add("throbber");
+
+              getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid);
+
+              pNode.parentNode.removeChild(pNode);
+            }
+
+            function getVersions(url) {
+
+              GM_xmlhttpRequest({
+                retry: 5,
+                method: "GET",
+                url: url,
+                onload: function(xhr) {
+                  switch (xhr.status) {
+                    case 404:
+                    case 500:
+                    case 502:
+                    case 503:
+                      if (this.retry-- > 0)
+                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                      break;
+                    case 200:
+                      let
+                        dt = document.implementation.createDocumentType(
+                          "html",
+                          "-//W3C//DTD HTML 4.01 Transitional//EN",
+                          "http://www.w3.org/TR/html4/loose.dtd"
+                        ),
+                        doc = document.implementation.createDocument("", "", dt),
+                        documentElement = doc.createElement("html")
+                      ;
+
+                      documentElement.innerHTML = xhr.responseText;
+                      doc.appendChild(documentElement);
+
+                      let html = doc.documentElement.innerHTML;
+                      doc.documentElement.innerHTML = "";
+
+                      let body = doc.createElement("body");
+                      body.innerHTML = html;
+                      doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+
+                      let head = doc.createElement("head");
+                      doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+
+                      // doc has been created... start twiddling
+
+                      // Nab pagination
+                      let pagination;
+                      let xpr = doc.evaluate(
+                        "//div[@class='pagination']",
+                        doc.body,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                      );
+                      if (xpr && xpr.singleNodeValue) {
+                        let thisNode = xpr.singleNodeValue;
+
+                        pagination = thisNode.cloneNode(true);
+                      }
+
+                      // Nab versions
+                      let versions;
+                      doc.evaluate(
+                        "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
+                        doc.body,
+                        null,
+                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                        xpr
+                      );
+
+                      let ulNode = document.createElement("ul");
+
+                      if (xpr)
+                        for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                          let dateNode = thisNode.firstChild;
+                          let diffNode = thisNode.firstChild.nextSibling;
+
+                          let dateid = dateNode.textContent.replace(/\n\[/, "").trim();
+
+                          if (gmc.get("checkShowVersionsLocale")) {
+                            // Adjust if logged out
+                            let xpr = doc.evaluate(
+                              "//ul[@class='login_status']//a[starts-with(@href, '/login')]",
+                              doc.body,
+                              null,
+                              XPathResult.FIRST_ORDERED_NODE_TYPE,
+                              null
+                            );
+                            if (xpr && xpr.singleNodeValue) {
+                              let utc = new Date(dateid + " UTC");
+                              dateid = utc.toLocaleFormat("%b %d, %Y %H:%M");
+                            }
+                          }
+
+                          let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
+
+                          let aInstallNode = document.createElement("a");
+                          aInstallNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js";
+                          aInstallNode.textContent = dateid;
+
+                          let leftText = document.createTextNode("[")
+
+                          let aViewNode = document.createElement("a");
+                          aViewNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js#";
+                          aViewNode.textContent = "view";
+                          aViewNode.title = "\u2229 (intersection) view";
+                          aViewNode.addEventListener("click", function(ev) {
+                              ev.preventDefault();
+
+                              ev.target.parentNode.classList.add("throbber");
+
+                              let aNode = ev.target, ulNode, thisNode;
+                              GM_xmlhttpRequest({
+                                retry: 5,
+                                method: "GET",
+                                url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                                onload: function(xhr) {
+                                  switch (xhr.status) {
+                                    case 404:
+                                    case 500:
+                                    case 502:
+                                    case 503:
+                                      if (this.retry-- > 0)
+                                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                                      else {
+                                        // Clear retrieving Selection markers
+                                        ulNode = aNode.parentNode.parentNode;
+
+                                        thisNode = ulNode.firstChild;
+                                        while(thisNode) {
+                                          thisNode.classList.remove("throbber");
+                                          thisNode = thisNode.nextSibling;
+                                        }
+                                      }
+                                      break;
+                                    case 200:
+                                      let responseText = xhr.responseText;
+
+                                      if (responseText.match(/[\r\n]$/))
+                                        responseText = responseText.replace(/[\r\n]*$/, "");
+
+                                      let preNode = document.getElementById("source");
+                                      preNode.textContent = responseText;
+
+                                      // Clear all Selection markers
+                                      ulNode = aNode.parentNode.parentNode;
+
+                                      thisNode = ulNode.firstChild;
+                                      while(thisNode) {
+                                        thisNode.classList.remove("current");
+                                        thisNode.classList.remove("throbber");
+                                        thisNode = thisNode.nextSibling;
+                                      }
+
+                                      // Set current selection marker
+                                      let liNode = aNode.parentNode;
+                                      liNode.classList.add("current");
+
+                                      // Remove GIJoes disabling
+                                      enableCTTS();
+
+                                      // If source is < 20KB then autohighlight just like USO does
+                                      if (xhr.responseText.length < 20480)
+                                        (window.wrappedJSObject || window).sh_highlightDocument();
+
+                                      if (gmc.get("checkShowLineNumbers"))
+                                        renumber(preNode);
+
+                                      let currenturl = document.getElementById("currenturl");
+                                      if (currenturl)
+                                        currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
+
+                                      break;
+                                  }
+                                }
+                              });
+                            }, false);
+
+                          let middleText = document.createTextNode("|")
+
+                          let aDiffNode = document.createElement("a");
+                          aDiffNode.href = "/scripts/diff/" + scriptid + "/" + diffid;
+                          aDiffNode.textContent = "changes";
+                          aDiffNode.title = "\u2206 (symmetric difference) changes";
+                          aDiffNode.addEventListener("click", function(ev) {
+                            ev.preventDefault();
+
+                            ev.target.parentNode.classList.add("throbber");
+
+                            let aNode = ev.target, ulNode, thisNode;
+                            GM_xmlhttpRequest({
+                              retry: 5,
+                              method: "GET",
+                              url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                              onload: function(xhr) {
+                                switch (xhr.status) {
+                                  case 404:
+                                  case 500:
+                                  case 502:
+                                  case 503:
+                                    if (this.retry-- > 0)
+                                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                                    else {
+                                      // Clear retrieving Selection markers
+                                      ulNode = aNode.parentNode.parentNode;
+
+                                      thisNode = ulNode.firstChild;
+                                      while(thisNode) {
+                                        thisNode.classList.remove("throbber");
+                                        thisNode = thisNode.nextSibling;
+                                      }
+                                    }
+                                    break;
+                                  case 200:
+
+                                    let
+                                      dt = document.implementation.createDocumentType(
+                                        "html",
+                                        "-//W3C//DTD HTML 4.01 Transitional//EN",
+                                        "http://www.w3.org/TR/html4/loose.dtd"
+                                      ),
+                                      doc = document.implementation.createDocument("", "", dt),
+                                      documentElement = doc.createElement("html")
+                                    ;
+
+                                    documentElement.innerHTML = xhr.responseText;
+                                    doc.appendChild(documentElement);
+
+                                    let html = doc.documentElement.innerHTML;
+                                    doc.documentElement.innerHTML = "";
+
+                                    let body = doc.createElement("body");
+                                    body.innerHTML = html;
+                                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+
+                                    let head = doc.createElement("head");
+                                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+
+
+                                    let xpr = doc.evaluate(
+                                      "//pre",
+                                      doc.body,
+                                      null,
+                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                      null
+                                    );
+                                    if (xpr && xpr.singleNodeValue) {
+                                      let preNode = document.getElementById("source");
+                                      preNode.innerHTML = xpr.singleNodeValue.innerHTML;
+
+
+                                      // Clear all Selection markers
+                                      ulNode = aNode.parentNode.parentNode;
+
+                                      thisNode = ulNode.firstChild;
+                                      while(thisNode) {
+                                        thisNode.classList.remove("current");
+                                        thisNode.classList.remove("throbber");
+                                        thisNode = thisNode.nextSibling;
+                                      }
+
+                                      // Set current selection marker
+                                      let liNode = aNode.parentNode;
+                                      liNode.classList.add("current");
+
+                                      // Remove GIJoes disabling
+                                      enableCTTS();
+
+                                      // Hide numbering and reset margin for now if present
+                                      let number = document.getElementById("number");
+                                      if (number)
+                                        number.classList.add("HID");
+
+                                      let source =  document.getElementById("source");
+                                      if (source)
+                                        source.style.removeProperty("margin-left");
+                                    }
+
+                                    let currenturl = document.getElementById("currenturl");
+                                    if (currenturl)
+                                      currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
+
+                                    break;
+                                }
+                              }
+                            });
+                          }, false);
+
+                          let rightText = document.createTextNode("]")
+
+                          let liNode = document.createElement("li");
+
+                          liNode.appendChild(leftText);
+                          liNode.appendChild(aViewNode);
+                          liNode.appendChild(middleText);
+                          liNode.appendChild(aDiffNode);
+                          liNode.appendChild(rightText);
+                          liNode.appendChild(aInstallNode);
+
+                          ulNode.appendChild(liNode);
+                        }
+
+                      let versionsDIV = document.getElementById("versions");
+                      if (versionsDIV) {
+                        while (versionsDIV.hasChildNodes())
+                          versionsDIV.removeChild(versionsDIV.firstChild);
+                      }
+                      else {
+                        versionsDIV = document.createElement("div");
+                        versionsDIV.id = "versions";
+                        versionsDIV.className = "pagetear";
+
+                        GM_setStyle({
+                            node: gCSS,
+                            data:
+                              [
+                                "#versions p  { margin: 0; }",
+                                "#versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }",
+                                "#versions p > span { color: #666; font-size: 0.8em; }",
+                                "#versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; margin-bottom: 0.5em; }",
+                                "#versions ul a { margin-left: 0.25em; margin-right: 0.25em; }",
+                                "#versions ul a:last-child { color: #000; margin-left: 0.5em; text-decoration: none; }",
+                                "#versions .current { background-color: #ddd; }",
+
+                              ].join("\n")
+                        });
+                      }
+
+                      let versionsContainerNode = document.getElementById("sourceurl");
+                      if (versionsContainerNode)
+                        versionsContainerNode.parentNode.insertBefore(versionsDIV, versionsContainerNode); // TODO: Change identifier names
+                      else {
+                        let msg = 'Hook node for versions and diffs not found';
+                        GM_log(msg);
+                        console.error(msg);
+                        return; // die this function
+                      }
+
+                      // Replace pagination NOTE: Scope referenced variable nodes
+                      if (pagination) {
+                        while (versionsDIV.hasChildNodes())
+                          versionsDIV.removeChild(versionsDIV.firstChild);
+
+                        versionsDIV.appendChild(pagination);
+
+                        document.evaluate(
+                          "//div[@class='pagination']/a",
+                          document.body,
+                          null,
+                          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                          xpr
+                        );
+                        if (xpr)
+                          for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                            thisNode.addEventListener("click", function(ev) {
+                              ev.preventDefault();
+
+                              ev.target.classList.add("throbber");
+                              getVersions(protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
+                            }, false);
+                          }
+                      }
+
+                      let spanNode = document.createElement("span");
+                      spanNode.textContent = parseInt(previousVersions.match(/(\d+)\s/)[1]) + 1;
+
+                      let aNode = document.createElement("a");
+                      aNode.href = "/scripts/versions/" + scriptid;
+                      aNode.textContent = "Source versions and diffs:";
+
+                      let pNode = document.createElement("p");
+
+                      pNode.appendChild(aNode);
+                      pNode.appendChild(spanNode);
+
+                      if (pagination)
+                        versionsDIV.insertBefore(pNode, pagination);
+                      else
+                        versionsDIV.appendChild(pNode);
+
+                      versionsDIV.appendChild(ulNode);
+
+                      // Compute left margin of pre and add width
+                      document.evaluate(
+                        "//div[@id='left']",
+                        document.body,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        xpr
+                      );
+                      if (xpr && xpr.singleNodeValue) {
+                        let hookNode = xpr.singleNodeValue;
+
+                        let marginLeft = window.getComputedStyle(hookNode, null).getPropertyValue("width").replace(/px$/, "");
+
+                        GM_setStyle({
+                            node: gCSS,
+                            data:
+                              [
+                                ".right { margin-left: " + marginLeft + "px; }",
+                                "#left { padding: 1px; }"  // NOTE: Strange first run fix for CSS
+
+                              ].join("\n")
+                        });
+                      }
+                  }
+                }
+              });
+
+            }
+            thisNode.addEventListener("click", onclickVersions, false);
+          }
+
+        }
+      }
+    }
+
 
     let insNode = document.evaluate(
       "//div[@id='section']//ins",
@@ -702,7 +1837,7 @@
     );
     if (insNode && !insNode.singleNodeValue)
       GM_setStyle({
-          node: nodeStyle,
+          node: gCSS,
           data:
             [
               "body.scripts.anon #right { margin-top: 0; }"
@@ -733,14 +1868,14 @@
         thisNode.addEventListener("mouseout", onmouseout, false);
 
         GM_setStyle({
-            node: nodeStyle,
+            node: gCSS,
             data:
               [
                 ".menu-reviews { background-color: #eee; position: absolute; z-index: 1; }",
-                ".menu-reviews, #divQuickAdmin { border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; }",
+                ".menu-reviews, #divQuickAdmin { border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }",
 
                 ".menu-reviews ul { list-style: none outside none; margin: 0; padding: 0.6em 0; }",
-                ".menu-reviews ul li { float: none !important; line-height: 1.4em !important; !important; height: auto !important; }",
+                ".menu-reviews ul li { float: none !important; height: auto !important; line-height: 1.4em !important; }",
                 ".menu-reviews ul li a { text-decoration: underline !important; }"
 
               ].join("\n")
@@ -748,7 +1883,7 @@
 
         if (parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("font-size").replace(/px$/, "")) > 12)
           GM_setStyle({
-              node: nodeStyle,
+              node: gCSS,
               data:
                 [
                   ".menu-reviews { font-size: 0.9em; }"
@@ -809,69 +1944,6 @@
         divNode.appendChild(ulNode);
         thisNode.appendChild(divNode);
       }
-    }
-
-    if (gmc.get("hideNavTab")) {
-      let tabNodes = document.evaluate(
-      "//ul[@id='script-nav']/li",
-        document.documentElement,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-        null
-      );
-      if (tabNodes)
-        for (let i = 0, thisNode; thisNode = tabNodes.snapshotItem(i++);) {
-          let tabs = gmc.get("hideNavTabString").split(",");
-          for (let tab in tabs) {
-            let rex = "\\s*" + tabs[tab];
-            if (thisNode.textContent.match(new RegExp(rex, "")))
-              thisNode.classList.add("hid");
-          }
-        }
-    }
-
-    if (gmc.get("hideH6")) {
-      let headerNodes = document.evaluate(
-      "//h6",
-        document.documentElement,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-        null
-      );
-      if (headerNodes)
-        for (let i = 0, thisNode; thisNode = headerNodes.snapshotItem(i++);) {
-          let headers = gmc.get("hideH6String").split(",");
-          for (let header in headers) {
-            let rex = "\\s*" + headers[header];
-            if (thisNode.textContent.match(new RegExp(rex, ""))) {
-              thisNode.classList.add("hid");
-
-              let thatNode = thisNode.nextSibling;
-              let loop = true;
-              while(loop) {
-                if (thatNode.tagName)
-                  if (thatNode.tagName.toLowerCase() != "h6")
-                    switch (thatNode.tagName.toLowerCase()) {
-                      case "script":
-                        break;
-                      default:
-                        if (thatNode.id != "fans")
-                          if (gmc.get("hideH6Reinforce"))
-                            thatNode.classList.add("HID");
-                          else
-                            thatNode.classList.add("hid");
-                        break;
-                    }
-                  else
-                    loop = false;
-               thatNode = thatNode.nextSibling;
-               if (!thatNode)
-                 loop = false;
-              }
-
-            }
-          }
-        }
     }
 
     if (gmc.get("showOnAboutOnly") && !window.location.pathname.match(/\/show\//i))
@@ -947,30 +2019,30 @@
                   let sidebarNode = document.getElementById("script_sidebar");
                   if (!sidebarNode) {
                     sidebarNode = document.createElement("div");
-                    sidebarNode.setAttribute("id", "script_sidebar");
+                    sidebarNode.id = "script_sidebar";
                     hookNode.appendChild(sidebarNode);
                   }
 
                   GM_setStyle({
-                      node: nodeStyle,
+                      node: gCSS,
                       data:
                         [
-                          ".metadataforced, .alert { color: red !important; }",
-                          ".metadataforced:hover { color: orangered !important; }",
-                          ".metadataunknown { color: black; }",
-                          ".metadataunknown:hover { color: gray; }",
-                          ".metadatachecked { color: darkgreen; }",
-                          ".metadatachecked:hover { color: green; }",
-                          "span.metadataforced { color: red; }",
+                          ".metadataforced, .alert { color: #f00 !important; }",
+                          ".metadataforced:hover { color: #ff4500 !important; }",
+                          ".metadataunknown { color: #000; }",
+                          ".metadataunknown:hover { color: #808080; }",
+                          ".metadatachecked { color: #006400; }",
+                          ".metadatachecked:hover { color: #008000; }",
+                          "span.metadataforced { color: #f00; }",
                           "div.metadata { overflow: auto; }",
-                          "ul.metadata { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }",
-                          "li.metadata { color: grey; white-space: nowrap; }",
+                          "ul.metadata { border-width: 0; font-size: x-small; margin: 0; padding: 0 !important; width: 100%; }",
+                          "li.metadata { color: #808080; white-space: nowrap; }",
                           "span.metadata { color: #666; font-size: 0.7em; }",
-                          "ul.count { font-size: x-small; width: 100%; border-width: 0; margin: 0; padding: 0 !important; }",
-                          "li.count { text-align: left; color: #666; padding-left: 0.5em; }",
-                          "span.count { text-align: right; float: right; color: #fff; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; background-color: #f80; padding-left: 0.7em; padding-right: 0.5em; font-family: serif; }",
-                          "li.bar { background-color: #EEE; }",
-                          ".nameMismatch { color: red !important; }",
+                          "ul.count { font-size: x-small; border-width: 0; margin: 0; padding: 0 !important; width: 100%; }",
+                          "li.count { color: #666; padding-left: 0.5em; text-align: left; }",
+                          "span.count { background-color: #f80; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; color: #fff; font-family: serif; text-align: right; float: right; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; padding-left: 0.7em; padding-right: 0.5em; }",
+                          "li.bar { background-color: #eee; }",
+                          ".nameMismatch { color: #f00 !important; }",
                           ".resourceName { margin-right: 0.5em; }"
 
                         ].join("\n")
@@ -999,27 +2071,29 @@
                               el.parentNode.insertBefore(headerNode, el);
 
                               let spanNodeSection = document.createElement("span");
-                              spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
+                              spanNodeSection.classList.add("metadata");
+                              if (forced) spanNodeSection.classList.add("metadataforced");
                               headerNode.appendChild(spanNodeSection);
 
                               let divNode = document.createElement("div");
-                              divNode.setAttribute("class", "metadata");
+                              divNode.classList.add("metadata");
                               el.parentNode.insertBefore(divNode, el);
 
                               let ulNode = document.createElement("ul");
-                              ulNode.setAttribute("class", "count");
+                              ulNode.classList.add("count");
                               divNode.appendChild(ulNode);
 
                               let objCount = 0;
                               for (let [name, value] in Iterator(obj)) {
                                 let liNode = document.createElement("li");
-                                liNode.setAttribute("class", "count" + ((objCount % 2) ? " bar" : ""));
-                                liNode.setAttribute("title", name);
+                                liNode.classList.add("count");
+                                if (objCount % 2) liNode.classList.add("bar");
+                                liNode.title = name;
 
                                 let textNode = document.createTextNode(name);
 
                                 let spanNode = document.createElement("span");
-                                spanNode.setAttribute("class", "count");
+                                spanNode.classList.add("count");
                                 spanNode.textContent = value;
 
                                 liNode.appendChild(spanNode);
@@ -1120,7 +2194,7 @@
 
                   if (gmc.get("limitMaxHeight"))
                     GM_setStyle({
-                        node: nodeStyle,
+                        node: gCSS,
                         data:
                           [
                             "div.metadata { max-height: " + gmc.get("maxHeightList") + "em; }"
@@ -1129,7 +2203,7 @@
                     });
                   else
                     GM_setStyle({
-                        node: nodeStyle,
+                        node: gCSS,
                         data:
                           [
                             "div.metadata { max-height: none; }"
@@ -1138,7 +2212,7 @@
                     });
 
                   GM_setStyle({
-                      node: nodeStyle,
+                      node: gCSS,
                       data:
                         [
                           "li.metadata, li.count { font-size: " + gmc.get("fontSize") + "em ; }"
@@ -1154,14 +2228,14 @@
                     nameKey = headers["name"];
 
                     if (nameKey != titleNode.textContent) {
-                      titleNode.setAttribute("class", titleNode.getAttribute("class") + " titleWarn");
+                      titleNode.classList.add("titleWarn");
 
                       if (name.toLowerCase() != titleNode.textContent.toLowerCase()) {
-                        titleNode.setAttribute("class", titleNode.getAttribute("class") + " nameMismatch");
-                        titleNode.setAttribute("title", "@name " + nameKey);
+                        titleNode.classList.add("nameMismatch");
+                        titleNode.title = "@name " + nameKey;
                       }
                       else
-                        titleNode.setAttribute("title", "@uso:name " + nameKey);
+                        titleNode.title = "@uso:name " + nameKey;
                     }
 
                   function display(el, keys, filter, title, forced) {
@@ -1171,7 +2245,7 @@
                     let textNode = document.createTextNode(" ");
 
                     let aNode = document.createElement("a");
-                    aNode.style.setProperty("text-decoration", "none", "");
+                    aNode.style.setProperty("text-decoration", "none", ""); // TODO: CSS this... similar to invisilink
                     aNode.style.setProperty("color", "#000", "");
                     aNode.href = protocol + "//sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
                     aNode.textContent = title;
@@ -1183,38 +2257,41 @@
                     el.appendChild(headerNode);
 
                     let spanNodeSection = document.createElement("span");
-                    spanNodeSection.setAttribute("class", "metadata" + ((forced) ? " metadataforced" : ""));
+                    spanNodeSection.classList.add("metadata");
+                    if (forced) spanNodeSection.classList.add("metadataforced");
                     spanNodeSection.textContent = (keys[0] == "") ? "0" : keys.length;
                     headerNode.appendChild(spanNodeSection);
 
                     let divNode = document.createElement("div");
-                    divNode.setAttribute("class", "metadata");
+                    divNode.classList.add("metadata");
                     el.appendChild(divNode);
 
                     let ulNode = document.createElement("ul");
-                    ulNode.setAttribute("class", "metadata");
+                    ulNode.classList.add("metadata");
                     divNode.appendChild(ulNode);
 
                     let keyCount = 0;
                     for (let key in keys) {
                       let liNode = document.createElement("li");
-                      liNode.setAttribute("class", "metadata");
+                      liNode.classList.add("metadata");
 
                       let matches;
                       switch(filter) {
                         case "namespace":
                         case "icon":
-                          if (++keyCount > 1)
-                            spanNodeSection.setAttribute("class", "metadata metadataforced");
+                          if (++keyCount > 1) {
+                            spanNodeSection.classList.add("metadata");
+                            spanNodeSection.classList.add("metadataforced");
+                          }
 
                           matches = keys[key].match(/^(https?:\/\/.*)/i);
                           if (matches) {
                             let anchorNode = document.createElement("a");
-                            anchorNode.setAttribute("href", matches[1]);
-                            anchorNode.setAttribute("rel", "nofollow");
+                            anchorNode.href = matches[1];
+                            anchorNode.rel = "nofollow";
                             anchorNode.textContent = matches[1];
 
-                            liNode.setAttribute("title", matches[1]);
+                            liNode.title = matches[1];
                             liNode.appendChild(anchorNode);
 
                             ulNode.appendChild(liNode);
@@ -1223,16 +2300,16 @@
                             matches = keys[key].match(/^(data:image\/.*)/i);
                             if (matches) {
                               let imgNode = document.createElement("img");
-                              imgNode.setAttribute("src", matches[1]);
-                              imgNode.style.setProperty("width", "32px", "");
-                              imgNode.style.setProperty("width", "32px", "");
-                              imgNode.setAttribute("title", "~" + parseInt(matches[1].length / 1024 * 10) / 10 + "K " + matches[1].match(/^data:(?:\w*\/.*?[;,])?/i) + "\u2026");
+                              imgNode.src = matches[1];
+                              imgNode.style.setProperty("width", "48px", ""); // TODO: CSS this
+                              imgNode.style.setProperty("width", "48px", "");
+                              imgNode.title = "~" + parseInt(matches[1].length / 1024 * 10) / 10 + "K " + matches[1].match(/^data:(?:\w*\/.*?[;,])?/i) + "\u2026";
                               liNode.appendChild(imgNode);
 
                               ulNode.appendChild(liNode);
                             }
                             else {
-                              liNode.setAttribute("title", keys[key]);
+                              liNode.title = keys[key];
                               liNode.textContent = keys[key];
                               ulNode.appendChild(liNode);
                             }
@@ -1243,10 +2320,12 @@
                         case "userInclude":
                         case "userExclude":
                           if (keys[key].match(/\s/)) {
-                            spanNodeSection.setAttribute("class", "metadata metadataforced");
-                            liNode.setAttribute("class", "metadata metadataforced");
+                            spanNodeSection.classList.add("metadata");
+                            spanNodeSection.classList.add("metadataforced");
+                            liNode.classList.add("metadata");
+                            liNode.classList.add("metadataforced");
                           }
-                          liNode.setAttribute("title", keys[key]);
+                          liNode.title = keys[key];
                           liNode.textContent = keys[key];
                           ulNode.appendChild(liNode);
                           break;
@@ -1264,8 +2343,8 @@
                             }
 
                             let anchorNode = document.createElement("a");
-                            anchorNode.setAttribute("href", (showUrl) ? showUrl : keys[key]);
-                            anchorNode.setAttribute("rel", "nofollow");
+                            anchorNode.href = (showUrl) ? showUrl : keys[key];
+                            anchorNode.rel = "nofollow";
                             anchorNode.textContent = keys[key];
                             if (gmc.get("checkAgainstHomepageUSO") && showUrl)
                               GM_xmlhttpRequest({
@@ -1281,18 +2360,18 @@
                                       if (this.retry-- > 0)
                                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                       else
-                                        anchorNode.setAttribute("class", "metadataunknown");
+                                        anchorNode.classList.add("metadataunknown"); // TODO: check this
                                       break;
                                     case 200:
-                                      anchorNode.setAttribute("class", "metadatachecked");
+                                      anchorNode.classList.add("metadatachecked"); // TODO: check this
                                       break;
                                     default:
-                                      anchorNode.setAttribute("class", "metadataforced");
+                                      anchorNode.classList.add("metadataforced"); // TODO: check this
                                       break;
                                   }
                               }});
 
-                            liNode.setAttribute("title", keys[key]);
+                            liNode.title = keys[key];
                             liNode.appendChild(anchorNode);
                             ulNode.appendChild(liNode);
                             break;
@@ -1309,25 +2388,26 @@
                               let thisNode = xpr.singleNodeValue;
                               let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                               if (baseUrl) {
-                                spanNodeSection.setAttribute("class", "metadata metadataforced");
+                                spanNodeSection.classList.add("metadata");
+                                spanNodeSection.classList.add("metadataforced");
 
                                 let anchorNode = document.createElement("a");
-                                anchorNode.setAttribute("href", baseUrl[1] + keys[key]);
-                                anchorNode.setAttribute("rel", "nofollow");
-                                anchorNode.style.setProperty("color", "red", "");
+                                anchorNode.href = baseUrl[1] + keys[key];
+                                anchorNode.rel = "nofollow";
+                                anchorNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
                                 anchorNode.textContent = keys[key];
 
-                                liNode.setAttribute("title", baseUrl[1] + keys[key]);
+                                liNode.title = baseUrl[1] + keys[key];
                                 liNode.appendChild(anchorNode);
 
                                 ulNode.appendChild(liNode);
                               } else {
-                                liNode.setAttribute("title", keys[key]);
+                                liNode.title = keys[key];
                                 liNode.textContent = keys[key];
                                 ulNode.appendChild(liNode);
                               }
                             } else {
-                              liNode.setAttribute("title", keys[key]);
+                              liNode.title = keys[key];
                               liNode.textContent = keys[key];
                               ulNode.appendChild(liNode);
                             }
@@ -1347,13 +2427,13 @@
                             }
 
                             let spanNode = document.createElement("span");
-                            spanNode.setAttribute("class", "resourceName");
+                            spanNode.classList.add("resourceName");
                             spanNode.textContent = matches[1];
                             liNode.appendChild(spanNode);
 
                             let anchorNode = document.createElement("a");
-                            anchorNode.setAttribute("href", (showUrl) ? showUrl : matches[2]);
-                            anchorNode.setAttribute("rel", "nofollow");
+                            anchorNode.href = (showUrl) ? showUrl : matches[2];
+                            anchorNode.rel = "nofollow";
                             anchorNode.textContent = matches[2];
 
                             if (gmc.get("checkAgainstHomepageUSO") && showUrl)
@@ -1370,18 +2450,18 @@
                                       if (this.retry-- > 0)
                                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                       else
-                                        anchorNode.setAttribute("class", "metadataunknown");
+                                        anchorNode.classList.add("metadataunknown");
                                       break;
                                     case 200:
-                                      anchorNode.setAttribute("class", "metadatachecked");
+                                      anchorNode.classList.add("metadatachecked");
                                       break;
                                     default:
-                                      anchorNode.setAttribute("class", "metadataforced");
+                                      anchorNode.classList.add("metadataforced");
                                       break;
                                   }
                               }});
 
-                            liNode.setAttribute("title", matches[2]);
+                            liNode.title = matches[2];
                             liNode.appendChild(anchorNode);
 
                             ulNode.appendChild(liNode);
@@ -1399,23 +2479,24 @@
                               let thisNode = xpr.singleNodeValue;
                               let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                               if (baseUrl) {
-                                spanNodeSection.setAttribute("class", "metadata metadataforced");
+                                spanNodeSection.classList.add("metadata");
+                                spanNodeSection.classList.add("metadataforced");
 
                                 let resourceName = keys[key].match(/(.*)[\s\t]/i)[1];
                                 let targetUrl = keys[key].match(/[\s\t](.*)$/i)[1];
 
                                 let spanNode = document.createElement("span");
-                                spanNode.setAttribute("class", "resourceName");
+                                spanNode.classList.add("resourceName");
                                 spanNode.textContent = resourceName;
                                 liNode.appendChild(spanNode);
 
                                 let anchorNode = document.createElement("a");
-                                anchorNode.setAttribute("href", baseUrl[1] + targetUrl);
-                                anchorNode.setAttribute("rel", "nofollow");
-                                anchorNode.style.setProperty("color", "red", "");
+                                anchorNode.href = baseUrl[1] + targetUrl;
+                                anchorNode.rel = "nofollow";
+                                anchorNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
                                 anchorNode.textContent = targetUrl;
 
-                                liNode.setAttribute("title", baseUrl[1] + targetUrl);
+                                liNode.title = baseUrl[1] + targetUrl;
                                 liNode.appendChild(anchorNode);
 
                                 ulNode.appendChild(liNode);
@@ -1429,15 +2510,17 @@
                           let rex = new RegExp("^https?:\\/\\/userscripts\\.org\\/scripts\\/source\\/(\\d+)\\.(meta|user)\\.js", "i");
                           matches = keys[key].match(rex);
                           if (matches) {
-                            if (matches[1] != scriptid || (matches[2] == "user" && filter == "updateURL") || ++keyCount > 1)
-                              spanNodeSection.setAttribute("class", "metadata metadataforced");
+                            if (matches[1] != scriptid || (matches[2] == "user" && filter == "updateURL") || ++keyCount > 1) {
+                              spanNodeSection.classList.add("metadata");
+                              spanNodeSection.classList.add("metadataforced");
+                            }
 
                             let anchorNode = document.createElement("a");
-                            anchorNode.setAttribute("href", "/scripts/show/" + matches[1]);
-                            anchorNode.setAttribute("rel", "nofollow");
+                            anchorNode.href = "/scripts/show/" + matches[1];
+                            anchorNode.rel = "nofollow";
                             anchorNode.textContent = keys[key];
 
-                            liNode.setAttribute("title", keys[key]);
+                            liNode.title = keys[key];
                             liNode.appendChild(anchorNode);
 
                             ulNode.appendChild(liNode);
@@ -1445,14 +2528,15 @@
                           }
                           else {
                             if (keys[key].match(/^https?:\/\/.*/)) {  // NOTE: Offsite
-                              spanNodeSection.setAttribute("class", "metadata metadataforced");
+                              spanNodeSection.classList.add("metadata");
+                              spanNodeSection.classList.add("metadataforced");
 
                               let anchorNode = document.createElement("a");
-                              anchorNode.setAttribute("href", keys[key]);
-                              anchorNode.setAttribute("rel", "nofollow");
+                              anchorNode.href = keys[key];
+                              anchorNode.rel = "nofollow";
                               anchorNode.textContent = keys[key];
 
-                              liNode.setAttribute("title", keys[key]);
+                              liNode.title = keys[key];
                               liNode.appendChild(anchorNode);
 
                               ulNode.appendChild(liNode);
@@ -1469,17 +2553,18 @@
                               if (xpr && xpr.singleNodeValue) {
                                 let thisNode = xpr.singleNodeValue;
 
-                                spanNodeSection.setAttribute("class", "metadata metadataforced");
+                                spanNodeSection.classList.add("metadata");
+                                spanNodeSection.classList.add("metadataforced");
 
                                 let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                                 if (baseUrl) {
                                   let anchorNode = document.createElement("a");
-                                  anchorNode.setAttribute("href", baseUrl[1] + key);
-                                  anchorNode.setAttribute("rel", "nofollow");
-                                  anchorNode.style.setProperty("color", "red", "");
+                                  anchorNode.href = baseUrl[1] + key;
+                                  anchorNode.rel = "nofollow";
+                                  anchorNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
                                   anchorNode.textContent = keys[key];
 
-                                  liNode.setAttribute("title", baseUrl[1] + keys[key]);
+                                  liNode.title = baseUrl[1] + keys[key];
                                   liNode.appendChild(anchorNode);
 
                                   ulNode.appendChild(liNode);
@@ -1491,7 +2576,7 @@
                         default:
                           if (keys[key] == "")
                             spanNodeSection.textContent = parseInt(spanNodeSection.textContent) + 1;
-                          liNode.setAttribute("title", keys[key]);
+                          liNode.title = keys[key];
                           liNode.textContent = keys[key];
                           ulNode.appendChild(liNode);
                           break;
@@ -1627,7 +2712,7 @@
                     if (hookmbxNode && hookmbxNode.singleNodeValue) {
                       let thisNode = hookmbxNode.singleNodeValue;
 
-                      mbx.style.setProperty("margin-bottom", "0.75em", "");
+                      mbx.style.setProperty("margin-bottom", "0.75em", ""); // TODO: CSS this??
 
                       if (thisNode.parentNode.id == "script_sidebar")
                         sidebarNode.insertBefore(mbx, thisNode);
@@ -1662,7 +2747,7 @@
             if (typeof headers != "undefined") {
               thisNode.textContent += " ";
               let spanNode = document.createElement("span");
-              spanNode.style.setProperty("color", "red", "");
+              spanNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
 
               let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
               GM_xmlhttpRequest({
@@ -1679,7 +2764,7 @@
                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                       break;
                     case 200:
-                      spanNode.style.setProperty("color", "#666", "");
+                      spanNode.style.setProperty("color", "#666", ""); // TODO: CSS this
                       spanNode.textContent = (xhr.responseText.length > 1024)
                         ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
                         : xhr.responseText.length;
@@ -1718,10 +2803,10 @@
 
           if (doc) {
             GM_setStyle({
-                node: nodeStyle,
+                node: gCSS,
                 data:
                   [
-                    ".alert { color: red !important; }"
+                    ".alert { color: #f00 !important; }"
 
                   ].join("\n")
             });
@@ -1759,7 +2844,7 @@
 
             spanNode.textContent = yesCount;
             if (yesCount > noCount)
-              spanNode.setAttribute("class", "alert");
+              spanNode.classList.add("alert");
           }
 
         if (issuesNode.firstChild.nodeType == 1)
@@ -1771,7 +2856,7 @@
       if (window.location.pathname == ("/scripts/issues/" + scriptid))
         countIssues(document);
       else {
-        issuesNode.style.setProperty("background-image", "url(" + throbber + ")", ""); // TODO: CSS this
+        issuesNode.classList.add("throbber");
 
         GM_xmlhttpRequest({
           retry: 5,
@@ -1786,14 +2871,12 @@
                 if (this.retry-- > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                 else {
-                  issuesNode.style.removeProperty("background-image");
-                  spanNode.setAttribute("class", "alert");
+                  spanNode.classList.add("alert");
                   countIssues();
+                  issuesNode.classList.remove("throbber");
                 }
                 break;
               case 200:
-                issuesNode.style.removeProperty("background-image");
-
                 let
                   dt = document.implementation.createDocumentType(
                     "html",
@@ -1818,10 +2901,13 @@
                 doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
 
                 countIssues(doc);
+
+                issuesNode.classList.remove("throbber");
                 break;
               default:
-                issuesNode.style.removeProperty("background-image");
                 countIssues();
+
+                issuesNode.classList.remove("throbber");
                 break;
             }
           }
@@ -1831,1123 +2917,27 @@
 
   }
 
-  if (location.pathname.match(/\/scripts\/review\//)) {
-    let xpr = document.evaluate(
-      "//div[@id='section']//div[@class='container']",
-      document.body,
+
+
+
+  if (gmc.get("hideNavTab")) {
+    let tabNodes = document.evaluate(
+    "//ul[@id='script-nav']/li",
+      document.documentElement,
       null,
-      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
       null
     );
-    if (xpr && xpr.singleNodeValue) {
-      let hookNode = xpr.singleNodeValue;
-
-      GM_setStyle({
-          node: nodeStyle,
-          data:
-            [
-              "#fans_content { border-bottom: 1px dotted #ddd !important; margin-bottom: 0 !important; }",
-
-              ".pagetear {",
-                "background-color: #fff;",
-                "border-bottom: 1px dotted #ddd;",
-                "font-size: 13px;",
-                "padding: 10px;",
-              "}",
-
-              "#sourceurl {",
-                "margin-bottom: 0.9em;",
-              "}",
-
-              "#sourceurl div {",
-                "margin: 0;",
-                "border: 1px solid #ccc;",
-                "border-radius: 3px;",
-              "}",
-
-              "#sourceurl #currenturl {",
-                "width: 98%;",
-                "border-style: none;",
-                "margin: 0 3px;",
-                "color: #999;",
-              "}",
-
-              "#sourceurl #refreshurl {",
-                "position: absolute;",
-                "right: 1.5em;",
-                "margin-top: 0.4em;",
-                "width: 16px;",
-                "height: 16px;",
-              "}",
-
-              ".reload { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAXNSR0IArs4c6QAAAXxJREFUKM+FkM1L0wEcxh9yhzrYZd265l/gLRA9hCAe8tL/4NLCFxi62ZpMlt+fh0q6CL6QGFjgIRInsbUixBi+0EEssOWEGpL95i9pU3R+PDgVuvR8rp/D8zxCCEV9zm0bsZzlbcmZceqGai1jqcGbSAjF/ZaaJ88hZQ7Y4SX2J8cyzgISshonu0GZIh4FPIqU2QJcjFPh7Q8OKZBmjKeMsohL6UIYanrFMTtMYe+t0VqcdWOKX4DLI5As8ZsiH7Bk1IcsleUsLjGQbK2IxwhOPUIDmVXccyIg2e4+BR4T9yPUXxtZf0AffYQJ0QtSPO/hMU6s4fSRf1Fs4jN7fOJheriqctrl8JPwZmg8WI2QIncm2OUv04TehW+Frvc292TmyPGcYAAhRX096Vk89vnCGDEmyVLG4wVdnQgJdV8Lfk/iUuKIY44o4TLN/bXOKxUBddzoSMT5yFd+skGCQdre3LtaKXnWtr2x7fXdlcB24Fvrs9am6KXzFfyHE+iiW4Oaaf3TAAAAAElFTkSuQmCC); }",
-              ".connecting { background-image: url(chrome://browser/skin/tabbrowser/connecting.png); }",
-              ".loading { background-image: url(chrome://browser/skin/tabbrowser/loading.png); }",
-              ".processing { background-image: url(chrome://global/skin/icons/loading_16.png); }",
-
-              ".err { background-color: #fcc !important; }"
-
-            ].join("\n")
-      });
-
-      function setUrlErr(aMsg) {
-        let refreshurl = document.getElementById("refreshurl");
-        if (refreshurl) {
-          refreshurl.classList.add("err");
-          refreshurl.classList.remove("connecting");
-          refreshurl.classList.remove("loading");
-        }
-
-        let currenturl = document.getElementById("currenturl");
-        if (currenturl) currenturl.classList.add("err");
-
-        let urlbar = document.getElementById("urlbar");
-        if (urlbar) urlbar.classList.add("err");
-
-        if (aMsg) {
-          GM_log(aMsg);
-          console.error(aMsg);
+    if (tabNodes)
+      for (let i = 0, thisNode; thisNode = tabNodes.snapshotItem(i++);) {
+        let tabs = gmc.get("hideNavTabString").split(",");
+        for (let tab in tabs) {
+          let rex = "\\s*" + tabs[tab];
+          if (thisNode.textContent.match(new RegExp(rex, "")))
+            thisNode.classList.add("hid");
         }
       }
-
-      function clearUrlErr() {
-        let refreshurl = document.getElementById("refreshurl");
-        if (refreshurl) refreshurl.classList.remove("err");
-
-        let currenturl = document.getElementById("currenturl");
-        if (currenturl) currenturl.classList.remove("err");
-
-        let urlbar = document.getElementById("urlbar");
-        if (urlbar) urlbar.classList.remove("err");
-      }
-
-      function loadUrl(aUrl) {
-          let refreshurl = document.getElementById("refreshurl");
-          if (refreshurl)
-            refreshurl.classList.add("connecting");
-
-          try {
-            GM_xmlhttpRequest({
-              state: "connecting",
-              retry: 5,
-              method: "GET",
-              url: aUrl + "#", // TODO: Better fix for this
-              onabort: function (xhr) {
-                this.state = "reload";
-                setUrlErr('Error aborted ' + this.url + ' url');
-              },
-              onerror: function (xhr) {
-                this.state = "reload";
-                setUrlErr('Error retrieving ' + this.url + ' url');
-              },
-              ontimeout: function (xhr) {
-                this.state = "reload";
-                setUrlErr('Error timed out ' + this.url + ' url');
-              },
-              onprogress: function (xhr) {
-                if (this.state == "connecting") {
-                  this.state = "loading";
-                  let refreshurl = document.getElementById("refreshurl")
-                  if (refreshurl)
-                    refreshurl.classList.add("loading");
-                }
-              },
-              onload: function (xhr) {
-                switch (xhr.status) {
-//                   case 404: // NOTE: Sometimes USO needs this trapped
-                  case 500:
-                  case 502:
-                  case 503:
-                    if (this.retry-- > 0) {
-                      this.state = "connecting";
-                      let refreshurl = document.getElementById("refreshurl")
-                      if (refreshurl)
-                        refreshurl.classList.remove("loading");
-                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                    }
-                    else {
-                      this.state = "reload";
-                      setUrlErr('Error retrying ' + xhr.finalUrl + ' url');
-                    }
-                    break;
-                  case 200:
-                    this.state = "processing";
-                    let refreshurl = document.getElementById("refreshurl")
-                    if (refreshurl)
-                      refreshurl.classList.add("processing");
-
-                    // start twiddling
-                    let source = document.getElementById("source");
-
-                    while(source.hasChildNodes())
-                      source.removeChild(source.firstChild);
-
-                    source.textContent = xhr.responseText.trim();
-
-                    // Remove GIJoes disabling
-                    enableCTTS();
-
-                    // If source is < 20KB then autohighlight just like USO does
-                    if (xhr.responseText.length < 20480)
-                      (window.wrappedJSObject || window).sh_highlightDocument();
-
-                    if (gmc.get("checkShowLineNumbers"))
-                      renumber(source);
-
-                    let currenturl = document.getElementById("currenturl");
-                    if (currenturl) {
-                      let finalUrl = xhr.finalUrl.replace(/\#+$/i, "");  // TODO: proof this better
-
-                      currenturl.setAttribute("placeholder", finalUrl);
-                      currenturl.value = "";
-
-                      let currenturls = document.getElementById("currenturls");
-                      if (currenturls) {
-                        let
-                            found = false,
-                            xpr = document.evaluate(
-                              "./option",
-                              currenturls,
-                              null,
-                              XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                              null
-                            )
-                        ;
-                        if (xpr)
-                          for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);)
-                            if (thisNode.value == finalUrl) {
-                              found = true;
-                              break;
-                            }
-
-                        if (!found) {
-                          let optionNode = document.createElement("option");
-                          optionNode.value = finalUrl;
-
-                          currenturls.insertBefore(optionNode, currenturls.firstChild);
-                        }
-                      }
-                    }
-
-                    this.state = "reload";
-                    if (refreshurl) {
-                      refreshurl.classList.remove("connecting");
-                      refreshurl.classList.remove("loading");
-                      refreshurl.classList.remove("processing");
-                    }
-
-                    break;
-                  default:
-                    this.state = "reload";
-                    setUrlErr('Error reponse ' + xhr.status + ' for ' + xhr.finalUrl + ' url');
-                    break;
-                }
-              }
-            });
-          }
-          catch (e) {
-            setUrlErr();
-          }
-      }
-
-      let inputImageNode = document.createElement("input");
-      inputImageNode.type = "image";
-      inputImageNode.id = "refreshurl";
-      inputImageNode.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-      inputImageNode.classList.add("reload");
-      inputImageNode.alt = "refresh";
-      inputImageNode.addEventListener("click", function (ev) {
-        if (!ev.target.previousSibling.value && ev.target.previousSibling.placeholder != "Load url")
-          loadUrl(ev.target.previousSibling.placeholder, ev.target);
-      }, false);
-
-      let datalistNode = document.createElement("datalist");
-      datalistNode.id = "currenturls";
-
-      [
-        "http://userscripts.org/scripts/source/",
-        "https://userscripts.org/scripts/source/",
-        "http://",
-        "https://"
-
-      ].forEach(function (e, i, a) {
-        let optionNode = document.createElement("option");
-        optionNode.value = e;
-
-        datalistNode.appendChild(optionNode);
-      });
-
-      let inputUrlNode = document.createElement("input");
-      inputUrlNode.type = "text";
-      inputUrlNode.placeholder = "Load url";
-      inputUrlNode.id = "currenturl";
-      inputUrlNode.setAttribute("list", "currenturls");
-      inputUrlNode.addEventListener("keypress", function (ev) {
-        clearUrlErr();
-
-        if (ev.keyCode == 13)
-          if (ev.target.value)
-            loadUrl(ev.target.value, inputImageNode);
-      }, false);
-
-      let divNode = document.createElement("div");
-      divNode.id = "urlbar";
-
-      let containerNode = document.createElement("div");
-      containerNode.id = "sourceurl";
-      containerNode.className = "pagetear";
-
-      divNode.appendChild(inputUrlNode);
-      divNode.appendChild(inputImageNode);
-      divNode.appendChild(datalistNode);
-
-      containerNode.appendChild(divNode);
-
-      hookNode.appendChild(containerNode);
-    }
-
-    if (gmc.get("checkShowVersionsSource")) {
-      GM_setStyle({
-          node: nodeStyle,
-          data:
-            [
-              "div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }"
-
-            ].join("\n")
-      });
-
-      let xpr = document.evaluate(
-        "//pre[@id='source']",
-        document.body,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-      );
-      if (xpr && xpr.singleNodeValue) {
-        let hookNode = xpr.singleNodeValue;
-
-        if (!hookNode.hasChildNodes()) // NOTE: Caching issue on USO so reload until it is present
-          window.location.reload();
-
-        // Create standardized div framing
-        let toolbarBottomNode = document.createElement("div");
-        toolbarBottomNode.classList.add("toolbar_menu");
-
-        let toolbarTopNode = document.createElement("div");
-        toolbarTopNode.classList.add("toolbar_menu");
-
-        let rightNode = document.createElement("div");
-        rightNode.classList.add("right");
-
-        let leftNode = document.createElement("div");
-        leftNode.id = "left";
-        GM_setStyle({
-            node: nodeStyle,
-            data:
-              [
-                  "#left { float: left; }"
-
-              ].join("\n")
-        });
-
-        let topNode = document.createElement("div");
-
-        let subcontentNode = document.createElement("div");
-
-        subcontentNode.appendChild(topNode);
-        subcontentNode.appendChild(leftNode);
-        subcontentNode.appendChild(rightNode);
-
-        hookNode.parentNode.insertBefore(subcontentNode, hookNode);
-
-        rightNode.appendChild(toolbarTopNode);
-        rightNode.appendChild(hookNode);
-        rightNode.appendChild(toolbarBottomNode);
-
-        // Check for GIJoes buttons and modify them
-        let wrap2;
-        document.evaluate(
-          "//button[@id='wrap-button2']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          xpr
-        );
-        if (xpr && xpr.singleNodeValue) {
-          wrap2 = xpr.singleNodeValue;
-
-          GM_setStyle({
-              node: nodeStyle,
-              data:
-                [
-                  ".wrap-button { width: 11.5em; }"
-
-                ].join("\n")
-          });
-
-          wrap2.removeAttribute("style");
-          wrap2.classList.add("wrap-button");
-
-          let wrap2DIV = document.createElement("div");
-          let wrap2LI = document.createElement("li");
-
-          wrap2DIV.appendChild(wrap2);
-          wrap2LI.appendChild(wrap2DIV);
-          wrap2 = wrap2LI;
-        }
-
-        let wrap1;
-        document.evaluate(
-          "//button[@id='wrap-button1']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          xpr
-        );
-        if (xpr && xpr.singleNodeValue) {
-          wrap1 = xpr.singleNodeValue;
-
-          wrap1.removeAttribute("style");
-          wrap1.classList.add("wrap-button");
-
-          let wrap1DIV = document.createElement("div");
-          let wrap1LI = document.createElement("li");
-
-          wrap1DIV.appendChild(wrap1);
-          wrap1LI.appendChild(wrap1DIV);
-          wrap1 = wrap1LI;
-        }
-
-        let ctts;
-        document.evaluate(
-          "//button[.='Change Tabs to Spaces']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          xpr
-        );
-        if (xpr && xpr.singleNodeValue) {
-          let cttsBUTTON = xpr.singleNodeValue;
-
-          GM_setStyle({
-              node: nodeStyle,
-              data:
-                [
-                  ".changetabs-button { width: 13.5em; }",
-                  ".changetabs-input { position: relative; top: 0; width: 1.5em; height: 1.3em; padding: 0 !important; margin: 0 0 !important; margin-left: 0.3em !important; }"
-
-                ].join("\n")
-          });
-
-          cttsBUTTON.removeAttribute("style");
-          cttsBUTTON.classList.add("changetabs-button");
-
-
-          let cttsINPUT = cttsBUTTON.nextSibling;
-          cttsINPUT.removeAttribute("style");
-          cttsINPUT.classList.add("changetabs-input");
-
-          let cttsDIV = document.createElement("div");
-
-          let cttsLI = document.createElement("li");
-
-          cttsDIV.appendChild(cttsBUTTON);
-          cttsDIV.appendChild(cttsINPUT);
-          cttsLI.appendChild(cttsDIV);
-
-          ctts = cttsLI;
-        }
-
-        // Create beautify
-        let beautifyBUTTON = document.createElement("button");
-        beautifyBUTTON.type = "button";
-        beautifyBUTTON.textContent = "Beautify";
-        beautifyBUTTON.addEventListener("click", function(ev) {
-          hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
-
-          if (gmc.get("checkShowLineNumbers")) {
-            renumber(hookNode);
-            let preNode = document.getElementById("number");
-            if (preNode)  // TODO: Class this
-              preNode.style.setProperty("background-color", "#fcc", "");
-          }
-
-          // If source is < 20KB then autohighlight just like USO does
-          if (hookNode.textContent.length < 20480)
-            (window.wrappedJSObject || window).sh_highlightDocument();
-
-          enableCTTS();
-          ev.target.blur();
-        }, false);
-
-        let beautifyDIV = document.createElement("div");
-
-        let beautifyLI = document.createElement("li");
-
-        beautifyDIV.appendChild(beautifyBUTTON);
-        beautifyLI.appendChild(beautifyDIV);
-
-
-        // Create deobfuscate
-        let deobfuscateBUTTON = document.createElement("button");
-        deobfuscateBUTTON.type = "button";
-        deobfuscateBUTTON.textContent = "Deobfuscate";
-        deobfuscateBUTTON.addEventListener("click", function(ev) {
-          switch (gmc.get("deobMethod")) {
-            case 'Simple Transcode':
-              try {
-                [hookNode.textContent] = simpleTranscode(hookNode.textContent, 0);
-
-                if (gmc.get("checkShowLineNumbers")) {
-                  renumber(hookNode);
-                  let preNode = document.getElementById("number");
-                  if (preNode) // TODO: Class this
-                    preNode.style.setProperty("background-color", "#fcc", "");
-                }
-
-                // If source is < 20KB then autohighlight just like USO does
-                if (hookNode.textContent.length < 20480)
-                  (window.wrappedJSObject || window).sh_highlightDocument();
-
-              }
-              catch(e) {
-                let msg = 'Too much recursion error encountered. Aborting transcode';
-                console.warn(msg);
-                GM_log(msg);
-              }
-              break;
-            case 'JsCode':
-              try {
-                hookNode.textContent = JsCode.deobfuscate(hookNode.textContent);
-
-                if (gmc.get("checkShowLineNumbers")) {
-                  renumber(hookNode);
-                  let preNode = document.getElementById("number");
-                  if (preNode) // TODO: Class this
-                    preNode.style.setProperty("background-color", "#fcc", "");
-                }
-
-                // If source is < 20KB then autohighlight just like USO does
-                if (hookNode.textContent.length < 20480)
-                  (window.wrappedJSObject || window).sh_highlightDocument();
-
-              }
-              catch (e) {
-                let msg = 'Too much recursion error encountered. Aborting JsCode';
-                console.warn(msg);
-                GM_log(msg);
-              }
-              break;
-          }
-          enableCTTS();
-          ev.target.blur();
-        }, false);
-
-        let deobfuscateDIV = document.createElement("div");
-
-        let deobfuscateLI = document.createElement("li");
-
-        deobfuscateDIV.appendChild(deobfuscateBUTTON);
-        deobfuscateLI.appendChild(deobfuscateDIV);
-
-
-        // Add buttons
-        if (wrap1) toolbarTopNode.appendChild(wrap1);
-        if (ctts) toolbarTopNode.appendChild(ctts);
-        toolbarTopNode.appendChild(beautifyLI);
-        toolbarTopNode.appendChild(deobfuscateLI);
-
-        if (wrap2)
-          toolbarBottomNode.appendChild(wrap2);
-
-        // Virtual link versions if present
-        document.evaluate(
-          "//a[@href='/scripts/versions/" + scriptid + "']",
-          document.body,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          xpr
-        );
-        if (xpr && xpr.singleNodeValue) {
-          let thisNode = xpr.singleNodeValue;
-
-          let previousVersions = thisNode.textContent;
-
-          function onclickVersions(ev) {
-            ev.preventDefault();
-
-            thisNode.removeEventListener("click", onclickVersions, false);
-
-            GM_setStyle({
-                node: nodeStyle,
-                data:
-                  [
-                    ".notice { background-image: url(" + throbber + "); }"
-
-                  ].join("\n")
-            });
-
-            getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid);
-
-            thisNode.parentNode.parentNode.removeChild(thisNode.parentNode);
-          }
-
-          function getVersions(url) {
-
-            GM_xmlhttpRequest({
-              retry: 5,
-              method: "GET",
-              url: url,
-              onload: function(xhr) {
-                switch (xhr.status) {
-                  case 404:
-                  case 500:
-                  case 502:
-                  case 503:
-                    if (this.retry-- > 0)
-                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                    break;
-                  case 200:
-                    let
-                      dt = document.implementation.createDocumentType(
-                        "html",
-                        "-//W3C//DTD HTML 4.01 Transitional//EN",
-                        "http://www.w3.org/TR/html4/loose.dtd"
-                      ),
-                      doc = document.implementation.createDocument("", "", dt),
-                      documentElement = doc.createElement("html")
-                    ;
-
-                    documentElement.innerHTML = xhr.responseText;
-                    doc.appendChild(documentElement);
-
-                    let html = doc.documentElement.innerHTML;
-                    doc.documentElement.innerHTML = "";
-
-                    let body = doc.createElement("body");
-                    body.innerHTML = html;
-                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
-
-                    let head = doc.createElement("head");
-                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
-
-                    // doc has been created... start twiddling
-
-                    // Nab pagination
-                    let pagination;
-                    let xpr = doc.evaluate(
-                      "//div[@class='pagination']",
-                      doc.body,
-                      null,
-                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                      null
-                    );
-                    if (xpr && xpr.singleNodeValue) {
-                      let thisNode = xpr.singleNodeValue;
-
-                      pagination = thisNode.cloneNode(true);
-                    }
-
-                    // Nab versions
-                    let versions;
-                    doc.evaluate(
-                      "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
-                      doc.body,
-                      null,
-                      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                      xpr
-                    );
-
-                    let ulNode = document.createElement("ul");
-
-                    if (xpr)
-                      for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
-                        let dateNode = thisNode.firstChild;
-                        let diffNode = thisNode.firstChild.nextSibling;
-
-                        let dateid = dateNode.textContent.replace(/\n\[/, "").trim();
-
-                        if (gmc.get("checkShowVersionsLocale")) {
-                          // Adjust if logged out
-                          let xpr = doc.evaluate(
-                            "//ul[@class='login_status']//a[starts-with(@href, '/login')]",
-                            doc.body,
-                            null,
-                            XPathResult.FIRST_ORDERED_NODE_TYPE,
-                            null
-                          );
-                          if (xpr && xpr.singleNodeValue) {
-                            let utc = new Date(dateid + " UTC");
-                            dateid = utc.toLocaleFormat("%b %d, %Y %H:%M");
-                          }
-                        }
-
-                        let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
-
-                        let aInstallNode = document.createElement("a");
-                        aInstallNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js");
-                        aInstallNode.textContent = dateid;
-
-                        let leftText = document.createTextNode("[")
-
-                        let aViewNode = document.createElement("a");
-                        aViewNode.setAttribute("href", "/scripts/version/" + scriptid + "/" + diffid + ".user.js#");
-                        aViewNode.textContent = "view";
-                        aViewNode.title = "\u2229 (intersection) view";
-                        aViewNode.addEventListener("click", function(ev) {
-                            ev.preventDefault();
-
-                            ev.target.parentNode.classList.add("retrieving");
-
-                            let aNode = ev.target, ulNode, thisNode;
-                            GM_xmlhttpRequest({
-                              retry: 5,
-                              method: "GET",
-                              url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
-                              onload: function(xhr) {
-                                switch (xhr.status) {
-                                  case 404:
-                                  case 500:
-                                  case 502:
-                                  case 503:
-                                    if (this.retry-- > 0)
-                                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                                    else {
-                                      // Clear retrieving Selection markers
-                                      ulNode = aNode.parentNode.parentNode;
-
-                                      thisNode = ulNode.firstChild;
-                                      while(thisNode) {
-                                        thisNode.classList.remove("retrieving");
-                                        thisNode = thisNode.nextSibling;
-                                      }
-                                    }
-                                    break;
-                                  case 200:
-                                    let responseText = xhr.responseText;
-
-                                    if (responseText.match(/[\r\n]$/))
-                                      responseText = responseText.replace(/[\r\n]*$/, "");
-
-                                    let preNode = document.getElementById("source");
-                                    preNode.textContent = responseText;
-
-                                    // Clear all Selection markers
-                                    ulNode = aNode.parentNode.parentNode;
-
-                                    thisNode = ulNode.firstChild;
-                                    while(thisNode) {
-                                      thisNode.classList.remove("current");
-                                      thisNode.classList.remove("retrieving");
-                                      thisNode = thisNode.nextSibling;
-                                    }
-
-                                    // Set current selection marker
-                                    let liNode = aNode.parentNode;
-                                    liNode.classList.add("current");
-
-                                    // Remove GIJoes disabling
-                                    enableCTTS();
-
-                                    // If source is < 20KB then autohighlight just like USO does
-                                    if (xhr.responseText.length < 20480)
-                                      (window.wrappedJSObject || window).sh_highlightDocument();
-
-                                    if (gmc.get("checkShowLineNumbers"))
-                                      renumber(preNode);
-
-                                    let currenturl = document.getElementById("currenturl");
-                                    if (currenturl)
-                                      currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
-
-                                    break;
-                                }
-                              }
-                            });
-                          }, false);
-
-                        let middleText = document.createTextNode("|")
-
-                        let aDiffNode = document.createElement("a");
-                        aDiffNode.setAttribute("href", "/scripts/diff/" + scriptid + "/" + diffid);
-                        aDiffNode.textContent = "changes";
-                        aDiffNode.title = "\u2206 (symmetric difference) changes";
-                        aDiffNode.addEventListener("click", function(ev) {
-                          ev.preventDefault();
-
-                          ev.target.parentNode.classList.add("retrieving");
-
-                          let aNode = ev.target, ulNode, thisNode;
-                          GM_xmlhttpRequest({
-                            retry: 5,
-                            method: "GET",
-                            url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
-                            onload: function(xhr) {
-                              switch (xhr.status) {
-                                case 404:
-                                case 500:
-                                case 502:
-                                case 503:
-                                  if (this.retry-- > 0)
-                                    setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                                  else {
-                                    // Clear retrieving Selection markers
-                                    ulNode = aNode.parentNode.parentNode;
-
-                                    thisNode = ulNode.firstChild;
-                                    while(thisNode) {
-                                      thisNode.classList.remove("retrieving");
-                                      thisNode = thisNode.nextSibling;
-                                    }
-                                  }
-                                  break;
-                                case 200:
-
-                                  let
-                                    dt = document.implementation.createDocumentType(
-                                      "html",
-                                      "-//W3C//DTD HTML 4.01 Transitional//EN",
-                                      "http://www.w3.org/TR/html4/loose.dtd"
-                                    ),
-                                    doc = document.implementation.createDocument("", "", dt),
-                                    documentElement = doc.createElement("html")
-                                  ;
-
-                                  documentElement.innerHTML = xhr.responseText;
-                                  doc.appendChild(documentElement);
-
-                                  let html = doc.documentElement.innerHTML;
-                                  doc.documentElement.innerHTML = "";
-
-                                  let body = doc.createElement("body");
-                                  body.innerHTML = html;
-                                  doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
-
-                                  let head = doc.createElement("head");
-                                  doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
-
-
-                                  let xpr = doc.evaluate(
-                                    "//pre",
-                                    doc.body,
-                                    null,
-                                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                                    null
-                                  );
-                                  if (xpr && xpr.singleNodeValue) {
-                                    let preNode = document.getElementById("source");
-                                    preNode.innerHTML = xpr.singleNodeValue.innerHTML;
-
-
-                                    // Clear all Selection markers
-                                    ulNode = aNode.parentNode.parentNode;
-
-                                    thisNode = ulNode.firstChild;
-                                    while(thisNode) {
-                                      thisNode.classList.remove("current");
-                                      thisNode.classList.remove("retrieving");
-                                      thisNode = thisNode.nextSibling;
-                                    }
-
-                                    // Set current selection marker
-                                    let liNode = aNode.parentNode;
-                                    liNode.classList.add("current");
-
-                                    // Remove GIJoes disabling
-                                    enableCTTS();
-
-                                    // Hide numbering and reset margin for now if present
-                                    let number = document.getElementById("number");
-                                    if (number)
-                                      number.style.setProperty("display", "none", "");
-
-                                    let source =  document.getElementById("source");
-                                    if (source)
-                                      source.style.removeProperty("margin-left");
-                                  }
-
-                                  let currenturl = document.getElementById("currenturl");
-                                  if (currenturl)
-                                    currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
-
-                                  break;
-                              }
-                            }
-                          });
-                        }, false);
-
-                        let rightText = document.createTextNode("]")
-
-                        let liNode = document.createElement("li");
-
-                        liNode.appendChild(leftText);
-                        liNode.appendChild(aViewNode);
-                        liNode.appendChild(middleText);
-                        liNode.appendChild(aDiffNode);
-                        liNode.appendChild(rightText);
-                        liNode.appendChild(aInstallNode);
-
-                        ulNode.appendChild(liNode);
-                      }
-
-                    let versionsDIV = document.getElementById("versions");
-                    if (versionsDIV) {
-                      while (versionsDIV.hasChildNodes())
-                        versionsDIV.removeChild(versionsDIV.firstChild);
-                    }
-                    else {
-                      versionsDIV = document.createElement("div");
-                      versionsDIV.id = "versions";
-                      versionsDIV.className = "pagetear";
-
-                      GM_setStyle({
-                          node: nodeStyle,
-                          data:
-                            [
-                              "#versions p  { margin: 0; }",
-                              "#versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }",
-                              "#versions p > span { color: #666; font-size: 0.8em; }",
-                              "#versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; margin-bottom: 0.5em; }",
-                              "#versions ul a { margin-left: 0.25em; margin-right: 0.25em; }",
-                              "#versions ul a:last-child { color: #000; text-decoration: none; margin-left: 0.5em; }",
-                              "#versions ul li.current { background-color: #ddd; }",
-                              "#versions ul li.retrieving { background-image: url(" + throbber + "); }"
-
-                            ].join("\n")
-                      });
-                    }
-
-                    let versionsContainerNode = document.getElementById("sourceurl");
-                    if (versionsContainerNode)
-                      versionsContainerNode.parentNode.insertBefore(versionsDIV, versionsContainerNode); // TODO: Change identifier names
-                    else {
-                      let msg = 'Hook node for versions and diffs not found';
-                      GM_log(msg);
-                      console.error(msg);
-                      return; // die this function
-                    }
-
-                    // Replace pagination NOTE: Scope referenced variable nodes
-                    if (pagination) {
-                      GM_setStyle({
-                          node: nodeStyle,
-                          data:
-                            [
-                              ".pagination a.retrieving { background-image: url(" + throbber + "); }"
-
-                            ].join("\n")
-                      });
-
-                      while (versionsDIV.hasChildNodes())
-                        versionsDIV.removeChild(versionsDIV.firstChild);
-
-                      versionsDIV.appendChild(pagination);
-
-                      document.evaluate(
-                        "//div[@class='pagination']/a",
-                        document.body,
-                        null,
-                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                        xpr
-                      );
-                      if (xpr)
-                        for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
-                          thisNode.addEventListener("click", function(ev) {
-                            ev.preventDefault();
-
-                            ev.target.classList.add("retrieving");
-                            getVersions(protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
-                          }, false);
-                        }
-                    }
-
-                    let spanNode = document.createElement("span");
-                    spanNode.textContent = parseInt(previousVersions.match(/(\d+)\s/)[1]) + 1;
-
-                    let aNode = document.createElement("a");
-                    aNode.href = "/scripts/versions/" + scriptid;
-                    aNode.textContent = "Source versions and diffs:";
-
-                    let pNode = document.createElement("p");
-
-                    pNode.appendChild(aNode);
-                    pNode.appendChild(spanNode);
-
-                    if (pagination)
-                      versionsDIV.insertBefore(pNode, pagination);
-                    else
-                      versionsDIV.appendChild(pNode);
-
-                    versionsDIV.appendChild(ulNode);
-
-                      GM_setStyle({
-                          node: nodeStyle,
-                          data:
-                            [
-                              ".notice { background-image: none; }",
-                              ".pagination a.retrieving { background-image: url(" + throbber + "); }"
-
-                            ].join("\n")
-                      });
-
-                    // Compute left margin of pre and add width
-                    document.evaluate(
-                      "//div[@id='left']",
-                      document.body,
-                      null,
-                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                      xpr
-                    );
-                    if (xpr && xpr.singleNodeValue) {
-                      let hookNode = xpr.singleNodeValue;
-
-                      let marginLeft = window.getComputedStyle(hookNode, null).getPropertyValue("width").replace(/px$/, "");
-
-                      GM_setStyle({
-                          node: nodeStyle,
-                          data:
-                            [
-                              ".right { margin-left: " + marginLeft + "px; }",
-                              "#left { padding: 1px; }"  // NOTE: Strange first run fix for CSS
-
-                            ].join("\n")
-                      });
-                    }
-                }
-              }
-            });
-
-          }
-          thisNode.addEventListener("click", onclickVersions, false);
-        }
-
-      }
-    }
   }
 
-  function renumber(hookNode) {
-    let preNode = document.getElementById("number");
-
-    if (preNode.hasChildNodes())
-      while (preNode.hasChildNodes())
-        preNode.removeChild(preNode.firstChild);
-
-    preNode.style.removeProperty("background-color"); // TODO: Class this
-
-    // Calculate width of numbers
-    let newlines = hookNode.textContent.match(/\n/g);
-    if (newlines)
-      newlines = newlines.length;
-    else
-      newlines = 0;
-
-    let digits = (parseInt(newlines) + 1).toString().length;
-    let textWidth = parseInt(window.getComputedStyle(hookNode, null).getPropertyValue("font-size").replace(/px/, "") / 1.5); // NOTE: Fuzzy
-
-    preNode.style.setProperty("width", (textWidth * digits) + "px", "");
-
-    // Create numbers
-    let line = 1;
-    do {
-      let aNode = document.createElement("a");
-      aNode.setAttribute("id", "line-" + line);
-      aNode.setAttribute("href", "#line-" + line);
-      aNode.textContent = line;
-      if (line % 10 == 0 || line == 1)
-        aNode.classList.add("sharpen");
-
-      let divNode = document.createElement("div");
-
-      divNode.appendChild(aNode);
-      preNode.appendChild(divNode);
-    } while (line++ <= newlines);
-
-    // Show numbers
-    preNode.style.removeProperty("display");
-
-    hookNode.parentNode.insertBefore(preNode, hookNode);
-    hookNode.style.setProperty("margin-left", preNode.offsetWidth + "px", "");
-  }
-
-  if (gmc.get("checkShowLineNumbers")) {
-    if (location.pathname.match(/\/scripts\/review\//)) {
-      let xpr = document.evaluate(
-        "//pre[@id='source']",
-        document.body,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
-      );
-      if (xpr && xpr.singleNodeValue) {
-        let hookNode = xpr.singleNodeValue;
-
-        if (!hookNode.hasChildNodes()) // NOTE: Caching issue on USO so reload until it is present
-          window.location.reload();
-
-        let preNode = document.createElement("pre");
-        preNode.setAttribute("id", "number");
-        preNode.classList.add("number");
-
-        // Override CSS and ensure that element is invisible while maninpulating... prevents flicker later
-        preNode.style.setProperty("display", "none", "");
-
-        // Copy once selector rules from #source element
-        let css = ".number { ";
-            let properties = window.getComputedStyle(hookNode, null);
-            for (let property in properties)
-              css += (properties[property] + ":" + properties.getPropertyValue(properties[property]) + "; ");
-        css += " }";
-
-        GM_setStyle({
-            node: nodeStyle,
-            data: css
-        });
-
-        // Apply custom styling
-        GM_setStyle({
-            node: nodeStyle,
-            data:
-              [
-                ".number { height: auto; overflow: hidden !important; display: inline; padding-right: 2px; padding-left: 2px; text-align: right; float: left; margin-top: 0 !important; margin: 0 0 !important; border-right-style: none !important; background-color: #eee; }",
-                ".number a { text-decoration: none; color: #888; font-size: 0.8em; padding-right: 2px; }",
-                ".number a.sharpen { font-size: 1em; color: #000; }",
-
-                "#source[wrap='off'] { white-space: pre; overflow-x: auto !important; }",
-                "#source[wrap='on'] {  margin-left: 0 !important; white-space: pre-wrap; }",
-
-                "#number[wrap='off'] { display: inline; }",
-                "#number[wrap='on'] { display: none; }"
-
-              ].join("\n")
-        });
-
-        let divNode = document.createElement("div");
-
-        divNode.appendChild(preNode);
-
-        hookNode.parentNode.insertBefore(divNode, hookNode);
-        divNode.appendChild(hookNode);
-
-        function loadNumber() {
-          window.removeEventListener("load", loadNumber, false);
-          renumber(hookNode);
-
-          let hash = window.location.hash.match(/^#(line-\d+)/);
-          if (hash) {
-            let anchorNode = document.evaluate(
-              "//a[@id='" + hash[1] + "']",
-              document.body,
-              null,
-              XPathResult.FIRST_ORDERED_NODE_TYPE,
-              null
-            );
-            if (anchorNode && anchorNode.singleNodeValue)
-              anchorNode.singleNodeValue.scrollIntoView();
-          }
-        }
-        window.addEventListener("load", loadNumber, false);
-      }
-    }
-  }
 
 })();
