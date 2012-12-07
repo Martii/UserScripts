@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.10
+// @version       1.1.11
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -813,9 +813,10 @@
             }
 
             // Lib check here
-            if (headers["exclude"])
-              for each (let exclude in (typeof headers["exclude"] == "string") ? [headers["exclude"]] : headers["exclude"])
-                if (exclude == "*") {
+            if (headers["exclude"]) {
+              let excludes = typeof headers["exclude"] == "string" ? [headers["exclude"]] : headers["exclude"];
+              for (let exclude in excludes) {
+                if (excludes[exclude] == "*") {
                   installNode.title = "Security Advisory: LIBRARY, Possible library support file detected";
                   function nag(ev) {
                     ev.preventDefault();
@@ -835,6 +836,8 @@
                   installNode.classList.remove("saBUSY");
                   return;
                 }
+              }
+            }
 
             let updaters = {
               "uso": {
@@ -2132,8 +2135,9 @@
             }
 
             // Grant none check here
-            for each (let grant in (typeof headers["grant"] == "string") ? [headers["grant"]] : headers["grant"])
-              if (grant.toLowerCase() == "none")
+            let grants = typeof headers["grant"] == "string" ? [headers["grant"]] : headers["grant"];
+            for (let grant in grants)
+              if (grants[grant].toLowerCase() == "none")
                 RCS = true;
 
             let messageDDoS = "SEVERE, Possible DDoS attack script via updateURL metadata block key",
@@ -2141,19 +2145,21 @@
                 messageRCS = "ELEVATED, Restricted (content scope) namespace script";
 
             usocMethod = "show";
-            if (headers["require"])
-              for each (let require in (typeof headers["require"] == "string") ? [headers["require"]] : headers["require"])
-                for each (let updater in updaters)
-                  for each (let rex in updater["rex"]) {
-                    let sid = require.match(new RegExp(rex  + ".*", "i"));
+            if (headers["require"]) {
+              let requires = typeof headers["require"] == "string" ? [headers["require"]] : headers["require"];
+              for (let require in requires) {
+                for (let updater in updaters) {
+                  let rexes = updaters[updater]["rex"];
+                  for (let rex in rexes) {
+                    let sid = requires[require].match(new RegExp(rexes[rex]  + ".*", "i"));
                     if (sid) {
                       if (sid[1] == scriptid || sid[1] == null) {
-                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"] : "");
-                        installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
+                        installNode.title += ((installNode.title == "") ? "Security Advisory: " : "; ") + updaters[updater]["securityAdvisory"]["advisory"].toUpperCase() + ((updaters[updater]["securityAdvisory"]["title"]) ? ", " + updaters[updater]["securityAdvisory"]["title"] : "");
+                        installNode.classList.add("sab" + updaters[updater]["securityAdvisory"]["advisory"].toUpperCase());
                         KU = true;
-                        if (updater["updater"] == "usocheckup") {
+                        if (updaters[updater]["updater"] == "usocheckup") {
                           usoC = true;
-                          let method = require.match(/method=(\w+)/);
+                          let method = requires[require].match(/method=(\w+)/);
                           if (method)
                             usocMethod = method[1];
                         }
@@ -2182,18 +2188,27 @@
                       }
                     }
                   }
+                }
+              }
+            }
 
-            if (headers["include"])
-              for each (let include in (typeof headers["include"] == "string") ? [headers["include"]] : headers["include"])
-                for each (let updater in updaters)
-                  for each (let rex in updater["rex"])
-                    if (include.match(new RegExp(rex  + ".*", "i"))) {
-                      installNode.title = "Security Advisory: " + updater["securityAdvisory"]["advisory"].toUpperCase() + ((updater["securityAdvisory"]["title"]) ? ", " + updater["securityAdvisory"]["title"]: "");
-                      installNode.classList.add("sa" + updater["securityAdvisory"]["advisory"].toUpperCase());
-                      installNode.classList.add("sab" + updater["securityAdvisory"]["advisory"].toUpperCase());
+            if (headers["include"]) {
+              let includes = typeof headers["include"] == "string" ? [headers["include"]] : headers["include"];
+              for (let include in includes) {
+                for (let updater in updaters) {
+                  let rexes = updaters[updater]["rex"];
+                  for (let rex in rexes) {
+                    if (includes[include].match(new RegExp(rexes[rex]  + ".*", "i"))) {
+                      installNode.title = "Security Advisory: " + updaters[updater]["securityAdvisory"]["advisory"].toUpperCase() + ((updaters[updater]["securityAdvisory"]["title"]) ? ", " + updaters[updater]["securityAdvisory"]["title"]: "");
+                      installNode.classList.add("sa" + updaters[updater]["securityAdvisory"]["advisory"].toUpperCase());
+                      installNode.classList.add("sab" + updaters[updater]["securityAdvisory"]["advisory"].toUpperCase());
                       installNode.classList.remove("saBUSY");
                       return;
                     }
+                  }
+                }
+              }
+            }
 
             if (DDoS) {
               if (installNode.title.indexOf(messageDDoS) == -1)
@@ -2464,14 +2479,14 @@
               selectNode.appendChild(updaterNode);
             }
 
-            for each (let updater in updaters) {
-              if (updater["value"]) {
+            for (let updater in updaters) {
+              if (updaters[updater]["value"]) {
                 if (KU || (RCS && !gmcHome.get("allowUpdatersOnAOUgrantnone"))) {
-                  if (updater["core"])
-                    createUpdater(updater);
+                  if (updaters[updater]["core"])
+                    createUpdater(updaters[updater]);
                 }
                 else {
-                  createUpdater(updater);
+                  createUpdater(updaters[updater]);
                 }
               }
             }
