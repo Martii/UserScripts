@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.10
+// @version       0.20.11
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -2029,9 +2029,9 @@
                         [
                           ".metadataforced, .alert { color: #f00 !important; }",
                           ".metadataforced:hover { color: #ff4500 !important; }",
-                          ".metadataunknown { color: #000; }",
+                          ".metadataunknown { color: #000 !important; }",
                           ".metadataunknown:hover { color: #808080; }",
-                          ".metadatachecked { color: #006400; }",
+                          ".metadatachecked { color: #006400 !important; }",
                           ".metadatachecked:hover { color: #008000; }",
                           "span.metadataforced { color: #f00; }",
                           "div.metadata { overflow: auto; }",
@@ -2353,7 +2353,7 @@
                                 url: showUrl,
                                 onload: function(xhr) {
                                   switch (xhr.status) {
-                                    case 404:
+//                                     case 404: // NOTE: Sometimes USO needs this trapped
                                     case 500:
                                     case 502:
                                     case 503:
@@ -2443,7 +2443,7 @@
                                 url: showUrl,
                                 onload: function(xhr) {
                                   switch (xhr.status) {
-                                    case 404:
+//                                     case 404: // NOTE: Sometimes USO needs this trapped
                                     case 500:
                                     case 502:
                                     case 503:
