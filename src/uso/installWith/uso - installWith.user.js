@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.11
+// @version       1.1.12
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -149,7 +149,7 @@
   }
 
   let installNode = document.evaluate(
-    "//div[@id='install_script']/a[@class='userjs']",
+    "//div[@id='install_script']/a[contains(concat(' ', normalize-space(@class), ' '), ' userjs ')]",
     document.body,
     null,
     XPathResult.ANY_UNORDERED_NODE_TYPE,
@@ -169,7 +169,7 @@
     let scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
     if (!scriptid) {
       let titleNode = document.evaluate(
-        "//h1[@class='title']/a",
+        "//h2[contains(concat(' ', normalize-space(@class), ' '), ' title ')]/a",
         document.body,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -185,7 +185,7 @@
 
   function getAvatarid() {
     let xpr = document.evaluate(
-      "//span[@class='author']/a",
+      "//span[contains(concat(' ', normalize-space(@class), ' '), ' author ')]/a",
       document.body,
       null,
       XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -260,7 +260,7 @@
 
     /* Nearest fix for userscripts.org Alternate CSS */
     let xpr = document.evaluate(
-      "//div[@id='top']/div[@class='container']",
+      "//div[@id='top']/div[contains(concat(' ', normalize-space(@class), ' '), ' container ')]",
       document.body,
       null,
       XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -2246,7 +2246,7 @@
             }
 
             let helpNode = document.evaluate(
-              "//div[@id='install_script']/a[@class='help']",
+              "//div[@id='install_script']/a[contains(concat(' ', normalize-space(@class), ' '), ' help ')]",
               document.body,
               null,
               XPathResult.ANY_UNORDERED_NODE_TYPE,
