@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.31
+// @version       0.0.32
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/.*/
@@ -465,12 +465,27 @@ Please note this script uses native JSON and native classList which requires Fir
       // ** Paint the menus
       let mm = document.getElementById("mainmenu");
       if (mm) {
+        // Remove Jetpacks mainmenu item, if present. from userscripts alternate CSS
         let xpr = document.evaluate(
-            "./li/a[.='Monkey Barrel']",
+            "./li/a[.='Jetpacks']",
             mm,
             null,
             XPathResult.FIRST_ORDERED_NODE_TYPE,
             null
+        );
+        if (xpr && xpr.singleNodeValue) {
+          let thisNode = xpr.singleNodeValue;
+
+          thisNode.parentNode.parentNode.removeChild(thisNode.parentNode);
+        }
+
+        // Twiddle
+        document.evaluate(
+            "./li/a[.='Monkey Barrel']",
+            mm,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            xpr
         );
         if (xpr && xpr.singleNodeValue)
           return;
