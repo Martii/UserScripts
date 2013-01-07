@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.20.11
+// @version       0.21.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -24,10 +24,10 @@
 // @include   https://userscripts.org/topics/*
 // @include   http://userscripts.org/reviews/*
 // @include   https://userscripts.org/reviews/*
-// @exclude http://userscripts.org/scripts/diff/*
-// @exclude https://userscripts.org/scripts/diff/*
-// @exclude http://userscripts.org/scripts/version/*
-// @exclude https://userscripts.org/scripts/version/*
+// @exclude   http://userscripts.org/scripts/diff/*
+// @exclude   https://userscripts.org/scripts/diff/*
+// @exclude   http://userscripts.org/scripts/version/*
+// @exclude   https://userscripts.org/scripts/version/*
 //
 // @updateURL  file:
 // @installURL file:
@@ -50,7 +50,6 @@
 // @grant GM_xmlhttpRequest
 //
 // ==/UserScript==
-
 
   let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
 
@@ -214,7 +213,7 @@
           '<p>Preferences</p>',
           '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki/">',
               '<img alt="Powered in part by GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
-          '</a>',
+          '</a>'
 
       ].join(""),
 
@@ -515,7 +514,7 @@
               node: gCSS,
               data:
                 [
-                  "div.metadata { max-height: " + gmc.get("maxHeightList") + "em; }"
+                  ".metadata ul, .landf { max-height: " + gmc.get("maxHeightList") + "em; }"
 
                 ].join("\n")
           });
@@ -524,7 +523,7 @@
               node: gCSS,
               data:
                 [
-                  "div.metadata { max-height: none; }"
+                  ".metadata ul, .landf { max-height: none; }"
 
                 ].join("\n")
           });
@@ -533,7 +532,7 @@
             node: gCSS,
             data:
               [
-                "li.metadata, li.count { font-size: " + gmc.get("fontSize") + "em ; }"
+                ".metadata li, .landf li { font-size: " + gmc.get("fontSize") + "em ; }"
 
               ].join("\n")
         });
@@ -662,7 +661,7 @@
   }
 
   let xpr = document.evaluate(
-   "//h2[@class='title']/a|//h2[@class='title']",
+   "//h2[contains(concat(' ', normalize-space(@class), ' '), ' title ')]/a|//h2[contains(concat(' ', normalize-space(@class), ' '), ' title ')]",
     document.body,
     null,
     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
@@ -738,8 +737,6 @@
   let scriptid = getScriptid();
   if (scriptid) {
 
-    // TODO: Drop parseMeta in here... has scriptid dependency (usually)
-
     function renumber(hookNode) {
       let preNode = document.getElementById("number");
 
@@ -769,7 +766,7 @@
         aNode.href = "#line-" + line;
         aNode.textContent = line;
         if (line % 10 == 0 || line == 1)
-          aNode.classList.add("sharpen");
+          aNode.classList.add("surge");
 
         let divNode = document.createElement("div");
 
@@ -784,7 +781,7 @@
       hookNode.style.setProperty("margin-left", preNode.offsetWidth + "px", "");
     }
 
-    if (gmc.get("checkShowLineNumbers")) { // NOTE: Currently no scriptid dependency  but only called inside of it
+    if (gmc.get("checkShowLineNumbers")) { // NOTE: Currently no scriptid dependency but only called inside of it
       if (location.pathname.match(/\/scripts\/review\//)) {
         let xpr = document.evaluate(
           "//pre[@id='source']",
@@ -799,9 +796,30 @@
           if (!hookNode.hasChildNodes()) // NOTE: Caching issue on USO so reload until it is present
             window.location.reload();
 
+          //hookNode.setAttribute("wrap", "off");
+
           let preNode = document.createElement("pre");
           preNode.id = "number";
           preNode.classList.add("number");
+          preNode.addEventListener("click", function (ev) {
+            if (ev.target.id.match(/line\-\d+/)) {
+              let xpr = document.evaluate(
+                  "./div[contains(concat(' ', normalize-space(@class), ' '), ' active ')]",
+                  preNode,
+                  null,
+                  XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                  null
+              );
+
+              if (xpr) {
+                for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);)
+                  thisNode.classList.remove("active");
+
+                ev.target.parentNode.classList.add("active");
+              }
+            }
+
+          }, false );
 
           // Override CSS and ensure that element is invisible while maninpulating... prevents flicker later
           preNode.classList.add("HID");
@@ -824,12 +842,15 @@
               data:
                 [
                   ".number { background-color: #eee; border-right-style: none !important; display: inline; float: left; height: auto; margin: 0 !important; margin-top: 0 !important; overflow: hidden !important; padding-left: 2px; padding-right: 2px; text-align: right;  }",
-                  ".number a { color: #888; font-size: 0.8em; padding-right: 2px; text-decoration: none; }",
-                  ".number a.sharpen { color: #000; font-size: 1em; }",
+                  ".number a { color: #666; font-size: 0.75em; padding-right: 2px; text-decoration: none; }",
+                  ".number a.surge { color: #000; font-size: 1em; }",
 
-                  "#source { margin-top: 0; }",
-                  "#source[wrap='off'] { overflow-x: auto !important; white-space: pre; }",
-                  "#source[wrap='on'] {  margin-left: 0 !important; white-space: pre-wrap; }",
+                  ".number .active { background-image:-moz-linear-gradient(center bottom , #7576a0 5%, rgba(0, 0, 120, 0.7), #7576a0 95%); box-shadow:0 0 50px 25px rgba(0, 0, 85, 0.7); }",
+                  ".number .active > a { color: #fff; }",
+
+                  "#content pre#source { margin-top: 0; }",
+                  "#content pre#source[wrap='off'] { overflow-x: auto !important; white-space: pre; }",
+                  "#content pre#source[wrap='on'] { margin-left: 0 !important; white-space: pre-wrap; word-break: break-all; }",
 
                   "#number[wrap='off'] { display: inline; }",
                   "#number[wrap='on'] { display: none; }"
@@ -858,6 +879,7 @@
                 null
               );
               if (anchorNode && anchorNode.singleNodeValue)
+                anchorNode.singleNodeValue.parentNode.classList.add("active");
                 anchorNode.singleNodeValue.scrollIntoView();
             }
           }
@@ -869,7 +891,7 @@
     // scriptid review
     if (location.pathname.match(/\/scripts\/review\//)) {
       let xpr = document.evaluate(
-        "//div[@id='section']//div[@class='container']",
+        "//div[@id='section']//div[contains(concat(' ', normalize-space(@class), ' '), ' container ')]",
         document.body,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -1291,7 +1313,7 @@
           beautifyBUTTON.type = "button";
           beautifyBUTTON.textContent = "Beautify";
           beautifyBUTTON.addEventListener("click", function(ev) {
-            hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), {indent_size: 1, indent_char: '\t'});
+            hookNode.textContent = js_beautify(hookNode.textContent.replace(/[“”]/g, '"'), { indent_size: 1, indent_char: '\t' });
 
             if (gmc.get("checkShowLineNumbers")) {
               renumber(hookNode);
@@ -1422,7 +1444,7 @@
                 url: url,
                 onload: function(xhr) {
                   switch (xhr.status) {
-                    case 404:
+//                     case 404: // NOTE: Sometimes USO needs this trapped
                     case 500:
                     case 502:
                     case 503:
@@ -1458,7 +1480,7 @@
                       // Nab pagination
                       let pagination;
                       let xpr = doc.evaluate(
-                        "//div[@class='pagination']",
+                        "//div[contains(concat(' ', normalize-space(@class), ' '), ' pagination ')]",
                         doc.body,
                         null,
                         XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -1473,7 +1495,7 @@
                       // Nab versions
                       let versions;
                       doc.evaluate(
-                        "//div[@id='root']/div[@class='container']/div[@id='content']/ul[not(@id)]/li",
+                        "//div[@id='root']/div[contains(concat(' ', normalize-space(@class), ' '), ' container ')]/div[@id='content']/ul[not(@id)]/li",
                         doc.body,
                         null,
                         XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
@@ -1492,7 +1514,7 @@
                           if (gmc.get("checkShowVersionsLocale")) {
                             // Adjust if logged out
                             let xpr = doc.evaluate(
-                              "//ul[@class='login_status']//a[starts-with(@href, '/login')]",
+                              "//ul[contains(concat(' ', normalize-space(@class), ' '), ' login_status ')]//a[starts-with(@href, '/login')]",
                               doc.body,
                               null,
                               XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -1528,7 +1550,7 @@
                                 url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                                 onload: function(xhr) {
                                   switch (xhr.status) {
-                                    case 404:
+//                                     case 404: // NOTE: Sometimes USO needs this trapped
                                     case 500:
                                     case 502:
                                     case 503:
@@ -1606,7 +1628,7 @@
                               url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                               onload: function(xhr) {
                                 switch (xhr.status) {
-                                  case 404:
+//                                   case 404: // NOTE: Sometimes USO needs this trapped
                                   case 500:
                                   case 502:
                                   case 503:
@@ -1756,7 +1778,7 @@
                         versionsDIV.appendChild(pagination);
 
                         document.evaluate(
-                          "//div[@class='pagination']/a",
+                          "//div[contains(concat(' ', normalize-space(@class), ' '), ' pagination ')]/a",
                           document.body,
                           null,
                           XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
@@ -1905,7 +1927,7 @@
 
         let authenticated = false;
         document.evaluate(
-          "//ul[@class='login_status']//a[@href='/logout']",
+          "//ul[contains(concat(' ', normalize-space(@class), ' '), ' login_status ')]//a[@href='/logout']",
           document.body,
           null,
           XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -1957,12 +1979,14 @@
           method: "GET",
           onload: function(xhr) {
             switch (xhr.status) {
-              case 404:
+//               case 404: // NOTE: Sometimes USO needs this trapped
               case 500:
               case 502:
               case 503:
                 if (this.retry-- > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                else
+                  ; // TODO:
                 break;
               case 200:
                 function parseMeta(aString) {
@@ -2027,27 +2051,29 @@
                       node: gCSS,
                       data:
                         [
-                          ".metadataforced, .alert { color: #f00 !important; }",
-                          ".metadataforced:hover { color: #ff4500 !important; }",
-                          ".metadataunknown { color: #000 !important; }",
-                          ".metadataunknown:hover { color: #808080; }",
-                          ".metadatachecked { color: #006400 !important; }",
-                          ".metadatachecked:hover { color: #008000; }",
-                          "span.metadataforced { color: #f00; }",
-                          "div.metadata { overflow: auto; }",
-                          "ul.metadata { border-width: 0; font-size: x-small; margin: 0; padding: 0 !important; width: 100%; }",
-                          "li.metadata { color: #808080; white-space: nowrap; }",
-                          "span.metadata { color: #666; font-size: 0.7em; }",
-                          "ul.count { font-size: x-small; border-width: 0; margin: 0; padding: 0 !important; width: 100%; }",
-                          "li.count { color: #666; padding-left: 0.5em; text-align: left; }",
-                          "span.count { background-color: #f80; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; color: #fff; font-family: serif; text-align: right; float: right; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; padding-left: 0.7em; padding-right: 0.5em; }",
-                          "li.bar { background-color: #eee; }",
-                          ".nameMismatch { color: #f00 !important; }",
+                          ".metadata { margin-bottom: 0.75em; }",
+                          ".metadata h6 > a { color: #000; text-decoration: none; }",
+                          ".metadata h6 > a:hover { color: #000; }",
+                          ".metadata .alert { color: #f00 !important; }",
+                          ".metadata .alert:hover { color: #ff4500; }",
+                          ".metadata .checked { color: #006400 !important; }",
+                          ".metadata .checked:hover { color: #008000; }",
+                          ".metadata .unknown { color: #000 !important; }",
+                          ".metadata .unknown:hover { color: #808080; }",
+                          ".metadata ul { border-width: 0; font-size: x-small; overflow: auto; margin: 0; padding: 0 !important; width: 100%; }",
+                          ".metadata li { color: #808080; white-space: nowrap; }",
+                          ".aoicon { max-height: 48px; max-width: 48px; }",
+
+                          ".count { color: #666; font-size: 0.7em; }",
+                          ".landf { font-size: x-small; border-width: 0; overflow: auto; margin: 0; padding: 0 !important; width: 100%; }",
+                          ".landf li { color: #666; padding-left: 0.5em; text-align: left; }",
+                          ".landf span { background-color: #f80; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; color: #fff; font-family: serif; text-align: right; float: right; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; padding-left: 0.7em; padding-right: 0.5em; }",
+                          ".landf .bar { background-color: #eee; }",
+
                           ".resourceName { margin-right: 0.5em; }"
 
                         ].join("\n")
                   });
-
 
                   if (gmc.get("showStrings")) {
                     let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
@@ -2057,7 +2083,7 @@
                       method: "GET",
                       onload: function(xhr) {
                         switch (xhr.status) {
-                          case 404:
+//                           case 404: // NOTE: Sometimes USO needs this trapped
                           case 500:
                           case 502:
                           case 503:
@@ -2071,29 +2097,23 @@
                               el.parentNode.insertBefore(headerNode, el);
 
                               let spanNodeSection = document.createElement("span");
-                              spanNodeSection.classList.add("metadata");
-                              if (forced) spanNodeSection.classList.add("metadataforced");
+                              spanNodeSection.classList.add("count");
+                              if (forced) spanNodeSection.classList.add("alert");
                               headerNode.appendChild(spanNodeSection);
 
-                              let divNode = document.createElement("div");
-                              divNode.classList.add("metadata");
-                              el.parentNode.insertBefore(divNode, el);
-
                               let ulNode = document.createElement("ul");
-                              ulNode.classList.add("count");
-                              divNode.appendChild(ulNode);
+                              ulNode.classList.add("landf");
+                              el.parentNode.insertBefore(ulNode, el);
 
                               let objCount = 0;
                               for (let [name, value] in Iterator(obj)) {
                                 let liNode = document.createElement("li");
-                                liNode.classList.add("count");
                                 if (objCount % 2) liNode.classList.add("bar");
                                 liNode.title = name;
 
                                 let textNode = document.createTextNode(name);
 
                                 let spanNode = document.createElement("span");
-                                spanNode.classList.add("count");
                                 spanNode.textContent = value;
 
                                 liNode.appendChild(spanNode);
@@ -2197,7 +2217,7 @@
                         node: gCSS,
                         data:
                           [
-                            "div.metadata { max-height: " + gmc.get("maxHeightList") + "em; }"
+                            ".metadata ul, .landf { max-height: " + gmc.get("maxHeightList") + "em; }"
 
                           ].join("\n")
                     });
@@ -2206,7 +2226,7 @@
                         node: gCSS,
                         data:
                           [
-                            "div.metadata { max-height: none; }"
+                            ".metadata ul, .landf { max-height: none; }"
 
                           ].join("\n")
                     });
@@ -2215,7 +2235,7 @@
                       node: gCSS,
                       data:
                         [
-                          "li.metadata, li.count { font-size: " + gmc.get("fontSize") + "em ; }"
+                          ".metadata li, .landf li { font-size: " + gmc.get("fontSize") + "em ; }"
 
                         ].join("\n")
                   });
@@ -2228,14 +2248,12 @@
                     nameKey = headers["name"];
 
                     if (nameKey != titleNode.textContent) {
-                      titleNode.classList.add("titleWarn");
-
                       if (name.toLowerCase() != titleNode.textContent.toLowerCase()) {
-                        titleNode.classList.add("nameMismatch");
+                        titleNode.classList.add("alert");
                         titleNode.title = "@name " + nameKey;
                       }
                       else
-                        titleNode.title = "@uso:name " + nameKey;
+                        titleNode.title = "@uso:name " + nameKey;  // NOTE: Redundant perhaps
                     }
 
                   function display(el, keys, filter, title, forced) {
@@ -2245,8 +2263,6 @@
                     let textNode = document.createTextNode(" ");
 
                     let aNode = document.createElement("a");
-                    aNode.style.setProperty("text-decoration", "none", ""); // TODO: CSS this... similar to invisilink
-                    aNode.style.setProperty("color", "#000", "");
                     aNode.href = protocol + "//sourceforge.net/apps/mediawiki/greasemonkey/index.php?title=Metadata_Block#.40" + title.replace("@", "");
                     aNode.textContent = title;
 
@@ -2257,31 +2273,24 @@
                     el.appendChild(headerNode);
 
                     let spanNodeSection = document.createElement("span");
-                    spanNodeSection.classList.add("metadata");
-                    if (forced) spanNodeSection.classList.add("metadataforced");
+                    spanNodeSection.classList.add("count");
+                    if (forced) spanNodeSection.classList.add("alert");
                     spanNodeSection.textContent = (keys[0] == "") ? "0" : keys.length;
                     headerNode.appendChild(spanNodeSection);
 
-                    let divNode = document.createElement("div");
-                    divNode.classList.add("metadata");
-                    el.appendChild(divNode);
-
                     let ulNode = document.createElement("ul");
-                    ulNode.classList.add("metadata");
-                    divNode.appendChild(ulNode);
+                    el.appendChild(ulNode);
 
                     let keyCount = 0;
                     for (let key in keys) {
                       let liNode = document.createElement("li");
-                      liNode.classList.add("metadata");
 
                       let matches;
                       switch(filter) {
                         case "namespace":
                         case "icon":
                           if (++keyCount > 1) {
-                            spanNodeSection.classList.add("metadata");
-                            spanNodeSection.classList.add("metadataforced");
+                            spanNodeSection.classList.add("alert");
                           }
 
                           matches = keys[key].match(/^(https?:\/\/.*)/i);
@@ -2297,13 +2306,12 @@
                             ulNode.appendChild(liNode);
                           }
                           else {
-                            matches = keys[key].match(/^(data:image\/.*)/i);
-                            if (matches) {
+                            matches = keys[key].match(/^(data:image\/(\S+?);?\w+?,.*)/i);
+                            if (matches && matches[2].toLowerCase() != "svg+xml" && matches[2].toLowerCase() != "x-svg") {
                               let imgNode = document.createElement("img");
                               imgNode.src = matches[1];
-                              imgNode.style.setProperty("width", "48px", ""); // TODO: CSS this
-                              imgNode.style.setProperty("width", "48px", "");
-                              imgNode.title = "~" + parseInt(matches[1].length / 1024 * 10) / 10 + "K " + matches[1].match(/^data:(?:\w*\/.*?[;,])?/i) + "\u2026";
+                              imgNode.classList.add("aoicon");
+                              imgNode.title = "~" + parseInt(matches[1].length / 1024 * 10) / 10 + "K " + matches[1].match(/^data:(?:\w+\/\S+?;?\w+?,)?/i) + "\u2026";
                               liNode.appendChild(imgNode);
 
                               ulNode.appendChild(liNode);
@@ -2320,10 +2328,8 @@
                         case "userInclude":
                         case "userExclude":
                           if (keys[key].match(/\s/)) {
-                            spanNodeSection.classList.add("metadata");
-                            spanNodeSection.classList.add("metadataforced");
-                            liNode.classList.add("metadata");
-                            liNode.classList.add("metadataforced");
+                            spanNodeSection.classList.add("alert");
+                            liNode.classList.add("alert");
                           }
                           liNode.title = keys[key];
                           liNode.textContent = keys[key];
@@ -2360,13 +2366,13 @@
                                       if (this.retry-- > 0)
                                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                       else
-                                        anchorNode.classList.add("metadataunknown"); // TODO: check this
+                                        anchorNode.classList.add("unknown"); // TODO: check this
                                       break;
                                     case 200:
-                                      anchorNode.classList.add("metadatachecked"); // TODO: check this
+                                      anchorNode.classList.add("checked"); // TODO: check this
                                       break;
                                     default:
-                                      anchorNode.classList.add("metadataforced"); // TODO: check this
+                                      anchorNode.classList.add("alert"); // TODO: check this
                                       break;
                                   }
                               }});
@@ -2388,13 +2394,12 @@
                               let thisNode = xpr.singleNodeValue;
                               let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                               if (baseUrl) {
-                                spanNodeSection.classList.add("metadata");
-                                spanNodeSection.classList.add("metadataforced");
+                                spanNodeSection.classList.add("alert");
 
                                 let anchorNode = document.createElement("a");
                                 anchorNode.href = baseUrl[1] + keys[key];
                                 anchorNode.rel = "nofollow";
-                                anchorNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
+                                anchorNode.classList.add("alert");
                                 anchorNode.textContent = keys[key];
 
                                 liNode.title = baseUrl[1] + keys[key];
@@ -2450,13 +2455,13 @@
                                       if (this.retry-- > 0)
                                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                                       else
-                                        anchorNode.classList.add("metadataunknown");
+                                        anchorNode.classList.add("unknown");
                                       break;
                                     case 200:
-                                      anchorNode.classList.add("metadatachecked");
+                                      anchorNode.classList.add("checked");
                                       break;
                                     default:
-                                      anchorNode.classList.add("metadataforced");
+                                      anchorNode.classList.add("alert");
                                       break;
                                   }
                               }});
@@ -2479,8 +2484,7 @@
                               let thisNode = xpr.singleNodeValue;
                               let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                               if (baseUrl) {
-                                spanNodeSection.classList.add("metadata");
-                                spanNodeSection.classList.add("metadataforced");
+                                spanNodeSection.classList.add("alert");
 
                                 let resourceName = keys[key].match(/(.*)[\s\t]/i)[1];
                                 let targetUrl = keys[key].match(/[\s\t](.*)$/i)[1];
@@ -2493,7 +2497,7 @@
                                 let anchorNode = document.createElement("a");
                                 anchorNode.href = baseUrl[1] + targetUrl;
                                 anchorNode.rel = "nofollow";
-                                anchorNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
+                                anchorNode.classList.add("alert");
                                 anchorNode.textContent = targetUrl;
 
                                 liNode.title = baseUrl[1] + targetUrl;
@@ -2511,8 +2515,7 @@
                           matches = keys[key].match(rex);
                           if (matches) {
                             if (matches[1] != scriptid || (matches[2] == "user" && filter == "updateURL") || ++keyCount > 1) {
-                              spanNodeSection.classList.add("metadata");
-                              spanNodeSection.classList.add("metadataforced");
+                              spanNodeSection.classList.add("alert");
                             }
 
                             let anchorNode = document.createElement("a");
@@ -2528,8 +2531,7 @@
                           }
                           else {
                             if (keys[key].match(/^https?:\/\/.*/)) {  // NOTE: Offsite
-                              spanNodeSection.classList.add("metadata");
-                              spanNodeSection.classList.add("metadataforced");
+                              spanNodeSection.classList.add("alert");
 
                               let anchorNode = document.createElement("a");
                               anchorNode.href = keys[key];
@@ -2553,15 +2555,14 @@
                               if (xpr && xpr.singleNodeValue) {
                                 let thisNode = xpr.singleNodeValue;
 
-                                spanNodeSection.classList.add("metadata");
-                                spanNodeSection.classList.add("metadataforced");
+                                spanNodeSection.classList.add("alert");
 
                                 let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                                 if (baseUrl) {
                                   let anchorNode = document.createElement("a");
                                   anchorNode.href = baseUrl[1] + key;
                                   anchorNode.rel = "nofollow";
-                                  anchorNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
+                                  anchorNode.classList.add("alert");
                                   anchorNode.textContent = keys[key];
 
                                   liNode.title = baseUrl[1] + keys[key];
@@ -2585,6 +2586,7 @@
                   }
 
                   let mbx = document.createElement("div");
+                  mbx.classList.add("metadata");
 
                   if (gmc.get("showKeys")) {
                     let keys = gmc.get("showKeysString").split(",");
@@ -2712,8 +2714,6 @@
                     if (hookmbxNode && hookmbxNode.singleNodeValue) {
                       let thisNode = hookmbxNode.singleNodeValue;
 
-                      mbx.style.setProperty("margin-bottom", "0.75em", ""); // TODO: CSS this??
-
                       if (thisNode.parentNode.id == "script_sidebar")
                         sidebarNode.insertBefore(mbx, thisNode);
                       else
@@ -2732,7 +2732,7 @@
       else {
         if (gmc.get("checkShowSize")) {
           let sourceNode = document.evaluate(
-          "//li[contains(@class, 'current')][contains(., 'Source Code')]",
+          "//li[contains(concat(' ', normalize-space(@class), ' '), ' current ')][contains(., 'Source Code')]",
             document.body,
             null,
             XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -2747,7 +2747,7 @@
             if (typeof headers != "undefined") {
               thisNode.textContent += " ";
               let spanNode = document.createElement("span");
-              spanNode.style.setProperty("color", "#f00", ""); // TODO: CSS this
+              spanNode.classList.add("alert");
 
               let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
               GM_xmlhttpRequest({
@@ -2756,7 +2756,7 @@
                 method: "GET",
                 onload: function(xhr) {
                   switch (xhr.status) {
-                    case 404:
+//                     case 404: // NOTE: Sometimes USO needs this trapped
                     case 500:
                     case 502:
                     case 503:
@@ -2764,7 +2764,6 @@
                         setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                       break;
                     case 200:
-                      spanNode.style.setProperty("color", "#666", ""); // TODO: CSS this
                       spanNode.textContent = (xhr.responseText.length > 1024)
                         ? parseInt(xhr.responseText.length / 1024 * 10) / 10 + "K"
                         : xhr.responseText.length;
@@ -2779,7 +2778,6 @@
         }
       }
     }
-
 
     // Count Issues
     let xpr = document.evaluate(
@@ -2864,7 +2862,7 @@
           url: protocol + "//" + (gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org/scripts/issues/" + scriptid,  // NOTE: Greasefire not SSLd properly... recheck periodically
           onload: function (xhr) {
             switch (xhr.status) {
-              case 404:
+//               case 404: // NOTE: Sometimes USO needs this trapped
               case 500:
               case 502:
               case 503:
@@ -2917,9 +2915,6 @@
 
   }
 
-
-
-
   if (gmc.get("hideNavTab")) {
     let tabNodes = document.evaluate(
     "//ul[@id='script-nav']/li",
@@ -2938,6 +2933,5 @@
         }
       }
   }
-
 
 })();
