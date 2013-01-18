@@ -5,10 +5,10 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.1
+// @version       0.3.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/48071/large.jpg
 //
-// @include /^https?:\/\/userscripts\.org\/.*/
+//@include /^https?:\/\/userscripts\.org\/.*/
 //
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
