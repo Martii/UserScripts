@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.2
+// @version       0.21.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -643,6 +643,7 @@
 
       gmc.fields["showStringsString"].node.setAttribute("spellcheck", "false");
       gmc.fields["showKeysString"].node.setAttribute("spellcheck", "false");
+      gmc.fields["insertH6String"].node.setAttribute("spellcheck", "false");
     }
   }
   else {
