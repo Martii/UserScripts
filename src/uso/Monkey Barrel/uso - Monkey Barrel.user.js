@@ -8,15 +8,16 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.34
+// @version       0.0.35
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
+//
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 //
 // @require   https://userscripts.org/scripts/source/115323.user.js
-// @require   https://raw.github.com/Martii/GM_config/4238cab16c26e0397ab92ae6c41606f02de1562b/gm_config.js
+// @require   https://raw.github.com/Martii/GM_config/2fdbad092de3a52f884fa1e9f5bfc2238e2836ca/gm_config.js
 //
 // @grant GM_addStyle
 // @grant GM_xmlhttpRequest
