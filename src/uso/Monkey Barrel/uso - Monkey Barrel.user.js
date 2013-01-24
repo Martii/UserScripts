@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.0
+// @version       0.1.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
@@ -333,7 +333,7 @@ Please note this script uses native JSON and native classList which requires Fir
             ".mainmenu- { position: fixed; z-index: 1; margin: 0; list-style: none outside none; border-left: 1px solid #888; border-right: 1px solid #888; border-bottom: 1px solid #888; }",
             ".mainmenu- li { -moz-border-radius: 0 !important; border-radius: 0 !important; margin: 0 !important; float: none !important; background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }",
             ".mainmenu- li a { color: #fff !important; }",
-            ".mainmenu- .sep { border-bottom: thin dashed #cc6d00 !important; }"
+            ".mainmenu- .sep { border-bottom: thin dashed #aaa !important; }"
 
           ].join("\n")
       });
