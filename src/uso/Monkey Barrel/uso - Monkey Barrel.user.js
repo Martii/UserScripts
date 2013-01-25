@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.1
+// @version       0.1.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
@@ -38,11 +38,11 @@ Please note this script uses native JSON and native classList which requires Fir
 
   function findlastPost(aTopicid) {
     if (document && document.body)
-      window.document.body.style.cursor = "progress";
+      document.body.style.cursor = "progress";
 
     GM_xmlhttpRequest({
       retry: 5,
-      url: window.location.protocol + "//" + window.location.host + "/topics/" + aTopicid + ".rss",
+      url: location.protocol + "//" + location.host + "/topics/" + aTopicid + ".rss",
       method: "GET",
       onload: function (xhr) {
         switch (xhr.status) {
@@ -52,7 +52,7 @@ Please note this script uses native JSON and native classList which requires Fir
               setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
             else {
               if (document && document.body)
-                window.document.body.style.cursor = "auto";
+                document.body.style.cursor = "auto";
             }
             break;
           case 200:
@@ -69,10 +69,10 @@ Please note this script uses native JSON and native classList which requires Fir
               let thisNode = xpr.singleNodeValue;
 
               if (/^https?:\/\/userscripts\.org\/posts\/\d+\/?/i.test(thisNode.textContent)) {
-                let url = thisNode.textContent.replace(/http:/i, window.location.protocol);
+                let url = thisNode.textContent.replace(/http:/i, location.protocol);
                 GM_xmlhttpRequest({
                   retry: 5,
-                  url: thisNode.textContent.replace(/http:/i, window.location.protocol),
+                  url: thisNode.textContent.replace(/http:/i, location.protocol),
                   method: "HEAD",
                   onload: function (xhr) {
                     // NOTE: Secure xhr is prevented currently on USO and GM_xhr currently has an issue with onreadystatechange in FF 7.0.1,
@@ -84,18 +84,18 @@ Please note this script uses native JSON and native classList which requires Fir
                           setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                         else {
                           if (document && document.body)
-                            window.document.body.style.cursor = "auto";
+                            document.body.style.cursor = "auto";
                         }
                         break;
                       case 200:
                         if (document && document.body)
-                          window.document.body.style.cursor = "auto";
+                          document.body.style.cursor = "auto";
 
-                        window.location.assign(xhr.finalUrl.replace(/^http:/i, window.location.protocol));
+                        location.assign(xhr.finalUrl.replace(/^http:/i, location.protocol));
                         break;
                       default:
                         if (document && document.body)
-                          window.document.body.style.cursor = "auto";
+                          document.body.style.cursor = "auto";
                         break;
                     }
                   }
@@ -105,7 +105,7 @@ Please note this script uses native JSON and native classList which requires Fir
             break;
           default:
             if (document && document.body)
-              window.document.body.style.cursor = "auto";
+              document.body.style.cursor = "auto";
           break;
         }
       }
@@ -113,17 +113,19 @@ Please note this script uses native JSON and native classList which requires Fir
   }
 
   // ** "load into view" e.g. use accelerator if #posts-last
-  if (window.location.hash == "#posts-last") {
-    let topicid = window.location.pathname.match(/\/topics\/(\d+)/i);
+  if (location.hash == "#posts-last") {
+    let topicid = location.pathname.match(/\/topics\/(\d+)/i);
     if (topicid)
       findlastPost(topicid[1]);
+    else
+      history.replaceState({}, '', location.href.replace(/\#posts\-last$/, ""));
   }
 
   function onDOMContentLoaded() {
     document.removeEventListener("DOMContentLoaded", onDOMContentLoaded, true);
 
-    if (window.location.hash == "#posts-last")
-      window.document.body.style.cursor = "progress";
+    if (location.hash == "#posts-last" && location.pathname.match(/\/topics\/\d+$/))
+      document.body.style.cursor = "progress";
 
     let gCSS = GM_setStyle({
         media: "screen, projection"
@@ -317,7 +319,7 @@ Please note this script uses native JSON and native classList which requires Fir
         }
       }
 
-      if (window.location.pathname.match(/\/scripts\/show\/114843/i)) {
+      if (location.pathname.match(/\/scripts\/show\/114843/i)) {
         gmc.open(); // NOTE: First open
       }
 
@@ -349,7 +351,7 @@ Please note this script uses native JSON and native classList which requires Fir
         if (xpr && xpr.singleNodeValue) {
           let thisNode = xpr.singleNodeValue;
 
-          let width = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("width").replace(/px$/i, "")); // NOTE: Returns normalized used instead of computed
+          let width = parseFloat(getComputedStyle(thisNode, null).getPropertyValue("width").replace(/px$/i, "")); // NOTE: Returns normalized used instead of computed
           if (width <= 950) {
             let mainmenu = document.getElementById("mainmenu");
             if (mainmenu)
@@ -375,7 +377,7 @@ Please note this script uses native JSON and native classList which requires Fir
         });
 
       if (!onresize())
-        window.addEventListener("resize", onresize, false);
+        addEventListener("resize", onresize, false);
       }
 
       // ** Event listeners
@@ -441,16 +443,16 @@ Please note this script uses native JSON and native classList which requires Fir
         mainmenu = JSON.parse(gmc.get("jsonMenus"));
       }
       catch (e) {
-        if (window.location.pathname != "/scripts/show/114843") {
+        if (location.pathname != "/scripts/show/114843") {
           alert('ERROR: Invalid JSON for main menu found in uso - Monkey Barrel.\n\nPlease correct or reset to defaults');
 
-          window.location.pathname = "/scripts/show/114843";
+          location.pathname = "/scripts/show/114843";
         }
         return;
       }
 
       // If on /groups and allowed then read in values from sidebar
-      if (gmc.get("importGroups") && window.location.pathname == "/groups") {
+      if (gmc.get("importGroups") && location.pathname == "/groups") {
         let xpr = document.evaluate(
               "//div[@id='right']/h3[starts-with(.,'Groups you created')]/following-sibling::ul[1]/li/a"
             + "|//div[@id='right']/h3[starts-with(.,'Groups you joined')]/following-sibling::ul[1]/li/a",
