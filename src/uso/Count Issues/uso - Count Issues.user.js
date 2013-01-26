@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.3
+// @version       0.21.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -50,6 +50,9 @@
 // @grant GM_xmlhttpRequest
 //
 // ==/UserScript==
+
+  if (!document || !document.body || location.hash == "#posts-last")
+    return;
 
   let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
 
@@ -2065,11 +2068,11 @@
                           ".metadata li { color: #808080; white-space: nowrap; }",
                           ".aoicon { max-height: 48px; max-width: 48px; }",
 
-                          ".count { color: #666; font-size: 0.7em; }",
                           ".landf { font-size: x-small; border-width: 0; overflow: auto; margin: 0; padding: 0 !important; width: 100%; }",
                           ".landf li { color: #666; padding-left: 0.5em; text-align: left; }",
                           ".landf span { background-color: #f80; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; color: #fff; font-family: serif; text-align: right; float: right; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; padding-left: 0.7em; padding-right: 0.5em; }",
                           ".landf .bar { background-color: #eee; }",
+                          ".landf .count { color: #666; font-size: 0.7em; }",
 
                           ".resourceName { margin-right: 0.5em; }"
 
