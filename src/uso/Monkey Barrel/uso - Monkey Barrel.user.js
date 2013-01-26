@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.2
+// @version       0.1.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
@@ -88,10 +88,13 @@ Please note this script uses native JSON and native classList which requires Fir
                         }
                         break;
                       case 200:
-                        if (document && document.body)
+                        if (document && document.body) {
                           document.body.style.cursor = "auto";
-
-                        location.assign(xhr.finalUrl.replace(/^http:/i, location.protocol));
+                          location.assign(xhr.finalUrl.replace(/^http:/i, location.protocol));
+                        }
+                        else {
+                          location.replace(xhr.finalUrl.replace(/^http:/i, location.protocol));
+                        }
                         break;
                       default:
                         if (document && document.body)
@@ -112,16 +115,33 @@ Please note this script uses native JSON and native classList which requires Fir
     });
   }
 
-  // ** "load into view" e.g. use accelerator if #posts-last
+  // ** Accelerator function event
+  function lastPost(ev) {
+    let topicid = ev.target.href.match(/\/topics\/(\d+)\#posts\-last/i);
+    if (!topicid)
+      return;
+
+    ev.preventDefault();
+
+    findlastPost(topicid[1]);
+  };
+
+  // ** "load into view" e.g. use accelerator if #posts-last in address bar
   if (location.hash == "#posts-last") {
     let topicid = location.pathname.match(/\/topics\/(\d+)/i);
-    if (topicid)
+    if (topicid) {
+      stop();
+
       findlastPost(topicid[1]);
+    }
     else
       history.replaceState({}, '', location.href.replace(/\#posts\-last$/, ""));
   }
 
   function onDOMContentLoaded() {
+    if (!document || !document.body)
+      return;
+
     document.removeEventListener("DOMContentLoaded", onDOMContentLoaded, true);
 
     if (location.hash == "#posts-last" && location.pathname.match(/\/topics\/\d+$/))
@@ -297,6 +317,11 @@ Please note this script uses native JSON and native classList which requires Fir
                 "type": 'checkbox',
                 "label": 'Enable automatic import for subscribed Groups when clicked',
                 "default": true
+            },
+            'addLastPostLinks': {
+                "type": 'checkbox',
+                "label": 'Add last post links to the Recent Topics on a script homepage',
+                "default": true
             }
           }
       );
@@ -426,17 +451,6 @@ Please note this script uses native JSON and native classList which requires Fir
         return createMenuItems(ulNode, aMenu[1]);
       }
 
-      // ** Accelerator function
-      function lastPost(ev) {
-        let topicid = ev.target.href.match(/\/topics\/(\d+)\#posts\-last/i);
-        if (!topicid)
-          return;
-
-        ev.preventDefault();
-
-        findlastPost(topicid[1]);
-      };
-
       // ** Retrieve the stored menus
       let mainmenu;
       try {
@@ -473,6 +487,45 @@ Please note this script uses native JSON and native classList which requires Fir
           // Resave the JSON menus silently
           gmc.set("jsonMenus", JSON.stringify(mainmenu, null, " "));
           gmc.write();
+        }
+      }
+
+
+      if (gmc.get("addLastPostLinks")) {
+        GM_setStyle({
+          node: gCSS,
+          data:
+            [
+              "#topics .postslast { padding: 0.125em 0.5em; }",
+              "#topics td.count { text-align: right; background-color: #eee; }"
+
+            ].join("\n")
+        });
+
+        let xpr = document.evaluate(
+            "//div[@id='topics']//td/a[starts-with(@href, '/topics')]",
+            document.body,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
+        );
+        if (xpr && xpr.snapshotLength > 0) {
+          // NOTE: Assume table headers are present
+          for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+            let aNode = document.createElement("a");
+            aNode.href = thisNode.href;
+            aNode.hash = "posts-last";
+            aNode.title = "last post";
+            aNode.textContent = thisNode.parentNode.nextSibling.textContent + "\u00a0\u00a0\u00bb";
+            aNode.classList.add("lastpost");  // NOTE: USO native
+            aNode.classList.add("postslast");
+            aNode.addEventListener("click", lastPost, false);
+
+            thisNode.parentNode.nextSibling.removeChild(thisNode.parentNode.nextSibling.firstChild);
+
+            aNode = thisNode.parentNode.parentNode.lastChild.appendChild(aNode);
+//            thisNode.parentNode.parentNode.lastChild.insertBefore(aNode, thisNode.parentNode.parentNode.lastChild.firstChild);
+          }
         }
       }
 
