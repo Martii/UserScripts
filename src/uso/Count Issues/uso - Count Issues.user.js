@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.4
+// @version       0.21.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -2072,7 +2072,7 @@
                           ".landf li { color: #666; padding-left: 0.5em; text-align: left; }",
                           ".landf span { background-color: #f80; -moz-border-radius: 1.3em 0 0 1.3em; border-radius: 1.3em 0 0 1.3em; color: #fff; font-family: serif; text-align: right; float: right; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; padding-left: 0.7em; padding-right: 0.5em; }",
                           ".landf .bar { background-color: #eee; }",
-                          ".landf .count { color: #666; font-size: 0.7em; }",
+                          "span.count { color: #666; font-size: 0.7em; }",
 
                           ".resourceName { margin-right: 0.5em; }"
 
