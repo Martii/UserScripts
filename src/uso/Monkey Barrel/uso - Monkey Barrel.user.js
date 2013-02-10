@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.3
+// @version       0.1.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
@@ -17,7 +17,7 @@
 // @include   https://userscripts.org/*
 //
 // @require   https://userscripts.org/scripts/source/115323.user.js
-// @require   https://raw.github.com/Martii/GM_config/2fdbad092de3a52f884fa1e9f5bfc2238e2836ca/gm_config.js
+// @require   https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
 //
 // @grant GM_addStyle
 // @grant GM_xmlhttpRequest
@@ -308,9 +308,9 @@ Please note this script uses native JSON and native classList which requires Fir
                                 ].join("\n")
                              ), null, " ")
             },
-            'enableUnstick': {
+            'enableUnpin': {
                 "type": 'checkbox',
-                "label": 'Unstick submenus',
+                "label": 'Unpin submenus',
                 "default": true
             },
             'importGroups': {
@@ -390,7 +390,7 @@ Please note this script uses native JSON and native classList which requires Fir
           return false;
       }
 
-      if (gmc.get("enableUnstick")) {
+      if (gmc.get("enableUnpin")) {
         GM_setStyle({
           node: gCSS,
           data:
@@ -407,11 +407,24 @@ Please note this script uses native JSON and native classList which requires Fir
 
       // ** Event listeners
       function onmouseover(ev) {
-        this.firstChild.nextSibling.classList.remove("hid");
+
+        let thatNode = this.firstChild.nextSibling;
+        while (thatNode) {
+          if (thatNode.tagName.toLowerCase() == "ul")
+            thatNode.classList.remove("hid");
+
+          thatNode = thatNode.nextSibling;
+        }
       };
 
       function onmouseout(ev) {
-        this.firstChild.nextSibling.classList.add("hid");
+        let thatNode = this.firstChild.nextSibling;
+        while (thatNode) {
+          if (thatNode.tagName.toLowerCase() == "ul")
+            thatNode.classList.add("hid");
+
+          thatNode = thatNode.nextSibling;
+        }
       };
 
       // ** Generator functions
@@ -496,7 +509,7 @@ Please note this script uses native JSON and native classList which requires Fir
           node: gCSS,
           data:
             [
-              "#topics .postslast { padding: 0.125em 0.5em; }",
+              "#topics .postslast { padding: 0.125em 0.25em 0.125em 0.5em; }",
               "#topics td.count { text-align: right; background-color: #eee; }"
 
             ].join("\n")
