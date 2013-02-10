@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.5
+// @version       0.21.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -37,7 +37,7 @@
 // @require https://userscripts.org/scripts/source/61794.user.js
 //
 // @require https://userscripts.org/scripts/source/115323.user.js
-// @require https://raw.github.com/Martii/GM_config/2fdbad092de3a52f884fa1e9f5bfc2238e2836ca/gm_config.js
+// @require https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
 // @require https://userscripts.org/scripts/version/87269/525804.user.js
 //
@@ -949,7 +949,8 @@
                 ".loading { background-image: url(chrome://browser/skin/tabbrowser/loading.png); }",
                 ".processing { background-image: url(chrome://global/skin/icons/loading_16.png); }",
 
-                ".err { background-color: #fdd !important; border-color: #dbb !important; }"
+                ".err { background-color: #fdd !important; border-color: #dbb !important; }",
+                "#currenturls { display: none; }"
 
               ].join("\n")
         });
