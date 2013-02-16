@@ -5,7 +5,7 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.16
+// @version       0.1.17
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 //
 // @include       /^https?:\/\/userscripts\.org\/.*/
@@ -259,8 +259,12 @@
     }
 
     gmc.onSave = function () {
-      let section_search = document.getElementById("section_search");
-      if (gmc.get("lockInurl") == "Fixed" && GM_getValue(":se-default") == "cse")
+      let
+          section_search = document.getElementById("section_search"),
+          cse_section_search = document.getElementById("cref_iframe_cse-search-box")
+      ;
+
+      if (gmc.get("lockInurl") == "Fixed" && !cse_section_search.classList.contains("hid"))
         section_search.classList.add("urllock");
       else
         section_search.classList.remove("urllock");
