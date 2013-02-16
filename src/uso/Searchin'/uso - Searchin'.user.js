@@ -5,7 +5,7 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.15
+// @version       0.1.16
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 //
 // @include       /^https?:\/\/userscripts\.org\/.*/
@@ -556,19 +556,19 @@
 
           "#section_search .searchin-opt { width: 16px; height: 16px; position: absolute; margin: 0.58em 0 0 -3em; background: url(" + GM_getResourceURL("gmc") + ") no-repeat scroll center center transparent; }",
 
-          "#section_search #searchin { width: 32px; height: 16px; position: absolute; margin: 0.58em 0 0 0.5em; }",
+          "#section_search #searchin { width: 32px; height: 16px; position: absolute; margin: " + ((!uac) ? "7px" : "0.58em") + " 0 0 0.5em; }",
           "#section_search .uso { background: url(" + GM_getResourceURL("uso") + ") no-repeat scroll left center, url(" + GM_getResourceURL("more") + ") no-repeat scroll right center transparent; }",
           "#section_search .cse { background: url(" + GM_getResourceURL("cse") + ") no-repeat scroll left center, url(" + GM_getResourceURL("more") + ") no-repeat scroll right center transparent; }",
           ".urllock { border-bottom-color: #000 !important; border-left-color: #000 !important; }",
 
-          "#semenu { top: " + ((!uac) ? "2.575" : "2.392") + "em; position: absolute; z-index: 2; margin: 0; list-style: none outside none; border-left: 1px solid #888; border-right: 1px solid #888; border-bottom: 1px solid #888; border-top: 1px solid #888; }",
+          "#semenu { top: " + ((!uac) ? (height + 1) + "px" : "2.393em") + "; position: absolute; z-index: 2; margin: 0; list-style: none outside none; border-left: 1px solid #888; border-right: 1px solid #888; border-bottom: 1px solid #888; border-top: 1px solid #888; }",
           "#semenu > li { padding: 0.25em 1em 0.25em 0.5em; border-style: none !important; color: #000; -moz-border-radius: 0 !important; border-radius: 0 !important; margin: 0 !important; float: none !important; background: #eee url(ddata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }",
           "#semenu > li a { color: #fff !important; }",
           "#semenu > li:last-child  { border-top: thin dotted #aaa !important; }",
           "#semenu > li img  { vertical-align: middle; margin: 0 0.25em; }",
           "#semenu > li:hover { color: #fff !important; background-color: #06b !important; }",
 
-          "#section_search .go { position: absolute; margin: 0.58em 0 0 " + ((!ubs) ? "-1.5" : "-1.2") + "em; }"
+          "#section_search .go { position: absolute; margin: " + ((!uac) ? "7px" : "0.58em") + " 0 0 " + ((!ubs) ? "-1.5" : "-1.2") + "em; }"
 
         ].join("\n")
     });
