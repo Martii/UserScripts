@@ -5,7 +5,7 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.17
+// @version       0.1.18
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 //
 // @include       /^https?:\/\/userscripts\.org\/.*/
@@ -841,6 +841,10 @@
                   }
                 }
 
+                let e = document.createEvent("MouseEvents");
+                e.initEvent("mouseout", true, false);
+                ev.target.dispatchEvent(e);
+
                 let semenu = document.getElementById("semenu");
                 if (semenu)
                   semenu.parentNode.removeChild(semenu);
@@ -906,6 +910,10 @@
                     thisNode.value = query;
                 }
               }
+
+              let e = document.createEvent("MouseEvents");
+              e.initEvent("mouseout", true, false);
+              ev.target.dispatchEvent(e);
 
               let semenu = document.getElementById("semenu");
               if (semenu)
