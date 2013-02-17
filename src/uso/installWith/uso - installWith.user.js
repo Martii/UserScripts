@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.16
+// @version       1.1.17
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1057,6 +1057,17 @@
                 "securityAdvisory": {
                   "advisory": "low",
                   "title": "easy userscript updater snippet"
+                }
+              },
+              "150227": {
+                "textContent": 'GM Script Update',
+                "title": 'by Peta (77674)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/150227(?:\\/\\d+)?\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "severe",
+                  "title": "iframe vulnerability, possible DDoS script, repurposed script to updater"
                 }
               },
               "35611": {
