@@ -5,7 +5,7 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.18
+// @version       0.1.19
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 //
 // @include       /^https?:\/\/userscripts\.org\/.*/
@@ -324,8 +324,20 @@
             pathname = "/scripts";                                  // NOTE: Match USO default
           }
 
+          // ** USO search page check
+          if (/.+\/search\/?$/.test(pathname))
+            pathname = pathname.replace(/\/search\/?$/, "");
+
+          // ** Custom site search page check
           if (!(/^\/search\/?/.test(pathname)))
             aValue += " inurl:" + pathname;
+          else {
+            if (/^\/search\/?/.test(pathname)) {
+              let inurl = location.search.match(/\+inurl\%3A\%2F(.+?)\&/);
+              if (inurl)
+                aValue += " inurl:/" + decodeURIComponent(inurl[1])
+            }
+          }
         }
       }
 
