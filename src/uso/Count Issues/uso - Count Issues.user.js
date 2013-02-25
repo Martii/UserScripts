@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.6
+// @version       0.21.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -54,7 +54,24 @@
   if (!document || !document.body || location.hash == "#posts-last")
     return;
 
-  let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
+  let
+      protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":",
+      uac = false
+  ;
+
+  // Detect uac
+  let xpr = document.evaluate(
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' alt_topbottom ')]",
+    document.body,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  );
+  if (xpr && xpr.singleNodeValue) {
+    let thisNode = xpr.singleNodeValue;
+
+    uac = true;
+  }
 
   let throbber = "data:image/gif;base64,"
     + 'R0lGODlhAQABAOMKAMTExMnJyc3NzdLS0tfX19vb2+Dg4OXl5enp6e7u7v//////////////////'
@@ -198,16 +215,21 @@
       });
 
     /* Nearest fix for userscripts.org Alternate CSS */
-    let fullDescription = document.getElementById("full_description");
-    if (fullDescription && screenShots && fullDescription.clientWidth > parseInt(screenShots.clientWidth * 1.0275))
+    if (uac) {
       GM_setStyle({
         node: gCSS,
         data:
           [
-            "#screenshots { width: 97.5% !important; }"
+            "#screenshots { width: 97.5% !important; }",
+
+            // Fix USO site change with uac and right sidebar
+            "#activity, #topics { float: inherit !important; }"
+            // or this
+            // "h6 { clear: both; }"
 
           ].join("\n")
       });
+    }
 
     gmc.init(
       divNode,
@@ -447,7 +469,7 @@
           'insertH6String': {
               "type": 'textarea',
               "label": '<em class="gmc-yellownote">use commas to separate headers</em>',
-              "default": ""
+              "default": "Groups,Admin for script,Tags,Other Scripts by Author"
           },
           'useGreasefireUrl': {
               "section": [, ""],
