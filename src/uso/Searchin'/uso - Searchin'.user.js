@@ -5,7 +5,7 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.19
+// @version       0.1.20
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 //
 // @include       /^https?:\/\/userscripts\.org\/.*/
@@ -577,7 +577,7 @@
           "#section_search .cse { background: url(" + GM_getResourceURL("cse") + ") no-repeat scroll left center, url(" + GM_getResourceURL("more") + ") no-repeat scroll right center transparent; }",
           ".urllock { border-bottom-color: #000 !important; border-left-color: #000 !important; }",
 
-          "#semenu { top: " + ((!uac) ? (height + 1) + "px" : "2.393em") + "; position: absolute; z-index: 2; margin: 0; list-style: none outside none; border-left: 1px solid #888; border-right: 1px solid #888; border-bottom: 1px solid #888; border-top: 1px solid #888; }",
+          "#semenu { top: " + ((!uac) ? (height + 1) + "px" : "2.393em") + "; position: absolute; z-index: 2; margin: 0; list-style: none outside none; border-left: 1px solid #888; border-right: 1px solid #888; border-bottom: 1px solid #888; border-top: 1px solid #888; padding-left: 0; }",
           "#semenu > li { padding: 0.25em 1em 0.25em 0.5em; border-style: none !important; color: #000; -moz-border-radius: 0 !important; border-radius: 0 !important; margin: 0 !important; float: none !important; background: #eee url(ddata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAQAAABamYz0AAAAAXNSR0IArs4c6QAAAB5JREFUCNdjuOfAxPCPieEvDP1D4v5DIv/iEEcIAgClTRkR4R/Z1AAAAABJRU5ErkJggg==) repeat-x scroll left top !important; }",
           "#semenu > li a { color: #fff !important; }",
           "#semenu > li:last-child  { border-top: thin dotted #aaa !important; }",
