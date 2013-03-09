@@ -5,7 +5,7 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.2
+// @version       0.3.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/48071/large.jpg
 //
 //@include /^https?:\/\/userscripts\.org\/.*/
@@ -32,5 +32,16 @@
 
       ].join("\n")
   });
+
+  // Padding left fix for menu on individual user pages
+  GM_setStyle({
+    node: gCSS,
+    data:
+      [
+        ".users #root .container ul.subnav { padding-left: 0; }"
+
+      ].join("\n")
+  });
+
 
 })();
