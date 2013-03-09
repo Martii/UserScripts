@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.7
+// @version       0.21.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -2081,8 +2081,8 @@
                           ".metadata { margin-bottom: 0.75em; }",
                           ".metadata h6 > a { color: #000; text-decoration: none; }",
                           ".metadata h6 > a:hover { color: #000; }",
-                          ".metadata .alert { color: #f00 !important; }",
-                          ".metadata .alert:hover { color: #ff4500; }",
+                          ".metadata .ci-alert { color: #f00 !important; }",
+                          ".metadata .ci-alert:hover { color: #ff4500; }",
                           ".metadata .checked { color: #006400 !important; }",
                           ".metadata .checked:hover { color: #008000; }",
                           ".metadata .unknown { color: #000 !important; }",
@@ -2125,7 +2125,7 @@
 
                               let spanNodeSection = document.createElement("span");
                               spanNodeSection.classList.add("count");
-                              if (forced) spanNodeSection.classList.add("alert");
+                              if (forced) spanNodeSection.classList.add("ci-alert");
                               headerNode.appendChild(spanNodeSection);
 
                               let ulNode = document.createElement("ul");
@@ -2276,7 +2276,7 @@
 
                     if (nameKey != titleNode.textContent) {
                       if (name.toLowerCase() != titleNode.textContent.toLowerCase()) {
-                        titleNode.classList.add("alert");
+                        titleNode.classList.add("ci-alert");
                         titleNode.title = "@name " + nameKey;
                       }
                       else
@@ -2301,7 +2301,7 @@
 
                     let spanNodeSection = document.createElement("span");
                     spanNodeSection.classList.add("count");
-                    if (forced) spanNodeSection.classList.add("alert");
+                    if (forced) spanNodeSection.classList.add("ci-alert");
                     spanNodeSection.textContent = (keys[0] == "") ? "0" : keys.length;
                     headerNode.appendChild(spanNodeSection);
 
@@ -2317,7 +2317,7 @@
                         case "namespace":
                         case "icon":
                           if (++keyCount > 1) {
-                            spanNodeSection.classList.add("alert");
+                            spanNodeSection.classList.add("ci-alert");
                           }
 
                           matches = keys[key].match(/^(https?:\/\/.*)/i);
@@ -2355,8 +2355,8 @@
                         case "userInclude":
                         case "userExclude":
                           if (keys[key].match(/\s/)) {
-                            spanNodeSection.classList.add("alert");
-                            liNode.classList.add("alert");
+                            spanNodeSection.classList.add("ci-alert");
+                            liNode.classList.add("ci-alert");
                           }
                           liNode.title = keys[key];
                           liNode.textContent = keys[key];
@@ -2399,7 +2399,7 @@
                                       anchorNode.classList.add("checked"); // TODO: check this
                                       break;
                                     default:
-                                      anchorNode.classList.add("alert"); // TODO: check this
+                                      anchorNode.classList.add("ci-alert"); // TODO: check this
                                       break;
                                   }
                               }});
@@ -2421,12 +2421,12 @@
                               let thisNode = xpr.singleNodeValue;
                               let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                               if (baseUrl) {
-                                spanNodeSection.classList.add("alert");
+                                spanNodeSection.classList.add("ci-alert");
 
                                 let anchorNode = document.createElement("a");
                                 anchorNode.href = baseUrl[1] + keys[key];
                                 anchorNode.rel = "nofollow";
-                                anchorNode.classList.add("alert");
+                                anchorNode.classList.add("ci-alert");
                                 anchorNode.textContent = keys[key];
 
                                 liNode.title = baseUrl[1] + keys[key];
@@ -2488,7 +2488,7 @@
                                       anchorNode.classList.add("checked");
                                       break;
                                     default:
-                                      anchorNode.classList.add("alert");
+                                      anchorNode.classList.add("ci-alert");
                                       break;
                                   }
                               }});
@@ -2511,7 +2511,7 @@
                               let thisNode = xpr.singleNodeValue;
                               let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                               if (baseUrl) {
-                                spanNodeSection.classList.add("alert");
+                                spanNodeSection.classList.add("ci-alert");
 
                                 let resourceName = keys[key].match(/(.*)[\s\t]/i)[1];
                                 let targetUrl = keys[key].match(/[\s\t](.*)$/i)[1];
@@ -2524,7 +2524,7 @@
                                 let anchorNode = document.createElement("a");
                                 anchorNode.href = baseUrl[1] + targetUrl;
                                 anchorNode.rel = "nofollow";
-                                anchorNode.classList.add("alert");
+                                anchorNode.classList.add("ci-alert");
                                 anchorNode.textContent = targetUrl;
 
                                 liNode.title = baseUrl[1] + targetUrl;
@@ -2542,7 +2542,7 @@
                           matches = keys[key].match(rex);
                           if (matches) {
                             if (matches[1] != scriptid || (matches[2] == "user" && filter == "updateURL") || ++keyCount > 1) {
-                              spanNodeSection.classList.add("alert");
+                              spanNodeSection.classList.add("ci-alert");
                             }
 
                             let anchorNode = document.createElement("a");
@@ -2558,7 +2558,7 @@
                           }
                           else {
                             if (keys[key].match(/^https?:\/\/.*/)) {  // NOTE: Offsite
-                              spanNodeSection.classList.add("alert");
+                              spanNodeSection.classList.add("ci-alert");
 
                               let anchorNode = document.createElement("a");
                               anchorNode.href = keys[key];
@@ -2582,14 +2582,14 @@
                               if (xpr && xpr.singleNodeValue) {
                                 let thisNode = xpr.singleNodeValue;
 
-                                spanNodeSection.classList.add("alert");
+                                spanNodeSection.classList.add("ci-alert");
 
                                 let baseUrl = thisNode.href.match(/(.*\/).*\.user\.js$/i);
                                 if (baseUrl) {
                                   let anchorNode = document.createElement("a");
                                   anchorNode.href = baseUrl[1] + key;
                                   anchorNode.rel = "nofollow";
-                                  anchorNode.classList.add("alert");
+                                  anchorNode.classList.add("ci-alert");
                                   anchorNode.textContent = keys[key];
 
                                   liNode.title = baseUrl[1] + keys[key];
@@ -2774,7 +2774,7 @@
             if (typeof headers != "undefined") {
               thisNode.textContent += " ";
               let spanNode = document.createElement("span");
-              spanNode.classList.add("alert");
+              spanNode.classList.add("ci-alert");
 
               let currentVersion = (typeof headers["uso"]["version"] == "string") ? headers["uso"]["version"] : headers["uso"]["version"][headers["uso"]["version"].length -1];
               GM_xmlhttpRequest({
@@ -2831,7 +2831,7 @@
                 node: gCSS,
                 data:
                   [
-                    ".alert { color: #f00 !important; }"
+                    ".ci-alert { color: #f00 !important; }"
 
                   ].join("\n")
             });
@@ -2869,7 +2869,7 @@
 
             spanNode.textContent = yesCount;
             if (yesCount > noCount)
-              spanNode.classList.add("alert");
+              spanNode.classList.add("ci-alert");
           }
 
         if (issuesNode.firstChild.nodeType == 1)
@@ -2896,7 +2896,7 @@
                 if (this.retry-- > 0)
                   setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
                 else {
-                  spanNode.classList.add("alert");
+                  spanNode.classList.add("ci-alert");
                   countIssues();
                   issuesNode.classList.remove("throbber");
                 }
