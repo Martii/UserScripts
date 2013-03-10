@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.8
+// @version       0.21.9
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -223,9 +223,10 @@
             "#screenshots { width: 97.5% !important; }",
 
             // Fix USO site change with uac and right sidebar
-            "#activity, #topics { float: inherit !important; }"
+            "#activity, #topics { float: inherit !important; }",
             // or this
-            // "h6 { clear: both; }"
+            // "h6 { clear: both; }",
+            ".changetabs-input { width: 1.5em !important; }" // NOTE: Defer to UAC when updated
 
           ].join("\n")
       });
@@ -1939,6 +1940,18 @@
 
                 ].join("\n")
           });
+
+        if (/\/topics\/\d+/.test(location.pathname)) { // TODO: Look for some other test eventually
+          GM_setStyle({
+              node: gCSS,
+              data:
+                [
+                  ".container { position: static; }",
+                  "#install_script { " + ((!uac) ? "right: 29.85em; top: 6.1em;": "right: 33.75em; top: 4.65em;") + " }" // NOTE: Fix install button if present
+
+                ].join("\n")
+          });
+        }
 
         let owned = false;
         document.evaluate(
