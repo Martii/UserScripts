@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.17
+// @version       1.1.18
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -1017,6 +1017,18 @@
                 "title": 'by ArmEagle (111132)',
                 "rex": [
                   "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/75442(?:\\/\\d+)?\\.user\\.js"
+                ],
+                "securityAdvisory": {
+                  "advisory": "guarded",
+                  "title": "i/frame vulnerability"
+                }
+              },
+              "159301": {
+                "derivative": 1,
+                "textContent": 'derived AEG Userscript AutoUpdater',
+                "title": 'by Timid Script (100610)',
+                "rex": [
+                  "^https?:\\/\\/userscripts\\.org\\/scripts\\/(?:source|version)\\/159301(?:\\/\\d+)?\\.user\\.js"
                 ],
                 "securityAdvisory": {
                   "advisory": "guarded",
