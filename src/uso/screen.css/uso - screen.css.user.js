@@ -5,7 +5,7 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.4
+// @version       0.3.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/48071/large.jpg
 //
 //@include /^https?:\/\/userscripts\.org\/.*/
@@ -40,7 +40,7 @@
       [
         ".users #root .container ul.subnav,",
         ".home #root .container ul.subnav",
-        "{ padding-left: 0 !important; }"
+        "{ padding-left: 0; }"
 
       ].join("\n")
   });
