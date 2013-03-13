@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.5
+// @version       0.1.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
@@ -20,7 +20,10 @@
 // @require   https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
 //
 // @grant GM_addStyle
+// @grant GM_getValue
+// @grant GM_log
 // @grant GM_xmlhttpRequest
+// @grant GM_setValue
 //
 // ==/UserScript==
 
