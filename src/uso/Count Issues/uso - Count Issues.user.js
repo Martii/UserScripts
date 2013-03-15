@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.22.0
+// @version       0.22.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -314,7 +314,7 @@
 
                   "#gmc69307_field_checkShowVersionsKeysString",
                   "{ font-size: 1.0em; margin-left: 2.75em; min-width: 93.85%; max-width: 93.85%; }",
-                  
+
                   "#gmc69307_field_showStringsString",
                   "{ height: 8em; min-height: 8em; }",
 
@@ -1619,34 +1619,44 @@
                           let aInstallNode = document.createElement("a");
                           aInstallNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js";
                           aInstallNode.textContent = dateid;
+
                           if (gmc.get("checkShowVersionsKeys")) {
-                            aInstallNode.addEventListener("mouseover", function (ev) {
-                              if (!ev.target.title) {
+                            function onmouseoverDiff(ev) {
+                              if (!ev.target.title && !ev.target.classList.contains("throbber")) {
                                 ev.target.classList.add("throbber");
                                 GM_xmlhttpRequest({
                                   method: "GET",
-                                  url: "/scripts/version/" + scriptid + "/" + diffid + ".meta.js",
-                                  onload: function(xhr) {
+                                  url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + diffid + ".meta.js",
+                                  onload: function (xhr) {
+                                    ev.target.classList.remove("throbber");
                                     switch(xhr.status) {
                                       case 200:
-                                        ev.target.classList.remove("throbber");
-                                        let responseText = xhr.responseText;
+                                        ev.target.removeEventListener("mouseover", onmouseoverDiff, false);
 
-                                        let diffMeta = parseMeta(responseText);
+                                        let
+                                            diffMeta = parseMeta(xhr.responseText),
+                                            title = ""
+                                        ;
 
-                                        let title = "";
                                         let keys = gmc.get("checkShowVersionsKeysString").split(",");
-                                        for (key in keys) {
-                                          title += '@' + keys[key] + ' ' + diffMeta[keys[key]] + '\n';
-                                        }
+                                        for (let key in keys)
+                                          if (diffMeta[keys[key]])
+                                            title += '@' + keys[key] + ' ' + diffMeta[keys[key]] + '\n';
 
-                                        ev.target.title = title;
+                                        if (title != "")
+                                          ev.target.title = title;
+
                                         break;
                                     }
+                                  },
+                                  onerror: function (xhr) {
+                                    console.error("Error detected with retrieving diff meta.js routine");
+                                    ev.target.classList.remove("throbber");
                                   }
                                 });
                               }
-                            });
+                            }
+                            aInstallNode.addEventListener("mouseover", onmouseoverDiff, false);
                           }
 
                           let leftText = document.createTextNode("[")
