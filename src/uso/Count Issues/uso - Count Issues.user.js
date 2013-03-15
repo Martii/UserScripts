@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.21.9
+// @version       0.22.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -95,6 +95,48 @@
 
         ].join("\n")
   });
+
+  function parseMeta(aString) {
+    aString = aString.toString();
+    let
+        re = /\/\/ @(\S+)(?:\s+(.*))?/,
+        headers = {},
+        name, prefix, header, key, value,
+        lines = aString.split(/[\r\n]+/).filter(function (e, i, a) {
+          return (e.match(re));
+        })
+    ;
+    for (let line in lines) {
+      [, name, value] = lines[line].replace(/\s+$/, "").match(re);
+      switch (name) {
+        case "licence":
+          name = "license";
+          break;
+      }
+      [key, prefix] = name.split(/:/).reverse();
+      if (key) {
+        if (prefix) {
+          if (!headers[prefix])
+            headers[prefix] = new Object;
+          header = headers[prefix];
+        }
+        else
+          header = headers;
+
+        if (header[key]) {
+          if (!(header[key] instanceof Array))
+            header[key] = new Array(header[key]);
+          header[key].push(value || "");
+        }
+        else
+          header[key] = value || "";
+      }
+    }
+    if (headers["license"])
+      headers["licence"] = headers["license"];
+
+    return (headers.toSource() != "({})") ? headers : undefined;
+  }
 
   function simpleTranscodeDotNotation(line, counter, loop) { // NOTE: Fuzzy
     let matched =  line.match(/\[\"(\w+)\"\]/);
@@ -270,13 +312,17 @@
                   "#gmc69307_field_insertH6String",
                   "{ font-size: 1.0em; margin-left: 1.7em; min-width: 95.1%; max-width: 95.1%; }",
 
+                  "#gmc69307_field_checkShowVersionsKeysString",
+                  "{ font-size: 1.0em; margin-left: 2.75em; min-width: 93.85%; max-width: 93.85%; }",
+                  
                   "#gmc69307_field_showStringsString",
                   "{ height: 8em; min-height: 8em; }",
 
                   "#gmc69307_field_showKeysString,",
                   "#gmc69307_field_hideH6String,",
                   "#gmc69307_field_hideNavTabString,",
-                  "#gmc69307_field_insertH6String",
+                  "#gmc69307_field_insertH6String,",
+                  "#gmc69307_field_checkShowVersionsKeysString",
                   "{ height: 1.2em; max-height: 6em; min-height: 1.2em; }",
 
                   "#gmc69307_field_useGreasefireUrl,",
@@ -320,7 +366,8 @@
                   "#gmc69307_field_checkShowSize,",
                   "#gmc69307_field_maxHeightList,",
                   "#gmc69307_field_checkAgainstHomepageUSO,",
-                  "#gmc69307_field_checkShowVersionsLocale",
+                  "#gmc69307_field_checkShowVersionsLocale,",
+                  "#gmc69307_field_checkShowVersionsKeys",
                   "{ margin-left: 1.5em; }",
 
                   "#gmc69307_field_hideH6Reinforce,",
@@ -347,6 +394,9 @@
                   "#gmc69307_hideNavTabString_field_label,",
                   "#gmc69307_insertH6String_field_label",
                   "{ margin: 0 0 0 1.75em; }",
+
+                  "#gmc69307_checkShowVersionsKeysString_field_label",
+                  "{ margin: 0 0 0 2.75em; }",
 
                   "#gmc69307_buttons_holder { margin-right: 1.0em; }",
                   "#gmc69307_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }",
@@ -507,6 +557,16 @@
               "type": 'checkbox',
               "label": 'Use Locale instead of UTC when logged out',
               "default": true
+          },
+          'checkShowVersionsKeys': {
+              "type": 'checkbox',
+              "label": 'Show metadata block key(s) if present in tooltip <em class="gmc-yellownote">BETA: Rate and Limiting may limit response and functionality</em>',
+              "default": false
+          },
+          'checkShowVersionsKeysString': {
+              "type": 'textarea',
+              "label": '<em class="gmc-yellownote">use commas to separate keys</em>',
+              "default": "name,namespace,version"
           },
           'checkShowLineNumbers': {
               "type": 'checkbox',
@@ -1559,6 +1619,35 @@
                           let aInstallNode = document.createElement("a");
                           aInstallNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js";
                           aInstallNode.textContent = dateid;
+                          if (gmc.get("checkShowVersionsKeys")) {
+                            aInstallNode.addEventListener("mouseover", function (ev) {
+                              if (!ev.target.title) {
+                                ev.target.classList.add("throbber");
+                                GM_xmlhttpRequest({
+                                  method: "GET",
+                                  url: "/scripts/version/" + scriptid + "/" + diffid + ".meta.js",
+                                  onload: function(xhr) {
+                                    switch(xhr.status) {
+                                      case 200:
+                                        ev.target.classList.remove("throbber");
+                                        let responseText = xhr.responseText;
+
+                                        let diffMeta = parseMeta(responseText);
+
+                                        let title = "";
+                                        let keys = gmc.get("checkShowVersionsKeysString").split(",");
+                                        for (key in keys) {
+                                          title += '@' + keys[key] + ' ' + diffMeta[keys[key]] + '\n';
+                                        }
+
+                                        ev.target.title = title;
+                                        break;
+                                    }
+                                  }
+                                });
+                              }
+                            });
+                          }
 
                           let leftText = document.createTextNode("[")
 
@@ -2029,48 +2118,6 @@
                   ; // TODO:
                 break;
               case 200:
-                function parseMeta(aString) {
-                  aString = aString.toString();
-                  let
-                      re = /\/\/ @(\S+)(?:\s+(.*))?/,
-                      headers = {},
-                      name, prefix, header, key, value,
-                      lines = aString.split(/[\r\n]+/).filter(function (e, i, a) {
-                        return (e.match(re));
-                      })
-                  ;
-                  for (let line in lines) {
-                    [, name, value] = lines[line].replace(/\s+$/, "").match(re);
-                    switch (name) {
-                      case "licence":
-                        name = "license";
-                        break;
-                    }
-                    [key, prefix] = name.split(/:/).reverse();
-                    if (key) {
-                      if (prefix) {
-                        if (!headers[prefix])
-                          headers[prefix] = new Object;
-                        header = headers[prefix];
-                      }
-                      else
-                        header = headers;
-
-                      if (header[key]) {
-                        if (!(header[key] instanceof Array))
-                          header[key] = new Array(header[key]);
-                        header[key].push(value || "");
-                      }
-                      else
-                        header[key] = value || "";
-                    }
-                  }
-                  if (headers["license"])
-                    headers["licence"] = headers["license"];
-
-                  return (headers.toSource() != "({})") ? headers : undefined;
-                }
-
                 let headers = parseMeta(xhr.responseText);
                 if (!headers) {
                   let msg = 'Metadata block is missing';
