@@ -7,7 +7,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.1.19
+// @version       1.1.20
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 //
 // @include /^https?:\/\/userscripts\.org\/scripts\/.*/
@@ -121,7 +121,7 @@
   /* Common */
 
   // Clean up USO for framed presentation
-  if (!frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
+  if (!frameless && location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*#heading/i)) {
     // Change all links to _top
     let xpr = document.evaluate(
       "//a",
@@ -168,7 +168,7 @@
     return;
 
   function getScriptid() {
-    let scriptid = window.location.pathname.match(/\/scripts\/.+\/(\d+)/i);
+    let scriptid = location.pathname.match(/\/scripts\/.+\/(\d+)/i);
     if (!scriptid) {
       let titleNode = document.evaluate(
         "//h2[contains(concat(' ', normalize-space(@class), ' '), ' title ')]/a",
@@ -228,10 +228,26 @@
 
       if (hookNode && !hookNode.firstChild)
         return hookNode.appendChild(document.createElement("div"));
-      else
-        return (hookNode)
-            ? hookNode.insertBefore(document.createElement("div"), hookNode.firstChild)
-            : document.body.appendChild(document.createElement("div"));
+      else if (hookNode)
+        return (hookNode.insertBefore(document.createElement("div"), hookNode.firstChild));
+      else {
+        hookNode = document.getElementById("content");
+
+        if (hookNode) {
+          let divNode = document.createElement("div");
+
+          let full_description = document.createElement("div");
+          full_description.id = "full_description";
+
+          full_description.appendChild(divNode);
+
+          return hookNode.appendChild(full_description);
+        }
+        else {
+          console.log("ERROR: USO DOM change detected... appending GMC remote to EoD");
+          return document.body.appendChild(document.createElement("div"));
+        }
+      }
     }
 
     /* Common */
@@ -271,7 +287,7 @@
     if (xpr && xpr.singleNodeValue) {
       let thisNode = xpr.singleNodeValue;
 
-      let height = parseFloat(window.getComputedStyle(thisNode, null).getPropertyValue("height").replace(/px$/i, "")); // NOTE: Returns normalized used instead of computed
+      let height = parseFloat(getComputedStyle(thisNode, null).getPropertyValue("height").replace(/px$/i, "")); // NOTE: Returns normalized used instead of computed
       if (height < 24)
         GM_setStyle({
             node: nodeStyle,
@@ -417,7 +433,7 @@
         }
     );
 
-    if (window.location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
+    if (location.pathname.match(/\/scripts\/show\/68219\/?/i)) {
       gmcHome.open();
     }
 
@@ -879,9 +895,11 @@
                 "updater": "anotherautoupdater",
                 "rex": [
                   "^http:\\/\\/sizzlemctwizzle\\.com\\/updater\\.php\\?id=(\\d+)",
-                  "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/(\\d+)\\.js"
+                  "^http:\\/\\/vulcan\\.ist\\.unomaha\\.edu\\/~medleymj\\/updater\\/(\\d+)\\.js",
+                  "^http:\/\/sizzlemctwizzle\.com\/updater\/(\\d+)\.js",
+                  "^http:\/\/site\.sizzlemctwizzle\.com\:8080\/updater\/(\\d+)\.js"
                 ],
-                "url": "http://sizzlemctwizzle.com/updater.php?id=" + scriptid,
+                "url": "http://sizzlemctwizzle.com/updater/" + scriptid + ".js",
                 "qs": "show&uso",
                 "qsmax": "days",
                 "securityAdvisory": {
@@ -2099,7 +2117,7 @@
             function pingCount (ev) {
               GM_xmlhttpRequest({
                 retry: 5,
-                url: "http" + ((/^https:$/i.test(window.location.protocol) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".user.js",
+                url: "http" + ((/^https:$/i.test(location.protocol) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptid + ".user.js",
                 method: "HEAD",
                 onload: function(xhr) {
                   switch(xhr.status) {
@@ -2123,7 +2141,7 @@
               });
             }
 
-            if (window.location.protocol != installNode.protocol || gmcHome.get("forceInstallSecure"))
+            if (location.protocol != installNode.protocol || gmcHome.get("forceInstallSecure"))
               installNode.protocol = "https:";
 
             if (gmcHome.get("forceInstallRecent")) {
@@ -2340,7 +2358,7 @@
                     installNode.addEventListener("click", pingCount, false);
                   }
 
-                  if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
+                  if (frameless && location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i))
                     gmc.close();
                   break;
                 default:
@@ -2377,7 +2395,7 @@
                   let icontype = getIcontype();
 
                   if (gravatar)
-                    gmc.fields["useGravatarIcon"].settings.label = "<img style='margin-right: 0.5em;' src='" + (/^https:$/i.test(window.location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=pg&s=48&default=identicon' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
+                    gmc.fields["useGravatarIcon"].settings.label = "<img style='margin-right: 0.5em;' src='" + (/^https:$/i.test(location.protocol) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + gravatar + "&r=pg&s=48&default=identicon' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
                   else
                     gmc.fields["useGravatarIcon"].settings.label = "<img style='margin-right: 0.5em;' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
 
@@ -2403,7 +2421,7 @@
 
                   installNode.setAttribute("href", url);
 
-                  if (frameless && window.location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
+                  if (frameless && location.href.match(/^https?:\/\/userscripts\.org\/scripts\/show\/.*/i)) {
                     gmc.open();
 
                     if (thisUpdater["qsmax"])
@@ -2485,7 +2503,7 @@
                   (aUpdater["iconUrl"])
                       ? (aUpdater["iconUrl"].match(/^(?:https?:|data:)/)
                           ? aUpdater["iconUrl"]
-                          : (/^https:$/i.test(window.location.protocol)
+                          : (/^https:$/i.test(location.protocol)
                               ? "https://secure"
                               : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + aUpdater["iconUrl"] + "&r=pg&s=16&default=identicon")
                       : ""
