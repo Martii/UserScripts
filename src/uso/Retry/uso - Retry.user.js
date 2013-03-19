@@ -4,60 +4,76 @@
 // @run-at        document-start
 // @name          uso - Retry
 // @namespace     http://userscripts.org/users/37004
-// @description   Auto-Refreshes current URI on USO when a trapped page load failure is encountered.
+// @description   Auto-Refreshes current URI on USO when a non-200 response code is encountered.
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.0.2
+// @version        0.0.3
+// @include  /http:\/\/userscripts\.org\/.*/
 // @include  http://userscripts.org/*
 // @include  https://userscripts.org/*
 // ==/UserScript==
 
-  function retry() {
-    let
+  let
       min = 750,
-      max = 5000
-    ;
+      max = 5000,
+      timeout = min + Math.round(Math.random() * (max - min)),
+      blocking = false
+  ;
 
-    if (location.pathname.match(/^\/sessions/))
-      setTimeout(function () {
-        location.pathname = "/login";
-      }, min + Math.round(Math.random() * (max - min)));
-    else
-      setTimeout(function () {
-        location.reload();
-      }, min + Math.round(Math.random() * (max - min)));
+  let observer = new MutationObserver(
+    function (aMutations) {
+      aMutations.forEach(
+        function (aMutation) {
+          if (!blocking) {
+            switch (aMutation.type) {
+              case "childList":
+                let xpr = document.evaluate(
+                  "//title",
+                  headNode,
+                  null,
+                  XPathResult.FIRST_ORDERED_NODE_TYPE,
+                  null
+                );
+                if (xpr && xpr.singleNodeValue) {
 
-  }
+                  blocking = true;
+                  observer.disconnect();
 
-  function retryCheck() {
-    if (document.body) {
-      let xpr = document.evaluate(
-        "//title[.='502 Bad Gateway' or .='503 Service Unavailable' or .='404 Not Found']",
-        document.documentElement,
-        null,
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null
+                  let thisNode = xpr.singleNodeValue;
+
+                  switch (thisNode.textContent) {
+                    case "502 Bad Gateway":
+                    case "503 Service Unavailable":
+                    case "404 Not Found":
+                      setTimeout(function () {
+                        location.reload();
+                      }, timeout);
+
+                      break;
+                  }
+                }
+                break;
+            }
+          }
+        }
       );
-      if (xpr && xpr.singleNodeValue) {
-        removeEventListener("DOMNodeInserted", retryCheck, true);
-        retry();
-      }
-
-      if (document.readyState == "complete")
-        removeEventListener("DOMNodeInserted", retryCheck, true);
     }
-  }
+  );
 
-  switch (document.readyState) {
-    case "loading":
-      addEventListener("DOMNodeInserted", retryCheck, true); // NOTE: Deprecated
-      break;
-    case "complete":
-      retryCheck();
-      break;
-    default:
-      break;
+
+  let headNode = document.head;
+  if (headNode) {
+
+    let config = {
+      attributes: true,
+      childList: true
+    };
+
+    observer.observe(headNode, config);
+
   }
+  else
+    console.error("Failed to get headNode");
 
 })();
