@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.22.4
+// @version       0.22.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -39,7 +39,7 @@
 // @require https://userscripts.org/scripts/source/115323.user.js
 // @require https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
 // @require https://raw.github.com/einars/js-beautify/master/beautify.js
-// @require https://userscripts.org/scripts/source/87269.user.js
+// @require https://userscripts.org/scripts/version/87269/567621.user.js
 //
 // @grant GM_addStyle
 // @grant GM_getValue
@@ -50,6 +50,7 @@
 // @grant GM_xmlhttpRequest
 //
 // ==/UserScript==
+
 
   if (!document || !document.body || location.hash == "#posts-last")
     return;
@@ -367,7 +368,8 @@
                   "#gmc69307_field_maxHeightList,",
                   "#gmc69307_field_checkAgainstHomepageUSO,",
                   "#gmc69307_field_checkShowVersionsLocale,",
-                  "#gmc69307_field_checkShowVersionsKeys",
+                  "#gmc69307_field_checkShowVersionsKeys,",
+                  "#gmc69307_field_checkArchiveMode",
                   "{ margin-left: 1.5em; }",
 
                   "#gmc69307_field_hideH6Reinforce,",
@@ -567,6 +569,11 @@
               "type": 'textarea',
               "label": '<em class="gmc-yellownote">use commas to separate keys</em>',
               "default": "name,namespace,version"
+          },
+          'checkArchiveMode': {
+              "type": 'checkbox',
+              "label": 'Use archive mode <em class="gmc-yellownote">BETA: Newer browser releases required</em>',
+              "default": false
           },
           'checkShowLineNumbers': {
               "type": 'checkbox',
@@ -1620,6 +1627,7 @@
                           aInstallNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js";
                           aInstallNode.textContent = dateid;
 
+
                           if (gmc.get("checkShowVersionsKeys")) {
                             function onmouseoverDiff(ev) {
                               if (!ev.target.title && !ev.target.classList.contains("throbber")) {
@@ -1646,6 +1654,11 @@
                                         if (title != "")
                                           ev.target.title = title;
 
+                                        if (gmc.get("checkArchiveMode")) {
+                                          let thatNode = ev.target.parentNode.firstChild.nextSibling;
+                                          thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/user\.js$/, diffMeta["uso"]["hash"] + ".user.js"));
+                                        }
+
                                         break;
                                     }
                                   },
@@ -1663,10 +1676,14 @@
 
                           let aViewNode = document.createElement("a");
                           aViewNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js#";
-                          aViewNode.textContent = "view";
-                          aViewNode.title = "\u2229 (intersection) view";
+                          aViewNode.textContent = (gmc.get("checkArchiveMode")) ? "download" : "view";
+                          aViewNode.title = "\u2229 (intersection) source";
+                          aViewNode.setAttribute("download", scriptid + "." + diffid + ".user.js");
                           aViewNode.addEventListener("click", function(ev) {
-                              ev.preventDefault();
+                              if (!gmc.get("checkArchiveMode"))
+                                ev.preventDefault();
+                              else
+                                return;
 
                               ev.target.parentNode.classList.add("throbber");
 
