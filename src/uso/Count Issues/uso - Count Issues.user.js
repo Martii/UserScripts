@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.22.5
+// @version       0.22.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -568,7 +568,7 @@
           'checkShowVersionsKeysString': {
               "type": 'textarea',
               "label": '<em class="gmc-yellownote">use commas to separate keys</em>',
-              "default": "name,namespace,version"
+              "default": "name,namespace,version,uso:hash"
           },
           'checkArchiveMode': {
               "type": 'checkbox',
@@ -1647,9 +1647,15 @@
                                         ;
 
                                         let keys = gmc.get("checkShowVersionsKeysString").split(",");
-                                        for (let key in keys)
-                                          if (diffMeta[keys[key]])
-                                            title += '@' + keys[key] + ' ' + diffMeta[keys[key]] + '\n';
+                                        for (let key in keys) {
+                                          let prefix;
+                                          [key, prefix] = keys[key].split(/:/).reverse();
+
+                                          if (!prefix && typeof diffMeta[key] != "undefined")
+                                            title += '@' + key + ' ' + diffMeta[key] + '\n';
+                                          else if (prefix && diffMeta[prefix][key])
+                                            title += '@' + prefix + ":" + key + ' ' + diffMeta[prefix][key] + '\n';
+                                        }
 
                                         if (title != "")
                                           ev.target.title = title;
@@ -1677,7 +1683,7 @@
                           let aViewNode = document.createElement("a");
                           aViewNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js#";
                           aViewNode.textContent = (gmc.get("checkArchiveMode")) ? "download" : "view";
-                          aViewNode.title = "\u2229 (intersection) source";
+                          aViewNode.title = "\u2229 intersection";
                           aViewNode.setAttribute("download", scriptid + "." + diffid + ".user.js");
                           aViewNode.addEventListener("click", function(ev) {
                               if (!gmc.get("checkArchiveMode"))
@@ -1759,7 +1765,7 @@
                           let aDiffNode = document.createElement("a");
                           aDiffNode.href = "/scripts/diff/" + scriptid + "/" + diffid;
                           aDiffNode.textContent = "changes";
-                          aDiffNode.title = "\u2206 (symmetric difference) changes";
+                          aDiffNode.title = "\u2206 symmetric difference";
                           aDiffNode.addEventListener("click", function(ev) {
                             ev.preventDefault();
 
