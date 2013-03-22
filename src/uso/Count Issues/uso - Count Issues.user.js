@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.22.6
+// @version       0.23.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 //
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -369,7 +369,8 @@
                   "#gmc69307_field_checkAgainstHomepageUSO,",
                   "#gmc69307_field_checkShowVersionsLocale,",
                   "#gmc69307_field_checkShowVersionsKeys,",
-                  "#gmc69307_field_checkArchiveMode",
+                  "#gmc69307_field_checkArchiveMode,",
+                  "#gmc69307_field_checkMaxContainer",
                   "{ margin-left: 1.5em; }",
 
                   "#gmc69307_field_hideH6Reinforce,",
@@ -555,6 +556,11 @@
               "label": 'Show inline Versions and Diffs on Source Code page',
               "default": true
           },
+          'checkMaxContainer': {
+              "type": 'checkbox',
+              "label": 'Use the maximum container width <em class="gmc-yellownote">Requires active <a href="/scripts/show/34698">userscripts.org alternate CSS</a></em>',
+              "default": false
+          },
           'checkShowVersionsLocale': {
               "type": 'checkbox',
               "label": 'Use Locale instead of UTC when logged out',
@@ -572,7 +578,7 @@
           },
           'checkArchiveMode': {
               "type": 'checkbox',
-              "label": 'Use archive mode <em class="gmc-yellownote">BETA: Newer browser releases required</em>',
+              "label": 'Use archive mode <em class="gmc-yellownote">BETA: Newest browser required</em>',
               "default": false
           },
           'checkShowLineNumbers': {
@@ -1256,7 +1262,8 @@
             node: gCSS,
             data:
               [
-                "div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }"
+                "div.toolbar_menu li, div.toolbar_menu li div { display: inline; margin-right: 0.25em; }",
+                ((gmc.get("checkMaxContainer") && uac) ? "#section > .container { width: 98.75% !important; }" : "")
 
               ].join("\n")
         });
@@ -1513,184 +1520,159 @@
             XPathResult.FIRST_ORDERED_NODE_TYPE,
             xpr
           );
-          if (xpr && xpr.singleNodeValue) {
-            let thisNode = xpr.singleNodeValue;
+          if (xpr) {
+            let thisNode;
 
-            let previousVersions = thisNode.textContent;
+            if (!xpr.singleNodeValue) {
+              let content = document.getElementById("content");
+              if (content) {
+                let aNode = document.createElement("a");
+                aNode.href = "/scripts/versions/" + scriptid;
+                aNode.textContent = "0 previous versions";
 
-            function onclickVersions(ev) {
-              ev.preventDefault();
+                let pNode = document.createElement("p");
+                pNode.classList.add("notice");
 
-              thisNode.removeEventListener("click", onclickVersions, false);
+                pNode.appendChild(document.createTextNode("There are "));
+                pNode.appendChild(aNode);
+                pNode.appendChild(document.createTextNode(" of this script."));
+                
+                content.insertBefore(pNode, content.firstChild);
 
-              let pNode = ev.target.parentNode;
-              pNode.classList.add("throbber");
-
-              getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid);
-
-              pNode.parentNode.removeChild(pNode);
+                thisNode = aNode;
+              }
+              else {
+                console.error("Something went horribly wrong");
+                return;
+              }
+            }
+            else {
+              thisNode = xpr.singleNodeValue;
             }
 
-            function getVersions(url) {
+            if (thisNode) {
+              let previousVersions = thisNode.textContent;
 
-              GM_xmlhttpRequest({
-                retry: 5,
-                method: "GET",
-                url: url,
-                onload: function(xhr) {
-                  switch (xhr.status) {
-//                     case 404: // NOTE: Sometimes USO needs this trapped
-                    case 500:
-                    case 502:
-                    case 503:
-                      if (this.retry-- > 0)
-                        setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                      break;
-                    case 200:
-                      let
-                        dt = document.implementation.createDocumentType(
-                          "html",
-                          "-//W3C//DTD HTML 4.01 Transitional//EN",
-                          "http://www.w3.org/TR/html4/loose.dtd"
-                        ),
-                        doc = document.implementation.createDocument("", "", dt),
-                        documentElement = doc.createElement("html")
-                      ;
+              function onclickVersions(ev) {
+                ev.preventDefault();
 
-                      documentElement.innerHTML = xhr.responseText;
-                      doc.appendChild(documentElement);
+                thisNode.removeEventListener("click", onclickVersions, false);
 
-                      let html = doc.documentElement.innerHTML;
-                      doc.documentElement.innerHTML = "";
+                let pNode = ev.target.parentNode;
+                pNode.classList.add("throbber");
 
-                      let body = doc.createElement("body");
-                      body.innerHTML = html;
-                      doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+                getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid);
 
-                      let head = doc.createElement("head");
-                      doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+                pNode.parentNode.removeChild(pNode);
+              }
 
-                      // doc has been created... start twiddling
+              function getVersions(url) {
 
-                      // Nab pagination
-                      let pagination;
-                      let xpr = doc.evaluate(
-                        "//div[contains(concat(' ', normalize-space(@class), ' '), ' pagination ')]",
-                        doc.body,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                      );
-                      if (xpr && xpr.singleNodeValue) {
-                        let thisNode = xpr.singleNodeValue;
+                GM_xmlhttpRequest({
+                  retry: 5,
+                  method: "GET",
+                  url: url,
+                  onload: function(xhr) {
+                    switch (xhr.status) {
+    //                     case 404: // NOTE: Sometimes USO needs this trapped
+                      case 500:
+                      case 502:
+                      case 503:
+                        if (this.retry-- > 0)
+                          setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                        break;
+                      case 200:
+                        let
+                          dt = document.implementation.createDocumentType(
+                            "html",
+                            "-//W3C//DTD HTML 4.01 Transitional//EN",
+                            "http://www.w3.org/TR/html4/loose.dtd"
+                          ),
+                          doc = document.implementation.createDocument("", "", dt),
+                          documentElement = doc.createElement("html")
+                        ;
 
-                        pagination = thisNode.cloneNode(true);
-                      }
+                        documentElement.innerHTML = xhr.responseText;
+                        doc.appendChild(documentElement);
 
-                      // Nab versions
-                      let versions;
-                      doc.evaluate(
-                        "//div[@id='root']/div[contains(concat(' ', normalize-space(@class), ' '), ' container ')]/div[@id='content']/ul[not(@id)]/li",
-                        doc.body,
-                        null,
-                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-                        xpr
-                      );
+                        let html = doc.documentElement.innerHTML;
+                        doc.documentElement.innerHTML = "";
 
-                      let ulNode = document.createElement("ul");
+                        let body = doc.createElement("body");
+                        body.innerHTML = html;
+                        doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
 
-                      if (xpr)
-                        for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
-                          let dateNode = thisNode.firstChild;
-                          let diffNode = thisNode.firstChild.nextSibling;
+                        let head = doc.createElement("head");
+                        doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
 
-                          let dateid = dateNode.textContent.replace(/\n\[/, "").trim();
+                        // doc has been created... start twiddling
 
-                          if (gmc.get("checkShowVersionsLocale")) {
-                            // Adjust if logged out
-                            let xpr = doc.evaluate(
-                              "//ul[contains(concat(' ', normalize-space(@class), ' '), ' login_status ')]//a[starts-with(@href, '/login')]",
-                              doc.body,
-                              null,
-                              XPathResult.FIRST_ORDERED_NODE_TYPE,
-                              null
-                            );
-                            if (xpr && xpr.singleNodeValue) {
-                              let utc = new Date(dateid + " UTC");
-                              dateid = utc.toLocaleFormat("%b %d, %Y %H:%M");
-                            }
-                          }
+                        // Nab pagination
+                        let pagination;
+                        let xpr = doc.evaluate(
+                          "//div[contains(concat(' ', normalize-space(@class), ' '), ' pagination ')]",
+                          doc.body,
+                          null,
+                          XPathResult.FIRST_ORDERED_NODE_TYPE,
+                          null
+                        );
+                        if (xpr && xpr.singleNodeValue) {
+                          let thisNode = xpr.singleNodeValue;
 
-                          let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
+                          pagination = thisNode.cloneNode(true);
+                        }
 
-                          let aInstallNode = document.createElement("a");
-                          aInstallNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js";
-                          aInstallNode.textContent = dateid;
+                        // Nab versions
+                        let versions;
+                        doc.evaluate(
+                          "//div[@id='root']/div[contains(concat(' ', normalize-space(@class), ' '), ' container ')]/div[@id='content']/ul[not(@id)]/li",
+                          doc.body,
+                          null,
+                          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                          xpr
+                        );
 
+                        let ulNode = document.createElement("ul");
 
-                          if (gmc.get("checkShowVersionsKeys")) {
-                            function onmouseoverDiff(ev) {
-                              if (!ev.target.title && !ev.target.classList.contains("throbber")) {
-                                ev.target.classList.add("throbber");
-                                GM_xmlhttpRequest({
-                                  method: "GET",
-                                  url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + diffid + ".meta.js",
-                                  onload: function (xhr) {
-                                    ev.target.classList.remove("throbber");
-                                    switch(xhr.status) {
-                                      case 200:
-                                        ev.target.removeEventListener("mouseover", onmouseoverDiff, false);
+                        if (xpr)
+                          for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                            let dateNode = thisNode.firstChild;
+                            let diffNode = thisNode.firstChild.nextSibling;
 
-                                        let
-                                            diffMeta = parseMeta(xhr.responseText),
-                                            title = ""
-                                        ;
+                            let dateid = dateNode.textContent.replace(/\n\[/, "").trim();
 
-                                        let keys = gmc.get("checkShowVersionsKeysString").split(",");
-                                        for (let key in keys) {
-                                          let prefix;
-                                          [key, prefix] = keys[key].split(/:/).reverse();
-
-                                          if (!prefix && typeof diffMeta[key] != "undefined")
-                                            title += '@' + key + ' ' + diffMeta[key] + '\n';
-                                          else if (prefix && diffMeta[prefix][key])
-                                            title += '@' + prefix + ":" + key + ' ' + diffMeta[prefix][key] + '\n';
-                                        }
-
-                                        if (title != "")
-                                          ev.target.title = title;
-
-                                        if (gmc.get("checkArchiveMode")) {
-                                          let thatNode = ev.target.parentNode.firstChild.nextSibling;
-                                          thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/user\.js$/, diffMeta["uso"]["hash"] + ".user.js"));
-                                        }
-
-                                        break;
-                                    }
-                                  },
-                                  onerror: function (xhr) {
-                                    console.error("Error detected with retrieving diff meta.js routine");
-                                    ev.target.classList.remove("throbber");
-                                  }
-                                });
+                            if (gmc.get("checkShowVersionsLocale")) {
+                              // Adjust if logged out
+                              let xpr = doc.evaluate(
+                                "//ul[contains(concat(' ', normalize-space(@class), ' '), ' login_status ')]//a[starts-with(@href, '/login')]",
+                                doc.body,
+                                null,
+                                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                null
+                              );
+                              if (xpr && xpr.singleNodeValue) {
+                                let utc = new Date(dateid + " UTC");
+                                dateid = utc.toLocaleFormat("%b %d, %Y %H:%M");
                               }
                             }
-                            aInstallNode.addEventListener("mouseover", onmouseoverDiff, false);
-                          }
 
-                          let leftText = document.createTextNode("[")
+                            let diffid = diffNode.getAttribute("href").match(/\/scripts\/version\/\d+\/(\d+)\.user\.js/)[1]; // TODO: Don't leave it this way
 
-                          let aViewNode = document.createElement("a");
-                          aViewNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js#";
-                          aViewNode.textContent = (gmc.get("checkArchiveMode")) ? "download" : "view";
-                          aViewNode.title = "\u2229 intersection";
-                          aViewNode.setAttribute("download", scriptid + "." + diffid + ".user.js");
-                          aViewNode.addEventListener("click", function(ev) {
-                              if (!gmc.get("checkArchiveMode"))
-                                ev.preventDefault();
-                              else
-                                return;
+                            let aNodeDownload;
+                            if (gmc.get("checkArchiveMode")) {
+                              aNodeDownload = document.createElement("a");
+                              aNodeDownload.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js#";
+                              aNodeDownload.textContent = "download";
+                              aNodeDownload.title = scriptid + "." + diffid + ".user.js";
+                              aNodeDownload.setAttribute("download", scriptid + "." + diffid + ".user.js");
+                            }
 
+                            let aDiffNode = document.createElement("a");
+                            aDiffNode.href = "/scripts/diff/" + scriptid + "/" + diffid;
+                            aDiffNode.textContent = "changes";
+                            aDiffNode.title = "\u2206 symmetric difference";
+                            aDiffNode.addEventListener("click", function(ev) {
+                              ev.preventDefault();
                               ev.target.parentNode.classList.add("throbber");
 
                               let aNode = ev.target, ulNode, thisNode;
@@ -1700,7 +1682,7 @@
                                 url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
                                 onload: function(xhr) {
                                   switch (xhr.status) {
-//                                     case 404: // NOTE: Sometimes USO needs this trapped
+    //                                   case 404: // NOTE: Sometimes USO needs this trapped
                                     case 500:
                                     case 502:
                                     case 503:
@@ -1718,37 +1700,69 @@
                                       }
                                       break;
                                     case 200:
-                                      let responseText = xhr.responseText;
 
-                                      if (responseText.match(/[\r\n]$/))
-                                        responseText = responseText.replace(/[\r\n]*$/, "");
+                                      let
+                                        dt = document.implementation.createDocumentType(
+                                          "html",
+                                          "-//W3C//DTD HTML 4.01 Transitional//EN",
+                                          "http://www.w3.org/TR/html4/loose.dtd"
+                                        ),
+                                        doc = document.implementation.createDocument("", "", dt),
+                                        documentElement = doc.createElement("html")
+                                      ;
 
-                                      let preNode = document.getElementById("source");
-                                      preNode.textContent = responseText;
+                                      documentElement.innerHTML = xhr.responseText;
+                                      doc.appendChild(documentElement);
 
-                                      // Clear all Selection markers
-                                      ulNode = aNode.parentNode.parentNode;
+                                      let html = doc.documentElement.innerHTML;
+                                      doc.documentElement.innerHTML = "";
 
-                                      thisNode = ulNode.firstChild;
-                                      while(thisNode) {
-                                        thisNode.classList.remove("current");
-                                        thisNode.classList.remove("throbber");
-                                        thisNode = thisNode.nextSibling;
+                                      let body = doc.createElement("body");
+                                      body.innerHTML = html;
+                                      doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
+
+                                      let head = doc.createElement("head");
+                                      doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+
+
+                                      let xpr = doc.evaluate(
+                                        "//pre",
+                                        doc.body,
+                                        null,
+                                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                                        null
+                                      );
+                                      if (xpr && xpr.singleNodeValue) {
+                                        let preNode = document.getElementById("source");
+                                        preNode.innerHTML = xpr.singleNodeValue.innerHTML;
+
+
+                                        // Clear all Selection markers
+                                        ulNode = aNode.parentNode.parentNode;
+
+                                        thisNode = ulNode.firstChild;
+                                        while(thisNode) {
+                                          thisNode.classList.remove("current");
+                                          thisNode.classList.remove("throbber");
+                                          thisNode = thisNode.nextSibling;
+                                        }
+
+                                        // Set current selection marker
+                                        let liNode = aNode.parentNode;
+                                        liNode.classList.add("current");
+
+                                        // Remove GIJoes disabling
+                                        enableCTTS();
+
+                                        // Hide numbering and reset margin for now if present
+                                        let number = document.getElementById("number");
+                                        if (number)
+                                          number.classList.add("HID");
+
+                                        let source =  document.getElementById("source");
+                                        if (source)
+                                          source.style.removeProperty("margin-left");
                                       }
-
-                                      // Set current selection marker
-                                      let liNode = aNode.parentNode;
-                                      liNode.classList.add("current");
-
-                                      // Remove GIJoes disabling
-                                      enableCTTS();
-
-                                      // If source is < 20KB then autohighlight just like USO does
-                                      if (xhr.responseText.length < 20480)
-                                        (window.wrappedJSObject || window).sh_highlightDocument();
-
-                                      if (gmc.get("checkShowLineNumbers"))
-                                        renumber(preNode);
 
                                       let currenturl = document.getElementById("currenturl");
                                       if (currenturl)
@@ -1760,239 +1774,266 @@
                               });
                             }, false);
 
-                          let middleText = document.createTextNode("|")
 
-                          let aDiffNode = document.createElement("a");
-                          aDiffNode.href = "/scripts/diff/" + scriptid + "/" + diffid;
-                          aDiffNode.textContent = "changes";
-                          aDiffNode.title = "\u2206 symmetric difference";
-                          aDiffNode.addEventListener("click", function(ev) {
-                            ev.preventDefault();
+                            let aViewNode = document.createElement("a");
+                            aViewNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js#";
+                            aViewNode.textContent = "view";
+                            aViewNode.title = "\u2229 intersection";
+                            aViewNode.addEventListener("click", function(ev) {
+                                ev.preventDefault();
+                                ev.target.parentNode.classList.add("throbber");
 
-                            ev.target.parentNode.classList.add("throbber");
+                                let aNode = ev.target, ulNode, thisNode;
+                                GM_xmlhttpRequest({
+                                  retry: 5,
+                                  method: "GET",
+                                  url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
+                                  onload: function(xhr) {
+                                    switch (xhr.status) {
+    //                                     case 404: // NOTE: Sometimes USO needs this trapped
+                                      case 500:
+                                      case 502:
+                                      case 503:
+                                        if (this.retry-- > 0)
+                                          setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
+                                        else {
+                                          // Clear retrieving Selection markers
+                                          ulNode = aNode.parentNode.parentNode;
 
-                            let aNode = ev.target, ulNode, thisNode;
-                            GM_xmlhttpRequest({
-                              retry: 5,
-                              method: "GET",
-                              url: aNode.protocol + "//" + aNode.hostname + aNode.pathname,
-                              onload: function(xhr) {
-                                switch (xhr.status) {
-//                                   case 404: // NOTE: Sometimes USO needs this trapped
-                                  case 500:
-                                  case 502:
-                                  case 503:
-                                    if (this.retry-- > 0)
-                                      setTimeout(GM_xmlhttpRequest, 3000 + Math.round(Math.random() * 5000), this);
-                                    else {
-                                      // Clear retrieving Selection markers
-                                      ulNode = aNode.parentNode.parentNode;
+                                          thisNode = ulNode.firstChild;
+                                          while(thisNode) {
+                                            thisNode.classList.remove("throbber");
+                                            thisNode = thisNode.nextSibling;
+                                          }
+                                        }
+                                        break;
+                                      case 200:
+                                        let responseText = xhr.responseText;
 
-                                      thisNode = ulNode.firstChild;
-                                      while(thisNode) {
-                                        thisNode.classList.remove("throbber");
-                                        thisNode = thisNode.nextSibling;
-                                      }
+                                        if (responseText.match(/[\r\n]$/))
+                                          responseText = responseText.replace(/[\r\n]*$/, "");
+
+                                        let preNode = document.getElementById("source");
+                                        preNode.textContent = responseText;
+
+                                        // Clear all Selection markers
+                                        ulNode = aNode.parentNode.parentNode;
+
+                                        thisNode = ulNode.firstChild;
+                                        while(thisNode) {
+                                          thisNode.classList.remove("current");
+                                          thisNode.classList.remove("throbber");
+                                          thisNode = thisNode.nextSibling;
+                                        }
+
+                                        // Set current selection marker
+                                        let liNode = aNode.parentNode;
+                                        liNode.classList.add("current");
+
+                                        // Remove GIJoes disabling
+                                        enableCTTS();
+
+                                        // If source is < 20KB then autohighlight just like USO does
+                                        if (xhr.responseText.length < 20480)
+                                          (window.wrappedJSObject || window).sh_highlightDocument();
+
+                                        if (gmc.get("checkShowLineNumbers"))
+                                          renumber(preNode);
+
+                                        let currenturl = document.getElementById("currenturl");
+                                        if (currenturl)
+                                          currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
+
+                                        break;
                                     }
-                                    break;
-                                  case 200:
-
-                                    let
-                                      dt = document.implementation.createDocumentType(
-                                        "html",
-                                        "-//W3C//DTD HTML 4.01 Transitional//EN",
-                                        "http://www.w3.org/TR/html4/loose.dtd"
-                                      ),
-                                      doc = document.implementation.createDocument("", "", dt),
-                                      documentElement = doc.createElement("html")
-                                    ;
-
-                                    documentElement.innerHTML = xhr.responseText;
-                                    doc.appendChild(documentElement);
-
-                                    let html = doc.documentElement.innerHTML;
-                                    doc.documentElement.innerHTML = "";
-
-                                    let body = doc.createElement("body");
-                                    body.innerHTML = html;
-                                    doc.documentElement.insertBefore(body, doc.documentElement.firstChild);
-
-                                    let head = doc.createElement("head");
-                                    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+                                  }
+                                });
+                              }, false);
 
 
-                                    let xpr = doc.evaluate(
-                                      "//pre",
-                                      doc.body,
-                                      null,
-                                      XPathResult.FIRST_ORDERED_NODE_TYPE,
-                                      null
-                                    );
-                                    if (xpr && xpr.singleNodeValue) {
-                                      let preNode = document.getElementById("source");
-                                      preNode.innerHTML = xpr.singleNodeValue.innerHTML;
+                            let aInstallNode = document.createElement("a");
+                            aInstallNode.href = "/scripts/version/" + scriptid + "/" + diffid + ".user.js";
+                            aInstallNode.textContent = dateid;
 
+                            if (gmc.get("checkShowVersionsKeys")) {
+                              function onmouseoverDiff(ev) {
+                                if (!ev.target.title && !ev.target.classList.contains("throbber")) {
+                                  ev.target.classList.add("throbber");
+                                  GM_xmlhttpRequest({
+                                    method: "GET",
+                                    url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + diffid + ".meta.js",
+                                    onload: function (xhr) {
+                                      ev.target.classList.remove("throbber");
+                                      switch(xhr.status) {
+                                        case 200:
+                                          ev.target.removeEventListener("mouseover", onmouseoverDiff, false);
 
-                                      // Clear all Selection markers
-                                      ulNode = aNode.parentNode.parentNode;
+                                          let
+                                              diffMeta = parseMeta(xhr.responseText),
+                                              title = ""
+                                          ;
 
-                                      thisNode = ulNode.firstChild;
-                                      while(thisNode) {
-                                        thisNode.classList.remove("current");
-                                        thisNode.classList.remove("throbber");
-                                        thisNode = thisNode.nextSibling;
+                                          let keys = gmc.get("checkShowVersionsKeysString").split(",");
+                                          for (let key in keys) {
+                                            let prefix;
+                                            [key, prefix] = keys[key].split(/:/).reverse();
+
+                                            if (!prefix && typeof diffMeta[key] != "undefined")
+                                              title += '@' + key + ' ' + diffMeta[key] + '\n';
+                                            else if (prefix && diffMeta[prefix][key])
+                                              title += '@' + prefix + ":" + key + ' ' + diffMeta[prefix][key] + '\n';
+                                          }
+
+                                          if (title != "")
+                                            ev.target.title = title;
+
+                                          if (gmc.get("checkArchiveMode")) {
+                                            let thatNode = ev.target.previousSibling.previousSibling;
+                                            thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/user\.js$/, diffMeta["uso"]["hash"] + ".user.js"));
+                                            thatNode.title = thatNode.title.replace(/user\.js$/, diffMeta["uso"]["hash"] + ".user.js");
+                                          }
+
+                                          break;
                                       }
-
-                                      // Set current selection marker
-                                      let liNode = aNode.parentNode;
-                                      liNode.classList.add("current");
-
-                                      // Remove GIJoes disabling
-                                      enableCTTS();
-
-                                      // Hide numbering and reset margin for now if present
-                                      let number = document.getElementById("number");
-                                      if (number)
-                                        number.classList.add("HID");
-
-                                      let source =  document.getElementById("source");
-                                      if (source)
-                                        source.style.removeProperty("margin-left");
+                                    },
+                                    onerror: function (xhr) {
+                                      console.error("Error detected with retrieving diff meta.js routine");
+                                      ev.target.classList.remove("throbber");
                                     }
-
-                                    let currenturl = document.getElementById("currenturl");
-                                    if (currenturl)
-                                      currenturl.setAttribute("placeholder", aNode.protocol + "//" + aNode.hostname + aNode.pathname); // TODO: proof this
-
-                                    break;
+                                  });
                                 }
                               }
-                            });
-                          }, false);
+                              aInstallNode.addEventListener("mouseover", onmouseoverDiff, false);
+                            }
 
-                          let rightText = document.createTextNode("]")
+                            let liNode = document.createElement("li");
 
-                          let liNode = document.createElement("li");
+                            liNode.appendChild(document.createTextNode("["));
+                            liNode.appendChild(aViewNode);
+                            liNode.appendChild(document.createTextNode("|"));
+                            liNode.appendChild(aDiffNode);
 
-                          liNode.appendChild(leftText);
-                          liNode.appendChild(aViewNode);
-                          liNode.appendChild(middleText);
-                          liNode.appendChild(aDiffNode);
-                          liNode.appendChild(rightText);
-                          liNode.appendChild(aInstallNode);
+                            if (aNodeDownload) {
+                              liNode.appendChild(document.createTextNode("|"));
+                              liNode.appendChild(aNodeDownload)
+                            }
 
-                          ulNode.appendChild(liNode);
+                            liNode.appendChild(document.createTextNode("]"));
+                            liNode.appendChild(aInstallNode);
+
+                            ulNode.appendChild(liNode);
+                          }
+
+                        let versionsDIV = document.getElementById("versions");
+                        if (versionsDIV) {
+                          while (versionsDIV.hasChildNodes())
+                            versionsDIV.removeChild(versionsDIV.firstChild);
+                        }
+                        else {
+                          versionsDIV = document.createElement("div");
+                          versionsDIV.id = "versions";
+                          versionsDIV.className = "pagetear";
+
+                          GM_setStyle({
+                              node: gCSS,
+                              data:
+                                [
+                                  "#versions p  { margin: 0; }",
+                                  "#versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }",
+                                  "#versions p > span { color: #666; font-size: 0.8em; }",
+                                  "#versions ul { -moz-column-width: " + (!gmc.get("checkArchiveMode") ? "19" : "22") + "em; column-width: " + (!gmc.get("checkArchiveMode") ? "19" : "22") + "em; list-style: none; margin-bottom: 0.5em; }",
+                                  "#versions ul a { margin-left: 0.25em; margin-right: 0.25em; }",
+                                  "#versions ul a:last-child { color: #000; margin-left: 0.5em; text-decoration: none; }",
+                                  "#versions .current { background-color: #ddd; }",
+
+                                ].join("\n")
+                          });
                         }
 
-                      let versionsDIV = document.getElementById("versions");
-                      if (versionsDIV) {
-                        while (versionsDIV.hasChildNodes())
-                          versionsDIV.removeChild(versionsDIV.firstChild);
-                      }
-                      else {
-                        versionsDIV = document.createElement("div");
-                        versionsDIV.id = "versions";
-                        versionsDIV.className = "pagetear";
+                        let versionsContainerNode = document.getElementById("sourceurl");
+                        if (versionsContainerNode)
+                          versionsContainerNode.parentNode.insertBefore(versionsDIV, versionsContainerNode); // TODO: Change identifier names
+                        else {
+                          let msg = 'Hook node for versions and diffs not found';
+                          GM_log(msg);
+                          console.error(msg);
+                          return; // die this function
+                        }
 
-                        GM_setStyle({
-                            node: gCSS,
-                            data:
-                              [
-                                "#versions p  { margin: 0; }",
-                                "#versions p > a { color: #000; font-weight: bold; margin-right: 0.25em; text-decoration: none; }",
-                                "#versions p > span { color: #666; font-size: 0.8em; }",
-                                "#versions ul { -moz-column-width: 19em; column-width: 19em; list-style: none; margin-bottom: 0.5em; }",
-                                "#versions ul a { margin-left: 0.25em; margin-right: 0.25em; }",
-                                "#versions ul a:last-child { color: #000; margin-left: 0.5em; text-decoration: none; }",
-                                "#versions .current { background-color: #ddd; }",
+                        // Replace pagination NOTE: Scope referenced variable nodes
+                        if (pagination) {
+                          while (versionsDIV.hasChildNodes())
+                            versionsDIV.removeChild(versionsDIV.firstChild);
 
-                              ].join("\n")
-                        });
-                      }
+                          versionsDIV.appendChild(pagination);
 
-                      let versionsContainerNode = document.getElementById("sourceurl");
-                      if (versionsContainerNode)
-                        versionsContainerNode.parentNode.insertBefore(versionsDIV, versionsContainerNode); // TODO: Change identifier names
-                      else {
-                        let msg = 'Hook node for versions and diffs not found';
-                        GM_log(msg);
-                        console.error(msg);
-                        return; // die this function
-                      }
+                          document.evaluate(
+                            "//div[contains(concat(' ', normalize-space(@class), ' '), ' pagination ')]/a",
+                            document.body,
+                            null,
+                            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                            xpr
+                          );
+                          if (xpr)
+                            for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
+                              thisNode.addEventListener("click", function(ev) {
+                                ev.preventDefault();
 
-                      // Replace pagination NOTE: Scope referenced variable nodes
-                      if (pagination) {
-                        while (versionsDIV.hasChildNodes())
-                          versionsDIV.removeChild(versionsDIV.firstChild);
+                                ev.target.classList.add("throbber");
+                                getVersions(protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
+                              }, false);
+                            }
+                        }
 
-                        versionsDIV.appendChild(pagination);
+                        let spanNode = document.createElement("span");
+                        spanNode.textContent = parseInt(previousVersions.match(/(\d+)\s/)[1]) + 1;
 
+                        let aNode = document.createElement("a");
+                        aNode.href = "/scripts/versions/" + scriptid;
+                        aNode.textContent = "Source versions and diffs:";
+
+                        let pNode = document.createElement("p");
+
+                        pNode.appendChild(aNode);
+                        pNode.appendChild(spanNode);
+
+                        if (pagination)
+                          versionsDIV.insertBefore(pNode, pagination);
+                        else
+                          versionsDIV.appendChild(pNode);
+
+                        versionsDIV.appendChild(ulNode);
+
+                        // Compute left margin of pre and add width
                         document.evaluate(
-                          "//div[contains(concat(' ', normalize-space(@class), ' '), ' pagination ')]/a",
+                          "//div[@id='left']",
                           document.body,
                           null,
-                          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                          XPathResult.FIRST_ORDERED_NODE_TYPE,
                           xpr
                         );
-                        if (xpr)
-                          for (let i = 0, thisNode; thisNode = xpr.snapshotItem(i++);) {
-                            thisNode.addEventListener("click", function(ev) {
-                              ev.preventDefault();
+                        if (xpr && xpr.singleNodeValue) {
+                          let hookNode = xpr.singleNodeValue;
 
-                              ev.target.classList.add("throbber");
-                              getVersions(protocol + "//" + (gmc && gmc.get("useGreasefireUrl") ? "greasefire." : "") + "userscripts.org" + ev.target.pathname + ev.target.search); // NOTE: Greasfire URI not currently SSLd properly
-                            }, false);
-                          }
-                      }
+                          let marginLeft = window.getComputedStyle(hookNode, null).getPropertyValue("width").replace(/px$/, "");
 
-                      let spanNode = document.createElement("span");
-                      spanNode.textContent = parseInt(previousVersions.match(/(\d+)\s/)[1]) + 1;
+                          GM_setStyle({
+                              node: gCSS,
+                              data:
+                                [
+                                  ".right { margin-left: " + marginLeft + "px; }",
+                                  "#left { padding: 1px; }"  // NOTE: Strange first run fix for CSS
 
-                      let aNode = document.createElement("a");
-                      aNode.href = "/scripts/versions/" + scriptid;
-                      aNode.textContent = "Source versions and diffs:";
-
-                      let pNode = document.createElement("p");
-
-                      pNode.appendChild(aNode);
-                      pNode.appendChild(spanNode);
-
-                      if (pagination)
-                        versionsDIV.insertBefore(pNode, pagination);
-                      else
-                        versionsDIV.appendChild(pNode);
-
-                      versionsDIV.appendChild(ulNode);
-
-                      // Compute left margin of pre and add width
-                      document.evaluate(
-                        "//div[@id='left']",
-                        document.body,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        xpr
-                      );
-                      if (xpr && xpr.singleNodeValue) {
-                        let hookNode = xpr.singleNodeValue;
-
-                        let marginLeft = window.getComputedStyle(hookNode, null).getPropertyValue("width").replace(/px$/, "");
-
-                        GM_setStyle({
-                            node: gCSS,
-                            data:
-                              [
-                                ".right { margin-left: " + marginLeft + "px; }",
-                                "#left { padding: 1px; }"  // NOTE: Strange first run fix for CSS
-
-                              ].join("\n")
-                        });
-                      }
+                                ].join("\n")
+                          });
+                        }
+                    }
                   }
-                }
-              });
+                });
 
+              }
+              thisNode.addEventListener("click", onclickVersions, false);
             }
-            thisNode.addEventListener("click", onclickVersions, false);
           }
 
         }
