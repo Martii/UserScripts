@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0.0rc1
+// @version       1.0.0.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -37,7 +37,7 @@
 // @require https://userscripts.org/scripts/source/115323.user.js
 // @require https://raw.github.com/einars/js-beautify/master/js/lib/beautify.js
 // @require https://userscripts.org/scripts/version/87269/575920.user.js
-// @require https://raw.github.com/Martii/GM_config/c876f358bbb04a05e74c239abaf3acb2e252cbb7/gm_config.js
+// @require https://raw.github.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
 
 // @resource icon https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 // @resource gmc  https://s3.amazonaws.com/uso_ss/9849/large.png
@@ -160,21 +160,33 @@
   /**
    *
    */
-  function firstValueOf(aMb, aKey, aPrefix) { // NOTE: no null check
-    if (aPrefix)
-      return ((typeof aMb[aPrefix][aKey] == "string") ? aMb[aPrefix][aKey] : aMb[aPrefix][aKey][0]);
-    else
-      return ((typeof aMb[aKey] == "string") ? aMb[aKey] : aMb[aKey][0]);
+  function firstValueOf(aMb, aKey, aPrefix) {
+    if (aPrefix) {
+      if (aMb[aPrefix] && aMb[aPrefix][aKey])
+        return ((typeof aMb[aPrefix][aKey] == "string") ? aMb[aPrefix][aKey] : aMb[aPrefix][aKey][0]);
+    }
+    else {
+      if (aMb[aKey])
+        return ((typeof aMb[aKey] == "string") ? aMb[aKey] : aMb[aKey][0]);
+    }
+
+    return undefined;
   }
 
   /**
    *
    */
   function lastValueOf(aMb, aKey, aPrefix) {
-    if (aPrefix)
-      return ((typeof aMb[aPrefix][aKey] == "string") ? aMb[aPrefix][aKey] : aMb[aPrefix][aKey][aMb[aPrefix][aKey].length - 1]);
-    else
-      return ((typeof aMb[aKey] == "string") ? aMb[aKey] : aMb[aKey][aMb[aKey].length - 1]);
+    if (aPrefix) {
+      if (aMb[aPrefix] && aMb[aPrefix][aKey])
+        return ((typeof aMb[aPrefix][aKey] == "string") ? aMb[aPrefix][aKey] : aMb[aPrefix][aKey][aMb[aPrefix][aKey].length - 1]);
+    }
+    else {
+      if (aMb[aKey])
+        return ((typeof aMb[aKey] == "string") ? aMb[aKey] : aMb[aKey][aMb[aKey].length - 1]);
+    }
+
+    return undefined;
   }
 
   /**
@@ -2405,7 +2417,7 @@
                         ".found a:last-child { float: right; opacity: 0; }",
                         ".found a:hover { opacity: 1; }",
 
-                        ".finds { border-width: 0; font-size: x-small; margin: 0; margin-bottom: 1em; overflow: auto; padding: 0 !important; width: 100%; }",
+                        ".finds { border-width: 0; font-size: x-small; margin: 0; margin-bottom: 1em; overflow: auto; padding: 0 !important; width: 100%; word-break: break-all; }",
                         ".finds li { color: #666; padding-left: 0.5em; text-align: left; }",
                         ".finds span { background-color: #f80; border-radius: 1.3em 0 0 1.3em; color: #fff; float: right; font-family: serif; font-size: 0.9em; font-weight: bold; margin-left: 0.25em; margin-right: 0.5em; padding-left: 0.7em; padding-right: 0.5em; text-align: right; }",
                         ".finds .bar { background-color: #eee; }",
@@ -2486,14 +2498,11 @@
                     script_sidebarNode.appendChild(nodeH6);
 
 
-
-
-
                   if (gmcHome.get("showStringsAuto")) {
-                    let e = document.createEvent("MouseEvents");
-                    e.initEvent("click", true, false);
+                    let e = new CustomEvent("click");
                     nodeH6.dispatchEvent(e);
                   }
+
                 }
               }
             }
