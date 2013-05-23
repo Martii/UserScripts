@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0.1
+// @version       1.0.0.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -2115,7 +2115,7 @@
               if (xpr && xpr.singleNodeValue) {
                 let thisNode = xpr.singleNodeValue;
 
-                if (mb["uso"]["version"] != thisNode.getAttribute("content")) {
+                if (lastValueOf(mb, "version", "uso") != thisNode.getAttribute("content")) {
                   let msg = 'Fatal error comparing current meta.js to page meta... Aborting';
                   console.error(msg);
                   return;
