@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.0rc1
+// @version       2.0.0.0rc2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org//
@@ -62,7 +62,7 @@
 // @require https://secure.dune.net/usocheckup/68219.js?method=update&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
 // @require https://userscripts.org/scripts/source/115323.user.js
-// @require https://raw.github.com/sizzlemctwizzle/GM_config/master/gm_config.js
+// @require https://raw.github.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
 
 // @grant GM_addStyle
 // @grant GM_deleteValue
@@ -1563,7 +1563,7 @@
       'disableScanDeep': {
         "section": [,''],
         "type": "checkbox",
-        "label": 'Disable deep scanning for individual script home pages <em class="gmc-yellownote">WARNING: Turning this option on may provide less accuracate results</em>',
+        "label": 'Disable deep scanning for individual script home pages <em class="gmc-yellownote">WARNING: Turning this option on may provide less accurate results</em>',
         "default": false
       },
       'enableScanScriptWright': {
