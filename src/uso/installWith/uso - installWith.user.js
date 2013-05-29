@@ -8,10 +8,10 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.0rc2
+// @version       2.0.0.0rc3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
-// @include /^https?://userscripts.org//
+// @include /^https?://userscripts.org/?$/
 // @include /^https?://userscripts\.org/scripts/
 // @include /^https?://userscripts\.org/topics//
 // @include /^https?://userscripts\.org/reviews//
@@ -19,6 +19,7 @@
 // @include /^https?://userscripts\.org/users/\.*?/favorites/
 // @include /^https?://userscripts\.org/groups/\d+/scripts/
 // @include /^https?://userscripts\.org/tags//
+// @include /^https?://userscripts\.org/home/(?:scripts|favorites)/
 
 // @include http://userscripts.org/
 // @include http://userscripts.org/scripts*
@@ -28,6 +29,8 @@
 // @include http://userscripts.org/users/*/favorites*
 // @include http://userscripts.org/groups/*/scripts*
 // @include http://userscripts.org/tags/*
+// @include http://userscripts.org/home/scripts*
+// @include http://userscripts.org/home/favorites*
 
 // @include https://userscripts.org/
 // @include https://userscripts.org/scripts*
@@ -37,6 +40,8 @@
 // @include https://userscripts.org/users/*/favorites*
 // @include https://userscripts.org/groups/*/scripts*
 // @include https://userscripts.org/tags/*
+// @include https://userscripts.org/home/scripts*
+// @include https://userscripts.org/home/favorites*
 
 
 // @exclude /^https?://userscripts\.org/scripts/diff/.*/
@@ -131,7 +136,7 @@
         ].join("\n")
     });
 
-    if (/^\/users\/.*?\/(?:scripts|favorites)/.test(gPATHNAME) || (/^\/$/.test(gPATHNAME)) && gUAC)
+    if (/(^\/users\/.*?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) || (/^\/$/.test(gPATHNAME)) && gUAC)
       GM_setStyle({
         node: gCSS,
         data:
@@ -1143,7 +1148,7 @@
     /** **/
     let
         msgDDS = "AOU\n    Possible DDoS attack script and/or Privacy Loss",
-        msgRHV = "AOU\n    Possible Remotely Hosted Version",
+        msgRHV = "AOU\n    Possible Remotely Hosted Version or bad target",
         msgBT =  "AOU\n    Possible bad target and/or Privacy Loss",
         msgISI = "AOU\n    Possible incorrect scriptid applied for updates",
         msgRN = "Restricted (content scope) namespace script"
@@ -1156,7 +1161,7 @@
     if (BT)
       pushAdvisory(aSa, "HIGH", msgBT);
     if (RN)
-      pushAdvisory(aSa, "GUARD", msgRN);
+      pushAdvisory(aSa, "ELEVATE", msgRN);
     if (ISI)
       pushAdvisory(aSa, "SEVERE", msgISI);
 
@@ -1270,7 +1275,7 @@
               /^\/tags\//.test(gPATHNAME) && gmcHome.get("scanTagsDepth") == "deep" ||
               /^\/scripts/.test(gPATHNAME) && gmcHome.get("scanScriptsDepth") == "deep" ||
               /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("scanGroupsDepth") == "deep" ||
-              /^\/users\/.*?\/(?:scripts|favorites)/.test(gPATHNAME) && gmcHome.get("scanScriptWrightDepth") == "deep" ||
+              /(^\/users\/.*?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("scanScriptWrightDepth") == "deep" ||
               /^\/(?:scripts\/show|topics)/.test(gPATHNAME) && !gmcHome.get("disableScanDeep")
               ) &&
               this._mb["uso"]["unlisted"] != ""
@@ -1783,7 +1788,7 @@
     || /^\/tags\//.test(gPATHNAME) && gmcHome.get("enableScanTags")
     || /^\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
     || /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanGroups")
-    || /^\/users\/.*?\/(?:scripts|favorites)/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
+    || /(^\/users\/.*?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
     || /^\/scripts\/show\//.test(gPATHNAME)
     || /^\/topics\//.test(gPATHNAME)
   ) {
