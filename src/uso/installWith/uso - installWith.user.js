@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.0rc3
+// @version       2.0.0.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -176,6 +176,8 @@
           "#install_script a.userjs:hover { background: #ccc no-repeat scroll 0 0; }",
 
           "table.forums tr td.saU, #install_script a.saU { background-color: #ccc; border-left-color: #aaa; }",
+          "table.forums .actions { float: right; font-size: 0.8em; }",
+          "table.forums .actions .unhide { color: #aaa; }",
 
           "table.forums tr td.saEMBED, #install_script a.saEMBED { background-image: linear-gradient(to left, #888, rgba(136,136,136,0)) !important; }",
 
@@ -191,7 +193,7 @@
           "#install_script a.saGUARD:hover { background: #d5edf8 repeat scroll 0 0; }",
           "table.forums tr td.sabGUARD, #install_script a.sabGUARD { border-left-color: #92cae4; }",
 
-          "table.forums tr td.saELEVATE, #install_script a.saELEVATE { background: #fbfad5 repeat scroll 0 0; }",
+          "table.forums tr td.saELEVATE, #install_script a.saELEVATE, table tr.unlisted { background: #fbfad5 repeat scroll 0 0; }",
           "#install_script a.saELEVATE:hover { background: #fbfad5 repeat scroll 0 0; }",
           "table.forums tr td.sabELEVATE, #install_script a.sabELEVATE { border-left-color: #fbf700; }",
 
@@ -346,7 +348,7 @@
 
     let html, rect;
     html = document.documentElement;
-    rect = thisNode.getBoundingClientRect(); // BUG: Needs gJSE to return meaningful values on FF 20-22
+    rect = thisNode.getBoundingClientRect(); // BUG: Needs gJSE to return meaningful values on FF 20+?
 
     return (
       !!rect
@@ -702,7 +704,7 @@
   /**
    *
    */
-  function advise(aSa, aNode, aEmbed) {
+  function advise(aSa, aNode, aEmbed, aReduce) {
     let
       title,
       max,
@@ -776,6 +778,9 @@
             nodeH7.textContent = e;
             hookNode.insertBefore(nodeH7, hookNode.firstChild);
 
+            let nodeDiv = document.createElement("div");
+            nodeDiv.classList.add("sa");
+
             for (let j = 0, thisSummary; thisSummary = aSa[e][j]; j++) {
   
               let thisDescription = thisSummary.split("\n").map(function (e) { return e.trim(); });
@@ -798,7 +803,8 @@
               }
 
               nodeDl.appendChild(nodeDt);
-              nodeH7.appendChild(nodeDl);
+              nodeDiv.appendChild(nodeDl);
+              nodeH7.appendChild(nodeDiv);
             }
           }
         });
@@ -819,10 +825,32 @@
         nodeA.appendChild(nodeImg);
         nodeH6.appendChild(nodeA);
 
-//         hookNode.insertBefore(nodeDl, hookNode.firstChild);
         hookNode.insertBefore(nodeH6, hookNode.firstChild);
       }
     }
+    else {
+      if (aReduce) {
+        let nodeA = document.createElement("a");
+        nodeA.classList.add("unhide");
+        nodeA.href = "#";
+        nodeA.textContent = "show";
+        nodeA.addEventListener("click", unhideClick, false);
+
+        let nodeDiv = document.createElement("div");
+        nodeDiv.classList.add("actions");
+
+        nodeDiv.appendChild(nodeA);
+
+        aNode.insertBefore(nodeDiv, aNode.lastChild.previousSibling);
+
+        let descNode = aNode.querySelector(".desc");
+        if (descNode)
+          descNode.classList.add("hid");
+
+        qNodes(gANODES);
+      }
+    }
+
   }
 
   /**
@@ -927,7 +955,7 @@
           else
             continue;
 
-          let j = 0, tips, provider, block;
+          let j = 0, tips, provider, block, reduce;
           for (; target[i + j] && typeof target[i + j] != "string"; ++j) {
             let optflag = target[i + j];
 
@@ -956,6 +984,9 @@
                 case "block":
                   block = true;
                   break;
+                case "reduce":
+                  reduce = true;
+                  break;
               }
             }
 
@@ -963,11 +994,25 @@
 
           i += (j - 1);
 
-          aCb(scope, patternsx, advisory, summary, tips, block, provider);
+          aCb(scope, patternsx, advisory, summary, tips, block, reduce, provider);
         }
 
       }
     }
+  }
+
+  /**
+   *
+   */
+  function unhideClick(ev) {
+    ev.preventDefault();
+    ev.target.removeEventListener("click", unhideClick, false);
+
+    let descNode = ev.target.parentNode.parentNode.querySelector(".desc");
+    if (descNode)
+      descNode.classList.remove("hid");
+
+    ev.target.parentNode.removeChild(ev.target);
   }
 
   /**
@@ -987,7 +1032,8 @@
         REL,
         SSL,
 
-        EMBED
+        EMBED,
+        REDUCE
     ;
 
     let excludes = toArray("exclude", aMb);
@@ -1012,12 +1058,13 @@
         /^(\d+.*\.(?:meta|user)\.js)$/,
         /^https?:\/\/(?:.*\.)?userscripts\.org\/scripts\/source\/(\d+).*\.(meta|user)\.js/,
         function (aREL, aSSL, aISI, aRHV, aBT, aDDS) {
-          if (aISI) ISI = true;
+          if (aISI) { ISI = true; REDUCE = true; }
           if (aREL) REL = true;
           if (aSSL) SSL = true;
           if (aRHV) RHV = true;
           if (aBT) BT = true;
           if (aDDS) DDS = true;
+          
         }
       );
 
@@ -1037,7 +1084,7 @@
           /^(\d+.*\.user\.js)$/,
           /^https?:\/\/(?:.*\.)?userscripts\.org(?::\d+)?\/scripts\/source\/(\d+).*\.user\.js/,
           function (aREL, aSSL, aISI, aRHV, aBT) {
-            if (aISI) ISI = true;
+            if (aISI) { ISI = true; REDUCE = true; }
             if (aREL) REL = true;
             if (aSSL) SSL = true;
             if (aRHV) RHV = true;
@@ -1064,7 +1111,7 @@
         atUsoAuthor = lastValueOf(aMb, "author", "uso"),
         providers = []
     ;
-    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aProvider) {
+    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aProvider) {
       for (let pattern in aPatterns) {
 
         let matches = pattern.match(/^\/(.*)\/(i?g?m?y?)$/), patternx = pattern;
@@ -1090,6 +1137,7 @@
               }
               else {
                 pushAdvisory(aSa, "SEVERE", aSummary + "\n    Possible malformed updater syntax");
+                REDUCE = true;
                 block = true;
                 break;
               }
@@ -1101,6 +1149,7 @@
           for (let i = 0, atInclude; atInclude = atIncludes[i++];)
             if ((typeof patternx == "object") ? atInclude.match(patternx) : (atInclude == patternx) ? [atInclude, patternx] : null) {
               pushAdvisory(aSa, aAdvisory, aSummary);
+              if (aReduce) REDUCE = true;
               break;
             }
 
@@ -1108,6 +1157,7 @@
           for (let i = 0, atMatch; atMatch = atMatches[i++];)
             if ((typeof patternx == "object") ? atMatch.match(patternx) : (atMatch == patternx) ? [atMatch, patternx] : null) {
               pushAdvisory(aSa, aAdvisory, aSummary);
+              if (aReduce) REDUCE = true;
               break;
             }
 
@@ -1135,6 +1185,8 @@
         if (aScope == "search" && aSource) {
           if (patternx.test(aSource)) {
             pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
+
+            if (aReduce) REDUCE = true;
           }
         }
 
@@ -1144,6 +1196,7 @@
       }
 
     });
+
 
     /** **/
     let
@@ -1170,7 +1223,7 @@
       block = true;
     }
 
-    advise(aSa, aNode, EMBED);
+    advise(aSa, aNode, EMBED, REDUCE);
 
     if (/^\/(?:scripts|topics)\//.test(gPATHNAME)) {
       if (block || (gmcHome.get("allowAOU") && (DDS || RHV || BT)) || (gmcHome.get("allowAOU") && ISI) || aMb["uso"]["unlisted"] == "") {
@@ -1295,7 +1348,7 @@
         else {
           /** Remove some keys **/
           let userjs = aR.responseText;
-          userjs = userjs.replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL)\s+.*[^\n\r]/gm, "");
+          userjs = userjs.replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
 
           parse(this._sa, this._node, this._scriptId, this._mb, userjs);
 
@@ -1451,6 +1504,7 @@
       ].join("\n")
     });
 
+
   /** **/
   if (typeof GM_configStruct == "undefined") {
     let msg = 'Fatal error. GM_config not found';
@@ -1571,7 +1625,18 @@
         "label": 'Disable deep scanning for individual script home pages <em class="gmc-yellownote">WARNING: Turning this option on may provide less accurate results</em>',
         "default": false
       },
+      'limitMaxHeightSa': {
+          "type": 'checkbox',
+          "label": 'Limit maximum height of all shown item types in the sidebar',
+          "default": false
+      },
+      'maxHeightListSa': {
+          "type": 'unsigned number',
+          "label": 'em maximum height of all shown item types',
+          "default": 10
+      },
       'enableScanScriptWright': {
+        "section": [,''],
         "type": "checkbox",
         "label": 'Enable ScriptWright script pages scanning <em class="gmc-yellownote">WARNING: Deep scanning may be CPU and bandwidth intensive</em>',
         "default": false
@@ -1624,6 +1689,34 @@
       }
     }
   );
+
+  gmcHome.onSave = function() {
+    let write = false;
+    let reopen = false;
+    
+    GM_setStyle({
+        node: gCSS,
+        data:
+          [
+            "#script_sidebar h7 div.sa { max-height: " + (gmcHome.get("limitMaxHeightSa") ? gmcHome.get("maxHeightListSa") + "em" : "none") + "; }"
+
+          ].join("\n")
+    });
+    
+    if (write) gmc.write();
+    if (reopen) { gmc.close(); gmc.open(); }
+  }
+
+  /** **/
+  if (gmcHome.get("limitMaxHeightSa"))
+    GM_setStyle({
+        node: gCSS,
+        data:
+          [
+            "#script_sidebar h7 div.sa { max-height: " + gmcHome.get("maxHeightListSa") + "em; overflow: auto; }"
+
+          ].join("\n")
+    });
 
   if (gISFRAMELESS && /\/scripts\/show\/68219\/?$/.test(gPATHNAME)) {
     gmcHome.open();
