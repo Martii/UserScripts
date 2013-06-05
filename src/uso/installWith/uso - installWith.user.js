@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.2
+// @version       2.0.0.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -839,13 +839,12 @@
         ;
 
         let matches = title.match(/(.*)\.\.\.$/);
-        if (matches && atName.length > maxLength) {
+        if (matches && atName.length > maxLength)
           title = matches[1].trim();
-        }
 
         if (atName) {
           let
-              titlex = title.substr(0, maxLength).toLowerCase(),
+              titlex = title.substr(0, maxLength).toLowerCase().trim(),
               atNamex = atName.substr(0, titlex.length).toLowerCase()
           ; 
           if (atNamex != titlex) {
@@ -860,17 +859,30 @@
       let descNode = aNode.querySelector(".desc");
       if (descNode) {
         let
+            maxLength = 250, // NOTE: Watchpoint
             atDescription = lastValueOf(aMb, "description"),
             desc = descNode.textContent
         ;
+        if (atDescription) {
+          let matches = desc.match(/(.*)\.\.\.$/);
+          if (matches && atDescription.length > maxLength)
+            desc = matches[1].trim();
 
-        if (atDescription)
-          if (atDescription.toLowerCase().trim() != desc.toLowerCase().trim()) {
+          let
+              descx = desc.substr(0, maxLength).toLowerCase().trim(),
+              atDescriptionx = atDescription.substr(0, descx.length).toLowerCase()
+          ;
+          if (atDescriptionx != descx) {
             descNode.classList.add("blah");
             descNode.title = "@description " + atDescription;
           }
           else
             descNode.title = "@description " + atDescription;
+        }
+        else {
+          descNode.classList.add("blah");
+          descNode.title = "undefined @description";
+        }
       }
 
       if (aReduce) {
