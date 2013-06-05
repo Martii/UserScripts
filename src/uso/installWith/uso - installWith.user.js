@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.1
+// @version       2.0.0.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -96,7 +96,7 @@
       gHASH = location.hash,
       gCSS = GM_setStyle({
           media: "screen, projection",
-          data: ".hid { display: none; } .HID { display: none !important }"
+          data: ".hid { display: none; } .HID { display: none !important } .blah { color: #f00 !important; }"
       }),
       gUAC = !!document.body.querySelector(".alt_topbottom"),
       gHALT404 = true,
@@ -176,7 +176,7 @@
           "#install_script a.userjs:hover { background: #ccc no-repeat scroll 0 0; }",
 
           "table.forums tr td.saU, #install_script a.saU { background-color: #ccc; border-left-color: #aaa; }",
-          "table.forums .actions { float: right; font-size: 0.8em; }",
+          "table.forums .actions { float: right; font-size: 0.8em; margin-left: 1em; }",
           "table.forums .actions .unhide { color: #aaa; }",
 
           "table.forums tr td.saEMBED, #install_script a.saEMBED { background-image: linear-gradient(to left, #888, rgba(136,136,136,0)) !important; }",
@@ -704,7 +704,7 @@
   /**
    *
    */
-  function advise(aSa, aNode, aEmbed, aReduce) {
+  function advise(aSa, aNode, aMb, aEmbed, aReduce) {
     let
       title,
       max,
@@ -829,6 +829,50 @@
       }
     }
     else {
+
+      let titleNode = aNode.querySelector(".title");
+      if (titleNode) {
+        let
+          maxLength = 50,  // NOTE: Watchpoint
+          atName = lastValueOf(aMb, "name"),
+          title = titleNode.textContent
+        ;
+
+        let matches = title.match(/(.*)\.\.\.$/);
+        if (matches && atName.length > maxLength) {
+          title = matches[1].trim();
+        }
+
+        if (atName) {
+          let
+              titlex = title.substr(0, maxLength).toLowerCase(),
+              atNamex = atName.substr(0, titlex.length).toLowerCase()
+          ; 
+          if (atNamex != titlex) {
+            titleNode.classList.add("blah");
+            titleNode.title = "@name " + atName;
+          }
+          else
+            titleNode.title = "@name " + titleNode.title.trim();
+        }
+      }
+
+      let descNode = aNode.querySelector(".desc");
+      if (descNode) {
+        let
+            atDescription = lastValueOf(aMb, "description"),
+            desc = descNode.textContent
+        ;
+
+        if (atDescription)
+          if (atDescription.toLowerCase().trim() != desc.toLowerCase().trim()) {
+            descNode.classList.add("blah");
+            descNode.title = "@description " + atDescription;
+          }
+          else
+            descNode.title = "@description " + atDescription;
+      }
+
       if (aReduce) {
         let nodeA = document.createElement("a");
         nodeA.classList.add("unhide");
@@ -843,7 +887,6 @@
 
         aNode.insertBefore(nodeDiv, aNode.lastChild.previousSibling);
 
-        let descNode = aNode.querySelector(".desc");
         if (descNode)
           descNode.classList.add("hid");
 
@@ -1223,7 +1266,7 @@
       block = true;
     }
 
-    advise(aSa, aNode, EMBED, REDUCE);
+    advise(aSa, aNode, aMb, EMBED, REDUCE);
 
     if (/^\/(?:scripts|topics)\//.test(gPATHNAME)) {
       if (block || (gmcHome.get("allowAOU") && (DDS || RHV || BT)) || (gmcHome.get("allowAOU") && ISI) || aMb["uso"]["unlisted"] == "") {
