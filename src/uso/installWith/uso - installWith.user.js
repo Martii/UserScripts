@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.3
+// @version       2.0.0.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -177,9 +177,9 @@
 
           "table.forums tr td.saU, #install_script a.saU { background-color: #ccc; border-left-color: #aaa; }",
           "table.forums .actions { float: right; font-size: 0.8em; margin-left: 1em; }",
-          "table.forums .actions .unhide { color: #aaa; }",
+          "table.forums .actions .unhide { color: #444; }",
 
-          "table.forums tr td.saEMBED, #install_script a.saEMBED { background-image: linear-gradient(to left, #888, rgba(136,136,136,0)) !important; }",
+          "table.forums tr td.saEMBED, #install_script a.saEMBED { background-image: linear-gradient(to left, #888, rgba(136,136,136,0.25), rgba(136,136,136,0)) !important; }",
 
           "table.forums tr td.saXCLUDE, #install_script a.saXCLUDE { background: #fff none repeat scroll 0 0; color: #000; }",
           "#install_script a.saXCLUDE:hover { background: #fff none repeat scroll 0 0; color: #000; }",
@@ -716,8 +716,8 @@
           "ELEVATE",
           "GUARD",
           "LOW",
-          "EMBED",
-          "XCLUDE"
+          "XCLUDE",
+          "EMBED"
         ]
     ;
 
