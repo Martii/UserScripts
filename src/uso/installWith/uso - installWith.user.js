@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.4
+// @version       2.0.0.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -57,10 +57,13 @@
 // @installURL  file:
 // @downloadURL file:
 
-// @resource icon https://s3.amazonaws.com/uso_ss/icon/68219/large.png
-// @resource gmc  https://s3.amazonaws.com/uso_ss/9849/large.png
-// @resource usoc https://s3.amazonaws.com/uso_ss/1359/large.png
-// @resource uso  http://s3.amazonaws.com/uso_ss/7996/large.png
+// @resource icon  https://s3.amazonaws.com/uso_ss/icon/68219/large.png
+// @resource gmc   https://s3.amazonaws.com/uso_ss/9849/large.png
+// @resource usoc  https://s3.amazonaws.com/uso_ss/1359/large.png
+// @resource uso   https://s3.amazonaws.com/uso_ss/7996/large.png
+// @resource clear https://s3.amazonaws.com/uso_ss/21838/large.gif?1370570468
+// @resource more  https://s3.amazonaws.com/uso_ss/21839/large.gif?1370570619
+// @resource less  https://s3.amazonaws.com/uso_ss/21840/large.gif
 
 // @resource list http://beta.usocheckup.dune.net/res/list.json
 
@@ -177,7 +180,12 @@
 
           "table.forums tr td.saU, #install_script a.saU { background-color: #ccc; border-left-color: #aaa; }",
           "table.forums .actions { float: right; font-size: 0.8em; margin-left: 1em; }",
-          "table.forums .actions .unhide { color: #444; }",
+          "table.forums .actions .action, table.forums .actions .toggle { color: #444; margin-left: 0.5em; text-decoration: none; }",
+
+          "table.forums .actions .more { background: transparent url(" + GM_getResourceURL("more") + ") no-repeat scroll center bottom; cursor: pointer; height: 5px; padding: 4px 4px 0 4px; margin-left: 0.25em; width: 9px; }",
+          "table.forums .actions .less { background: transparent url(" + GM_getResourceURL("less") + ") no-repeat scroll center bottom; cursor: pointer; height: 9px; padding: 0 6px; margin-left: 0.25em; width: 5px; }",
+
+          "table.forums a.title { font-weight: bold; }",
 
           "table.forums tr td.saEMBED, #install_script a.saEMBED { background-image: linear-gradient(to left, #888, rgba(136,136,136,0.25), rgba(136,136,136,0)) !important; }",
 
@@ -829,75 +837,88 @@
       }
     }
     else {
+      let actionsNodeDiv = document.createElement("div");
+      actionsNodeDiv.classList.add("actions");
 
-      let titleNode = aNode.querySelector(".title");
-      if (titleNode) {
-        let
-          maxLength = 50,  // NOTE: Watchpoint
-          atName = lastValueOf(aMb, "name"),
-          title = titleNode.textContent
-        ;
+      aNode.insertBefore(actionsNodeDiv, aNode.firstChild);
 
-        let matches = title.match(/(.*)\.\.\.$/);
-        if (matches && atName.length > maxLength)
-          title = matches[1].trim();
-
-        if (atName) {
+      let titleNode, descNode;
+      if (aMb) {
+        titleNode = aNode.querySelector(".title");
+        if (titleNode) {
           let
-              titlex = title.substr(0, maxLength).toLowerCase().trim(),
-              atNamex = atName.substr(0, titlex.length).toLowerCase()
-          ; 
-          if (atNamex != titlex) {
-            titleNode.classList.add("blah");
-            titleNode.title = "@name " + atName;
-          }
-          else
-            titleNode.title = "@name " + titleNode.title.trim();
-        }
-      }
-
-      let descNode = aNode.querySelector(".desc");
-      if (descNode) {
-        let
-            maxLength = 250, // NOTE: Watchpoint
-            atDescription = lastValueOf(aMb, "description"),
-            desc = descNode.textContent
-        ;
-        if (atDescription) {
-          let matches = desc.match(/(.*)\.\.\.$/);
-          if (matches && atDescription.length > maxLength)
-            desc = matches[1].trim();
-
-          let
-              descx = desc.substr(0, maxLength).toLowerCase().trim(),
-              atDescriptionx = atDescription.substr(0, descx.length).toLowerCase()
+            maxLength = 50,  // NOTE: Watchpoint
+            atName = lastValueOf(aMb, "name"),
+            title = titleNode.textContent
           ;
-          if (atDescriptionx != descx) {
-            descNode.classList.add("blah");
-            descNode.title = "@description " + atDescription;
+
+          let sourceNodeA = document.createElement("a");
+          sourceNodeA.classList.add("action");
+          sourceNodeA.href = "/scripts/review/" + aMb["uso"]["script"];
+          sourceNodeA.textContent = "source";
+
+          actionsNodeDiv.appendChild(sourceNodeA);
+
+          let matches = title.match(/(.*)\.\.\.$/);
+          if (matches && atName.length > maxLength)
+            title = matches[1].trim();
+
+          if (atName) {
+            let
+                titlex = title.substr(0, maxLength).toLowerCase().trim(),
+                atNamex = atName.substr(0, titlex.length).toLowerCase()
+            ;
+            if (atNamex != titlex) {
+              titleNode.classList.add("blah");
+              titleNode.title = "@name " + atName;
+            }
+            else
+              titleNode.title = "@name " + titleNode.title.trim();
           }
-          else
-            descNode.title = "@description " + atDescription;
         }
-        else {
-          descNode.classList.add("blah");
-          descNode.title = "undefined @description";
+
+        descNode = aNode.querySelector(".desc");
+        if (descNode) {
+          let
+              maxLength = 250, // NOTE: Watchpoint
+              atDescription = lastValueOf(aMb, "description"),
+              desc = descNode.textContent
+          ;
+          if (atDescription) {
+            let matches = desc.match(/(.*)\.\.\.$/);
+            if (matches && atDescription.length > maxLength)
+              desc = matches[1].trim();
+
+            let
+                descx = desc.substr(0, maxLength).toLowerCase().trim(),
+                atDescriptionx = atDescription.substr(0, descx.length).toLowerCase()
+            ;
+            if (atDescriptionx != descx) {
+              descNode.classList.add("blah");
+              descNode.title = "@description " + atDescription;
+            }
+            else
+              descNode.title = "@description " + atDescription;
+          }
+          else {
+            descNode.classList.add("blah");
+            descNode.title = "undefined @description";
+          }
         }
       }
+
+      let nodeImg = document.createElement("img");
+      nodeImg.classList.add("more");
+      nodeImg.src = GM_getResourceURL("clear");
+      nodeImg.alt = "hide";
+      nodeImg.addEventListener("click", unhideClick, false);
+
+      actionsNodeDiv.appendChild(nodeImg);
 
       if (aReduce) {
-        let nodeA = document.createElement("a");
-        nodeA.classList.add("unhide");
-        nodeA.href = "#";
-        nodeA.textContent = "show";
-        nodeA.addEventListener("click", unhideClick, false);
-
-        let nodeDiv = document.createElement("div");
-        nodeDiv.classList.add("actions");
-
-        nodeDiv.appendChild(nodeA);
-
-        aNode.insertBefore(nodeDiv, aNode.lastChild.previousSibling);
+        nodeImg.classList.remove("more");
+        nodeImg.classList.add("less");
+        nodeImg.alt = "show";
 
         if (descNode)
           descNode.classList.add("hid");
@@ -1061,13 +1082,27 @@
    */
   function unhideClick(ev) {
     ev.preventDefault();
-    ev.target.removeEventListener("click", unhideClick, false);
 
     let descNode = ev.target.parentNode.parentNode.querySelector(".desc");
-    if (descNode)
-      descNode.classList.remove("hid");
+    if (descNode) {
+      let targetNode = ev.target;
 
-    ev.target.parentNode.removeChild(ev.target);
+      if (!descNode.classList.contains("hid")) {
+        targetNode.classList.remove("more");
+        targetNode.classList.add("less");
+        targetNode.alt = "show";
+        descNode.classList.add("hid");
+        qNodes(gANODES);
+      }
+      else {
+        targetNode.classList.add("more");
+        targetNode.classList.remove("less");
+        targetNode.alt = "hide";
+        descNode.classList.remove("hid");
+      }
+    }
+    else
+      console.error("Fatal error: Description node not found");
   }
 
   /**
