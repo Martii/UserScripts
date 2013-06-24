@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.7
+// @version       2.0.0.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1256,6 +1256,9 @@
             pushAdvisory(aSa, aAdvisory, aSummary + (aTips ? "\n      " + aTips.join("\n      ") : ""));
             if (aBlock)
               block = true;
+
+            if (aReduce)
+              REDUCE = true;
           }
 
         if (aScope == "@uso:script" && atUsoScript)
