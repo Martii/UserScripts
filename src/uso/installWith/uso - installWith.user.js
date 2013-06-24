@@ -8,15 +8,15 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.6
+// @version       2.0.0.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
 // @include /^https?://userscripts\.org/scripts/
 // @include /^https?://userscripts\.org/topics//
 // @include /^https?://userscripts\.org/reviews//
-// @include /^https?://userscripts\.org/users/\.*?/scripts/
-// @include /^https?://userscripts\.org/users/\.*?/favorites/
+// @include /^https?://userscripts\.org/users/\.+?/scripts/
+// @include /^https?://userscripts\.org/users/\.+?/favorites/
 // @include /^https?://userscripts\.org/groups/\d+/scripts/
 // @include /^https?://userscripts\.org/tags//
 // @include /^https?://userscripts\.org/home/(?:scripts|favorites)/
@@ -139,7 +139,7 @@
         ].join("\n")
     });
 
-    if (/(^\/users\/.*?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) || (/^\/$/.test(gPATHNAME)) && gUAC)
+    if (/(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) || (/^\/$/.test(gPATHNAME)) && gUAC)
       GM_setStyle({
         node: gCSS,
         data:
@@ -1404,6 +1404,21 @@
             if (matches)
               this._mb["uso"]["avatar"] = matches[1];
           }
+          else if (/^\/users\/.+?\/scripts/.test(gPATHNAME)) {
+            user_idNode = document.querySelector(".avatar a");
+            if (user_idNode) {
+              let aid = user_idNode.pathname.match(/\/(\d+)$/);
+              if (aid) {
+                this._mb["uso"]["author"] = aid[1];
+
+                let gravatarNode = user_idNode.firstChild;
+
+                let gid = gravatarNode.src.match(/^.+gravatar_id\=(.+?)\&/);
+                if (gid)
+                  this._mb["uso"]["avatar"] = gid[1];
+              }
+            }
+          }
 
           let iconNode = document.getElementById("icon");
           if (iconNode) {
@@ -1421,7 +1436,7 @@
               /^\/tags\//.test(gPATHNAME) && gmcHome.get("scanTagsDepth") == "deep" ||
               /^\/scripts/.test(gPATHNAME) && gmcHome.get("scanScriptsDepth") == "deep" ||
               /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("scanGroupsDepth") == "deep" ||
-              /(^\/users\/.*?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("scanScriptWrightDepth") == "deep" ||
+              /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("scanScriptWrightDepth") == "deep" ||
               /^\/(?:scripts\/show|topics)/.test(gPATHNAME) && !gmcHome.get("disableScanDeep")
               ) &&
               this._mb["uso"]["unlisted"] != ""
@@ -1974,7 +1989,7 @@
     || /^\/tags\//.test(gPATHNAME) && gmcHome.get("enableScanTags")
     || /^\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
     || /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanGroups")
-    || /(^\/users\/.*?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
+    || /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
     || /^\/scripts\/show\//.test(gPATHNAME)
     || /^\/topics\//.test(gPATHNAME)
   ) {
