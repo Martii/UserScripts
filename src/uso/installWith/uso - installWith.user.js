@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.11
+// @version       2.0.0.12
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1356,8 +1356,8 @@
       aNumber = parseInt(aNumber);
 
     return (
-      (aNumber > 1024)
-          ? (aNumber > 1048576)
+      (aNumber >= 1024)
+          ? (aNumber >= 1048576)
               ? parseInt(aNumber / 1024 / 1024 * 100) / 100 + " MiB"
               : parseInt(aNumber / 1024 * 100) / 100 + " KiB"
           : aNumber + " B"
