@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.12
+// @version       2.0.0.13
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1481,7 +1481,7 @@
             this._mb["uso"]["metajsnws"] = nws.toString();
           }
 
-          stats.push(parseInt(ws / nws * 10000) / 100 + "% whitespace");
+          stats.push(parseInt(ws / (ws + nws) * 10000) / 100 + "% whitespace");
 
           pushAdvisory(this._sa, "INFO", "Raw meta.js\n    " + stats.join("\n    "));
 
@@ -1538,7 +1538,7 @@
             this._mb["uso"]["userjsnws"] = nws.toString();
           }
 
-          stats.push(parseInt(ws / nws * 10000) / 100 + "% whitespace");
+          stats.push(parseInt(ws / (ws + nws) * 10000) / 100 + "% whitespace");
 
           pushAdvisory(this._sa, "INFO", "Raw user.js\n    " + stats.join("\n    "));
 
