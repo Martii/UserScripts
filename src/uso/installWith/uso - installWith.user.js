@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.10
+// @version       2.0.0.11
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1357,10 +1357,10 @@
 
     return (
       (aNumber > 1024)
-          ? (aNumber > 1048510)
-              ? parseInt(aNumber / 1024 / 1024 * 100) / 100 + "M"
-              : parseInt(aNumber / 1024 * 100) / 100 + "K"
-          : aNumber + "B"
+          ? (aNumber > 1048576)
+              ? parseInt(aNumber / 1024 / 1024 * 100) / 100 + " MiB"
+              : parseInt(aNumber / 1024 * 100) / 100 + " KiB"
+          : aNumber + " B"
     );
   }
 
@@ -1460,12 +1460,12 @@
 
           this._mb["uso"]["metajssize"] = aR.responseText.length.toString();
 
-          let stats = [unitSizer(aR.responseText.length)];
+          let stats = [];
 
-          let matches = aR.responseText.match(/\n/g);
+          let matches = aR.responseText.match(/\n/g); // NOTE: Meta should always have at least one newline
           if (matches) {
             this._mb["uso"]["metajslines"] = (matches.length + 1).toString();
-            stats.push(this._mb["uso"]["metajslines"] + " lines");
+            stats.push(unitSizer(this._mb["uso"]["metajssize"]) + " with " + this._mb["uso"]["metajslines"] + " lines");
           }
 
           let ws, nws;
@@ -1517,12 +1517,12 @@
           /** Add some keys **/
           this._mb["uso"]["userjssize"] = aR.responseText.length.toString();
 
-          let stats = [unitSizer(aR.responseText.length)];
+          let stats = [];
 
-          let matches = aR.responseText.match(/\n/g);
+          let matches = aR.responseText.match(/\n/g); // NOTE: Script should always have at least one newline
           if (matches) {
             this._mb["uso"]["userjslines"] = (matches.length + 1).toString();
-            stats.push(this._mb["uso"]["userjslines"] + " lines");
+            stats.push(unitSizer(this._mb["uso"]["userjssize"]) + " with " + this._mb["uso"]["userjslines"] + " lines");
           }
 
           let ws, nws;
