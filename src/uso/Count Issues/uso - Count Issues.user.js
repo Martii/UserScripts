@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0.3
+// @version       1.0.0.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?:\/\/(.*?\.)?userscripts\.org\/scripts\/.*/
@@ -597,6 +597,22 @@
   /**
    *
    */
+  function unitSizer(aNumber) {
+    if (typeof aNumber == "string")
+      aNumber = parseInt(aNumber);
+
+    return (
+      (aNumber >= 1024)
+          ? (aNumber >= 1048576)
+              ? parseInt(aNumber / 1024 / 1024 * 10) / 10 + " MiB"
+              : parseInt(aNumber / 1024 * 10) / 10 + " KiB"
+          : aNumber + " B"
+    );
+  }
+
+  /**
+   *
+   */
   function onClickHunt(ev) {
     let hookNode = ev.target;
     hookNode.removeEventListener("click", onClickHunt, false);
@@ -635,9 +651,7 @@
 
                 thisNode.textContent += " ";
                 let nodeSpan = document.createElement("span");
-                nodeSpan.textContent = (responseText.length > 1024)
-                  ? parseInt(responseText.length / 1024 * 10) / 10 + "K"
-                  : responseText.length;
+                nodeSpan.textContent = unitSizer(responseText.length);
                 thisNode.appendChild(nodeSpan);
               }
             }
