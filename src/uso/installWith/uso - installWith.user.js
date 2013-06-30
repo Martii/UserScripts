@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.13
+// @version       2.0.0.14
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -950,8 +950,15 @@
     if (!aSa[aAdvisory])
       aSa[aAdvisory] = new Array();
 
-    for (let i = 0, comment; comment = aComment[i++];)
-      aSa[aAdvisory].push(comment);
+    for (let i = 0, comment; comment = aComment[i++];) {
+      let found;
+      for (let j = 0, commented; commented = aSa[aAdvisory][j++];)
+        if (comment == commented)
+          found = true;
+
+      if (!found)
+        aSa[aAdvisory].push(comment);
+    }
   }
 
   /**
