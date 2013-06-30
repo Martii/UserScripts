@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.9
+// @version       2.0.0.10
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -99,7 +99,7 @@
       gHASH = location.hash,
       gCSS = GM_setStyle({
           media: "screen, projection",
-          data: ".hid { display: none; } .HID { display: none !important } .blah { color: #f00 !important; }"
+          data: ".hid { display: none; } .HID { display: none !important } .blah { color: #f00 !important; } .halb { background-color: #f00 !important; }"
       }),
       gUAC = !!document.body.querySelector(".alt_topbottom"),
       gHALT404 = true,
@@ -179,7 +179,8 @@
           "#install_script a.userjs:hover { background: #ccc no-repeat scroll 0 0; }",
 
           "table.forums tr td.saU, #install_script a.saU { background-color: #ccc; border-left-color: #aaa; }",
-          "table.forums .actions { float: right; font-size: 0.8em; margin-left: 1em; }",
+          "table.forums .actions { float: right; font-size: 0.9em; margin-left: 1em; }",
+          "table.forums .actions span { font-size: 0.8em; }",
           "table.forums .actions .action, table.forums .actions .toggle { color: #444; margin-left: 0.5em; text-decoration: none; }",
 
           "table.forums .actions .more { background: transparent url(" + GM_getResourceURL("more") + ") no-repeat scroll center bottom; cursor: pointer; height: 5px; padding: 4px 4px 0 4px; margin-left: 0.25em; width: 9px; }",
@@ -725,7 +726,9 @@
           "GUARD",
           "LOW",
           "XCLUDE",
-          "EMBED"
+          "EMBED",
+          "UNKNOWN",
+          "INFO"
         ]
     ;
 
@@ -753,8 +756,11 @@
 
     if (title)
       aNode.title = title;
-    else
-      aNode.title = "UNDETERMINED";
+
+    if (max == "INFO") {
+      aNode.title = "UNKNOWN:\n  Undetermined\n" + aNode.title;
+      pushAdvisory(aSa, "UNKNOWN", "Undetermined");
+    }
 
     /** Sidebar **/
     if (gISHOMEPAGE) {
@@ -869,8 +875,14 @@
                 atNamex = atName.substr(0, titlex.length)
             ;
             if (atNamex != titlex) {
-              titleNode.classList.add("blah");
               titleNode.title = "@name " + atName;
+
+              if (titlex.replace("\u200d", "", "g").trim() == "") { // NOTE: Watchpoint
+                titleNode.textContent = atName;
+                titleNode.classList.add("halb");
+              }
+              else
+                titleNode.classList.add("blah");
             }
             else
               titleNode.title = "@name " + titleNode.title.trim();
@@ -1339,6 +1351,22 @@
   /**
    *
    */
+  function unitSizer(aNumber) {
+    if (typeof aNumber == "string")
+      aNumber = parseInt(aNumber);
+
+    return (
+      (aNumber > 1024)
+          ? (aNumber > 1048510)
+              ? parseInt(aNumber / 1024 / 1024 * 100) / 100 + "M"
+              : parseInt(aNumber / 1024 * 100) / 100 + "K"
+          : aNumber + "B"
+    );
+  }
+
+  /**
+   *
+   */
   function onLoad(aR) {
     switch (aR.status) {
       case 404:
@@ -1355,7 +1383,7 @@
           else
             pushAdvisory(this._sa, "ABORT", "Unable to retrieve script source");
 
-          advise(this._sa, this._node);
+          advise(this._sa, this._node, this._mb);
 
           this._node.classList.remove("saB");
           gQNODES.shift();
@@ -1368,7 +1396,7 @@
           this._mb = parseMeta(aR.responseText);
           if (!this._mb) {
             pushAdvisory(this._sa, "ABORT", "Unable to retrieve script metadata");
-            advise(this._sa, this._node);
+            advise(this._sa, this._node, this._mb);
 
             this._node.classList.remove("saB");
             gQNODES.shift();
@@ -1380,7 +1408,7 @@
           if (pageMetaVersion && gISHOMEPAGE)
             if (lastValueOf(this._mb, "version", "uso") != pageMetaVersion.content) {
               pushAdvisory(this._sa, "ABORT", "meta.js @uso:version and page @uso:version DO NOT MATCH");
-              advise(this._sa, this._node);
+              advise(this._sa, this._node, this._mb);
 
               this._node.classList.remove("saB");
               gQNODES.shift();
@@ -1430,6 +1458,33 @@
               this._mb["uso"]["icontype"] = matches[1];
           }
 
+          this._mb["uso"]["metajssize"] = aR.responseText.length.toString();
+
+          let stats = [unitSizer(aR.responseText.length)];
+
+          let matches = aR.responseText.match(/\n/g);
+          if (matches) {
+            this._mb["uso"]["metajslines"] = (matches.length + 1).toString();
+            stats.push(this._mb["uso"]["metajslines"] + " lines");
+          }
+
+          let ws, nws;
+          matches = aR.responseText.match(/\s/g);
+          if (matches) {
+            ws = matches.length;
+            this._mb["uso"]["metajsws"] = ws.toString();
+          }
+
+          matches = aR.responseText.match(/\S/g);
+          if (matches) {
+            nws = matches.length;
+            this._mb["uso"]["metajsnws"] = nws.toString();
+          }
+
+          stats.push(parseInt(ws / nws * 10000) / 100 + "% whitespace");
+
+          pushAdvisory(this._sa, "INFO", "Raw meta.js\n    " + stats.join("\n    "));
+
           /** **/
           if (this._mb["uso"]["unlisted"] == "")
             pushAdvisory(this._sa, "ELEVATE", "Unlisted script");
@@ -1437,7 +1492,7 @@
           if ((
               /^\/$/.test(gPATHNAME) && gmcHome.get("scanMainDepth") == "deep" ||
               /^\/tags\//.test(gPATHNAME) && gmcHome.get("scanTagsDepth") == "deep" ||
-              /^\/scripts/.test(gPATHNAME) && gmcHome.get("scanScriptsDepth") == "deep" ||
+              /^\/scripts\/?$/.test(gPATHNAME) && gmcHome.get("scanScriptsDepth") == "deep" ||
               /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("scanGroupsDepth") == "deep" ||
               /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("scanScriptWrightDepth") == "deep" ||
               /^\/(?:scripts\/show|topics)/.test(gPATHNAME) && !gmcHome.get("disableScanDeep")
@@ -1457,8 +1512,37 @@
           }
         }
         else {
-          /** Remove some keys **/
           let userjs = aR.responseText;
+
+          /** Add some keys **/
+          this._mb["uso"]["userjssize"] = aR.responseText.length.toString();
+
+          let stats = [unitSizer(aR.responseText.length)];
+
+          let matches = aR.responseText.match(/\n/g);
+          if (matches) {
+            this._mb["uso"]["userjslines"] = (matches.length + 1).toString();
+            stats.push(this._mb["uso"]["userjslines"] + " lines");
+          }
+
+          let ws, nws;
+          matches = aR.responseText.match(/\s/g);
+          if (matches) {
+            ws = matches.length;
+            this._mb["uso"]["userjsws"] = ws.toString();
+          }
+
+          matches = aR.responseText.match(/\S/g);
+          if (matches) {
+            nws = matches.length;
+            this._mb["uso"]["userjsnws"] = nws.toString();
+          }
+
+          stats.push(parseInt(ws / nws * 10000) / 100 + "% whitespace");
+
+          pushAdvisory(this._sa, "INFO", "Raw user.js\n    " + stats.join("\n    "));
+
+          /** Remove some keys **/
           userjs = userjs.replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
 
           parse(this._sa, this._node, this._scriptId, this._mb, userjs);
@@ -1470,7 +1554,7 @@
         break;
       default:
         pushAdvisory(this._sa, "ABORT", "Untrapped status code" + aR.status);
-        advise(this._sa, this._node);
+        advise(this._sa, this._node, this._mb);
 
         this._node.classList.remove("saB");
         gQNODES.shift();
@@ -1990,7 +2074,7 @@
   if (
     /^\/$/.test(gPATHNAME) && gmcHome.get("enableScanMain")
     || /^\/tags\//.test(gPATHNAME) && gmcHome.get("enableScanTags")
-    || /^\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
+    || /^\/scripts\/?$/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
     || /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanGroups")
     || /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
     || /^\/scripts\/show\//.test(gPATHNAME)
