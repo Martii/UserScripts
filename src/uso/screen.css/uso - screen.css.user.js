@@ -1,3 +1,6 @@
+(function () {
+  "use strict";
+
 // ==UserScript==
 // @name          uso - screen.css
 // @namespace     http://userscripts.org/users/37004
@@ -5,19 +8,17 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.3.7
+// @version       0.3.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/48071/large.jpg
-//
-// @include /^https?://userscripts\.org//
-//
+
+// @include /^https?://userscripts\.org/?/
+
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
-//
-// @require https://userscripts.org/scripts/source/115323.user.js
-//
-// ==/UserScript==
 
-(function() {
+// @require https://userscripts.org/scripts/source/115323.user.js
+
+// ==/UserScript==
 
   let gCSS = GM_setStyle({
     media: "screen, projection, print"
@@ -54,6 +55,5 @@
 
       ].join("\n")
   });
-  
 
 })();
