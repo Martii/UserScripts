@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.16
+// @version       2.0.0.17
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1423,18 +1423,17 @@
               return;
             }
 
-          let sid = this.url.match(/\/(\d+)\.meta\.js$/)[1];
-          if (lastValueOf(this._mb, "script", "uso") != sid) {
+          if (lastValueOf(this._mb, "script", "uso") != this._scriptId) {
             pushAdvisory(this._sa, "SEVERE", "Malformed metadata block");
 
             if (this._mb["uso"]["script"]) {
               if (!Array.isArray(this._mb["uso"]["script"]))
                 this._mb["uso"]["script"] = [this._mb["uso"]["script"]];
 
-              this._mb["uso"]["script"].push(sid);
+              this._mb["uso"]["script"].push(this._scriptId);
             }
             else
-              this._mb["uso"]["script"] = sid;
+              this._mb["uso"]["script"] = this._scriptId;
           }
 
           /** Create phantom key(s) if detected **/
