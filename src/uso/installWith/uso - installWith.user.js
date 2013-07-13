@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.14
+// @version       2.0.0.15
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -395,7 +395,7 @@
     if (!gmcHome.get("skipVerifyExclusion"))
       if (confirm('Are you sure?'))
         if (confirm('Are you really sure?'))
-          if(confirm('Are you really, really sure?\n\nLast chance before impending doom.')) {
+          if(confirm('Are you really, really sure?\n\nLast chance before impending doom?')) {
             ev.target.removeEventListener("click", nag, false);
             ev.target.click();
           }
@@ -855,12 +855,13 @@
           let
             maxLength = 50,  // NOTE: Watchpoint
             atName = lastValueOf(aMb, "name"),
+            atUsoScript = lastValueOf(aMb, "script", "uso"),
             title = titleNode.textContent
           ;
 
           let sourceNodeA = document.createElement("a");
           sourceNodeA.classList.add("action");
-          sourceNodeA.href = "/scripts/review/" + aMb["uso"]["script"];
+          sourceNodeA.href = "/scripts/review/" + atUsoScript;
           sourceNodeA.textContent = "source";
 
           actionsNodeDiv.appendChild(sourceNodeA);
@@ -1173,7 +1174,6 @@
           if (aRHV) RHV = true;
           if (aBT) BT = true;
           if (aDDS) DDS = true;
-          
         }
       );
 
@@ -1422,6 +1422,11 @@
               xhr.call(gTHIS, this);
               return;
             }
+
+          if (!lastValueOf(this._mb, "script", "uso")) {
+            pushAdvisory(this._sa, "SEVERE", "Malformed metadata block");
+            this._mb["uso"]["script"] = this.url.match(/(\d+)\.meta\.js$/)[1];
+          }
 
           /** Create phantom key(s) if detected **/
           if (this._node.classList.contains("userjs")) {
