@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0.5
+// @version       1.0.0.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?://userscripts\.org/scripts//
@@ -2893,19 +2893,19 @@
                           ].join("\n")
                     });
 
-                  document.evaluate(
-                    "//a[@href='/scripts/versions/" + scriptid + "']",
-                    document.body,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    xpr
-                  );
-                  if (xpr) {
-                    let thisNode;
+                  let contentNode = document.getElementById("content");
+                  if (contentNode) {
+                    document.evaluate(
+                      ".//a[@href='/scripts/versions/" + scriptid + "']",
+                      contentNode,
+                      null,
+                      XPathResult.FIRST_ORDERED_NODE_TYPE,
+                      xpr
+                    );
+                    if (xpr) {
+                      let thisNode;
 
-                    if (!xpr.singleNodeValue) {
-                      let contentNode = document.getElementById("content");
-                      if (contentNode) {
+                      if (!xpr.singleNodeValue) {
                         let nodeA = document.createElement("a");
                         nodeA.href = "/scripts/versions/" + scriptid;
                         nodeA.textContent = "0 previous versions";
@@ -2921,17 +2921,17 @@
 
                         thisNode = nodeA;
                       }
-                      else {
-                        let msg = 'Something went horribly wrong on the Source code page';
-                        console.error(msg);
-                        return;
-                      }
-                    }
-                    else
-                      thisNode = xpr.singleNodeValue;
+                      else
+                        thisNode = xpr.singleNodeValue;
 
-                    if (thisNode)
-                      thisNode.addEventListener("click", onClickVersions, false);
+                      if (thisNode)
+                        thisNode.addEventListener("click", onClickVersions, false);
+                    }
+                  }
+                  else {
+                    let msg = 'Content node not found for inline versions and diffs';
+                    console.error(msg);
+                    return; // NOTE: Watchpoint
                   }
                 }
 
