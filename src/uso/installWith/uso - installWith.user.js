@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.17
+// @version       2.0.0.18
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -796,7 +796,7 @@
             nodeDiv.classList.add("sa");
 
             for (let j = 0, thisSummary; thisSummary = aSa[e][j]; j++) {
-  
+
               let thisDescription = thisSummary.split("\n").map(function (e) { return e.trim(); });
 
               let nodeDl = document.createElement("dl");
@@ -866,11 +866,11 @@
 
           actionsNodeDiv.appendChild(sourceNodeA);
 
-          let matches = title.match(/(.*)\.\.\.$/);
-          if (matches && atName.length > maxLength)
-            title = matches[1].trim();
-
           if (atName) {
+            let matches = title.match(/(.*)\.\.\.$/);
+            if (matches && atName.length > maxLength)
+              title = matches[1].trim();
+
             let
                 titlex = title.substr(0, maxLength).trim(),
                 atNamex = atName.substr(0, titlex.length)
@@ -1390,6 +1390,10 @@
           else
             pushAdvisory(this._sa, "ABORT", "Unable to retrieve script source");
 
+          this._mb = {};
+          this._mb["uso"] = {};
+          this._mb["uso"]["script"] = this._scriptId;
+
           advise(this._sa, this._node, this._mb);
 
           this._node.classList.remove("saB");
@@ -1908,7 +1912,7 @@
   gmcHome.onSave = function() {
     let write = false;
     let reopen = false;
-    
+
     GM_setStyle({
         node: gCSS,
         data:
@@ -1917,7 +1921,7 @@
 
           ].join("\n")
     });
-    
+
     if (write) gmc.write();
     if (reopen) { gmc.close(); gmc.open(); }
   }
