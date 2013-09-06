@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.18
+// @version       2.0.0.19
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -535,9 +535,11 @@
               break;
           }
 
-          let origin, mirrorDomain = gmcHome.get("mirrorDomain"), useSSL = (mirrorDomain == "secure");
-            if (this.value == "usoCB")
+          let origin, useBeta, mirrorDomain = gmcHome.get("mirrorDomain"), useSSL = (mirrorDomain == "secure");
+            if (this.value == "usoCB") {
+              useBeta = true;
               origin =  "http://beta.usocheckup.dune.net";
+            }
             else {
               if (useSSL)
                 origin = "https://secure.dune.net";
@@ -547,7 +549,7 @@
                 origin = "http://usocheckup.redirectme.net";
             }
 
-          let pathname = (useSSL ? "/usocheckup/" : "/") + aScriptId + ".user.js";
+          let pathname = (useSSL && !useBeta ? "/usocheckup/" : "/") + aScriptId + ".user.js";
 
           let search = "";
             search = appendToQs(search, /^usoC/.test(this.value) ? "": "updater=" + this.value);
