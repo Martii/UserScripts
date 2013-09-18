@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.7
+// @version       0.1.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
@@ -309,7 +309,7 @@ Please note this script uses native JSON and native classList which requires Fir
                                   '}'
 
                                 ].join("\n")
-                             ), null, " ")
+                             ), null, "")
             },
             'enableUnpin': {
                 "type": 'checkbox',
@@ -332,15 +332,20 @@ Please note this script uses native JSON and native classList which requires Fir
 
       gmc.onOpen = function () {
         onInit(document);
+
         gmc.fields["jsonMenus"].node.setAttribute("spellcheck", "false");
+        gmc.fields["jsonMenus"].node.textContent = JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, " ");
       }
 
       gmc.onSave = function () {
         try {
-          gmc.set("jsonMenus", JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, " "));
+          gmc.set("jsonMenus", JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, ""));
+
           gmc.write();
           gmc.close();
           gmc.open();
+
+          gmc.fields["jsonMenus"].node.textContent = JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, " ");
         }
         catch (e) {
           alert('ERROR: Invalid JSON for main menu.\n\nPlease correct or reset to defaults');
@@ -501,8 +506,11 @@ Please note this script uses native JSON and native classList which requires Fir
           }
 
           // Resave the JSON menus silently
-          gmc.set("jsonMenus", JSON.stringify(mainmenu, null, " "));
+          gmc.set("jsonMenus", JSON.stringify(mainmenu, null, ""));
+
           gmc.write();
+
+          gmc.fields["jsonMenus"].node.textContent = JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, " ");
         }
       }
 
