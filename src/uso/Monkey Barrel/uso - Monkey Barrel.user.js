@@ -8,7 +8,7 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.8
+// @version       0.1.9
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 //
 // @include   /^https?:\/\/userscripts\.org\/?.*/
@@ -309,7 +309,7 @@ Please note this script uses native JSON and native classList which requires Fir
                                   '}'
 
                                 ].join("\n")
-                             ), null, "")
+                             ), null, " ")
             },
             'enableUnpin': {
                 "type": 'checkbox',
@@ -344,8 +344,6 @@ Please note this script uses native JSON and native classList which requires Fir
           gmc.write();
           gmc.close();
           gmc.open();
-
-          gmc.fields["jsonMenus"].node.textContent = JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, " ");
         }
         catch (e) {
           alert('ERROR: Invalid JSON for main menu.\n\nPlease correct or reset to defaults');
