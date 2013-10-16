@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.21
+// @version       2.0.0.22
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -582,7 +582,7 @@
 
           /** Finish up gmc **/
           if (gISFRAMELESS && gISHOMEPAGE) {
-            gmc.fields["useGravatarIcon"].settings.label = "<img style='margin-right: 0.5em;' src='" + (/^https:$/i.test(gPROTOCOL) ? "https://secure" : "http://www") + ".gravatar.com/avatar.php?gravatar_id=" + atUsoAvatar + "&r=pg&s=48&default=identicon' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
+            gmc.fields["useGravatarIcon"].settings.label = "<img style='margin-right: 0.5em;' src='http" + (/^https:$/i.test(gPROTOCOL) ? "s" : "") + "://www.gravatar.com/avatar/" + atUsoAvatar + "&r=pg&s=48&default=identicon' alt='Use this authors gravatar when available if not present' title='Use this authors gravatar when available if not present' />";
             gmc.fields["useScriptIcon"].settings.label = "<img src='" + gPROTOCOL + "//s3.amazonaws.com/uso_ss/icon/" + aScriptId + "/large." + atUsoIcontype + "'  alt='Favor this scripts USO icon when available if not present' title='Favor this scripts USO icon when available if not present'/>";
 
             gmc.open();
@@ -674,7 +674,7 @@
       nodeText = document.createTextNode(lname);
 
       nodeImg = document.createElement("img");
-      nodeImg.src = /^http/.test(icon) ? icon : (/^https:$/i.test(gPROTOCOL) ? "https://secure" : "http://www") + ".gravatar.com/avatar/" + icon + "?r=PG&s=92&default=identicon";
+      nodeImg.src = /^http/.test(icon) ? icon : "http" + (/^https:$/i.test(gPROTOCOL) ? "s" : "") + "://www.gravatar.com/avatar/" + icon + "?r=PG&s=92&default=identicon";
       if (indent)
         nodeImg.classList.add("indent");
 
@@ -1457,9 +1457,9 @@
           if (user_idNode) {
             this._mb["uso"]["author"] = user_idNode.getAttribute("user_id");
 
-            let matches = user_idNode.getAttribute("gravatar").match(/^.+gravatar_id\=(.+?)\&/);
+            let matches = user_idNode.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))\&/);
             if (matches)
-              this._mb["uso"]["avatar"] = matches[1];
+              this._mb["uso"]["avatar"] = matches[1] || matches[2];
           }
           else if (/^\/users\/.+?\/scripts/.test(gPATHNAME)) {
             user_idNode = document.querySelector(".avatar a");
@@ -1470,9 +1470,9 @@
 
                 let gravatarNode = user_idNode.firstChild;
 
-                let gid = gravatarNode.src.match(/^.+gravatar_id\=(.+?)\&/);
+                let gid = gravatarNode.src.match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))\&/);
                 if (gid)
-                  this._mb["uso"]["avatar"] = gid[1];
+                  this._mb["uso"]["avatar"] = gid[1] || gid[2];
               }
             }
           }
