@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.23
+// @version       2.0.0.24
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -61,8 +61,8 @@
 // @resource gmc   https://s3.amazonaws.com/uso_ss/9849/large.png
 // @resource usoc  https://s3.amazonaws.com/uso_ss/1359/large.png
 // @resource uso   https://s3.amazonaws.com/uso_ss/7996/large.png
-// @resource clear https://s3.amazonaws.com/uso_ss/21838/large.gif?1370570468
-// @resource more  https://s3.amazonaws.com/uso_ss/21839/large.gif?1370570619
+// @resource clear https://s3.amazonaws.com/uso_ss/21838/large.gif
+// @resource more  https://s3.amazonaws.com/uso_ss/21839/large.gif
 // @resource less  https://s3.amazonaws.com/uso_ss/21840/large.gif
 
 // @resource list http://beta.usocheckup.dune.net/res/list.json
