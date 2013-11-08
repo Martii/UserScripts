@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.25
+// @version       2.0.0.26
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1518,7 +1518,7 @@
           if ((
               /^\/$/.test(gPATHNAME) && gmcHome.get("scanMainDepth") == "deep" ||
               /^\/tags\//.test(gPATHNAME) && gmcHome.get("scanTagsDepth") == "deep" ||
-              /^\/scripts\/?$/.test(gPATHNAME) && gmcHome.get("scanScriptsDepth") == "deep" ||
+              /^\/scripts(?:\/?$|\/search\/?$)/.test(gPATHNAME) && gmcHome.get("scanScriptsDepth") == "deep" ||
               /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("scanGroupsDepth") == "deep" ||
               /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("scanScriptWrightDepth") == "deep" ||
               /^\/(?:scripts\/show|topics)/.test(gPATHNAME) && !gmcHome.get("disableScanDeep")
@@ -2100,7 +2100,7 @@
   if (
     /^\/$/.test(gPATHNAME) && gmcHome.get("enableScanMain")
     || /^\/tags\//.test(gPATHNAME) && gmcHome.get("enableScanTags")
-    || /^\/scripts\/?$/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
+    || /^\/scripts(?:\/?$|\/search\/?$)/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
     || /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanGroups")
     || /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
     || /^\/scripts\/show\//.test(gPATHNAME)
