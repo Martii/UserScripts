@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0.6
+// @version       1.0.0.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?://userscripts\.org/scripts//
@@ -40,8 +40,8 @@
 // @require https://raw.github.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
 
 // @resource icon https://s3.amazonaws.com/uso_ss/icon/69307/large.png
-// @resource gmc  https://s3.amazonaws.com/uso_ss/9849/large.png
-// @resource reload https://s3.amazonaws.com/uso_ss/21088/large.png
+// @resource gmc  https://s3.amazonaws.com/uso_ss/24274/large.png
+// @resource reload https://s3.amazonaws.com/uso_ss/24280/large.png
 
 // @grant GM_getResourceURL
 // @grant GM_getValue
