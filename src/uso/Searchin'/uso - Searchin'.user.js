@@ -5,27 +5,27 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.20
+// @version       0.1.21
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
-//
+
 // @include       /^https?:\/\/userscripts\.org\/.*/
 // @include       http://userscripts.org/*
 // @include       https://userscripts.org/*
-//
+
 // @require   https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
 // @require   https://userscripts.org/scripts/source/115323.user.js
-//
-// @resource      more https://s3.amazonaws.com/uso_ss/20008/large.gif
-// @resource      uso https://s3.amazonaws.com/uso_ss/19990/large.png
-// @resource      cse https://s3.amazonaws.com/uso_ss/19992/large.png
-// @resource      gmc https://s3.amazonaws.com/uso_ss/9849/large.png
-//
+
+// @resource      more https://s3.amazonaws.com/uso_ss/24276/large.gif
+// @resource      uso https://s3.amazonaws.com/uso_ss/24277/large.png
+// @resource      cse https://s3.amazonaws.com/uso_ss/24338/large.png
+// @resource      gmc https://s3.amazonaws.com/uso_ss/24274/large.png
+
 // @grant         GM_deleteValue
 // @grant         GM_getResourceURL
 // @grant         GM_getValue
-// @grant         GM_setValue
 // @grant         GM_log
-//
+// @grant         GM_setValue
+
 // ==/UserScript==
 
   if (!document || !document.body || location.hash == "#posts-last")
@@ -61,7 +61,7 @@
             '<p>Preferences</p>',
             '<span>',
               '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki">',
-                '<img alt="GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
+                '<img alt="GM_config" title="Powered in part by GM_config" src="' + GM_getResourceURL("gmc") + '" />',
               '</a>',
             '</span>'
 
@@ -130,7 +130,7 @@
             '<p>Options</p>',
             '<span>',
               '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki" target="_top">',
-                '<img alt="GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
+                '<img alt="GM_config" title="Powered in part by GM_config" src="' + GM_getResourceURL("gmc") + '" />',
               '</a>',
             '</span>'
 
