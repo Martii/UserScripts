@@ -5,7 +5,7 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.21
+// @version       0.1.22
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 
 // @include       /^https?:\/\/userscripts\.org\/.*/
@@ -572,7 +572,7 @@
 
           "#section_search .searchin-opt { width: 16px; height: 16px; position: absolute; margin: 0.58em 0 0 -3em; background: url(" + GM_getResourceURL("gmc") + ") no-repeat scroll center center transparent; }",
 
-          "#section_search #searchin { width: 32px; height: 16px; position: absolute; margin: " + ((!uac) ? "7px" : "0.58em") + " 0 0 0.5em; }",
+          "#section_search #searchin { width: 32px; height: 16px; position: absolute; margin: " + ((!uac) ? "7px" : "0.58em") + " 0 0 0.25em; }",
           "#section_search .uso { background: url(" + GM_getResourceURL("uso") + ") no-repeat scroll left center, url(" + GM_getResourceURL("more") + ") no-repeat scroll right center transparent; }",
           "#section_search .cse { background: url(" + GM_getResourceURL("cse") + ") no-repeat scroll left center, url(" + GM_getResourceURL("more") + ") no-repeat scroll right center transparent; }",
           ".urllock { border-bottom-color: #000 !important; border-left-color: #000 !important; }",
