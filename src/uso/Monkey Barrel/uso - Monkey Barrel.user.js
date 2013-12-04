@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
 // ==UserScript==
 // @run-at        document-start
@@ -8,23 +8,26 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.9
+// @version       0.1.10
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
-//
+
 // @include   /^https?:\/\/userscripts\.org\/?.*/
-//
+
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
-//
+
 // @require   https://userscripts.org/scripts/source/115323.user.js
 // @require   https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
-//
+
+// @resource  gmc https://s3.amazonaws.com/uso_ss/24274/large.png
+
 // @grant GM_addStyle
+// @grant GM_getResourceURL
 // @grant GM_getValue
 // @grant GM_log
 // @grant GM_xmlhttpRequest
 // @grant GM_setValue
-//
+
 // ==/UserScript==
 
 /*
@@ -235,9 +238,11 @@ Please note this script uses native JSON and native classList which requires Fir
           [
               '<img alt="Monkey Barrel" title="uso - Monkey Barrel" src="' + protocol + '//s3.amazonaws.com/uso_ss/icon/114843/large.png" />',
               '<p>Preferences</p>',
-              '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki/">',
-                '<img alt="GM_config" title="Powered in part by GM_config" src="' + protocol + '//s3.amazonaws.com/uso_ss/9849/large.png" />',
-              '</a>'
+              '<span>',
+                '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki/">',
+                  '<img alt="GM_config" title="Powered in part by GM_config" src="' + GM_getResourceURL("gmc") + '" />',
+                '</a>',
+              '</span>'
 
           ].join(""),
           /* Custom CSS */
@@ -248,27 +253,34 @@ Please note this script uses native JSON and native classList which requires Fir
                   /* Homepage */
                   "@media screen, projection {",
                       /* GM_config USO styling fixups */
-                      "#gmc114843 { border: 1px solid #ddd; clear: right; margin: 0 0 0.5em; }",
-                      "#gmc114843_header > img { height: 32px; margin-right: 0.25em; vertical-align: middle; width: 32px; }",
-                      "#gmc114843_header > p { display: inline; margin: auto; }",
-                      "#gmc114843_header > a { float: right; margin: 0.4em 0.5em; }",
+                      "#gmc114843 { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }",
+
+                      "#gmc114843_header a { display: inline; }",
+                      "#gmc114843_header img { max-height: 32px; margin-right: 0.125em; vertical-align: middle; }",
+                      "#gmc114843_header > p { display: inline; margin: 0; vertical-align: middle; }",
+                      "#gmc114843_header span { float: right; }",
+                      "#gmc114843_header span > a { display: inline; margin-left: 0.25em; }",
                       "#gmc114843_wrapper { background-color: #eee; padding-bottom: 0.25em; }",
-                      "#gmc114843 .config_header { background-color: #333; color: #fff; font-size: 1.55em; margin: 0; padding: 0 0 0 0.5em; text-align: left; }",
-                      "#gmc114843 .config_var { clear: both; margin: 0 1em; padding: 0; }",
-                      "#gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; }",
-                      ".section_desc { margin: 0.25em 1em !important; }",
-                      ".gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }",
+                      "#gmc114843 .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0; padding: 0 0.5em; text-align: left; }",
+                      "#gmc114843 .config_var { clear: both; margin: 0.33em; padding: 0; }",
+                      "#gmc114843 .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; position: relative; top: -0.2em; }",
+                      "#gmc114843 .section_header_holder { margin: 0.25em 0.5em !important; }",
+                      "#gmc114843 .section_desc { margin: 0.25em 1.5em !important; }",
 
-                        "#gmc114843_section_header_0 { background-color: inherit !important; border-style: none !important; color: inherit !important; font-size: inherit !important; text-align: left !important; }",
-                        "#gmc114843_section_0 { margin: 0 1em; }",
+                          ".gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }",
 
-                        "#gmc114843_jsonMenus_var { margin: -1.0em 0 -1em 0 !important; }",
-                        "#gmc114843_field_jsonMenus { font-size: 1em; height: 15.2em; margin-top: 1em; max-width: 98.28%; min-width: 98.28%; min-height: 15.2em; }",
+                          "#gmc114843_section_header_0 { background-color: inherit !important; border-style: none !important; color: inherit !important; font-size: inherit !important; text-align: left !important; }",
+                          "#gmc114843_section_0 { margin: 0 1.5em !important; }",
 
-                    "#gmc114843_buttons_holder { margin-right: 1.0em; }",
-                    "#gmc114843_saveBtn { margin: 0.25em 0 !important; padding: 0 3.0em !important; }",
-                    "#gmc114843_resetLink { margin: 0.25em 1.25em 0.25em 0; }",
-                    "#gmc114843_closeBtn { display: none; }",
+                          "#gmc114843_jsonMenus_var { margin: -1em 0 !important; }",
+                          "#gmc114843_jsonMenus_field_label { margin: 1em 0 !important; }",
+                          "#gmc114843_field_jsonMenus { font-size: 1em; height: 15.2em; margin-top: 1em; max-width: 98.68%; min-width: 98.68%; min-height: 15.2em; }",
+
+                      "#gmc114843 .reset, #gmc114843 .reset a, #gmc114843_buttons_holder { text-align: inherit; }",
+                      "#gmc114843_buttons_holder { margin: 0.5em; }",
+                      "#gmc114843_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }",
+                      "#gmc114843_resetLink { margin-right: 1.5em; }",
+                      "#gmc114843_closeBtn { display: none; }",
                   "}",
 
                   "@media print {",
