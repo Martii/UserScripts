@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.27
+// @version       2.0.0.28
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1256,14 +1256,6 @@
 
           }
 
-        if (aScope == "@include" && atIncludes)
-          for (let i = 0, atInclude; atInclude = atIncludes[i++];)
-            if ((typeof patternx == "object") ? atInclude.match(patternx) : (atInclude == patternx) ? [atInclude, patternx] : null) {
-              pushAdvisory(aSa, aAdvisory, aSummary);
-              if (aReduce) REDUCE = true;
-              break;
-            }
-
         if (aScope == "@include" && atMatches)
           for (let i = 0, atMatch; atMatch = atMatches[i++];)
             if ((typeof patternx == "object") ? atMatch.match(patternx) : (atMatch == patternx) ? [atMatch, patternx] : null) {
@@ -1271,6 +1263,19 @@
               if (aReduce) REDUCE = true;
               break;
             }
+
+        if (aScope == "@include" && atIncludes) {
+          for (let i = 0, atInclude; atInclude = atIncludes[i++];)
+            if ((typeof patternx == "object") ? atInclude.match(patternx) : (atInclude == patternx) ? [atInclude, patternx] : null) {
+              pushAdvisory(aSa, aAdvisory, aSummary);
+              if (aReduce) REDUCE = true;
+              break;
+            }
+        }
+        else if (!atMatches && !atIncludes && !block ) {
+          REDUCE = true;
+          pushAdvisory(aSa, "ELEVATE", "Possible global script injection");
+        }
 
         if (aScope == "@uso:author" && atUsoAuthor)
           if (atUsoAuthor == patternx) {
