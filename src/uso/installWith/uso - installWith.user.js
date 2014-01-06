@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.28
+// @version       2.0.0.29
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1133,6 +1133,7 @@
   function parse(aSa, aNode, aScriptId, aMb, aSource) {
     let
         block,
+        lib,
 
         KU,
         usoCMethod,
@@ -1154,6 +1155,7 @@
         if (exclude == "*") {
           pushAdvisory(aSa, "XCLUDE", "Possible library support file detected");
           block = true;
+          lib = true;
 
           if (gISHOMEPAGE && !gmcHome.get("skipVerifyExclusion"))
             aNode.addEventListener("click", nag, false);
@@ -1208,8 +1210,8 @@
     if (grants)
       for (let i = 0, grant; grant = grants[i++];) {
         if (grant == "none") {
-          block = !gmcHome.get("allowUpdatersOnAOUgrantnone");
-          RN = true;
+          block = (lib) ? block : !gmcHome.get("allowUpdatersOnAOUgrantnone");
+          RN = (lib) ? RN : true;
           break;
         }
       }
@@ -1272,9 +1274,9 @@
               break;
             }
         }
-        else if (!atMatches && !atIncludes && !block ) {
+        else if (!atMatches && !atIncludes && !lib ) {
           REDUCE = true;
-          pushAdvisory(aSa, "ELEVATE", "Possible global script injection");
+          pushAdvisory(aSa, "ELEVATE", "Possible global web inclusion");
         }
 
         if (aScope == "@uso:author" && atUsoAuthor)
