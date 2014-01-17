@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.1.1
+// @version       2.0.1.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -123,7 +123,11 @@
       gBYTESMIN,
 
       gIdle = true,
-      gISFRAMELESS = false
+      gISFRAMELESS = false,
+
+      gLoginMsgShown,
+      gLoginTrying,
+      gLoginTried
   ;
 
   try {
@@ -1495,7 +1499,8 @@
       if (contentNode) {
 
         let loginMsgNode = contentNode.querySelector("p.notice a[href$=login]");
-        if (!loginMsgNode) {
+        if (!loginMsgNode && !gLoginTried) {
+          gLoginMsgShown = true;
 
           let nodeP;
 
@@ -1529,6 +1534,8 @@
           }
 
           if (gmcHome.get("enableAutoSession")) {
+            gLoginTrying = true;
+
             GM_xmlhttpRequest({
               retry: gRETRIES,
               url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/login",
@@ -1548,7 +1555,8 @@
                     break;
                   case 200:
                     gBYTESMIN = undefined;
-                    contentNode.removeChild(nodeP);
+                    gLoginTried = true;
+                    gLoginTrying = false;
                     break;
                   default:
                     console.warn('Untrapped status code: ' + aR.status);
@@ -1560,13 +1568,12 @@
 
         }
       }
-      gBYTESMIN = 0;
+      gBYTESMIN = 0; // NOTE: Watchpoint... necessity
       gBYTESMAX = parseInt(gBYTESMAX / gANONDIVISOR);
     }
 
     gIdle = true;
     onViewportChange();
-
   }
 
   /**
@@ -1841,7 +1848,7 @@
           else {
             if (gDEBUG) {
               alert('No ScriptWright id found in fragment');
-              console.log(aR.responseText);
+              console.warn(aR.responseText);
             }
           }
 
@@ -1884,7 +1891,11 @@
             }
             else {
               gBYTESMIN = 0;
-              gBYTESMAX = parseInt(high / gANONDIVISOR);
+              
+              if (gLoginTrying)
+                gBYTESMAX = high;
+              else
+                gBYTESMAX = parseInt(high / gANONDIVISOR);
             }
           }
           else {
