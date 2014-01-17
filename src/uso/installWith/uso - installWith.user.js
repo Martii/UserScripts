@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.0.32
+// @version       2.0.1.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -65,7 +65,7 @@
 // @resource more  https://s3.amazonaws.com/uso_ss/24276/large.gif
 // @resource less  https://s3.amazonaws.com/uso_ss/24275/large.gif
 
-// @resource list http://beta.usocheckup.dune.net/list.json
+// @resource list http://beta.usocheckup.dune.net/res/list.json
 
 // @require https://secure.dune.net/usocheckup/68219.js?method=update&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
 // @require https://userscripts.org/scripts/source/61794.user.js
@@ -89,6 +89,7 @@
     return;
 
   const
+      gDEBUG = false,
       gTHIS = this,
       gJSE = !!(typeof window.wrappedJSObject == "object" && typeof window.wrappedJSObject.jQuery == "function"),
 
@@ -103,15 +104,24 @@
       }),
       gUAC = !!document.body.querySelector(".alt_topbottom"),
       gHALT404 = true,
-      gRETRIES = 4,
+      gRETRIES = 5,
       gDELAYRETRYMIN = 3000,
       gDELAYRETRYMAX = 8000,
+
+      gHEADLENADJ = 260,
+      gTITLELENADJ = 1200,
+      gANONDIVISOR = 2.20,
+
       gGROUPS = JSON.parse(GM_getResourceText("list"))
   ;
 
   let
       gANODES,
       gQNODES,
+
+      gBYTESMAX,
+      gBYTESMIN,
+
       gIdle = true,
       gISFRAMELESS = false
   ;
@@ -218,35 +228,39 @@
           "#install_script a.saABORT:hover { background: #000 none repeat scroll 0 0; color: #fff; }",
 
           "@-moz-keyframes saB { from { background: #888; } to { background: #fff; } }",
-          ".saB { background: transparent none repeat scroll 0 0; -moz-animation: 1.5s ease 0s alternate none infinite saB !important; }"
+          ".saB { background: transparent none repeat scroll 0 0; -moz-animation: 1.5s ease 0s alternate none infinite saB !important; }",
+
+          ".dim { opacity: 0.25; }",
+          ".dim:hover { opacity: 1; }",
+
+          ".byline { font-size: 0.9em; }",
+          ".byline a:last-child { font-style: italic; }"
 
       ].join("\n")
     });
 
+    let contentNode = document.getElementById("content");
 
-    if (!gJSE) {
-      let contentNode = document.getElementById("content");
-      if (contentNode) {
-        let nodeA = document.createElement("a");
-        nodeA.href = "/scripts/show/68219";
-        nodeA.textContent = "installWith";
+    if (!gJSE && contentNode) {
+      let nodeA = document.createElement("a");
+      nodeA.href = "/scripts/show/68219";
+      nodeA.textContent = "installWith";
 
-        let nodeSpan = document.createElement("span");
-        nodeSpan.textContent = "Enabling this sites JavaScript is highly recommended to improve the experience with ";
+      let nodeSpan = document.createElement("span");
+      nodeSpan.textContent = "Enabling this sites JavaScript is highly recommended to improve your experience with ";
 
-        let nodeP = document.createElement("p");
-        nodeP.classList.add("notice");
-        nodeP.classList.add("info");
+      let nodeP = document.createElement("p");
+      nodeP.classList.add("notice");
+      nodeP.classList.add("info");
 
-        nodeSpan.appendChild(nodeA);
-        nodeSpan.appendChild(document.createTextNode("."));
-        nodeP.appendChild(nodeSpan);
+      nodeSpan.appendChild(nodeA);
+      nodeSpan.appendChild(document.createTextNode("."));
+      nodeP.appendChild(nodeSpan);
 
-        if (/^\/users\/\d+\/scripts/.test(gPATHNAME))
-          contentNode.parentNode.insertBefore(nodeP, contentNode);
-        else
-          contentNode.insertBefore(nodeP, contentNode.firstChild);
-      }
+      if (/^\/users\/\d+\/scripts/.test(gPATHNAME))
+        contentNode.parentNode.insertBefore(nodeP, contentNode);
+      else
+        contentNode.insertBefore(nodeP, contentNode.firstChild);
     }
 
     addEventListener("resize", onViewportChange, false);
@@ -411,7 +425,7 @@
       [, scriptId] = matches;
 
       GM_xmlhttpRequest({
-        retry: 5,
+        retry: gRETRIES,
         url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptId + ".user.js",
         method: "HEAD",
         onload: function(aR) {
@@ -425,7 +439,7 @@
             case 500:
             case 502:
             case 503:
-              if (this.retry-- > 0)
+              if (gJSE && this.retry-- > 0)
                 setTimeout(GM_xmlhttpRequest, gDELAYRETRYMIN + Math.round(Math.random() * (gDELAYRETRYMAX - gDELAYRETRYMIN)), this); // NOTE: Detached
               else
                 console.warn('Unable to increment script count for update method: ' + xhr.status);
@@ -715,7 +729,7 @@
   /**
    *
    */
-  function advise(aSa, aNode, aMb, aEmbed, aReduce) {
+  function advise(aSa, aNode, aMb, aEmbed, aReduce, aCollapse) {
     let
       title,
       max,
@@ -745,6 +759,11 @@
           title += "\n" + e + ":";
 
         title += "\n  " + aSa[e].join("\n  ");
+      }
+
+      if (e == "ABORT" && aSa[e] == "Deleted user") {
+        aReduce = true;
+        aCollapse = true;
       }
     });
 
@@ -845,6 +864,7 @@
       }
     }
     else {
+
       let actionsNodeDiv = document.createElement("div");
       actionsNodeDiv.classList.add("actions");
 
@@ -854,6 +874,11 @@
       if (aMb) {
         titleNode = aNode.querySelector(".title");
         if (titleNode) {
+
+          if (aCollapse) {
+            titleNode.classList.add("dim");
+          }
+
           let
             maxLength = 50,  // NOTE: Watchpoint
             atName = lastValueOf(aMb, "name"),
@@ -929,6 +954,57 @@
       nodeImg.addEventListener("click", unhideClick, false);
 
       actionsNodeDiv.appendChild(nodeImg);
+
+
+      if (!/^(\/home\/scripts|\/users\/.+?\/scripts)/.test(gPATHNAME)) {
+        let bylineNodeDiv = document.createElement("div");
+        bylineNodeDiv.classList.add("byline");
+        if (aCollapse) {
+          bylineNodeDiv.classList.add("pus");
+          if (!gmcHome.get("alwaysShowAuthorId"))
+            bylineNodeDiv.classList.add("hid");
+          else
+            bylineNodeDiv.classList.add("dim");
+        }
+
+        if (descNode)
+          aNode.insertBefore(bylineNodeDiv, descNode);
+        else
+          aNode.appendChild(bylineNodeDiv);
+
+        if (aMb) {
+          let
+            atUsoAuthor = lastValueOf(aMb, "author", "uso"),
+            atUsoName = lastValueOf(aMb, "name", "uso"),
+            atUsoVanity = lastValueOf(aMb, "vanity", "uso")
+          ;
+
+          if ((atUsoVanity && atUsoName) || atUsoAuthor) {
+            bylineNodeDiv.appendChild(document.createTextNode("By "));
+
+            if (atUsoVanity && atUsoName) {
+              let vanityNodeA = document.createElement("a");
+              vanityNodeA.href = "/users/" + atUsoVanity;
+              vanityNodeA.textContent = atUsoName;
+
+              bylineNodeDiv.appendChild(vanityNodeA);
+            }
+
+            if (atUsoAuthor) {
+              bylineNodeDiv.appendChild(document.createTextNode(" ("));
+
+              let authorNodeA = document.createElement("a");
+              authorNodeA.href = "/users/" + atUsoAuthor;
+              authorNodeA.textContent = atUsoAuthor;
+
+              bylineNodeDiv.appendChild(authorNodeA);
+
+              bylineNodeDiv.appendChild(document.createTextNode(")"));
+            }
+
+          }
+        }
+      }
 
       if (aReduce) {
         nodeImg.classList.remove("more");
@@ -1053,7 +1129,7 @@
           else
             continue;
 
-          let j = 0, tips, provider, block, reduce;
+          let j = 0, tips, provider, block, reduce, collapse;
           for (; target[i + j] && typeof target[i + j] != "string"; ++j) {
             let optflag = target[i + j];
 
@@ -1085,6 +1161,9 @@
                 case "reduce":
                   reduce = true;
                   break;
+                case "collapse":
+                  collapse = true;
+                  break;
               }
             }
 
@@ -1092,7 +1171,7 @@
 
           i += (j - 1);
 
-          aCb(scope, patternsx, advisory, summary, tips, block, reduce, provider);
+          aCb(scope, patternsx, advisory, summary, tips, block, reduce, collapse, provider);
         }
 
       }
@@ -1105,26 +1184,48 @@
   function unhideClick(ev) {
     ev.preventDefault();
 
-    let descNode = ev.target.parentNode.parentNode.querySelector(".desc");
+    let targetNode = ev.target;
+
+    if (targetNode.classList.contains("less")) {
+      targetNode.classList.remove("less");
+      targetNode.classList.add("more");
+      targetNode.alt = "hide";
+    }
+    else {
+      targetNode.classList.remove("more");
+      targetNode.classList.add("less");
+      targetNode.alt = "show";
+    }
+
+    let requeue;
+
+    let descNode = targetNode.parentNode.parentNode.querySelector(".desc");
     if (descNode) {
-      let targetNode = ev.target;
 
       if (!descNode.classList.contains("hid")) {
-        targetNode.classList.remove("more");
-        targetNode.classList.add("less");
-        targetNode.alt = "show";
         descNode.classList.add("hid");
-        qNodes(gANODES);
+        requeue = true;
       }
-      else {
-        targetNode.classList.add("more");
-        targetNode.classList.remove("less");
-        targetNode.alt = "hide";
+      else
         descNode.classList.remove("hid");
-      }
     }
     else
-      console.error("Fatal error: Description node not found");
+      console.error("Description node not found");
+
+    let bylineNode = targetNode.parentNode.parentNode.querySelector(".byline");
+    if (bylineNode) {
+      if (!gmcHome.get("alwaysShowAuthorId") && !bylineNode.classList.contains("hid") && bylineNode.classList.contains("pus")) {
+        bylineNode.classList.add("hid");
+        requeue = true;
+      }
+      else
+        bylineNode.classList.remove("hid");
+    }
+    else
+      console.warn("Byline node not found");
+
+    if (requeue)
+      qNodes(gANODES);
   }
 
   /**
@@ -1146,7 +1247,8 @@
         SSL,
 
         EMBED,
-        REDUCE
+        REDUCE,
+        COLLAPSE
     ;
 
     let excludes = toArray("exclude", aMb);
@@ -1224,7 +1326,7 @@
         atUsoAuthor = lastValueOf(aMb, "author", "uso"),
         providers = []
     ;
-    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aProvider) {
+    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aProvider) {
       for (let pattern in aPatterns) {
 
         let matches = pattern.match(/^\/(.*)\/(i?g?m?y?)$/), patternx = pattern;
@@ -1287,6 +1389,9 @@
 
             if (aReduce)
               REDUCE = true;
+
+            if (aCollapse)
+              COLLAPSE = true;
           }
 
         if (aScope == "@uso:script" && atUsoScript)
@@ -1347,7 +1452,7 @@
       block = true;
     }
 
-    advise(aSa, aNode, aMb, EMBED, REDUCE);
+    advise(aSa, aNode, aMb, EMBED, REDUCE, COLLAPSE);
 
     if (/^\/(?:scripts|topics)\//.test(gPATHNAME)) {
       if (block || (gmcHome.get("allowAOU") && (DDS || RHV || BT)) || (gmcHome.get("allowAOU") && ISI) || aMb["uso"]["unlisted"] == "") {
@@ -1383,6 +1488,90 @@
   /**
    *
    */
+  function onError() { // NOTE: GM BUG with aR so don't use
+
+    if (gmcHome.get("enableNabAuthorId")) {
+      let contentNode = document.getElementById("content");
+      if (contentNode) {
+
+        let loginMsgNode = contentNode.querySelector("p.notice a[href$=login]");
+        if (!loginMsgNode) {
+
+          let nodeP;
+
+          if (document.body.classList.contains("anon") && gmcHome.get("enableNabAuthorId")) {
+            let loginNodeA = document.createElement("a");
+            loginNodeA.href = "/login";
+            loginNodeA.textContent = "login";
+
+            let installWithNodeA = document.createElement("a");
+            installWithNodeA.href = "/scripts/show/68219";
+            installWithNodeA.textContent = "installWith";
+
+            let nodeSpan = document.createElement("span");
+            nodeSpan.textContent = "You may be able to reduce your bandwidth with a visit to the ";
+
+            nodeP = document.createElement("p");
+            nodeP.classList.add("notice");
+            nodeP.classList.add("info");
+
+            nodeSpan.appendChild(loginNodeA);
+            nodeSpan.appendChild(document.createTextNode(" page while using "));
+            nodeSpan.appendChild(installWithNodeA);
+            nodeSpan.appendChild(document.createTextNode("."));
+
+            nodeP.appendChild(nodeSpan);
+
+            if (/^\/users\/\d+\/scripts/.test(gPATHNAME))
+              contentNode.parentNode.insertBefore(nodeP, contentNode);
+            else
+              contentNode.insertBefore(nodeP, contentNode.firstChild);
+          }
+
+          if (gmcHome.get("enableAutoSession")) {
+            GM_xmlhttpRequest({
+              retry: gRETRIES,
+              url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/login",
+              method: "HEAD",
+              onload: function (aR) {
+                switch(aR.status) {
+                  case 404:
+                    if (gHALT404)
+                      this._retry = 0;
+                  case 500:
+                  case 502:
+                  case 503:
+                    if (gJSE && this.retry-- > 0)
+                      setTimeout(GM_xmlhttpRequest, gDELAYRETRYMIN + Math.round(Math.random() * (gDELAYRETRYMAX - gDELAYRETRYMIN)), this); // NOTE: Detached
+                    else
+                      console.warn('Unable to establish session');
+                    break;
+                  case 200:
+                    gBYTESMIN = undefined;
+                    contentNode.removeChild(nodeP);
+                    break;
+                  default:
+                    console.warn('Untrapped status code: ' + aR.status);
+                    break;
+                }
+              }
+            });
+          }
+
+        }
+      }
+      gBYTESMIN = 0;
+      gBYTESMAX = parseInt(gBYTESMAX / gANONDIVISOR);
+    }
+
+    gIdle = true;
+    onViewportChange();
+
+  }
+
+  /**
+   *
+   */
   function onLoad(aR) {
     switch (aR.status) {
       case 404:
@@ -1394,14 +1583,17 @@
         if (gJSE && this._retry-- > 0)
           setTimeout(GM_xmlhttpRequest, gDELAYRETRYMIN + Math.round(Math.random() * (gDELAYRETRYMAX - gDELAYRETRYMIN)), this); // NOTE: Detached
         else {
-          if (/\.meta\.js$/.test(this.url))
+          if (/\.meta\.js$/.test(this.url)) {
             pushAdvisory(this._sa, "ABORT", "Unable to retrieve script metadata");
-          else
-            pushAdvisory(this._sa, "ABORT", "Unable to retrieve script source");
 
-          this._mb = {};
-          this._mb["uso"] = {};
-          this._mb["uso"]["script"] = this._scriptId;
+            this._mb = {};
+            this._mb["uso"] = {};
+            this._mb["uso"]["script"] = this._scriptId;
+          }
+          else if (/\.user\.js$/.test(this.url))
+            pushAdvisory(this._sa, "ABORT", "Unable to retrieve script source");
+          else
+            pushAdvisory(this._sa, "UNKNOWN", "Unable to retrieve authorship");
 
           advise(this._sa, this._node, this._mb);
 
@@ -1411,6 +1603,7 @@
         }
         break;
       case 200:
+      case 206:
         if (/\.meta\.js$/.test(this.url)) {
 
           this._mb = parseMeta(aR.responseText);
@@ -1519,7 +1712,7 @@
           pushAdvisory(this._sa, "INFO", "Raw meta.js\n    " + stats.join("\n    "));
 
           /** **/
-          if (this._mb["uso"]["unlisted"] == "")
+          if (this._mb["uso"]["unlisted"] == "") // NOTE: Self unlisting phantom if present
             pushAdvisory(this._sa, "ELEVATE", "Unlisted script");
 
           if ((
@@ -1537,15 +1730,32 @@
             GM_xmlhttpRequest.call(gTHIS, this);
           }
           else {
-            parse(this._sa, this._node, this._scriptId, this._mb);
 
-            this._node.classList.remove("saB");
-            gQNODES.shift();
-            xhr.call(gTHIS, this);
+            let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
+
+            if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
+              this.url = "/scripts/fans/" + this._scriptId;
+
+              this.headers = { "Range": "bytes=" + (gBYTESMIN ? gBYTESMIN : 0) + "-" + (gBYTESMAX ? gBYTESMAX : "") };
+
+              if (gDEBUG)
+                console.info(this.headers.Range);
+
+              this._retry = gRETRIES;
+              GM_xmlhttpRequest.call(gTHIS, this);
+            }
+            else {
+              parse(this._sa, this._node, this._scriptId, this._mb);
+
+              this._node.classList.remove("saB");
+              gQNODES.shift();
+              xhr.call(gTHIS, this);
+            }
           }
         }
-        else {
-          let userjs = aR.responseText;
+        else if (/\.user\.js$/.test(this.url)) {
+
+          this._mb["uso"]["userjs"] = aR.responseText;
 
           /** Add some keys **/
           this._mb["uso"]["userjssize"] = aR.responseText.length.toString();
@@ -1575,18 +1785,119 @@
 
           pushAdvisory(this._sa, "INFO", "Raw user.js\n    " + stats.join("\n    "));
 
-          /** Remove some keys **/
-          userjs = userjs.replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
+          let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
+
+          if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
+            this.url = "/scripts/fans/" + this._scriptId;
+
+            this.headers = { "Range": "bytes=" + (gBYTESMIN ? gBYTESMIN : 0) + "-" + (gBYTESMAX ? gBYTESMAX : "") };
+
+            if (gDEBUG)
+              console.info(this.headers.Range);
+
+            this._retry = gRETRIES;
+            GM_xmlhttpRequest.call(gTHIS, this);
+          }
+          else {
+            /** Remove some keys **/
+            let userjs = this._mb["uso"]["userjs"].replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
+
+            parse(this._sa, this._node, this._scriptId, this._mb, userjs);
+
+            this._node.classList.remove("saB");
+            gQNODES.shift();
+            xhr.call(gTHIS, this);
+          }
+        }
+        else if (/\/scripts\/fans\/\d+$/.test(this.url)) {
+          //console.log(aR.responseText);
+          let
+              parser = new DOMParser(),
+              doc = parser.parseFromString(aR.responseText, "text/html")
+          ;
+
+          let author = doc.querySelector("span.author");
+          if (author) {
+            let vcard = author.querySelector("a");
+            if (vcard) {
+              this._mb["uso"]["author"] = vcard.getAttribute("user_id");
+
+              let matches = vcard.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
+              if (matches)
+                this._mb["uso"]["avatar"] = matches[1] || matches[2];
+
+              matches = vcard.getAttribute("href").match(/\/users\/(.*)/);
+              if (matches)
+                this._mb["uso"]["vanity"] = matches[1] || matches[2];
+
+              this._mb["uso"]["name"] = vcard.textContent;
+            }
+            else {
+              if (author.textContent == "By deleted user") {
+                pushAdvisory(this._sa, "ABORT", "Deleted user");
+              }
+            }
+          }
+          else {
+            if (gDEBUG) {
+              alert('No ScriptWright id found in fragment');
+              console.log(aR.responseText);
+            }
+          }
+
+          this.headers = undefined;
+
+
+          let userjs;
+
+          /** Optionally remove some keys **/
+          if (this._mb["uso"]["userjs"])
+            userjs = this._mb["uso"]["userjs"].replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
 
           parse(this._sa, this._node, this._scriptId, this._mb, userjs);
 
           this._node.classList.remove("saB");
           gQNODES.shift();
+
+          if (gQNODES.length > 0) {
+            // Recalculate low and high bytes for next node
+            if (!this.headLength)
+              this.headLength = doc.documentElement.getElementsByTagName("head")[0].innerHTML.length - doc.title.length + gHEADLENADJ;
+
+            let titleTextNode = gQNODES[0].querySelector("a.title").textContent;
+            let lenTitle = titleTextNode.length;
+            if (/\.\.\.$/.test(titleTextNode) && titleTextNode.length == 50)
+              lenTitle = 255; // Set to max since unknown.
+
+            lenTitle += 26; // NOTE: Constant for "fans of " and " - Userscripts.org" title
+
+            let len = this.headLength - lenTitle;
+
+
+
+            let low = len + lenTitle;
+            let high = parseInt(len) + (lenTitle * 2) + (80 * 2) + gTITLELENADJ;
+
+            if (gBYTESMIN !== 0) {
+              gBYTESMIN = low;
+              gBYTESMAX = high;
+            }
+            else {
+              gBYTESMIN = 0;
+              gBYTESMAX = parseInt(high / gANONDIVISOR);
+            }
+          }
+          else {
+            gBYTESMIN = undefined;
+            gBYTESMAX = undefined;
+
+          }
+
           xhr.call(gTHIS, this);
         }
         break;
       default:
-        pushAdvisory(this._sa, "ABORT", "Untrapped status code" + aR.status);
+        pushAdvisory(this._sa, "ABORT", "Untrapped status code: " + aR.status);
         advise(this._sa, this._node, this._mb);
 
         this._node.classList.remove("saB");
@@ -1643,7 +1954,8 @@
     if (gIdle)
       xhr({
         method: "GET",
-        onload: onLoad
+        onload: onLoad,
+        onerror: onError
       });
   }
 
@@ -1791,11 +2103,14 @@
                     "#gmc68219home_wrapper input[type='text']",
                     "{ text-align: right; width: 2em; }",
 
+                    "#gmc68219home_maxHeightListSa_var,",
                     "#gmc68219home_scanScriptWrightDepth_var,",
                     "#gmc68219home_scanScriptsDepth_var,",
                     "#gmc68219home_scanGroupsDepth_var,",
                     "#gmc68219home_scanTagsDepth_var,",
-                    "#gmc68219home_scanMainDepth_var",
+                    "#gmc68219home_scanMainDepth_var,",
+                    "#gmc68219home_enableAutoSession_var,",
+                    "#gmc68219home_alwaysShowAuthorId_var",
                     "{ margin-left: 2em !important; }",
 
 
@@ -1914,6 +2229,22 @@
           "type": 'radio',
           "options": ['shallow', 'deep'],
           "default": 'shallow'
+      },
+      'enableNabAuthorId': {
+        "section": [,''],
+        "type": "checkbox",
+        "label": 'Enable ScriptWright info request when unavailable <em class="gmc-yellownote">BETA: This may be bandwidth intensive and can be slow during high traffic periods</em>',
+        "default": false
+      },
+      'enableAutoSession': {
+        "type": "checkbox",
+        "label": 'Auto attempt to establish a session with userscripts.org <em class="gmc-yellownote">WARNING: This should reduce bandwidth some but usually has less privacy</em>',
+        "default": false
+      },
+      'alwaysShowAuthorId': {
+        "type": "checkbox",
+        "label": 'Always show ScriptWright info',
+        "default": false
       }
     }
   );
