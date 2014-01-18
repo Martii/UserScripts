@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.1.2
+// @version       2.0.1.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -768,6 +768,8 @@
       if (e == "ABORT" && aSa[e] == "Deleted user") {
         aReduce = true;
         aCollapse = true;
+        if (gmcHome.get("alwaysHideDeletedUser"))
+          aNode.parentNode.classList.add("hid");
       }
     });
 
@@ -1891,7 +1893,7 @@
             }
             else {
               gBYTESMIN = 0;
-              
+
               if (gLoginTrying)
                 gBYTESMAX = high;
               else
@@ -2121,6 +2123,7 @@
                     "#gmc68219home_scanTagsDepth_var,",
                     "#gmc68219home_scanMainDepth_var,",
                     "#gmc68219home_enableAutoSession_var,",
+                    "#gmc68219home_alwaysHideDeletedUser_var,",
                     "#gmc68219home_alwaysShowAuthorId_var",
                     "{ margin-left: 2em !important; }",
 
@@ -2252,9 +2255,14 @@
         "label": 'Auto attempt to establish a session with userscripts.org <em class="gmc-yellownote">WARNING: This should reduce bandwidth some but usually has less privacy</em>',
         "default": false
       },
+      'alwaysHideDeletedUser': {
+        "type": "checkbox",
+        "label": 'Always hide a deleted ScriptWright in script lists',
+        "default": false
+      },
       'alwaysShowAuthorId': {
         "type": "checkbox",
-        "label": 'Always show ScriptWright info',
+        "label": 'Always show ScriptWright info in script lists',
         "default": false
       }
     }
