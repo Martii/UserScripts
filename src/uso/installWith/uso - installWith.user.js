@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.1.5
+// @version       2.0.1.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -772,6 +772,13 @@
         aCollapse = true;
         if (gmcHome.get("alwaysHideDeletedUser"))
           aNode.parentNode.classList.add("hid");
+      }
+
+      if (gmcHome.get("alwaysHidePus")) {
+        let sa = Array.isArray(aSa[e]) ? aSa[e] : [aSa[e]], advisory;
+        for (let i = 0, len = sa.length; advisory = sa[i++];)
+          if (advisory == "Potentially unwanted script")
+            aNode.parentNode.classList.add("hid");
       }
     });
 
@@ -2135,6 +2142,7 @@
                     "#gmc68219home_scanMainDepth_var,",
                     "#gmc68219home_enableAutoSession_var,",
                     "#gmc68219home_alwaysShowAuthorId_var,",
+                    "#gmc68219home_alwaysHidePus_var,",
                     "#gmc68219home_alwaysHideDeletedUser_var",
                     "{ margin-left: 2em !important; }",
 
@@ -2274,6 +2282,11 @@
       'alwaysHideDeletedUser': {
         "type": "checkbox",
         "label": 'Always hide a deleted ScriptWright in script lists',
+        "default": false
+      },
+      'alwaysHidePus': {
+        "type": "checkbox",
+        "label": 'Always hide potentially unwanted scripts in script lists',
         "default": false
       },
       'enableDebugging': {
