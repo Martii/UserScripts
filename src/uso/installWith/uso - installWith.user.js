@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.1.4
+// @version       2.0.1.5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -108,7 +108,7 @@
       gDELAYRETRYMAX = 8000,
 
       gHEADLENADJ = 260,
-      gTITLELENADJ = 1300,
+      gTITLELENADJ = 1200,
       gANONDIVISOR = 2.20,
 
       gGROUPS = JSON.parse(GM_getResourceText("list"))
@@ -1884,7 +1884,7 @@
             let titleTextNode = gQNODES[0].querySelector("a.title").textContent;
             let lenTitle = titleTextNode.length;
             if (/\.\.\.$/.test(titleTextNode) && titleTextNode.length == 50)
-              lenTitle = 255; // Set to max since unknown.
+              lenTitle = 510; // WATCHPOINT: Set to max of unicode since unknown
 
             lenTitle += 26; // NOTE: Constant for "fans of " and " - Userscripts.org" title
 
