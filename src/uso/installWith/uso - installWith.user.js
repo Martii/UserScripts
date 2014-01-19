@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.1.3
+// @version       2.0.1.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -89,7 +89,6 @@
     return;
 
   const
-      gDEBUG = false,
       gTHIS = this,
       gJSE = !!(typeof window.wrappedJSObject == "object" && typeof window.wrappedJSObject.jQuery == "function"),
 
@@ -109,7 +108,7 @@
       gDELAYRETRYMAX = 8000,
 
       gHEADLENADJ = 260,
-      gTITLELENADJ = 1200,
+      gTITLELENADJ = 1300,
       gANONDIVISOR = 2.20,
 
       gGROUPS = JSON.parse(GM_getResourceText("list"))
@@ -245,7 +244,7 @@
 
     let contentNode = document.getElementById("content");
 
-    if (!gJSE && contentNode) {
+    if (!gJSE && contentNode && document.title != "500 Server Error – Userscripts.org") {
       let nodeA = document.createElement("a");
       nodeA.href = "/scripts/show/68219";
       nodeA.textContent = "installWith";
@@ -435,7 +434,8 @@
         onload: function(aR) {
           switch(aR.status) {
             case 403:
-              console.warn('Recently unlisted script');
+              if (gmcHome.get("enableDebugging"))
+                console.warn('Recently unlisted script');
               break;
             case 404:
               if (gHALT404)
@@ -445,8 +445,10 @@
             case 503:
               if (gJSE && this.retry-- > 0)
                 setTimeout(GM_xmlhttpRequest, gDELAYRETRYMIN + Math.round(Math.random() * (gDELAYRETRYMAX - gDELAYRETRYMIN)), this); // NOTE: Detached
-              else
-                console.warn('Unable to increment script count for update method: ' + xhr.status);
+              else {
+                if (gmcHome.get("enableDebugging"))
+                  console.warn('Unable to increment script count for update method: ' + xhr.status);
+              }
               break;
             case 200:
               break;
@@ -765,7 +767,7 @@
         title += "\n  " + aSa[e].join("\n  ");
       }
 
-      if (e == "ABORT" && aSa[e] == "Deleted user") {
+      if (e == "ABORT" && aSa[e] == "Deleted user") { // NOTE: Watchpoint
         aReduce = true;
         aCollapse = true;
         if (gmcHome.get("alwaysHideDeletedUser"))
@@ -1215,8 +1217,10 @@
       else
         descNode.classList.remove("hid");
     }
-    else
-      console.error("Description node not found");
+    else {
+      if (gmcHome.get("enableDebugging"))
+        console.error("Description node not found");
+    }
 
     let bylineNode = targetNode.parentNode.parentNode.querySelector(".byline");
     if (bylineNode) {
@@ -1227,8 +1231,10 @@
       else
         bylineNode.classList.remove("hid");
     }
-    else
-      console.warn("Byline node not found");
+    else {
+      if (gmcHome.get("enableDebugging"))
+        console.warn("Byline node not found");
+    }
 
     if (requeue)
       qNodes(gANODES);
@@ -1516,7 +1522,7 @@
             installWithNodeA.textContent = "installWith";
 
             let nodeSpan = document.createElement("span");
-            nodeSpan.textContent = "You may be able to reduce your bandwidth with a visit to the ";
+            nodeSpan.textContent = "You may be able to reduce your bandwidth usage with a visit to the ";
 
             nodeP = document.createElement("p");
             nodeP.classList.add("notice");
@@ -1552,8 +1558,10 @@
                   case 503:
                     if (gJSE && this.retry-- > 0)
                       setTimeout(GM_xmlhttpRequest, gDELAYRETRYMIN + Math.round(Math.random() * (gDELAYRETRYMAX - gDELAYRETRYMIN)), this); // NOTE: Detached
-                    else
-                      console.warn('Unable to establish session');
+                    else {
+                      if (gmcHome.get("enableDebugging"))
+                        console.warn('Unable to establish session');
+                    }
                     break;
                   case 200:
                     gBYTESMIN = undefined;
@@ -1561,7 +1569,8 @@
                     gLoginTrying = false;
                     break;
                   default:
-                    console.warn('Untrapped status code: ' + aR.status);
+                    if (gmcHome.get("enableDebugging"))
+                      console.warn('Untrapped status code: ' + aR.status);
                     break;
                 }
               }
@@ -1747,7 +1756,7 @@
 
               this.headers = { "Range": "bytes=" + (gBYTESMIN ? gBYTESMIN : 0) + "-" + (gBYTESMAX ? gBYTESMAX : "") };
 
-              if (gDEBUG)
+              if (gmcHome.get("enableDebugging"))
                 console.info(this.headers.Range);
 
               this._retry = gRETRIES;
@@ -1801,7 +1810,7 @@
 
             this.headers = { "Range": "bytes=" + (gBYTESMIN ? gBYTESMIN : 0) + "-" + (gBYTESMAX ? gBYTESMAX : "") };
 
-            if (gDEBUG)
+            if (gmcHome.get("enableDebugging"))
               console.info(this.headers.Range);
 
             this._retry = gRETRIES;
@@ -1819,7 +1828,6 @@
           }
         }
         else if (/\/scripts\/fans\/\d+$/.test(this.url)) {
-          //console.log(aR.responseText);
           let
               parser = new DOMParser(),
               doc = parser.parseFromString(aR.responseText, "text/html")
@@ -1848,7 +1856,7 @@
             }
           }
           else {
-            if (gDEBUG) {
+            if (gmcHome.get("enableDebugging")) {
               alert('No ScriptWright id found in fragment');
               console.warn(aR.responseText);
             }
@@ -2003,7 +2011,8 @@
         return hookNode.appendChild(full_descriptionNodeDiv);
       }
       else {
-        console.log("ERROR: USO DOM change detected... appending GMC remote to EoD");
+        if (gmcHome.get("enableDebugging"))
+          console.log("ERROR: USO DOM change detected... appending GMC remote to EoD");
         return document.body.appendChild(document.createElement("div"));
       }
     }
@@ -2060,8 +2069,10 @@
 
   /** **/
   if (typeof GM_configStruct == "undefined") {
-    let msg = 'Fatal error. GM_config not found';
-    console.error(msg);
+    if (gmcHome.get("enableDebugging")) {
+      let msg = 'Fatal error. GM_config not found';
+      console.error(msg);
+    }
     return;
   }
 
@@ -2123,8 +2134,8 @@
                     "#gmc68219home_scanTagsDepth_var,",
                     "#gmc68219home_scanMainDepth_var,",
                     "#gmc68219home_enableAutoSession_var,",
-                    "#gmc68219home_alwaysHideDeletedUser_var,",
-                    "#gmc68219home_alwaysShowAuthorId_var",
+                    "#gmc68219home_alwaysShowAuthorId_var,",
+                    "#gmc68219home_alwaysHideDeletedUser_var",
                     "{ margin-left: 2em !important; }",
 
 
@@ -2255,14 +2266,20 @@
         "label": 'Auto attempt to establish a session with userscripts.org <em class="gmc-yellownote">WARNING: This should reduce bandwidth some but usually has less privacy</em>',
         "default": false
       },
+      'alwaysShowAuthorId': {
+        "type": "checkbox",
+        "label": 'Always show ScriptWright info in script lists',
+        "default": false
+      },
       'alwaysHideDeletedUser': {
         "type": "checkbox",
         "label": 'Always hide a deleted ScriptWright in script lists',
         "default": false
       },
-      'alwaysShowAuthorId': {
+      'enableDebugging': {
+        "section": [,''],
         "type": "checkbox",
-        "label": 'Always show ScriptWright info in script lists',
+        "label": 'Enable debugging <em class="gmc-yellownote">WARNING: Includes console methods, and alerts that may block script execution, for any known potential issues and monitoring</em>',
         "default": false
       }
     }
