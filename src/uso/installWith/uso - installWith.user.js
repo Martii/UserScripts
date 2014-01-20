@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.1.6
+// @version       2.0.1.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -774,7 +774,7 @@
           aNode.parentNode.classList.add("hid");
       }
 
-      if (gmcHome.get("alwaysHidePus")) {
+      if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts)/.test(gPATHNAME)) {
         let sa = Array.isArray(aSa[e]) ? aSa[e] : [aSa[e]], advisory;
         for (let i = 0, len = sa.length; advisory = sa[i++];)
           if (advisory == "Potentially unwanted script")
@@ -870,7 +870,7 @@
 
         let nodeH6 = document.createElement("h6");
         nodeH6.classList.add("advisories");
-        nodeH6.textContent = "Security Advisor";
+        nodeH6.textContent = "Advisor";
 
         nodeA.appendChild(nodeImg);
         nodeH6.appendChild(nodeA);
