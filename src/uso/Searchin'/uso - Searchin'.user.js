@@ -5,7 +5,7 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.22
+// @version       0.1.23
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 
 // @include       /^https?:\/\/userscripts\.org\/.*/
@@ -142,7 +142,7 @@
             data:
               [
                 "@media screen, projection {",
-                      "#gmc158922 { background-color: rgba(0, 0, 0, 0.8) !important; height: 100% !important; width: 100% !important; max-height: 100% !important; max-width: 100% !important; left: 0 !important; top: 0 !important; }",
+                      "#gmc158922 { background-color: rgba(0, 0, 0, 0.66) !important; height: 100% !important; width: 100% !important; max-height: 100% !important; max-width: 100% !important; left: 0 !important; top: 0 !important; }",
                       "#gmc158922_wrapper { background-color: #eee; width: 30em; height: 40em; position: absolute; left: 50%; top: 50%; margin: -20em 0 0 -15em; border: 1px solid #ddd; }",
 
                       "#gmc158922_header a { display: inline; }",
