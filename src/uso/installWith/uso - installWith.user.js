@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.1.7
+// @version       2.0.2.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -81,6 +81,7 @@
 // @grant GM_openInTab
 // @grant GM_registerMenuCommand
 // @grant GM_setValue
+// @grant GM_setClipboard
 // @grant GM_xmlhttpRequest
 
 // ==/UserScript==
@@ -111,10 +112,12 @@
       gTITLELENADJ = 1200,
       gANONDIVISOR = 2.20,
 
-      gGROUPS = JSON.parse(GM_getResourceText("list"))
+      gLIST = GM_getResourceText("list").replace(/[\n\r\s]*\}[\n\r\s]*$/, '')
   ;
 
   let
+      gGROUPS,
+
       gANODES,
       gQNODES,
 
@@ -233,6 +236,7 @@
           "@-moz-keyframes saB { from { background: #888; } to { background: #fff; } }",
           ".saB { background: transparent none repeat scroll 0 0; -moz-animation: 1.5s ease 0s alternate none infinite saB !important; }",
 
+          ".delusr { color: #fff; }",
           ".dim { opacity: 0.25; }",
           ".dim:hover { opacity: 1; }",
 
@@ -739,6 +743,7 @@
     let
       title,
       max,
+      deletedUser,
       advisories =
         [
           "ABORT",
@@ -767,18 +772,18 @@
         title += "\n  " + aSa[e].join("\n  ");
       }
 
-      if (e == "ABORT" && aSa[e] == "Deleted user") { // NOTE: Watchpoint
-        aReduce = true;
-        aCollapse = true;
-        if (gmcHome.get("alwaysHideDeletedUser"))
-          aNode.parentNode.classList.add("hid");
-      }
+      let sa = Array.isArray(aSa[e]) ? aSa[e] : [aSa[e]], advisory;
+      for (let i = 0, len = sa.length; advisory = sa[i++];) {
 
-      if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts)/.test(gPATHNAME)) {
-        let sa = Array.isArray(aSa[e]) ? aSa[e] : [aSa[e]], advisory;
-        for (let i = 0, len = sa.length; advisory = sa[i++];)
-          if (advisory == "Potentially unwanted script")
+        if (e == "ABORT" && aSa[e] == "Deleted user") { // NOTE: Post action
+          aReduce = true;
+          aCollapse = true;
+          if (gmcHome.get("alwaysHideDeletedUser"))
             aNode.parentNode.classList.add("hid");
+          else
+            deletedUser = true;
+        }
+
       }
     });
 
@@ -812,8 +817,8 @@
               "#script_sidebar h7 dt { font-weight: bold; padding: 0.25em 0.5em 0.5em 0.66em;  }",
               "#script_sidebar h7 dd { font-weight: normal; font-style: italic; padding-left: 0.5em; padding-right: 0.33em; }",
 
-//               ".advisories { background-image: linear-gradient(to top, #ddd, rgba(255,255,255,0)); border: thin solid #aaa !important; border-radius: 0.25em 0.25em; cursor: default; font-family: sans-serif; font-weight: normal !important; padding: 0.25em 0.75em; text-align: left; width: auto; }",
-//               ".advisories:hover { background-image: linear-gradient(to top, #bfe1ff, rgba(237,249,255,0)); }",
+              ".advisories { background-image: linear-gradient(to top, #ddd, rgba(255,255,255,0)); border: thin solid #aaa !important; border-radius: 0.25em 0.25em; cursor: default; font-family: sans-serif; font-weight: normal !important; padding: 0.25em 0.75em; text-align: left; width: auto; }",
+              ".advisories:hover { background-image: linear-gradient(to top, #bfe1ff, rgba(237,249,255,0)); }",
               ".advisories a { margin-top: -0.0625em; position: absolute; right: 0.5em; }",
               ".advisories img { max-height: 1.5em; }",
 
@@ -871,6 +876,16 @@
         let nodeH6 = document.createElement("h6");
         nodeH6.classList.add("advisories");
         nodeH6.textContent = "Advisor";
+        nodeH6.addEventListener("click", function () {
+          gmcFilters.open();
+          let aid = lastValueOf(aMb, "author", "uso");
+          if (aid)
+            gmcFilters.fields["lastScriptWrightId"].node.value = lastValueOf(aMb, "author", "uso"); // NOTE: Watchpoint
+          else
+            gmcFilters.fields["lastScriptWrightId"].node.value = "";
+
+          gmcFilters.fields["lastUserScriptId"].node.value = lastValueOf(aMb, "script", "uso");
+        }, false);
 
         nodeA.appendChild(nodeImg);
         nodeH6.appendChild(nodeA);
@@ -892,14 +907,34 @@
 
           if (aCollapse) {
             titleNode.classList.add("dim");
+            if (deletedUser)
+              titleNode.classList.add("delusr");
           }
 
           let
-            maxLength = 50,  // NOTE: Watchpoint
+            maxLength = 50, // NOTE: Watchpoint
             atName = lastValueOf(aMb, "name"),
             atUsoScript = lastValueOf(aMb, "script", "uso"),
             title = titleNode.textContent
           ;
+
+          let filterNodeA = document.createElement("a");
+          filterNodeA.classList.add("action");
+          filterNodeA.href = "#";
+          filterNodeA.textContent = "advisor";
+          filterNodeA.addEventListener("click", function (ev) {
+            ev.preventDefault();
+
+            gmcFilters.open();
+
+            let aid = lastValueOf(aMb, "author", "uso");
+            if (aid)
+              gmcFilters.fields["lastScriptWrightId"].node.value = lastValueOf(aMb, "author", "uso"); // NOTE: Watchpoint
+            else
+              gmcFilters.fields["lastScriptWrightId"].node.value = "";
+
+            gmcFilters.fields["lastUserScriptId"].node.value = lastValueOf(aMb, "script", "uso");
+          }, false);
 
           let sourceNodeA = document.createElement("a");
           sourceNodeA.classList.add("action");
@@ -907,6 +942,7 @@
           sourceNodeA.textContent = "source";
 
           actionsNodeDiv.appendChild(sourceNodeA);
+          actionsNodeDiv.appendChild(filterNodeA);
 
           if (atName) {
             let matches = title.match(/(.*)\.\.\.$/);
@@ -1105,7 +1141,7 @@
    */
   function parseList(aGroups, aCb) {
     for (let group in aGroups) {
-      let scopes = gGROUPS[group];
+      let scopes = aGroups[group]; // NOTE: Watchpoint
       for (let scope in scopes) {
         let target = scopes[scope];
 
@@ -1345,6 +1381,16 @@
         atUsoAuthor = lastValueOf(aMb, "author", "uso"),
         providers = []
     ;
+
+    try {
+      gGROUPS = JSON.parse(gLIST + ',"user":{' + gmcFilters.get("jsonFilters").replace(/^[\n\r\s]*\{/, '') + '}');
+    }
+    catch (e) {
+      if (gmcHome.get("enableDebugging"))
+        console.warn('JSON parsing error...skipping user advisories');
+      gGROUPS = JSON.parse(gLIST + '}');
+    }
+
     parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aProvider) {
       for (let pattern in aPatterns) {
 
@@ -1402,6 +1448,15 @@
 
         if (aScope == "@uso:author" && atUsoAuthor)
           if ((typeof patternx == "object") ? atUsoAuthor.match(patternx) : (atUsoAuthor == patternx) ? [atUsoAuthor, patternx] : null) {
+            if (aSummary == "Potentially unwanted script") {
+              block = true;
+              REDUCE = true;
+              COLLAPSE = true;
+
+              if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts|^\/scripts\/show\/\d+)/.test(gPATHNAME))
+                aNode.parentNode.classList.add("hid");
+            }
+
             pushAdvisory(aSa, aAdvisory, aSummary + (aTips ? "\n      " + aTips.join("\n      ") : ""));
             if (aBlock)
               block = true;
@@ -1415,6 +1470,15 @@
 
         if (aScope == "@uso:script" && atUsoScript)
           if ((typeof patternx == "object") ? atUsoScript.match(patternx) : (atUsoScript == patternx) ? [atUsoScript, patternx] : null) {
+            if (aSummary == "Potentially unwanted script") {
+              block = true;
+              REDUCE = true;
+              COLLAPSE = true;
+
+              if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts|^\/scripts\/show\/\d+)/.test(gPATHNAME))
+                aNode.parentNode.classList.add("hid");
+            }
+
             pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
             if (aBlock)
               block = true;
@@ -2286,7 +2350,7 @@
       },
       'alwaysHidePus': {
         "type": "checkbox",
-        "label": 'Always hide potentially unwanted scripts in script lists',
+        "label": 'Always hide potentially unwanted scripts in mixed ScriptWright script lists',
         "default": false
       },
       'enableDebugging': {
@@ -2470,6 +2534,196 @@
 
     let selectNode = document.getElementById("provider_id");
     selectNode.dispatchEvent(ev);
+  }
+
+
+  GM_config = undefined;
+
+  let gmcFilters = new GM_configStruct();
+  gmcFilters.id = "gmc68219filters";
+
+  gmcFilters.init(
+    document.body.insertBefore(document.createElement("div"), document.body.firstChild),
+    (
+      (
+        (/\/scripts\/show\/68219\/?$/.test(gPATHNAME))
+        ? [
+            '<img alt="installWith" title="uso - installWith" src="' + GM_getResourceURL("icon") + '" />'
+
+          ].join("")
+        : [
+            '<a href="/scripts/show/68219">',
+              '<img alt="installWith" title="uso - installWith" src="' + GM_getResourceURL("icon") + '" />',
+            '</a>'
+
+          ].join("")
+      )
+      + [
+          '<p>Advisor</p>',
+          '<span>',
+            '<a href="/guides/24/">',
+              '<img alt="usoCheckup" title="Powered in part by usoCheckup" src="' + GM_getResourceURL("usoc") + '" />',
+            '</a>',
+            '<a href="' + gPROTOCOL + '//github.com/sizzlemctwizzle/GM_config/wiki">',
+              '<img alt="GM_config" title="Powered in part by GM_config" src="' + GM_getResourceURL("gmc") + '" />',
+            '</a>',
+          '</span>'
+        ].join("")
+      ),
+    /* Custom CSS */
+    GM_setStyle({
+        node: null,
+        data:
+          [
+            "@media screen, projection {",
+                "#gmc68219filters { background-color: rgba(0, 0, 0, 0.66) !important; height: 100% !important; width: 100% !important; max-height: 100% !important; max-width: 100% !important; left: 0 !important; top: 0 !important; }",
+                "#gmc68219filters_wrapper { background-color: #eee; width: 30em; height: 40em; position: absolute; left: 50%; top: 50%; margin: -20em 0 0 -15em; border: 1px solid #ddd; }",
+
+                "#gmc68219filters_header a { display: inline; }",
+                "#gmc68219filters_header img { vertical-align: middle; }",
+                "#gmc68219filters_header > a img { height: 32px; margin-right: 0.25em; width: 32px; }",
+                "#gmc68219filters_header > img { height: 32px; margin-right: 0.25em; width: 32px; }",
+                "#gmc68219filters_header > p { display: inline; margin: 0; vertical-align: middle; }",
+                "#gmc68219filters_header span { float: right; }",
+                "#gmc68219filters_header span > a { display: inline; margin-left: 0.25em; }",
+                "#gmc68219filters .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0; padding: 0 0.5em; text-align: left; }",
+                "#gmc68219filters .config_var { clear: both; margin: 0.5em 1em; padding: 0; }",
+                "#gmc68219filters .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; position: relative; top: 0.125em; }",
+                "#gmc68219filters .section_desc { margin: 0.25em 1.5em !important; }",
+
+                "#gmc68219filters .section_header { margin: 0 1em; text-align: left; }",
+                "#gmc68219filters .section_header img { margin: 0 0.25em; vertical-align: middle; }",
+
+                    ".gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }",
+                    ".gmc68219filters-invisilink { text-decoration: none; color: #000; }",
+                    ".gmc68219filters-invisilink:hover { color: #000; }",
+
+                    "#gmc68219filters_field_jsonFilters { height: 15em; min-height: 15em; max-height: 15em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
+
+                    "#gmc68219filters_lastScriptWrightId_var { width: 15em; display: inline !important; }",
+                    "#gmc68219filters_lastScriptWrightId_field_label { display: block !important; padding-left: 0.9em; }",
+                    "#gmc68219filters_field_lastScriptWrightId { width: 13em; margin-left: 0.9em; }",
+                    "#gmc68219filters_copyScriptWrightId_var { display: inline !important; margin-left: 0 !important; }",
+                    "#gmc68219filters_field_copyScriptWrightId { width: 10em; }",
+
+                    "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
+                    "#gmc68219filters_lastUserScriptId_field_label { display: block !important; padding-left: 0.9em; }",
+                    "#gmc68219filters_field_lastUserScriptId { width: 13em; margin-left: 0.9em; }",
+                    "#gmc68219filters_copyUserScriptId_var { display: inline !important; margin-left: 0 !important; }",
+                    "#gmc68219filters_field_copyUserScriptId { width: 10em; }",
+
+                "#gmc68219filters_buttons_holder { margin: 0.5em; position: absolute; bottom: 0; right: 0; }",
+                "#gmc68219filters_saveBtn, #gmc158922_closeBtn { margin: 0.5em !important; padding: 0 3.0em !important; }",
+                "#gmc68219filters_resetLink { margin-right: 1.5em; }",
+            "}",
+
+            "@media print {",
+                "#gmc68219filters { display: none !important; }",
+            "}"
+
+          ].join("\n")
+    }),
+    /* Settings Object */
+    {
+      'lastUserScriptId': {
+          "label": 'Current User Script Id',
+          "type": "text",
+          "default": ""
+      },
+      'copyUserScriptId': {
+          "type": "button",
+          "label": 'Copy Formatted',
+          "script": function () {
+            let sid = gmcFilters.fields["lastUserScriptId"].node.value;
+            if (sid != "")
+              GM_setClipboard(',\n   "' + sid + '"', "text");
+          }
+      },
+      'lastScriptWrightId': {
+          "label": 'Current ScriptWright Id',
+          "type": "text",
+          "default": ""
+      },
+      'copyScriptWrightId': {
+          "type": "button",
+          "label": 'Copy Formatted',
+          "script": function () {
+            let aid = gmcFilters.fields["lastScriptWrightId"].node.value;
+            if (aid != "")
+              GM_setClipboard(',\n   "' + aid + '"', "text");
+          }
+      },
+      'jsonFilters': {
+          "type": 'textarea',
+          "label": "<p><em class='gmc-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format and please report applicable finds to <a href='/topics/9#posts-last'></>Spam and Malware topic</em></p>",
+          "default": JSON.stringify(
+              JSON.parse(
+                [
+                    '{',
+                    ' "@uso:author": [',
+                    '  "GUARD Potentially unwanted script",',
+                    '  [',
+                    '   "authorid1",',
+                    '   "authorid2",',
+                    '   "authorid3"',
+                    '  ]',
+                    ' ],',
+                    ' "@uso:script": [',
+                    '  "GUARD Potentially unwanted script",',
+                    '  [',
+                    '   "scriptid1",',
+                    '   "scriptid2",',
+                    '   "scriptid3"',
+                    '  ]',
+                    ' ]',
+                    '}'
+
+                ].join("\n")
+              ), null, " ")
+      }
+    }
+  );
+
+  gmcFilters.onOpen = function () {
+    try {
+      gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(JSON.parse(gmcFilters.get("jsonFilters")), null, " ");
+    }
+    catch (e) {}
+
+    gmcFilters.fields["jsonFilters"].node.setAttribute("spellcheck", "false");
+
+    gmcFilters.fields["lastScriptWrightId"].node.setAttribute("readonly", "readonly");
+    gmcFilters.fields["lastUserScriptId"].node.setAttribute("readonly", "readonly");
+
+    let saveBtn = document.getElementById("gmc68219filters_saveBtn");
+    if (saveBtn)
+      saveBtn.textContent = "Save \u0026 Close";
+
+    let closeBtn = document.getElementById("gmc68219filters_closeBtn");
+    if (closeBtn)
+      closeBtn.textContent = "Cancel";
+  }
+
+  gmcFilters.onSave = function () {
+    try {
+      gmcFilters.set("jsonFilters", JSON.stringify(JSON.parse(gmcFilters.get("jsonFilters")), null, ""));
+
+      gmcFilters.write();
+      gmcFilters.close();
+    }
+    catch (e) {
+      alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+      gmcFilters.open();
+    }
+  }
+
+  gmcFilters.onClose = function () {
+    try {
+      let junk = JSON.stringify(JSON.parse(gmcFilters.get("jsonFilters")), null, "");
+    }
+    catch (e) {
+      alert('ERROR: Invalid JSON for advisories.\n\nAll user defined advisories will be skipped until corrected.');
+    }
   }
 
   /**
