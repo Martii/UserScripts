@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.5
+// @version       2.0.2.6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1866,7 +1866,7 @@
           }
           else {
 
-            let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
+            let atUsoAuthor = undefined; //lastValueOf(this._mb, "author", "uso"); // TODO: Enable if USO adds this
 
             if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
               this.url = "/scripts/fans/" + this._scriptId;
@@ -1920,7 +1920,7 @@
 
           pushAdvisory(this._sa, "INFO", "Raw user.js\n    " + stats.join("\n    "));
 
-          let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
+          let atUsoAuthor = undefined; //lastValueOf(this._mb, "author", "uso"); // TODO: Enable if USO adds this
 
           if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
             this.url = "/scripts/fans/" + this._scriptId;
