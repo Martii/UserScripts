@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.3
+// @version       2.0.2.4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -108,7 +108,7 @@
       gDELAYRETRYMAX = 8000,
 
       gHEADLENADJ = 800, // NOTE: Inset
-      gTITLELENADJ = 700, // NOTE: Outset
+      gTITLELENADJ = 750, // NOTE: Outset
       gANONDIVISOR = 2.20,
 
       gLIST = GM_getResourceText("list").replace(/[\n\r\s]*\}[\n\r\s]*$/, '')
