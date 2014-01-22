@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.1
+// @version       2.0.2.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -107,8 +107,8 @@
       gDELAYRETRYMIN = 3000,
       gDELAYRETRYMAX = 8000,
 
-      gHEADLENADJ = 260,
-      gTITLELENADJ = 1200,
+      gHEADLENADJ = 800, // NOTE: Inset
+      gTITLELENADJ = 650, // NOTE: Outset
       gANONDIVISOR = 2.20,
 
       gLIST = GM_getResourceText("list").replace(/[\n\r\s]*\}[\n\r\s]*$/, '')
@@ -140,6 +140,13 @@
    *
    */
 
+  function byteLength(aString) {
+    return unescape(encodeURIComponent(aString)).length;
+  }
+
+  /**
+   *
+   */
   function doReport() {
     let replyToTopic = document.querySelector("#content > p a.utility");
     if (replyToTopic && replyToTopic.textContent == "Reply to topic") {
@@ -1689,7 +1696,7 @@
 
         }
       }
-      gBYTESMIN = 0; // NOTE: Watchpoint... necessity
+      gBYTESMIN = 0; // NOTE: Watchpoint
       gBYTESMAX = parseInt(gBYTESMAX / gANONDIVISOR);
     }
 
@@ -1940,7 +1947,8 @@
         else if (/\/scripts\/fans\/\d+$/.test(this.url)) {
           let
               parser = new DOMParser(),
-              doc = parser.parseFromString(aR.responseText, "text/html")
+              doc = parser.parseFromString(aR.responseText, "text/html"),
+              retry
           ;
 
           let author = doc.querySelector("span.author");
@@ -1966,6 +1974,8 @@
             }
           }
           else {
+            gBYTESMIN = undefined; // NOTE: Force a reset during login
+            retry = true;  // NOTE: Rerun current request
             if (gmcHome.get("enableDebugging")) {
               alert('No ScriptWright id found in fragment');
               console.warn(aR.responseText);
@@ -1974,29 +1984,30 @@
 
           this.headers = undefined;
 
+          if (!retry) {
+            let userjs;
 
-          let userjs;
+            /** Optionally remove some keys **/
+            if (this._mb["uso"]["userjs"])
+              userjs = this._mb["uso"]["userjs"].replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
 
-          /** Optionally remove some keys **/
-          if (this._mb["uso"]["userjs"])
-            userjs = this._mb["uso"]["userjs"].replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
+            parse(this._sa, this._node, this._scriptId, this._mb, userjs);
 
-          parse(this._sa, this._node, this._scriptId, this._mb, userjs);
-
-          this._node.classList.remove("saB");
-          gQNODES.shift();
+            this._node.classList.remove("saB");
+            gQNODES.shift();
+          }
 
           if (gQNODES.length > 0) {
             // Recalculate low and high bytes for next node
             if (!this.headLength)
-              this.headLength = doc.documentElement.getElementsByTagName("head")[0].innerHTML.length - doc.title.length + gHEADLENADJ;
+              this.headLength = byteLength(doc.documentElement.getElementsByTagName("head")[0].innerHTML) - byteLength(doc.title) + gHEADLENADJ;
 
             let titleTextNode = gQNODES[0].querySelector("a.title").textContent;
-            let lenTitle = titleTextNode.length;
+            let lenTitle = byteLength(titleTextNode);
             if (/\.\.\.$/.test(titleTextNode) && titleTextNode.length == 50)
-              lenTitle = 510; // WATCHPOINT: Set to max of unicode since unknown
+              lenTitle = 255 * 4; // WATCHPOINT: Set to max bytes of unicode since unknown
 
-            lenTitle += 26; // NOTE: Constant for "fans of " and " - Userscripts.org" title
+            lenTitle += byteLength("fans of  - Userscripts.org");
 
             let len = this.headLength - lenTitle;
 
@@ -2024,7 +2035,12 @@
 
           }
 
-          xhr.call(gTHIS, this);
+          if (retry) {
+            this._retry = gRETRIES;
+            GM_xmlhttpRequest.call(gTHIS, this);
+          }
+          else
+            xhr.call(gTHIS, this);
         }
         break;
       default:
