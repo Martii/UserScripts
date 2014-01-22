@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.7
+// @version       2.0.2.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1788,11 +1788,15 @@
               this._mb["uso"]["unlisted"] = "";
           }
 
-
-          
           let user_idNode = document.body.querySelector("#heading .author a");
           if (user_idNode) {
-            this._mb["uso"]["author"] = user_idNode.getAttribute("user_id");
+            let aid = user_idNode.getAttribute("user_id");
+            if (this._mb["uso"]["author"]) {
+              this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
+              this._mb["uso"]["author"].push(aid);
+            }
+            else
+              this._mb["uso"]["author"] = aid;
 
             let matches = user_idNode.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
             if (matches)
@@ -1803,13 +1807,30 @@
             if (user_idNode) {
               let aid = user_idNode.pathname.match(/\/(\d+)$/);
               if (aid) {
-                this._mb["uso"]["author"] = aid[1];
+                if (this._mb["uso"]["author"]) {
+                  this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
+                  this._mb["uso"]["author"].push(aid[1]);
+                }
+                else
+                  this._mb["uso"]["author"] = aid[1];
 
                 let gravatarNode = user_idNode.firstChild;
 
                 let gid = gravatarNode.src.match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
                 if (gid)
                   this._mb["uso"]["avatar"] = gid[1] || gid[2];
+              }
+              else {
+                if (this._mb["uso"]["author"]) {
+                  this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
+                  this._mb["uso"]["author"].push("");
+                }
+              }
+            }
+            else {
+              if (this._mb["uso"]["author"]) {
+                this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
+                this._mb["uso"]["author"].push("");
               }
             }
           }
