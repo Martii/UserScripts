@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.6
+// @version       2.0.2.7
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1788,6 +1788,8 @@
               this._mb["uso"]["unlisted"] = "";
           }
 
+
+          
           let user_idNode = document.body.querySelector("#heading .author a");
           if (user_idNode) {
             this._mb["uso"]["author"] = user_idNode.getAttribute("user_id");
@@ -1809,6 +1811,12 @@
                 if (gid)
                   this._mb["uso"]["avatar"] = gid[1] || gid[2];
               }
+            }
+          }
+          else {
+            if (this._mb["uso"]["author"]) {
+              this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
+              this._mb["uso"]["author"].push("");
             }
           }
 
@@ -1866,7 +1874,7 @@
           }
           else {
 
-            let atUsoAuthor = undefined; //lastValueOf(this._mb, "author", "uso"); // TODO: Enable if USO adds this
+            let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
 
             if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
               this.url = "/scripts/fans/" + this._scriptId;
@@ -1920,7 +1928,7 @@
 
           pushAdvisory(this._sa, "INFO", "Raw user.js\n    " + stats.join("\n    "));
 
-          let atUsoAuthor = undefined; //lastValueOf(this._mb, "author", "uso"); // TODO: Enable if USO adds this
+          let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
 
           if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
             this.url = "/scripts/fans/" + this._scriptId;
