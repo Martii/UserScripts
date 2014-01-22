@@ -4,11 +4,11 @@
 // ==UserScript==
 // @name          uso - installWith
 // @namespace     http://userscripts.org/users/37004
-// @description   Adds option to install script with an icon and/or updater plus the original security advisory. "So easy, a cavemonkey can do it"
+// @description   Adds option to install script with an icon and/or updater plus the original script advisor. "So easy, a cavemonkey can do it"
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.0
+// @version       2.0.2.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -81,12 +81,11 @@
 // @grant GM_openInTab
 // @grant GM_registerMenuCommand
 // @grant GM_setValue
-// @grant GM_setClipboard
 // @grant GM_xmlhttpRequest
 
 // ==/UserScript==
 
-  if (!document || !document.body || location.hash == "#posts-last")
+  if (!document || !document.body)
     return;
 
   const
@@ -136,6 +135,47 @@
     gISFRAMELESS = (window == window.top);
   }
   catch (e) {}
+
+  /**
+   *
+   */
+
+  function doReport() {
+    let replyToTopic = document.querySelector("#content > p a.utility");
+    if (replyToTopic && replyToTopic.textContent == "Reply to topic") {
+      replyToTopic.click();
+
+      let post_body = document.querySelector("#reply textarea#post_body");
+      if (post_body) {
+        GM_deleteValue(":pendingReports");
+
+        let post = "";
+
+        let post_markdown = document.querySelector("#reply #post_markdown");
+        if (post_markdown && post_markdown.checked) {
+          pendingReports.split(",").forEach(function (e, i, a) {
+              post += '* [' + e + '](' + e + ')\n'
+          });
+        }
+        else {
+          post = '<ul>' + pendingReports.split(',').map(function (aE) {
+              aE = '\n<li><a href="' + aE + '">' + aE + '</a></li>';
+              return aE;
+          }).join('') + '\n</ul>';
+        }
+
+        if (post != "" && post != '<ul>\n</ul>') {
+          if (post_markdown && post_markdown.checked) {
+            post_body.value = post + '\nPotentially unwanted scripts';
+          }
+          else {
+            post_body.value = post + '\n<p>Potentially unwanted scripts</p>';
+          }
+
+        }
+      }
+    }
+  }
 
   /**
    *
@@ -1151,8 +1191,7 @@
               patterns,
               patternsx = {}
           ;
-          [abstract, patterns] = [target[i], target[i + 1]];
-
+          [abstract, patterns] = [target[i], typeof target[i + 1] != "undefined" ? target[i + 1] : undefined];
 
           ++i;
           let
@@ -2598,22 +2637,29 @@
                     ".gmc68219filters-invisilink { text-decoration: none; color: #000; }",
                     ".gmc68219filters-invisilink:hover { color: #000; }",
 
-                    "#gmc68219filters_field_jsonFilters { height: 15em; min-height: 15em; max-height: 15em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
-
-                    "#gmc68219filters_lastScriptWrightId_var { width: 15em; display: inline !important; }",
-                    "#gmc68219filters_lastScriptWrightId_field_label { display: block !important; padding-left: 0.9em; }",
-                    "#gmc68219filters_field_lastScriptWrightId { width: 13em; margin-left: 0.9em; }",
-                    "#gmc68219filters_copyScriptWrightId_var { display: inline !important; margin-left: 0 !important; }",
-                    "#gmc68219filters_field_copyScriptWrightId { width: 10em; }",
+                    "#gmc68219filters .field_label { top: -0.25em; }",
 
                     "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
                     "#gmc68219filters_lastUserScriptId_field_label { display: block !important; padding-left: 0.9em; }",
-                    "#gmc68219filters_field_lastUserScriptId { width: 13em; margin-left: 0.9em; }",
-                    "#gmc68219filters_copyUserScriptId_var { display: inline !important; margin-left: 0 !important; }",
-                    "#gmc68219filters_field_copyUserScriptId { width: 10em; }",
+                    "#gmc68219filters_field_lastUserScriptId { width: 9em; margin-left: 0.9em; margin-top: 0; }",
+                    "#gmc68219filters_insertUserScriptIdToPU_var { display: inline !important; margin-left: 0 !important; }",
+                    "#gmc68219filters_field_insertUserScriptIdToPU { width: 14.4em; }",
 
-                "#gmc68219filters_buttons_holder { margin: 0.5em; position: absolute; bottom: 0; right: 0; }",
-                "#gmc68219filters_saveBtn, #gmc158922_closeBtn { margin: 0.5em !important; padding: 0 3.0em !important; }",
+                    "#gmc68219filters_lastScriptWrightId_var { width: 15em; display: inline !important; }",
+                    "#gmc68219filters_lastScriptWrightId_field_label { display: block !important; padding-left: 0.9em; }",
+                    "#gmc68219filters_field_lastScriptWrightId { width: 9em; margin-left: 0.9em; margin-top: 0; }",
+                    "#gmc68219filters_insertScriptWrightIdToPU_var { display: inline !important; margin-left: 0 !important; }",
+                    "#gmc68219filters_field_insertScriptWrightIdToPU { width: 14.4em; }",
+
+                    "#gmc68219filters_jsonFilters_field_label > p { margin-bottom: 0 !important; margin-top: 0.25em; }",
+                    "#gmc68219filters_field_jsonFilters { height: 10em; min-height: 10em; max-height: 10em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
+
+                    "#gmc68219filters_postPUStoSAM_var { margin-bottom: 0.25em !important; }",
+                    "#gmc68219filters_field_postPUStoSAM { width: 25.25em; }",
+
+                    "#gmc68219filters_openSAMtopic_var { margin-top: 0.125em !important; margin-bottom: 0.125em !important; margin-left: 1.75em !important; }",
+
+                "#gmc68219filters_buttons_holder { margin: 0.5em; padding-top: 0; position: absolute; bottom: 0; right: 0; }",
                 "#gmc68219filters_resetLink { margin-right: 1.5em; }",
             "}",
 
@@ -2630,13 +2676,31 @@
           "type": "text",
           "default": ""
       },
-      'copyUserScriptId': {
+      'insertUserScriptIdToPU': {
           "type": "button",
-          "label": 'Copy Formatted',
+          "label": 'Insert to Potentialy Unwanted',
           "script": function () {
             let sid = gmcFilters.fields["lastUserScriptId"].node.value;
-            if (sid != "")
-              GM_setClipboard(',\n   "' + sid + '"', "text");
+            if (sid != "") {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let found, scripts = json["@uso:script"][1];
+                scripts.forEach(function (e, i, a) {
+                  if (e == sid)
+                    found = true;
+                });
+
+                if (!found) {
+                  json["@uso:script"][1].push(sid);
+
+                  gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+                }
+              }
+              catch (e) { // TODO: Isolate error
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+            }
           }
       },
       'lastScriptWrightId': {
@@ -2644,18 +2708,36 @@
           "type": "text",
           "default": ""
       },
-      'copyScriptWrightId': {
+      'insertScriptWrightIdToPU': {
           "type": "button",
-          "label": 'Copy Formatted',
+          "label": 'Insert to Potentialy Unwanted',
           "script": function () {
             let aid = gmcFilters.fields["lastScriptWrightId"].node.value;
-            if (aid != "")
-              GM_setClipboard(',\n   "' + aid + '"', "text");
+            if (aid != "") {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let found, authors = json["@uso:author"][1];
+                authors.forEach(function (e, i, a) {
+                  if (e == aid)
+                    found = true;
+                });
+
+                if (!found) {
+                  json["@uso:author"][1].push(aid);
+
+                  gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+                }
+              }
+              catch (e) { // TODO: Isolate error
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+            }
           }
       },
       'jsonFilters': {
           "type": 'textarea',
-          "label": "<p><em class='gmc-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format and please report applicable finds to <a href='/topics/9#posts-last'></>Spam and Malware topic</em></p>",
+          "label": "<p><em class='gmc-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format</em></p>",
           "default": JSON.stringify(
               JSON.parse(
                 [
@@ -2663,24 +2745,78 @@
                     ' "@uso:author": [',
                     '  "GUARD Potentially unwanted script",',
                     '  [',
-                    '   "authorid1",',
-                    '   "authorid2",',
-                    '   "authorid3"',
+                    '   "authorid1"',
                     '  ]',
                     ' ],',
                     ' "@uso:script": [',
                     '  "GUARD Potentially unwanted script",',
                     '  [',
-                    '   "scriptid1",',
-                    '   "scriptid2",',
-                    '   "scriptid3"',
+                    '   "scriptid1"',
                     '  ]',
                     ' ]',
                     '}'
 
                 ].join("\n")
               ), null, " ")
+      },
+      'postPUStoSAM': {
+          "section": [, ""],
+          "type": "button",
+          "label": 'Queue Potentially Unwanted to Spam and Malware',
+          "script": function () {
+            try {
+              let json;
+
+              // Validate current list, save, wrap, validate
+              json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+              gmcFilters.set("jsonFilters", JSON.stringify(json, null, ""));
+              json = JSON.parse('{"user":' + gmcFilters.fields["jsonFilters"].node.value + '}');
+
+              let reports = [];
+              parseList(json, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aProvider) {
+                switch (aScope) {
+                  case "@uso:script":
+                  case "@uso:author":
+                    if (/Potentially\sunwanted\sscript/.test(aSummary)) {
+                      for (let pattern in aPatterns) {
+                        let matches = pattern.match(/^\"?(\d+)\"?$/);
+                        if (matches) {
+                          let id = matches[1];
+
+                          if (aScope == "@uso:script")
+                            reports.push('/scripts/show/' + id);
+                          else
+                            reports.push('/users/' + id);
+                        }
+                      }
+                    }
+                    break;
+                }
+              });
+
+              GM_setValue(":pendingReports", reports.toString());
+
+              let openSAMtopic = gmcFilters.fields["openSAMtopic"].node.checked;
+              if (openSAMtopic) {
+                gmcFilters.set("openSAMtopic", openSAMtopic);
+                gmcFilters.write();
+
+                gmcFilters.close();
+                location.href = "/topics/9#posts-last";
+              }
+            }
+            catch (e) {
+              alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+            }
+
+          }
+      },
+      'openSAMtopic': {
+          "type": "checkbox",
+          "label": 'Auto open the <a href="/topics/9#posts-last"></>Spam and Malware</a> topic on queue',
+          "default": false
       }
+
     }
   );
 
@@ -2738,16 +2874,31 @@
       ].join("\n")
   });
 
-  if (
-    /^\/$/.test(gPATHNAME) && gmcHome.get("enableScanMain")
-    || /^\/tags\//.test(gPATHNAME) && gmcHome.get("enableScanTags")
-    || /^\/scripts(?:\/?$|\/search\/?$)/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
-    || /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanGroups")
-    || /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
-    || /^\/scripts\/show\//.test(gPATHNAME)
-    || /^\/topics\//.test(gPATHNAME)
-  ) {
-    init();
+  let authenticated = document.querySelector("body.loggedin");
+
+  let pendingReports = GM_getValue(":pendingReports");
+  if (pendingReports && /^\/topics\/9\/?$/.test(gPATHNAME) && authenticated) {
+    if (!gmcFilters.get("openSAMtopic")) {
+      if(confirm("You seem to have pending reports.\n\nDo you wish to post now?\n\nPlease note if cancelled the reports will be removed from the queue")) {
+        doReport();
+      }
+    }
+    else {
+      doReport();
+    }
+  }
+  else {
+    if (
+      /^\/$/.test(gPATHNAME) && gmcHome.get("enableScanMain")
+      || /^\/tags\//.test(gPATHNAME) && gmcHome.get("enableScanTags")
+      || /^\/scripts(?:\/?$|\/search\/?$)/.test(gPATHNAME) && gmcHome.get("enableScanScripts")
+      || /^\/groups\/\d+\/scripts/.test(gPATHNAME) && gmcHome.get("enableScanGroups")
+      || /(^\/users\/.+?\/(?:scripts|favorites)|^\/home\/(?:scripts|favorites))/.test(gPATHNAME) && gmcHome.get("enableScanScriptWright")
+      || /^\/scripts\/show\//.test(gPATHNAME)
+      || /^\/topics\//.test(gPATHNAME)
+    ) {
+      init();
+    }
   }
 
 })();
