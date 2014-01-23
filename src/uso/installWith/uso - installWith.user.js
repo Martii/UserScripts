@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.9
+// @version       2.0.2.10
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1492,7 +1492,7 @@
           pushAdvisory(aSa, "ELEVATE", "Possible implicit global web inclusion");
         }
 
-        if (aScope == "@uso:author" && atUsoAuthor)
+        if (/^\@uso:author(?:$|\s)/.test(aScope) && atUsoAuthor)
           if ((typeof patternx == "object") ? atUsoAuthor.match(patternx) : (atUsoAuthor == patternx) ? [atUsoAuthor, patternx] : null) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
@@ -1514,7 +1514,7 @@
               COLLAPSE = true;
           }
 
-        if (aScope == "@uso:script" && atUsoScript)
+        if (/^\@uso:script(?:$|\s)/.test(aScope) && atUsoScript)
           if ((typeof patternx == "object") ? atUsoScript.match(patternx) : (atUsoScript == patternx) ? [atUsoScript, patternx] : null) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
@@ -2006,7 +2006,7 @@
             gBYTESMIN = undefined; // NOTE: Force a reset during login
             retry = true;  // NOTE: Rerun current request
             if (gmcHome.get("enableDebugging")) {
-              console.error('No ScriptWright id found in fragment');
+              console.error('No ScriptWright id found in fragment for url: ' + this.url);
               console.warn(aR.responseText);
             }
           }
@@ -2689,7 +2689,7 @@
 
                     "#gmc68219filters_openSAMtopic_var { margin-top: 0.125em !important; margin-bottom: 0.25em !important; margin-left: 1.75em !important; }",
                     "#gmc68219filters_jsonFilters_field_label > p { /margin-bottom: 0 !important; margin-top: 0.25em; }",
-                
+
                     "#gmc68219filters_field_jsonFilters { height: 10em; min-height: 10em; max-height: 10em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
 
                     "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
@@ -2722,11 +2722,14 @@
           "label": 'Queue Potentially Unwanted to Spam and Malware',
           "script": function () {
             try {
-              let json;
+              let json, write;
 
               // Validate current list, save, wrap, validate
               json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
               gmcFilters.set("jsonFilters", JSON.stringify(json, null, ""));
+              write = true;
+
               json = JSON.parse('{"user":' + gmcFilters.fields["jsonFilters"].node.value + '}');
 
               let reports = [];
@@ -2751,13 +2754,29 @@
                 }
               });
 
-              GM_setValue(":pendingReports", reports.toString());
+              GM_setValue(":pendingReports", reports.sort(function (a, b) {
+                  let re = /(\d+)$/;
+                  return a.match(re)[1] - b.match(re)[1];
+              }).sort(function (a, b) {
+                  let re = /^(.*\/)\d+$/;
+                  if (a.match(re)[1] < b.match(re)[1])
+                    return -1;
+                  if (a.match(re)[1] > b.match(re)[1])
+                    return 1
+
+                  return 0;
+              }).toString());
 
               let openSAMtopic = gmcFilters.fields["openSAMtopic"].node.checked;
-              if (openSAMtopic) {
+              if (openSAMtopic != gmcFilters.get("openSAMtopic")) {
                 gmcFilters.set("openSAMtopic", openSAMtopic);
+                write = true;
+              }
+
+              if (write)
                 gmcFilters.write();
 
+              if (openSAMtopic) {
                 gmcFilters.close();
                 location.href = "/topics/9#posts-last";
               }
