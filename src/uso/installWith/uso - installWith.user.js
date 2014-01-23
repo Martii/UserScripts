@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.8
+// @version       2.0.2.9
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1845,10 +1845,10 @@
           if (iconNode) {
             let matches = iconNode.pathname.match(/\.(\w+)$/);
             if (matches)
-              this._mb["uso"]["icontype"] = matches[1];
+              this._mb["uso"]["icontype"] = matches[1]; // TODO: Cover conditionals... non-fatal though
           }
 
-          this._mb["uso"]["metajssize"] = aR.responseText.length.toString();
+          this._mb["uso"]["metajssize"] = aR.responseText.length.toString(); // TODO: Be nice and don't overwrite although pick last always
 
           let stats = [];
 
@@ -2671,7 +2671,7 @@
                 "#gmc68219filters_header span { float: right; }",
                 "#gmc68219filters_header span > a { display: inline; margin-left: 0.25em; }",
                 "#gmc68219filters .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0; padding: 0 0.5em; text-align: left; }",
-                "#gmc68219filters .config_var { clear: both; margin: 0.5em 1em; padding: 0; }",
+                "#gmc68219filters .config_var { clear: both; margin: 0 1em; padding: 0; }",
                 "#gmc68219filters .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; position: relative; top: 0.125em; }",
                 "#gmc68219filters .section_desc { margin: 0.25em 1.5em !important; }",
 
@@ -2684,27 +2684,28 @@
 
                     "#gmc68219filters .field_label { top: -0.25em; }",
 
+                    "#gmc68219filters_postPUStoSAM_var { margin-bottom: 0.25em !important; margin-top: 1.25em !important; }",
+                    "#gmc68219filters_field_postPUStoSAM { height: 2.5em; width: 25.25em; }",
+
+                    "#gmc68219filters_openSAMtopic_var { margin-top: 0.125em !important; margin-bottom: 0.25em !important; margin-left: 1.75em !important; }",
+                    "#gmc68219filters_jsonFilters_field_label > p { /margin-bottom: 0 !important; margin-top: 0.25em; }",
+                
+                    "#gmc68219filters_field_jsonFilters { height: 10em; min-height: 10em; max-height: 10em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
+
                     "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
                     "#gmc68219filters_lastUserScriptId_field_label { display: block !important; padding-left: 0.9em; }",
                     "#gmc68219filters_field_lastUserScriptId { width: 9em; margin-left: 0.9em; margin-top: 0; }",
                     "#gmc68219filters_insertUserScriptIdToPU_var { display: inline !important; margin-left: 0 !important; }",
-                    "#gmc68219filters_field_insertUserScriptIdToPU { width: 14.4em; }",
+                    "#gmc68219filters_field_insertUserScriptIdToPU { height: 2.25em; width: 14.4em; }",
 
                     "#gmc68219filters_lastScriptWrightId_var { width: 15em; display: inline !important; }",
                     "#gmc68219filters_lastScriptWrightId_field_label { display: block !important; padding-left: 0.9em; }",
                     "#gmc68219filters_field_lastScriptWrightId { width: 9em; margin-left: 0.9em; margin-top: 0; }",
                     "#gmc68219filters_insertScriptWrightIdToPU_var { display: inline !important; margin-left: 0 !important; }",
-                    "#gmc68219filters_field_insertScriptWrightIdToPU { width: 14.4em; }",
+                    "#gmc68219filters_field_insertScriptWrightIdToPU { height: 2.25em; width: 14.4em; }",
 
-                    "#gmc68219filters_jsonFilters_field_label > p { margin-bottom: 0 !important; margin-top: 0.25em; }",
-                    "#gmc68219filters_field_jsonFilters { height: 10em; min-height: 10em; max-height: 10em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
-
-                    "#gmc68219filters_postPUStoSAM_var { margin-bottom: 0.25em !important; }",
-                    "#gmc68219filters_field_postPUStoSAM { width: 25.25em; }",
-
-                    "#gmc68219filters_openSAMtopic_var { margin-top: 0.125em !important; margin-bottom: 0.125em !important; margin-left: 1.75em !important; }",
-
-                "#gmc68219filters_buttons_holder { margin: 0.5em; padding-top: 0; position: absolute; bottom: 0; right: 0; }",
+                "#gmc68219filters_buttons_holder { margin: 0.5em; padding-top: 0; /position: absolute; text-align: inherit; bottom: 0; right: 0; }",
+                "#gmc68219filters_saveBtn { float: right; margin-right: 0.4em !important; width: 10em;",
                 "#gmc68219filters_resetLink { margin-right: 1.5em; }",
             "}",
 
@@ -2716,6 +2717,86 @@
     }),
     /* Settings Object */
     {
+      'postPUStoSAM': {
+          "type": "button",
+          "label": 'Queue Potentially Unwanted to Spam and Malware',
+          "script": function () {
+            try {
+              let json;
+
+              // Validate current list, save, wrap, validate
+              json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+              gmcFilters.set("jsonFilters", JSON.stringify(json, null, ""));
+              json = JSON.parse('{"user":' + gmcFilters.fields["jsonFilters"].node.value + '}');
+
+              let reports = [];
+              parseList(json, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aProvider) {
+                switch (aScope) {
+                  case "@uso:script":
+                  case "@uso:author":
+                    if (/Potentially\sunwanted\sscript/.test(aSummary)) {
+                      for (let pattern in aPatterns) {
+                        let matches = pattern.match(/^\"?(\d+)\"?$/);
+                        if (matches) {
+                          let id = matches[1];
+
+                          if (aScope == "@uso:script")
+                            reports.push('/scripts/show/' + id);
+                          else
+                            reports.push('/users/' + id);
+                        }
+                      }
+                    }
+                    break;
+                }
+              });
+
+              GM_setValue(":pendingReports", reports.toString());
+
+              let openSAMtopic = gmcFilters.fields["openSAMtopic"].node.checked;
+              if (openSAMtopic) {
+                gmcFilters.set("openSAMtopic", openSAMtopic);
+                gmcFilters.write();
+
+                gmcFilters.close();
+                location.href = "/topics/9#posts-last";
+              }
+            }
+            catch (e) {
+              alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+            }
+
+          }
+      },
+      'openSAMtopic': {
+          "type": "checkbox",
+          "label": 'Auto open the <a href="/topics/9#posts-last"></>Spam and Malware</a> topic on queue',
+          "default": false
+      },
+      'jsonFilters': {
+          "type": 'textarea',
+          "label": "<p><em class='gmc-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format</em></p>",
+          "default": JSON.stringify(
+              JSON.parse(
+                [
+                    '{',
+                    ' "@uso:author": [',
+                    '  "GUARD Potentially unwanted script",',
+                    '  [',
+                    '   "authorid1"',
+                    '  ]',
+                    ' ],',
+                    ' "@uso:script": [',
+                    '  "GUARD Potentially unwanted script",',
+                    '  [',
+                    '   "scriptid1"',
+                    '  ]',
+                    ' ]',
+                    '}'
+
+                ].join("\n")
+              ), null, " ")
+      },
       'lastUserScriptId': {
           "label": 'Current User Script Id',
           "type": "text",
@@ -2779,87 +2860,6 @@
               }
             }
           }
-      },
-      'jsonFilters': {
-          "type": 'textarea',
-          "label": "<p><em class='gmc-yellownote'>use <a href='http://json.org/'>JSON</a> data-interchange format</em></p>",
-          "default": JSON.stringify(
-              JSON.parse(
-                [
-                    '{',
-                    ' "@uso:author": [',
-                    '  "GUARD Potentially unwanted script",',
-                    '  [',
-                    '   "authorid1"',
-                    '  ]',
-                    ' ],',
-                    ' "@uso:script": [',
-                    '  "GUARD Potentially unwanted script",',
-                    '  [',
-                    '   "scriptid1"',
-                    '  ]',
-                    ' ]',
-                    '}'
-
-                ].join("\n")
-              ), null, " ")
-      },
-      'postPUStoSAM': {
-          "section": [, ""],
-          "type": "button",
-          "label": 'Queue Potentially Unwanted to Spam and Malware',
-          "script": function () {
-            try {
-              let json;
-
-              // Validate current list, save, wrap, validate
-              json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
-              gmcFilters.set("jsonFilters", JSON.stringify(json, null, ""));
-              json = JSON.parse('{"user":' + gmcFilters.fields["jsonFilters"].node.value + '}');
-
-              let reports = [];
-              parseList(json, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aProvider) {
-                switch (aScope) {
-                  case "@uso:script":
-                  case "@uso:author":
-                    if (/Potentially\sunwanted\sscript/.test(aSummary)) {
-                      for (let pattern in aPatterns) {
-                        let matches = pattern.match(/^\"?(\d+)\"?$/);
-                        if (matches) {
-                          let id = matches[1];
-
-                          if (aScope == "@uso:script")
-                            reports.push('/scripts/show/' + id);
-                          else
-                            reports.push('/users/' + id);
-                        }
-                      }
-                    }
-                    break;
-                }
-              });
-
-              GM_setValue(":pendingReports", reports.toString());
-
-              let openSAMtopic = gmcFilters.fields["openSAMtopic"].node.checked;
-              if (openSAMtopic) {
-                gmcFilters.set("openSAMtopic", openSAMtopic);
-                gmcFilters.write();
-
-                gmcFilters.close();
-                location.href = "/topics/9#posts-last";
-              }
-            }
-            catch (e) {
-              alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
-            }
-
-          }
-      },
-      'openSAMtopic': {
-          "type": "checkbox",
-          "label": 'Auto open the <a href="/topics/9#posts-last"></>Spam and Malware</a> topic on queue',
-          "default": false
       }
 
     }
