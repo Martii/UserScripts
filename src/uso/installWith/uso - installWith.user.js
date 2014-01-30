@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.14
+// @version       2.0.2.15
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -2724,10 +2724,14 @@
                     "#gmc68219filters_postPUStoSAM_var { margin-bottom: 0.25em !important; margin-top: 1.25em !important; }",
                     "#gmc68219filters_field_postPUStoSAM { height: 2.5em; width: 25.25em; }",
 
-                    "#gmc68219filters_openSAMtopic_var { margin-top: 0.125em !important; margin-bottom: 0.25em !important; margin-left: 1.75em !important; }",
-                    "#gmc68219filters_jsonFilters_field_label > p { /margin-bottom: 0 !important; margin-top: 0.25em; }",
+                    "#gmc68219filters_openSAMtopic_var,",
+                    "#gmc68219filters_disableSAMCSS_var",
+                    "{",
+                    "  margin-top: 0.125em !important; margin-bottom: 0.25em !important; margin-left: 1.75em !important; ",
+                    "}",
 
                     "#gmc68219filters_field_jsonFilters { height: 10em; min-height: 10em; max-height: 10em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
+                    "#gmc68219filters_jsonFilters_field_label > p { margin-bottom: 0.25em; margin-top: 0.25em; }",
 
                     "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
                     "#gmc68219filters_lastUserScriptId_field_label { display: block !important; padding-left: 0.9em; }",
@@ -2742,6 +2746,7 @@
                     "#gmc68219filters_field_insertScriptWrightIdToPU { height: 2.25em; width: 14.4em; }",
 
                 "#gmc68219filters_buttons_holder { margin: 0.5em; padding-top: 0; /position: absolute; text-align: inherit; bottom: 0; right: 0; }",
+                "#gmc68219filters .saveclose_buttons { margin: 0.5em 10px; }",
                 "#gmc68219filters_saveBtn { float: right; margin-right: 0.4em !important; width: 10em;",
                 "#gmc68219filters_resetLink { margin-right: 1.5em; }",
             "}",
@@ -2756,7 +2761,7 @@
     {
       'postPUStoSAM': {
           "type": "button",
-          "label": 'Queue Potentially Unwanted to Spam and Malware',
+          "label": 'Queue Potentially Unwanted Ids to Spam and Malware',
           "script": function () {
             try {
               let json, write;
@@ -2827,6 +2832,11 @@
       'openSAMtopic': {
           "type": "checkbox",
           "label": 'Auto open the <a href="/topics/9#posts-last"></>Spam and Malware</a> topic on queue',
+          "default": false
+      },
+      'disableSAMCSS': {
+          "type": "checkbox",
+          "label": 'Disable CSS tweak in Spam and Malware topic',
           "default": false
       },
       'jsonFilters': {
@@ -2977,15 +2987,28 @@
 
   let authenticated = document.querySelector("body.loggedin");
 
-  let pendingReports = GM_getValue(":pendingReports");
-  if (pendingReports && /^\/topics\/9\/?$/.test(gPATHNAME) && authenticated) {
-    if (!gmcFilters.get("openSAMtopic")) {
-      if(confirm("You seem to have pending reports.\n\nDo you wish to post now?\n\nPlease note if cancelled the reports will be removed from the queue")) {
+  if (/^\/topics\/9\/?$/.test(gPATHNAME)) {
+    if (!gmcFilters.get("disableSAMCSS")) {
+      GM_setStyle({
+        node: gCSS,
+        data:
+          [
+            "#content .posts .entry-content ul { column-width: 10em; -moz-column-width: 10em; }"
+
+          ].join("\n")
+      });
+    }
+
+    let pendingReports = GM_getValue(":pendingReports");
+    if (pendingReports && authenticated) {
+      if (!gmcFilters.get("openSAMtopic")) {
+        if(confirm("You seem to have pending reports.\n\nDo you wish to post now?\n\nPlease note if cancelled the reports will be removed from the queue")) {
+          doReport();
+        }
+      }
+      else {
         doReport();
       }
-    }
-    else {
-      doReport();
     }
   }
   else {
