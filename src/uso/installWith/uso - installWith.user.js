@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.15
+// @version       2.0.2.16
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -154,6 +154,7 @@
 
       let post_body = document.querySelector("#reply textarea#post_body");
       if (post_body) {
+        let pendingReports = GM_getValue(":pendingReports");
         GM_deleteValue(":pendingReports");
 
         let post = "";
