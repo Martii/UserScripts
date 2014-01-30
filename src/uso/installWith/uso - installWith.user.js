@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.11
+// @version       2.0.2.12
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -53,9 +53,9 @@
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/version/*
 
-// @updateURL   file:
-// @installURL  file:
-// @downloadURL file:
+// @updateURL   https://userscripts.org/scripts/source/68219.meta.js
+// @installURL  https://userscripts.org/scripts/source/68219.user.js
+// @downloadURL https://userscripts.org/scripts/source/68219.user.js
 
 // @resource icon  https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
@@ -1537,6 +1537,7 @@
         if (aScope == "@uso:title" && atUsoTitle)
           if ((typeof patternx == "object") ? atUsoTitle.match(patternx) : (atUsoTitle == patternx) ? [atUsoTitle, patternx] : null) {
             if (aSummary == "Potentially unwanted script") {
+              block = true;
               REDUCE = true;
               COLLAPSE = true;
 
