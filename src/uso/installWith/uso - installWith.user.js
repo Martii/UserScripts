@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.16
+// @version       2.0.2.17
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -20,6 +20,7 @@
 // @include /^https?://userscripts\.org/groups/\d+/scripts/
 // @include /^https?://userscripts\.org/tags//
 // @include /^https?://userscripts\.org/home/(?:scripts|favorites)/
+// @include /^https?://userscripts\.org/posts//
 
 // @include http://userscripts.org/
 // @include http://userscripts.org/scripts*
@@ -31,6 +32,7 @@
 // @include http://userscripts.org/tags/*
 // @include http://userscripts.org/home/scripts*
 // @include http://userscripts.org/home/favorites*
+// @include http://userscripts.org/posts*
 
 // @include https://userscripts.org/
 // @include https://userscripts.org/scripts*
@@ -42,6 +44,7 @@
 // @include https://userscripts.org/tags/*
 // @include https://userscripts.org/home/scripts*
 // @include https://userscripts.org/home/favorites*
+// @include https://userscripts.org/posts*
 
 
 // @exclude /^https?://userscripts\.org/scripts/diff//
@@ -2988,7 +2991,7 @@
 
   let authenticated = document.querySelector("body.loggedin");
 
-  if (/^\/topics\/9\/?$/.test(gPATHNAME)) {
+  if (/^\/topics\/9\/?$/.test(gPATHNAME) || /^\/posts\/?$/.test(gPATHNAME)) {
     if (!gmcFilters.get("disableSAMCSS")) {
       GM_setStyle({
         node: gCSS,
@@ -2999,17 +3002,17 @@
           ].join("\n")
       });
     }
+  }
 
-    let pendingReports = GM_getValue(":pendingReports");
-    if (pendingReports && authenticated) {
-      if (!gmcFilters.get("openSAMtopic")) {
-        if(confirm("You seem to have pending reports.\n\nDo you wish to post now?\n\nPlease note if cancelled the reports will be removed from the queue")) {
-          doReport();
-        }
-      }
-      else {
+  let pendingReports = GM_getValue(":pendingReports");
+  if (/^\/topics\/9\/?$/.test(gPATHNAME) && pendingReports && authenticated) {
+    if (!gmcFilters.get("openSAMtopic")) {
+      if(confirm("You seem to have pending reports.\n\nDo you wish to post now?\n\nPlease note if cancelled the reports will be removed from the queue")) {
         doReport();
       }
+    }
+    else {
+      doReport();
     }
   }
   else {
