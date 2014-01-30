@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.10
+// @version       2.0.2.11
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1425,6 +1425,7 @@
         atMatches = toArray("match", aMb),
         atUsoScript = lastValueOf(aMb, "script", "uso"),
         atUsoAuthor = lastValueOf(aMb, "author", "uso"),
+        atUsoTitle = lastValueOf(aMb, "title", "uso"),
         providers = []
     ;
 
@@ -1518,6 +1519,24 @@
           if ((typeof patternx == "object") ? atUsoScript.match(patternx) : (atUsoScript == patternx) ? [atUsoScript, patternx] : null) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
+              REDUCE = true;
+              COLLAPSE = true;
+
+              if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts|^\/scripts\/show\/\d+)/.test(gPATHNAME))
+                aNode.parentNode.classList.add("hid");
+            }
+
+            pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
+            if (aBlock)
+              block = true;
+
+            if (aReduce)
+              REDUCE = true;
+          }
+
+        if (aScope == "@uso:title" && atUsoTitle)
+          if ((typeof patternx == "object") ? atUsoTitle.match(patternx) : (atUsoTitle == patternx) ? [atUsoTitle, patternx] : null) {
+            if (aSummary == "Potentially unwanted script") {
               REDUCE = true;
               COLLAPSE = true;
 
@@ -1786,6 +1805,23 @@
             let emNode = this._node.querySelector("em");
             if (emNode && emNode.textContent == "unlisted")
               this._mb["uso"]["unlisted"] = "";
+          }
+
+          let titleNode = this._node.querySelector(".title") || this._node.parentNode.parentNode.querySelector(".title");
+          if (titleNode) {
+            let tid = titleNode.textContent;
+            if (this._mb["uso"]["title"]) {
+              this._mb["uso"]["title"] = toArray("title", this._mb["uso"]);
+              this._mb["uso"]["title"].push(tid);
+            }
+            else
+              this._mb["uso"]["title"] = tid;
+          }
+          else {
+            if (this._mb["uso"]["title"]) {
+              this._mb["uso"]["title"] = toArray("title", this._mb["uso"]);
+              this._mb["uso"]["title"].push("");
+            }
           }
 
           let user_idNode = document.body.querySelector("#heading .author a");
@@ -2424,7 +2460,7 @@
       },
       'alwaysShowAuthorId': {
         "type": "checkbox",
-        "label": 'Always show ScriptWright info in script lists',
+        "label": 'Always show ScriptWright info in mixed ScriptWright script lists',
         "default": false
       },
       'alwaysHideDeletedUser': {
@@ -2817,7 +2853,7 @@
               ), null, " ")
       },
       'lastUserScriptId': {
-          "label": 'Current User Script Id',
+          "label": 'Currently working with this User Script Id',
           "type": "text",
           "default": ""
       },
@@ -2849,7 +2885,7 @@
           }
       },
       'lastScriptWrightId': {
-          "label": 'Current ScriptWright Id',
+          "label": 'Currently working with this ScriptWright Id',
           "type": "text",
           "default": ""
       },
