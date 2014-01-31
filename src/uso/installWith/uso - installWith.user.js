@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.17
+// @version       2.0.2.18
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -370,6 +370,20 @@
       return [aName];
 
     return undefined;
+  }
+
+  /**
+   *
+   */
+  function addValue(aValue, aName, aMb) {
+    if (aMb[aName]) {
+      aMb[aName] = toArray(aName, aMb);
+      aMb[aName].push(aValue);
+    }
+    else
+      aMb[aName] = aValue;
+
+    return aMb[aName]; // TODO: Opt
   }
 
   /**
@@ -1813,33 +1827,16 @@
           }
 
           let titleNode = this._node.querySelector(".title") || this._node.parentNode.parentNode.querySelector(".title");
-          if (titleNode) {
-            let tid = titleNode.textContent;
-            if (this._mb["uso"]["title"]) {
-              this._mb["uso"]["title"] = toArray("title", this._mb["uso"]);
-              this._mb["uso"]["title"].push(tid);
-            }
-            else
-              this._mb["uso"]["title"] = tid;
-          }
-          else {
-            if (this._mb["uso"]["title"]) {
-              this._mb["uso"]["title"] = toArray("title", this._mb["uso"]);
-              this._mb["uso"]["title"].push("");
-            }
-          }
+          if (titleNode)
+            addValue(titleNode.textContent, "title", this._mb["uso"]);
+          else
+            addValue("", "title", this._mb["uso"]); // NOTE: opt creation
 
           let user_idNode = document.body.querySelector("#heading .author a");
           if (user_idNode) {
-            let aid = user_idNode.getAttribute("user_id");
-            if (this._mb["uso"]["author"]) {
-              this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
-              this._mb["uso"]["author"].push(aid);
-            }
-            else
-              this._mb["uso"]["author"] = aid;
+            addValue(user_idNode.getAttribute("user_id"), "author", this._mb["uso"]);
 
-            let matches = user_idNode.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
+            let matches = user_idNode.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/); // TODO:
             if (matches)
               this._mb["uso"]["avatar"] = matches[1] || matches[2];
           }
@@ -1848,12 +1845,7 @@
             if (user_idNode) {
               let aid = user_idNode.pathname.match(/\/(\d+)$/);
               if (aid) {
-                if (this._mb["uso"]["author"]) {
-                  this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
-                  this._mb["uso"]["author"].push(aid[1]);
-                }
-                else
-                  this._mb["uso"]["author"] = aid[1];
+                addValue(aid[1], "author", this._mb["uso"]);
 
                 let gravatarNode = user_idNode.firstChild;
 
@@ -1861,26 +1853,14 @@
                 if (gid)
                   this._mb["uso"]["avatar"] = gid[1] || gid[2];
               }
-              else {
-                if (this._mb["uso"]["author"]) {
-                  this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
-                  this._mb["uso"]["author"].push("");
-                }
-              }
+              else
+                addValue("", "author", this._mb["uso"]); // NOTE: opt creation
             }
-            else {
-              if (this._mb["uso"]["author"]) {
-                this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
-                this._mb["uso"]["author"].push("");
-              }
-            }
+            else
+              addValue("", "author", this._mb["uso"]); // NOTE: opt creation
           }
-          else {
-            if (this._mb["uso"]["author"]) {
-              this._mb["uso"]["author"] = toArray("author", this._mb["uso"]);
-              this._mb["uso"]["author"].push("");
-            }
-          }
+          else
+            addValue("", "author", this._mb["uso"]); // NOTE: opt creation
 
           let iconNode = document.getElementById("icon");
           if (iconNode) {
@@ -2021,11 +2001,15 @@
               retry
           ;
 
+          let titleNode = doc.querySelector(".title");
+          if (titleNode)
+            addValue(titleNode.textContent, "title", this._mb["uso"]);
+
           let author = doc.querySelector("span.author");
           if (author) {
             let vcard = author.querySelector("a");
             if (vcard) {
-              this._mb["uso"]["author"] = vcard.getAttribute("user_id");
+              addValue(vcard.getAttribute("user_id"), "author", this._mb["uso"]);
 
               let matches = vcard.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
               if (matches)
