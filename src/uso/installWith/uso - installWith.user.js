@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.18
+// @version       2.0.2.19
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -106,7 +106,7 @@
       }),
       gUAC = !!document.body.querySelector(".alt_topbottom"),
       gHALT404 = true,
-      gRETRIES = 5,
+      gRETRIES = 4,
       gDELAYRETRYMIN = 3000,
       gDELAYRETRYMAX = 8000,
 
@@ -804,7 +804,7 @@
   /**
    *
    */
-  function advise(aSa, aNode, aMb, aEmbed, aReduce, aCollapse) {
+  function advise(aSa, aNode, aMb, aEmbed, aReduce, aCollapse, aHide) {
     let
       title,
       max,
@@ -840,7 +840,8 @@
       let sa = Array.isArray(aSa[e]) ? aSa[e] : [aSa[e]], advisory;
       for (let i = 0, len = sa.length; advisory = sa[i++];) {
 
-        if (e == "ABORT" && aSa[e] == "Deleted user") { // NOTE: Post action
+        // NOTE: Post actions
+        if (e == "ABORT" && aSa[e] == "Deleted user") {
           aReduce = true;
           aCollapse = true;
           if (gmcHome.get("alwaysHideDeletedUser"))
@@ -848,9 +849,9 @@
           else
             deletedUser = true;
         }
-
       }
     });
+
 
     if (max) {
       if (aEmbed)
@@ -959,6 +960,8 @@
       }
     }
     else {
+      if (aHide && !/(^\/users\/.+?\/scripts|^\/home\/scripts|^\/scripts\/show\/\d+)/.test(gPATHNAME))
+        aNode.parentNode.classList.add("hid");
 
       let actionsNodeDiv = document.createElement("div");
       actionsNodeDiv.classList.add("actions");
@@ -1244,7 +1247,7 @@
           else
             continue;
 
-          let j = 0, tips, provider, block, reduce, collapse;
+          let j = 0, tips, provider, block, reduce, collapse, hide;
           for (; target[i + j] && typeof target[i + j] != "string"; ++j) {
             let optflag = target[i + j];
 
@@ -1279,6 +1282,9 @@
                 case "collapse":
                   collapse = true;
                   break;
+                case "hide":
+                  hide = true;
+                  break;
               }
             }
 
@@ -1286,7 +1292,7 @@
 
           i += (j - 1);
 
-          aCb(scope, patternsx, advisory, summary, tips, block, reduce, collapse, provider);
+          aCb(scope, patternsx, advisory, summary, tips, block, reduce, collapse, hide, provider);
         }
 
       }
@@ -1366,8 +1372,10 @@
         SSL,
 
         EMBED,
+
         REDUCE,
-        COLLAPSE
+        COLLAPSE,
+        HIDE
     ;
 
     let excludes = toArray("exclude", aMb);
@@ -1456,7 +1464,7 @@
       gGROUPS = JSON.parse(gLIST + '}');
     }
 
-    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aProvider) {
+    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aHide, aProvider) {
       for (let pattern in aPatterns) {
 
         let matches = pattern.match(/^\/(.*)\/(i?g?m?y?)$/), patternx = pattern;
@@ -1517,9 +1525,8 @@
               block = true;
               REDUCE = true;
               COLLAPSE = true;
-
-              if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts|^\/scripts\/show\/\d+)/.test(gPATHNAME))
-                aNode.parentNode.classList.add("hid");
+              if (gmcHome.get("alwaysHidePus"))
+                HIDE = true;
             }
 
             pushAdvisory(aSa, aAdvisory, aSummary + (aTips ? "\n      " + aTips.join("\n      ") : ""));
@@ -1539,9 +1546,8 @@
               block = true;
               REDUCE = true;
               COLLAPSE = true;
-
-              if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts|^\/scripts\/show\/\d+)/.test(gPATHNAME))
-                aNode.parentNode.classList.add("hid");
+              if (gmcHome.get("alwaysHidePus"))
+                HIDE = true;
             }
 
             pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
@@ -1558,9 +1564,8 @@
               block = true;
               REDUCE = true;
               COLLAPSE = true;
-
-              if (gmcHome.get("alwaysHidePus") && !/(^\/users\/.+?\/scripts|^\/home\/scripts|^\/scripts\/show\/\d+)/.test(gPATHNAME))
-                aNode.parentNode.classList.add("hid");
+              if (gmcHome.get("alwaysHidePus"))
+                HIDE = true;
             }
 
             pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
@@ -1619,7 +1624,7 @@
       block = true;
     }
 
-    advise(aSa, aNode, aMb, EMBED, REDUCE, COLLAPSE);
+    advise(aSa, aNode, aMb, EMBED, REDUCE, COLLAPSE, HIDE);
 
     if (/^\/(?:scripts|topics)\//.test(gPATHNAME)) {
       if (block || (gmcHome.get("allowAOU") && (DDS || RHV || BT)) || (gmcHome.get("allowAOU") && ISI) || aMb["uso"]["unlisted"] == "") {
@@ -2454,7 +2459,7 @@
       },
       'alwaysHideDeletedUser': {
         "type": "checkbox",
-        "label": 'Always hide a deleted ScriptWright in script lists',
+        "label": 'Always hide a deleted ScriptWright in mixed ScriptWright script lists',
         "default": false
       },
       'alwaysHidePus': {
@@ -2763,7 +2768,7 @@
               json = JSON.parse('{"user":' + gmcFilters.fields["jsonFilters"].node.value + '}');
 
               let reports = [];
-              parseList(json, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aProvider) {
+              parseList(json, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aHide, aProvider) {
                 switch (aScope) {
                   case "@uso:script":
                   case "@uso:author":
