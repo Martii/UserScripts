@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.19
+// @version       2.0.2.20
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -151,6 +151,8 @@
    *
    */
   function doReport() {
+    // TODO:
+
     let replyToTopic = document.querySelector("#content > p a.utility");
     if (replyToTopic && replyToTopic.textContent == "Reply to topic") {
       replyToTopic.click();
@@ -160,30 +162,43 @@
         let pendingReports = GM_getValue(":pendingReports");
         GM_deleteValue(":pendingReports");
 
-        let post = "";
-
-        let post_markdown = document.querySelector("#reply #post_markdown");
+        let
+            i = 0,
+            maxList = 30,
+            post = "",
+            post_markdown = document.querySelector("#reply #post_markdown")
+        ;
         if (post_markdown && post_markdown.checked) {
           pendingReports.split(",").forEach(function (e, i, a) {
+              if (i % maxList == 0) {
+                if (i != 0)
+                  post += '\n';
+                post += 'Potentially unwanted scripts\n\n';
+              }
+
               post += '* [' + e + '](' + e + ')\n'
+
+              i++;
           });
         }
         else {
-          post = '<ul>' + pendingReports.split(',').map(function (aE) {
-              aE = '\n<li><a href="' + aE + '">' + aE + '</a></li>';
+          post = pendingReports.split(',').map(function (aE) {
+              let item = '\n<li><a href="' + aE + '">' + aE + '</a></li>';
+
+              if (i % maxList == 0) {
+                aE = (i ? '\n</ul>\n' : '') + '<p>Potentially unwanted scripts</p>\n<ul>' + item;
+              }
+              else
+                aE = item;
+
+              i++;
               return aE;
+
           }).join('') + '\n</ul>';
         }
 
-        if (post != "" && post != '<ul>\n</ul>') {
-          if (post_markdown && post_markdown.checked) {
-            post_body.value = post + '\nPotentially unwanted scripts';
-          }
-          else {
-            post_body.value = post + '\n<p>Potentially unwanted scripts</p>';
-          }
-
-        }
+        if (post != "" && post != '<ul>\n</ul>')
+          post_body.value = post;
       }
     }
   }
