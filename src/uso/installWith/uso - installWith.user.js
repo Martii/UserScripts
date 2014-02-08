@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.21
+// @version       2.0.2.22
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -2738,7 +2738,7 @@
                     "  margin-top: 0.125em !important; margin-bottom: 0.25em !important; margin-left: 1.75em !important; ",
                     "}",
 
-                    "#gmc68219filters_field_jsonFilters { height: 10em; min-height: 10em; max-height: 10em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
+                    "#gmc68219filters_field_jsonFilters { height: 12em; min-height: 12em; max-height: 12em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
                     "#gmc68219filters_jsonFilters_field_label > p { margin-bottom: 0.25em; margin-top: 0.25em; }",
 
                     "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
@@ -2840,11 +2840,6 @@
       'openSAMtopic': {
           "type": "checkbox",
           "label": 'Auto open the <a href="/topics/9#posts-last"></>Spam and Malware</a> topic on queue',
-          "default": false
-      },
-      'disableSAMCSS': {
-          "type": "checkbox",
-          "label": 'Disable CSS tweak in Spam and Malware topic',
           "default": false
       },
       'jsonFilters': {
@@ -2996,16 +2991,19 @@
   let authenticated = document.querySelector("body.loggedin");
 
   if (/^\/topics\/9\/?$/.test(gPATHNAME) || /^\/posts\/?$/.test(gPATHNAME)) {
-    if (!gmcFilters.get("disableSAMCSS")) {
-      GM_setStyle({
-        node: gCSS,
-        data:
-          [
-            "#content .posts .entry-content ul { column-width: 10em; -moz-column-width: 10em; }"
+    GM_setStyle({
+      node: gCSS,
+      data:
+        [
+          ".columnize { column-width: 10em; -moz-column-width: 10em; }"
 
-          ].join("\n")
-      });
-    }
+        ].join("\n")
+    });
+
+    let posts = document.querySelectorAll("#content .posts .entry-content p~ul");
+    for (let i = 0, thisNode; thisNode = posts[i++];)
+      if (thisNode.previousSibling && thisNode.previousSibling.textContent.match(/Potentially\sunwanted\sscripts/i))
+        thisNode.classList.add("columnize");
   }
 
   let pendingReports = GM_getValue(":pendingReports");
