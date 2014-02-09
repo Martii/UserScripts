@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0.7
+// @version       1.0.0.8
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?://userscripts\.org/scripts//
@@ -1819,6 +1819,11 @@
       'showVersionsKeysStringHeight': { "type": 'hidden', "default": "16px" }
     }
   );
+
+  gmcHome.onOpen = function () {
+    gmcHome.fields["showStringsStringPre"].node.setAttribute("wrap", "off");
+    gmcHome.fields["showStringsString"].node.setAttribute("wrap", "off");
+  }
 
   gmcHome.onSave = function () {
     let
