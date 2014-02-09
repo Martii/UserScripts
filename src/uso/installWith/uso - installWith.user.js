@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.22
+// @version       2.0.2.23
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -2743,13 +2743,13 @@
 
                     "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
                     "#gmc68219filters_lastUserScriptId_field_label { display: block !important; padding-left: 0.9em; }",
-                    "#gmc68219filters_field_lastUserScriptId { width: 9em; margin-left: 0.9em; margin-top: 0; }",
+                    "#gmc68219filters_field_lastUserScriptId { width: 9em; margin-left: 0.9em; margin-top: 0; text-align: right; }",
                     "#gmc68219filters_insertUserScriptIdToPU_var { display: inline !important; margin-left: 0 !important; }",
                     "#gmc68219filters_field_insertUserScriptIdToPU { height: 2.25em; width: 14.4em; }",
 
                     "#gmc68219filters_lastScriptWrightId_var { width: 15em; display: inline !important; }",
                     "#gmc68219filters_lastScriptWrightId_field_label { display: block !important; padding-left: 0.9em; }",
-                    "#gmc68219filters_field_lastScriptWrightId { width: 9em; margin-left: 0.9em; margin-top: 0; }",
+                    "#gmc68219filters_field_lastScriptWrightId { width: 9em; margin-left: 0.9em; margin-top: 0; text-align: right; }",
                     "#gmc68219filters_insertScriptWrightIdToPU_var { display: inline !important; margin-left: 0 !important; }",
                     "#gmc68219filters_field_insertScriptWrightIdToPU { height: 2.25em; width: 14.4em; }",
 
@@ -2941,6 +2941,7 @@
     catch (e) {}
 
     gmcFilters.fields["jsonFilters"].node.setAttribute("spellcheck", "false");
+    gmcFilters.fields["jsonFilters"].node.setAttribute("wrap", "off");
 
     gmcFilters.fields["lastScriptWrightId"].node.setAttribute("readonly", "readonly");
     gmcFilters.fields["lastUserScriptId"].node.setAttribute("readonly", "readonly");
