@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.4
+// @version       1.0.5
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include       http://userscripts.org/scripts/show/*
@@ -32,7 +32,8 @@
     */
     var css = [
         '#right #stickytopics { font-size: 0.9em; }',
-        '#right #stickytopics td:last-child { text-align: right; }'
+        '#right #stickytopics td:last-child { text-align: right; }',
+        '#right #stickytopics thead th { background: none repeat scroll 0 0 #333; color: #fff; }'
 
     ].join('');
 
@@ -70,9 +71,9 @@
   var full_descriptionNode = document.getElementById("full_description");
   if (full_descriptionNode) {
 
-    var thNodes = full_descriptionNode.querySelectorAll("table > tbody > tr > th:first-child");
+    var thNodes = full_descriptionNode.querySelectorAll("table tr > th:first-child");
     for (var i = 0, thNode; thNode = thNodes[i]; i++) {
-      if (thNode.textContent == "Sticky Topics") {
+      if (/^Sticky\sTopics\s?$/.test(thNode.textContent)) {
         var tableNode = thNode.parentNode.parentNode.parentNode;
         abort = false;
 
