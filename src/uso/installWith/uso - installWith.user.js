@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.2.23
+// @version       2.0.3.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -83,6 +83,7 @@
 // @grant GM_log
 // @grant GM_openInTab
 // @grant GM_registerMenuCommand
+// @grant GM_setClipboard
 // @grant GM_setValue
 // @grant GM_xmlhttpRequest
 
@@ -150,57 +151,190 @@
   /**
    *
    */
-  function doReport() {
-    // TODO:
+  function genReport(aReports, aReported, aMarkdown) {
 
-    let replyToTopic = document.querySelector("#content > p a.utility");
-    if (replyToTopic && replyToTopic.textContent == "Reply to topic") {
-      replyToTopic.click();
+    let
+        i = 0,
+        maxList = 30,
+        post = ""
+    ;
 
-      let post_body = document.querySelector("#reply textarea#post_body");
-      if (post_body) {
-        let pendingReports = GM_getValue(":pendingReports");
-        GM_deleteValue(":pendingReports");
+    if (aMarkdown) {
+      aReports.split(",").forEach(function (e, i, a) {
+          if (i % maxList == 0) {
+            if (i != 0)
+              post += '\n';
+            post += 'Potentially unwanted scripts\n\n';
+          }
 
-        let
-            i = 0,
-            maxList = 30,
-            post = "",
-            post_markdown = document.querySelector("#reply #post_markdown")
-        ;
-        if (post_markdown && post_markdown.checked) {
-          pendingReports.split(",").forEach(function (e, i, a) {
-              if (i % maxList == 0) {
-                if (i != 0)
-                  post += '\n';
-                post += 'Potentially unwanted scripts\n\n';
-              }
-
-              post += '* [' + e + '](' + e + ')\n'
-
-              i++;
+          let found;
+          aReported.split(",").forEach(function (e1, i1, a1) {
+            if (e1 == e)
+              found = true;
           });
-        }
-        else {
-          post = pendingReports.split(',').map(function (aE) {
-              let item = '\n<li><a href="' + aE + '">' + aE + '</a></li>';
 
-              if (i % maxList == 0) {
-                aE = (i ? '\n</ul>\n' : '') + '<p>Potentially unwanted scripts</p>\n<ul>' + item;
-              }
-              else
-                aE = item;
-
-              i++;
-              return aE;
-
-          }).join('') + '\n</ul>';
-        }
-
-        if (post != "" && post != '\n</ul>')
-          post_body.value = post;
-      }
+          if (!found)
+            post += '* [' + e + '](' + e + ')\n';
+          else
+            post += '* ' + e + '\n';
+          i++;
+      });
     }
+    else {
+      post = aReports.split(',').map(function (aE) {
+          let found;
+          aReported.split(",").forEach(function (e1, i1, a1) {
+            if (e1 == aE)
+              found = true;
+          });
+
+          let item;
+          if (!found)
+            item = '\n<li><a href="' + aE + '">' + aE + '</a></li>';
+          else
+            item = '\n<li>' + aE + '</li>';
+
+          if (i % maxList == 0) {
+            aE = (i ? '\n</ul>\n' : '') + '<p>Potentially unwanted scripts</p>\n<ul>' + item;
+          }
+          else
+            aE = item;
+
+          i++;
+          return aE;
+
+      }).join('') + '\n</ul>';
+    }
+
+    return post;
+  }
+  /**
+   *
+   */
+  function doReport(aReports) {
+    GM_xmlhttpRequest({
+      retry: gRETRIES,
+      url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/topics/9.rss",
+      method: "GET",
+      onload: function(aR) {
+        switch(aR.status) {
+          case 404:
+            if (gHALT404)
+              this._retry = 0;
+          case 500:
+          case 502:
+          case 503:
+            if (gJSE && this.retry-- > 0) {
+              setTimeout(GM_xmlhttpRequest, gDELAYRETRYMIN + Math.round(Math.random() * (gDELAYRETRYMAX - gDELAYRETRYMIN)), this); // NOTE: Detached
+              break; // NOTE: Watchpoint
+            }
+          case 200:
+            let
+                parser = new DOMParser(),
+                xml = parser.parseFromString(aR.responseText, "text/xml"),
+                reported = []
+            ;
+
+            let descriptions = xml.querySelectorAll("item description");
+            for (let i = 0, thisDescription; thisDescription = descriptions[i++];) {
+              let docfrag = document.createDocumentFragment();
+
+              let nodeDiv = document.createElement("div");
+              nodeDiv.innerHTML = thisDescription.textContent;
+
+              docfrag.appendChild(nodeDiv);
+              let anchors = docfrag.querySelectorAll("a");
+              for (let j = 0, thisAnchor; thisAnchor = anchors[j++];) {
+
+                let matches;
+
+                matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org(\/users\/\d+)\/?/);
+                if (matches)
+                  reported.push(matches[1]);
+                else if (matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org\/scripts\/show(\/\d+)\/?/))
+                  reported.push(matches[1]);
+                else if (matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org(\/\d+)\/?/))
+                  reported.push(matches[1]);
+              }
+
+            }
+
+            let count = 0, reports = aReports.split(",");
+            reports.forEach(function (e, i, a) {
+              reported.forEach(function (e1, i1, a1) {
+                if (e1 == e)
+                  ++count;
+              });
+            });
+
+            if (count > 0 && count == reports.length)
+              ; // Do nothing
+            else {
+              let thisNode = document.querySelector("#content .posts tbody > tr:last-child .author .edit a.utility"), isReply;
+              if (thisNode) {
+                let dateNode = document.querySelector("#content .posts tbody > tr:last-child .author .date abbr");
+                if (dateNode) {
+                  let dateLastPost = new Date(dateNode.title);
+                  if ((Date.now() - dateLastPost) > (60 * 60 * 1000))
+                    thisNode = undefined;
+                }
+                else {
+                  if (gmcHome.get("enableDebugging"))
+                    console.warn('Last posting date not found...reverting to reply mode');
+                  thisNode = undefined;
+                }
+              }
+
+              if (!thisNode) {
+                thisNode = document.querySelector("#content > p a.utility");
+                isReply = true;
+              }
+
+
+              if (thisNode && (thisNode.textContent == "Reply to topic" || thisNode.textContent == "Edit post")) {
+                setTimeout(function () {
+                  thisNode.click();
+
+                  let that, retry = 4;
+                  if (!isReply) {
+                    setTimeout(that = function () {
+                      let post_body = document.querySelector("#edit textarea#edit_post_body");
+                      if (post_body) {
+                        let UCF = !!document.querySelector("#edit .previewBtn");
+                        if (UCF)
+                          post_body.value = post_body.textContent +  '\n' + genReport(aReports, reported.join(','), document.querySelector("#edit #post_markdown").checked);
+                        else
+                          post_body.textContent += '\n' + genReport(aReports, reported.join(','), document.querySelector("#edit #post_markdown").checked);
+                      }
+                      else {
+                        if (retry-- > 0);
+                          setTimeout(that, 500);
+                      }
+                    }, 0);
+                  }
+                  else {
+                    setTimeout(that = function () {
+                      let post_body = document.querySelector("#reply textarea#post_body");
+                      if (post_body) {
+                        let UCF = !!document.querySelector("#reply .previewBtn");
+                        if (UCF)
+                          post_body.value = genReport(aReports, reported.join(','), document.querySelector("#reply #post_markdown").checked);
+                        else
+                          post_body.value = genReport(aReports, reported.join(','), document.querySelector("#reply #post_markdown").checked);
+                      }
+                      else {
+                        if (retry-- > 0);
+                          setTimeout(that, 500);
+                      }
+                    }, 0);
+                  }
+                }, 1000); // NOTE: Give UCF this much initial time to load before triggering click otherwise USO default shows depending on script order/count
+              }
+            }
+            break;
+        }
+      }
+    });
   }
 
   /**
@@ -453,7 +587,7 @@
     if (!thisNode || thisNode.nodeType !== 1)
       return false;
 
-    if (!gJSE)
+    if (!gJSE || gmcHome.get("disableViewportHold"))
       return true; /** Work-around for !javascript.enabled issue **/
 
     let html, rect;
@@ -820,6 +954,11 @@
    *
    */
   function advise(aSa, aNode, aMb, aEmbed, aReduce, aCollapse, aHide) {
+    //if (gmcHome.get("enableDebugging")) {
+      //console.groupCollapsed(JSON.stringify(aMb, null, " ")); // BUG: FF 27 doesn't collapse these
+      //console.groupEnd();
+    //}
+
     let
       title,
       max,
@@ -960,12 +1099,15 @@
         nodeH6.addEventListener("click", function () {
           gmcFilters.open();
           let aid = lastValueOf(aMb, "author", "uso");
-          if (aid)
+          if (aid) {
             gmcFilters.fields["lastScriptWrightId"].node.value = lastValueOf(aMb, "author", "uso"); // NOTE: Watchpoint
+            gmcFilters.fields["lastScriptWrightId"].node.title = lastValueOf(aMb, "name", "uso");
+          }
           else
             gmcFilters.fields["lastScriptWrightId"].node.value = "";
 
           gmcFilters.fields["lastUserScriptId"].node.value = lastValueOf(aMb, "script", "uso");
+          gmcFilters.fields["lastUserScriptId"].node.title = lastValueOf(aMb, "title", "uso");
         }, false);
 
         nodeA.appendChild(nodeImg);
@@ -1011,12 +1153,15 @@
             gmcFilters.open();
 
             let aid = lastValueOf(aMb, "author", "uso");
-            if (aid)
+            if (aid) {
               gmcFilters.fields["lastScriptWrightId"].node.value = lastValueOf(aMb, "author", "uso"); // NOTE: Watchpoint
+              gmcFilters.fields["lastScriptWrightId"].node.title = lastValueOf(aMb, "name", "uso");
+            }
             else
               gmcFilters.fields["lastScriptWrightId"].node.value = "";
 
             gmcFilters.fields["lastUserScriptId"].node.value = lastValueOf(aMb, "script", "uso");
+            gmcFilters.fields["lastUserScriptId"].node.title = lastValueOf(aMb, "title", "uso");
           }, false);
 
           let sourceNodeA = document.createElement("a");
@@ -1090,7 +1235,7 @@
       actionsNodeDiv.appendChild(nodeImg);
 
 
-      if (!/^(\/home\/scripts|\/users\/.+?\/scripts)/.test(gPATHNAME)) {
+      if (!/^(?:\/home\/scripts|\/users\/.+?\/scripts)/.test(gPATHNAME)) {
         let bylineNodeDiv = document.createElement("div");
         bylineNodeDiv.classList.add("byline");
         if (aCollapse) {
@@ -1262,7 +1407,7 @@
           else
             continue;
 
-          let j = 0, tips, provider, block, reduce, collapse, hide;
+          let j = 0, tips, provider, collector, block, reduce, collapse, hide;
           for (; target[i + j] && typeof target[i + j] != "string"; ++j) {
             let optflag = target[i + j];
 
@@ -1288,6 +1433,15 @@
                   provider = optflag;
 
                   break;
+                case "collect":
+                  optflag.shift();
+                  optflag.shift();
+
+                  // NOTE: No validation
+
+                  collector = optflag;
+
+                  break;
                 case "block":
                   block = true;
                   break;
@@ -1307,7 +1461,7 @@
 
           i += (j - 1);
 
-          aCb(scope, patternsx, advisory, summary, tips, block, reduce, collapse, hide, provider);
+          aCb(scope, patternsx, advisory, summary, tips, block, reduce, collapse, hide, provider, collector);
         }
 
       }
@@ -1467,19 +1621,29 @@
         atUsoScript = lastValueOf(aMb, "script", "uso"),
         atUsoAuthor = lastValueOf(aMb, "author", "uso"),
         atUsoTitle = lastValueOf(aMb, "title", "uso"),
+        atUsoDesc = lastValueOf(aMb, "desc", "uso"),
         providers = []
     ;
 
-    try {
-      gGROUPS = JSON.parse(gLIST + ',"user":{' + gmcFilters.get("jsonFilters").replace(/^[\n\r\s]*\{/, '') + '}');
+    let rewrite, json, GROUPS;
+
+    try {  // TODO: Watchpoint
+      GROUPS = JSON.parse(gLIST + '}');
+
+      let jsonFilters = gmcFilters.get("jsonFilters");
+      json = JSON.parse(jsonFilters);
+
+      gGROUPS = JSON.parse(gLIST + ',"user":{' + jsonFilters.replace(/^[\n\r\s]*\{/, '') + '}');
     }
     catch (e) {
       if (gmcHome.get("enableDebugging"))
         console.warn('JSON parsing error...skipping user advisories');
+
       gGROUPS = JSON.parse(gLIST + '}');
     }
 
-    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aHide, aProvider) {
+
+    parseList(gGROUPS, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aHide, aProvider, aCollector) {
       for (let pattern in aPatterns) {
 
         let matches = pattern.match(/^\/(.*)\/(i?g?m?y?)$/), patternx = pattern;
@@ -1515,7 +1679,7 @@
 
         if (aScope == "@include" && atMatches)
           for (let i = 0, atMatch; atMatch = atMatches[i++];)
-            if ((typeof patternx == "object") ? atMatch.match(patternx) : (atMatch == patternx) ? [atMatch, patternx] : null) {
+            if ((typeof patternx == "object") ? patternx.test(atMatch) : (atMatch == patternx) ? true : false) {
               pushAdvisory(aSa, aAdvisory, aSummary);
               if (aReduce) REDUCE = true;
               break;
@@ -1523,7 +1687,7 @@
 
         if (aScope == "@include" && atIncludes) {
           for (let i = 0, atInclude; atInclude = atIncludes[i++];)
-            if ((typeof patternx == "object") ? atInclude.match(patternx) : (atInclude == patternx) ? [atInclude, patternx] : null) {
+            if ((typeof patternx == "object") ? patternx.test(atInclude) : (atInclude == patternx) ? true : false) {
               pushAdvisory(aSa, aAdvisory, aSummary);
               if (aReduce) REDUCE = true;
               break;
@@ -1535,7 +1699,7 @@
         }
 
         if (/^\@uso:author(?:$|\s)/.test(aScope) && atUsoAuthor)
-          if ((typeof patternx == "object") ? atUsoAuthor.match(patternx) : (atUsoAuthor == patternx) ? [atUsoAuthor, patternx] : null) {
+          if ((typeof patternx == "object") ? patternx.test(atUsoAuthor) : (atUsoAuthor == patternx) ? true : false) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
@@ -1556,7 +1720,7 @@
           }
 
         if (/^\@uso:script(?:$|\s)/.test(aScope) && atUsoScript)
-          if ((typeof patternx == "object") ? atUsoScript.match(patternx) : (atUsoScript == patternx) ? [atUsoScript, patternx] : null) {
+          if ((typeof patternx == "object") ? patternx.test(atUsoScript) : (atUsoScript == patternx) ? true : false) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
@@ -1571,10 +1735,13 @@
 
             if (aReduce)
               REDUCE = true;
+
+            if (aCollapse)
+              COLLAPSE = true;
           }
 
-        if (aScope == "@uso:title" && atUsoTitle)
-          if ((typeof patternx == "object") ? atUsoTitle.match(patternx) : (atUsoTitle == patternx) ? [atUsoTitle, patternx] : null) {
+        if (aScope == "@uso:title" && atUsoTitle) {
+          if ((typeof patternx == "object") ? patternx.test(atUsoTitle) : (atUsoTitle == patternx) ? true : false) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
@@ -1589,7 +1756,131 @@
 
             if (aReduce)
               REDUCE = true;
+
+            if (aCollapse)
+              COLLAPSE = true;
+
+            if (json && aCollector && !/^(?:\/home\/scripts|\/users\/.+?\/scripts|\/scripts\/show\/\d+)/.test(gPATHNAME)) {
+              let scope, advisorysummary;
+              [scope, advisorysummary] = aCollector;
+
+              let collect, id;
+              switch (scope) {
+                case "@uso:author":
+                  collect = true;
+                  id = atUsoAuthor;
+                  break;
+              }
+
+              if (collect && id) {
+                if (!json[scope]) {
+                  json[scope] = [advisorysummary, []];
+                  rewrite = true;
+                }
+
+                let found, ids = json[scope][1]; // TODO:
+                ids.forEach(function (e, i, a) {
+                  if (e == id)
+                    found = true;
+                });
+
+                if (!found && json[scope + " (private)"]) {
+                  ids = json[scope + " (private)"][1]; // TODO:
+                  ids.forEach(function (e, i, a) {
+                    if (e == id)
+                      found = true;
+                  });
+                }
+
+                if (!found && GROUPS && GROUPS["collections"][scope]) {
+                  ids = GROUPS["collections"][scope][1]; // TODO:
+                  ids.forEach(function (e, i, a) {
+                    if (e == id)
+                      found = true;
+                  });
+                }
+
+                if (!found) {
+                  json[scope][1].push(id); // TODO:
+                  rewrite = true;
+                }
+              }
+
+            }
+
+
           }
+        }
+
+        if (aScope == "@uso:desc" && atUsoDesc) {
+          if ((typeof patternx == "object") ? patternx.test(atUsoDesc) : (atUsoDesc == patternx) ? true : false) {
+            if (aSummary == "Potentially unwanted script") {
+              block = true;
+              REDUCE = true;
+              COLLAPSE = true;
+              if (gmcHome.get("alwaysHidePus"))
+                HIDE = true;
+            }
+
+            pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
+            if (aBlock)
+              block = true;
+
+            if (aReduce)
+              REDUCE = true;
+
+            if (aCollapse)
+              COLLAPSE = true;
+
+            if (json && aCollector && !/^(?:\/home\/scripts|\/users\/.+?\/scripts|\/scripts\/show\/\d+)/.test(gPATHNAME)) {
+              let scope, advisorysummary;
+              [scope, advisorysummary] = aCollector;
+
+              let collect, id;
+              switch (scope) {
+                case "@uso:author":
+                  collect = true;
+                  id = atUsoAuthor;
+                  break;
+              }
+
+              if (collect && id) {
+                if (!json[scope]) {
+                  json[scope] = [advisorysummary, []];
+                  rewrite = true;
+                }
+
+                let found, ids = json[scope][1]; // TODO:
+                ids.forEach(function (e, i, a) {
+                  if (e == id)
+                    found = true;
+                });
+
+                if (!found && json[scope + " (private)"]) {
+                  ids = json[scope + " (private)"][1]; // TODO:
+                  ids.forEach(function (e, i, a) {
+                    if (e == id)
+                      found = true;
+                  });
+                }
+
+                if (!found && GROUPS && GROUPS["collections"][scope]) {
+                  ids = GROUPS["collections"][scope][1]; // TODO:
+                  ids.forEach(function (e, i, a) {
+                    if (e == id)
+                      found = true;
+                  });
+                }
+
+                if (!found) {
+                  json[scope][1].push(id); // TODO:
+                  rewrite = true;
+                }
+              }
+
+            }
+          }
+        }
 
         if (aScope == "updaterEmbed" && aSource) {
           if (patternx.test(aSource) && aScriptId != 68219 && aScriptId != 69307) {
@@ -1600,9 +1891,67 @@
 
         if (aScope == "search" && aSource) {
           if (patternx.test(aSource)) {
+            if (aSummary == "Potentially unwanted script") {
+              block = true;
+              REDUCE = true;
+              COLLAPSE = true;
+              if (gmcHome.get("alwaysHidePus"))
+                HIDE = true;
+            }
+
             pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
 
-            if (aReduce) REDUCE = true;
+            if (aReduce)
+              REDUCE = true;
+
+            if (json && aCollector && !/^(?:\/home\/scripts|\/users\/.+?\/scripts|\/scripts\/show\/\d+)/.test(gPATHNAME)) {
+              let scope, advisorysummary;
+              [scope, advisorysummary] = aCollector;
+
+              let collect, id;
+              switch (scope) {
+                case "@uso:author":
+                  collect = true;
+                  id = atUsoAuthor;
+                  break;
+              }
+
+              if (collect && id) {
+                if (!json[scope]) {
+                  json[scope] = [advisorysummary, []];
+                  rewrite = true;
+                }
+
+                let found, ids = json[scope][1]; // TODO:
+                ids.forEach(function (e, i, a) {
+                  if (e == id)
+                    found = true;
+                });
+
+                if (!found && json[scope + " (private)"]) {
+                  ids = json[scope + " (private)"][1]; // TODO:
+                  ids.forEach(function (e, i, a) {
+                    if (e == id)
+                      found = true;
+                  });
+                }
+
+                if (!found && GROUPS && GROUPS["collections"][scope]) {
+                  ids = GROUPS["collections"][scope][1]; // TODO:
+                  ids.forEach(function (e, i, a) {
+                    if (e == id)
+                      found = true;
+                  });
+                }
+
+                if (!found) {
+                  json[scope][1].push(id); // TODO:
+                  rewrite = true;
+                }
+              }
+
+            }
+
           }
         }
 
@@ -1613,6 +1962,11 @@
 
     });
 
+    if (json && rewrite) {
+      json["@uso:author"][1].sort(function (a, b) { return a - b });
+      gmcFilters.set("jsonFilters", JSON.stringify(json, null, "")); // TODO:
+      gmcFilters.write();
+    }
 
     /** **/
     let
@@ -1825,14 +2179,7 @@
           if (lastValueOf(this._mb, "script", "uso") != this._scriptId) {
             pushAdvisory(this._sa, "SEVERE", "Malformed metadata block");
 
-            if (this._mb["uso"]["script"]) {
-              if (!Array.isArray(this._mb["uso"]["script"]))
-                this._mb["uso"]["script"] = [this._mb["uso"]["script"]];
-
-              this._mb["uso"]["script"].push(this._scriptId);
-            }
-            else
-              this._mb["uso"]["script"] = this._scriptId;
+            addValue(this._scriptId, "script", this._mb["uso"]);
           }
 
           /** Create phantom key(s) if detected **/
@@ -1850,66 +2197,105 @@
           if (titleNode)
             addValue(titleNode.textContent, "title", this._mb["uso"]);
           else
-            addValue("", "title", this._mb["uso"]); // NOTE: opt creation
+            addValue("", "title", this._mb["uso"]);
+
+          let descNode = this._node.querySelector(".desc");
+          if (descNode)
+            addValue(descNode.textContent, "desc", this._mb["uso"]);
+          else {
+            let summaries = document.querySelectorAll("#root #content .script_summary");
+            for (let i = 0, thisNode; thisNode = summaries[i++];) {
+              let bNode = thisNode.querySelector("p b");
+              if (bNode && bNode.textContent.match(/^Script\sSummary\:$/i)) {
+                descNode = bNode.nextSibling;
+
+                addValue(descNode.textContent.replace(/^[\r\n]/, "").replace(/[\r\n]$/, ""), "desc", this._mb["uso"]);
+              }
+            }
+          }
+          if (!descNode)
+            addValue("", "desc", this._mb["uso"]);
 
           let user_idNode = document.body.querySelector("#heading .author a");
           if (user_idNode) {
             addValue(user_idNode.getAttribute("user_id"), "author", this._mb["uso"]);
+            addValue(user_idNode.textContent, "name", this._mb["uso"]);
 
-            let matches = user_idNode.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/); // TODO:
+            let matches = user_idNode.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
             if (matches)
-              this._mb["uso"]["avatar"] = matches[1] || matches[2];
+              addValue(matches[1] || matches[2], "avatar", this._mb["uso"]);
+            else
+              addValue("", "avatar", this._mb["uso"]);
           }
           else if (/^\/users\/.+?\/scripts/.test(gPATHNAME)) {
-            user_idNode = document.querySelector(".avatar a");
+            user_idNode = document.querySelector("#section .container h2 a"); //document.querySelector(".avatar a");
             if (user_idNode) {
               let aid = user_idNode.pathname.match(/\/(\d+)$/);
               if (aid) {
                 addValue(aid[1], "author", this._mb["uso"]);
+                addValue(user_idNode.textContent, "name", this._mb["uso"]);
 
-                let gravatarNode = user_idNode.firstChild;
-
-                let gid = gravatarNode.src.match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
-                if (gid)
-                  this._mb["uso"]["avatar"] = gid[1] || gid[2];
+                let gravatarNode = document.querySelector(".avatar a img");
+                if (gravatarNode) {
+                  let gid = gravatarNode.src.match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
+                  if (gid)
+                    addValue(gid[1] || gid[2], "avatar", this._mb["uso"]);
+                }
+                else
+                  addValue("", "avatar", this._mb["uso"]);
               }
-              else
-                addValue("", "author", this._mb["uso"]); // NOTE: opt creation
+              else {
+                addValue("", "author", this._mb["uso"]);
+                addValue("", "name", this._mb["uso"]);
+                addValue("", "avatar", this._mb["uso"]);
+              }
             }
-            else
-              addValue("", "author", this._mb["uso"]); // NOTE: opt creation
+            else {
+              addValue("", "author", this._mb["uso"]);
+              addValue("", "name", this._mb["uso"]);
+              addValue("", "avatar", this._mb["uso"]);
+            }
           }
-          else
-            addValue("", "author", this._mb["uso"]); // NOTE: opt creation
+          else {
+            addValue("", "author", this._mb["uso"]);
+            addValue("", "name", this._mb["uso"]);
+            addValue("", "avatar", this._mb["uso"]);
+          }
+
 
           let iconNode = document.getElementById("icon");
           if (iconNode) {
             let matches = iconNode.pathname.match(/\.(\w+)$/);
-            if (matches)
-              this._mb["uso"]["icontype"] = matches[1]; // TODO: Cover conditionals... non-fatal though
+            if (matches) {
+              addValue(matches[1], "icontype", this._mb["uso"]);
+            }
+            else
+              addValue("", "icontype", this._mb["uso"]);
           }
+          else
+            addValue("", "icontype", this._mb["uso"]);
 
-          this._mb["uso"]["metajssize"] = aR.responseText.length.toString(); // TODO: Be nice and don't overwrite although pick last always
+          addValue(aR.responseText.length.toString(), "metajssize", this._mb["uso"]);
 
           let stats = [];
 
           let matches = aR.responseText.match(/\n/g); // NOTE: Meta should always have at least one newline
           if (matches) {
-            this._mb["uso"]["metajslines"] = (matches.length + 1).toString();
-            stats.push(unitSizer(this._mb["uso"]["metajssize"]) + " with " + this._mb["uso"]["metajslines"] + " lines");
+            addValue((matches.length + 1).toString(), "metajslines", this._mb["uso"]);
+            stats.push(unitSizer(lastValueOf(this._mb, "metajssize", "uso")) + " with " + lastValueOf(this._mb, "metajslines", "uso") + " lines");
           }
 
           let ws, nws;
           matches = aR.responseText.match(/\s/g);
           if (matches) {
             ws = matches.length;
-            this._mb["uso"]["metajsws"] = ws.toString();
+            addValue(ws.toString(), "metajsws", this._mb["uso"]);
           }
 
           matches = aR.responseText.match(/\S/g);
           if (matches) {
             nws = matches.length;
-            this._mb["uso"]["metajsnws"] = nws.toString();
+            addValue(nws.toString(), "metajsnws", this._mb["uso"]);
           }
 
           stats.push(parseInt(ws / (ws + nws) * 10000) / 100 + "% whitespace");
@@ -1935,11 +2321,12 @@
             GM_xmlhttpRequest.call(gTHIS, this);
           }
           else {
+            addValue("", "userjs", this._mb["uso"]);
 
             let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
 
             if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
-              this.url = "/scripts/fans/" + this._scriptId;
+              this.url = "/scripts/show/" + this._scriptId;
 
               this.headers = { "Range": "bytes=" + (gBYTESMIN ? gBYTESMIN : 0) + "-" + (gBYTESMAX ? gBYTESMAX : "") };
 
@@ -1960,30 +2347,29 @@
         }
         else if (/\.user\.js$/.test(this.url)) {
 
-          this._mb["uso"]["userjs"] = aR.responseText;
-
           /** Add some keys **/
-          this._mb["uso"]["userjssize"] = aR.responseText.length.toString();
+          addValue(aR.responseText, "userjs", this._mb["uso"]);
+          addValue(aR.responseText.length.toString(), "userjssize", this._mb["uso"]);
 
           let stats = [];
 
           let matches = aR.responseText.match(/\n/g); // NOTE: Script should always have at least one newline
           if (matches) {
-            this._mb["uso"]["userjslines"] = (matches.length + 1).toString();
-            stats.push(unitSizer(this._mb["uso"]["userjssize"]) + " with " + this._mb["uso"]["userjslines"] + " lines");
+            addValue((matches.length + 1).toString(), "userjslines", this._mb["uso"]);
+            stats.push(unitSizer(lastValueOf(this._mb, "userjssize", "uso")) + " with " + lastValueOf(this._mb, "userjslines", "uso") + " lines");
           }
 
           let ws, nws;
           matches = aR.responseText.match(/\s/g);
           if (matches) {
             ws = matches.length;
-            this._mb["uso"]["userjsws"] = ws.toString();
+            addValue(ws.toString(), "userjsws", this._mb["uso"]);
           }
 
           matches = aR.responseText.match(/\S/g);
           if (matches) {
             nws = matches.length;
-            this._mb["uso"]["userjsnws"] = nws.toString();
+            addValue(nws.toString(), "userjsnws", this._mb["uso"]);
           }
 
           stats.push(parseInt(ws / (ws + nws) * 10000) / 100 + "% whitespace");
@@ -1993,7 +2379,7 @@
           let atUsoAuthor = lastValueOf(this._mb, "author", "uso");
 
           if (gmcHome.get("enableNabAuthorId") && !atUsoAuthor && !/^\/home\/scripts/.test(gPATHNAME)) {
-            this.url = "/scripts/fans/" + this._scriptId;
+            this.url = "/scripts/show/" + this._scriptId;
 
             this.headers = { "Range": "bytes=" + (gBYTESMIN ? gBYTESMIN : 0) + "-" + (gBYTESMAX ? gBYTESMAX : "") };
 
@@ -2005,7 +2391,7 @@
           }
           else {
             /** Remove some keys **/
-            let userjs = this._mb["uso"]["userjs"].replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
+            let userjs = lastValueOf(this._mb, "userjs", "uso").replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
 
             parse(this._sa, this._node, this._scriptId, this._mb, userjs);
 
@@ -2014,7 +2400,7 @@
             xhr.call(gTHIS, this);
           }
         }
-        else if (/\/scripts\/fans\/\d+$/.test(this.url)) {
+        else if (/\/scripts\/show\/\d+$/.test(this.url)) {
           let
               parser = new DOMParser(),
               doc = parser.parseFromString(aR.responseText, "text/html"),
@@ -2025,6 +2411,8 @@
           if (titleNode)
             addValue(titleNode.textContent, "title", this._mb["uso"]);
 
+          // TODO: "desc" if resolved
+
           let author = doc.querySelector("span.author");
           if (author) {
             let vcard = author.querySelector("a");
@@ -2033,13 +2421,13 @@
 
               let matches = vcard.getAttribute("gravatar").match(/^.+?(?:gravatar_id\=(.+?)|\/avatar\/(.+?))[\?\&]/);
               if (matches)
-                this._mb["uso"]["avatar"] = matches[1] || matches[2];
+                addValue(matches[1] || matches[2], "avatar", this._mb["uso"]);
 
               matches = vcard.getAttribute("href").match(/\/users\/(.*)/);
               if (matches)
-                this._mb["uso"]["vanity"] = matches[1] || matches[2];
+                addValue(matches[1] || matches[2], "vanity", this._mb["uso"]);
 
-              this._mb["uso"]["name"] = vcard.textContent;
+              addValue(vcard.textContent, "name", this._mb["uso"]);
             }
             else {
               if (author.textContent == "By deleted user") {
@@ -2063,7 +2451,7 @@
 
             /** Optionally remove some keys **/
             if (this._mb["uso"]["userjs"])
-              userjs = this._mb["uso"]["userjs"].replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
+              userjs = lastValueOf(this._mb, "userjs", "uso").replace(/\s+\/\/\s@(?:updateURL|installURL|downloadURL|exclude)\s+.*[^\n\r]/gm, "");
 
             parse(this._sa, this._node, this._scriptId, this._mb, userjs);
 
@@ -2081,7 +2469,7 @@
             if (/\.\.\.$/.test(titleTextNode) && titleTextNode.length == 50)
               lenTitle = 255 * 4; // WATCHPOINT: Set to max bytes of unicode since unknown
 
-            lenTitle += byteLength("fans of  - Userscripts.org");
+            lenTitle += byteLength(" for Greasemonkey");
 
             let len = this.headLength - lenTitle;
 
@@ -2158,8 +2546,9 @@
         GM_xmlhttpRequest(aReq);
       }
     }
-    else
+    else {
       gIdle = true;
+    }
   }
 
   /**
@@ -2479,7 +2868,13 @@
       },
       'alwaysHidePus': {
         "type": "checkbox",
-        "label": 'Always hide potentially unwanted scripts in mixed ScriptWright script lists',
+        "label": 'Always hide Potentially Unwanted scripts in mixed ScriptWright script lists',
+        "default": false
+      },
+      'disableViewportHold': {
+        "section": [,''],
+        "type": "checkbox",
+        "label": 'Disable Viewport hold <em class="gmc-yellownote">WARNING: This uses more bandwidth and can be slow during high traffic periods</em>',
         "default": false
       },
       'enableDebugging': {
@@ -2706,7 +3101,7 @@
           [
             "@media screen, projection {",
                 "#gmc68219filters { background-color: rgba(0, 0, 0, 0.66) !important; height: 100% !important; width: 100% !important; max-height: 100% !important; max-width: 100% !important; left: 0 !important; top: 0 !important; }",
-                "#gmc68219filters_wrapper { background-color: #eee; width: 30em; height: 40em; position: absolute; left: 50%; top: 50%; margin: -20em 0 0 -15em; border: 1px solid #ddd; }",
+                "#gmc68219filters_wrapper { background-color: #eee; width: 45em; height: 40em; position: absolute; left: 45%; top: 50%; margin: -20em 0 0 -15em; border: 1px solid #ddd; }",
 
                 "#gmc68219filters_header a { display: inline; }",
                 "#gmc68219filters_header img { vertical-align: middle; }",
@@ -2730,7 +3125,7 @@
                     "#gmc68219filters .field_label { top: -0.25em; }",
 
                     "#gmc68219filters_postPUStoSAM_var { margin-bottom: 0.25em !important; margin-top: 1.25em !important; }",
-                    "#gmc68219filters_field_postPUStoSAM { height: 2.5em; width: 25.25em; }",
+                    "#gmc68219filters_field_postPUStoSAM { height: 2.5em; width: 38.75em; }",
 
                     "#gmc68219filters_openSAMtopic_var,",
                     "#gmc68219filters_disableSAMCSS_var",
@@ -2738,22 +3133,98 @@
                     "  margin-top: 0.125em !important; margin-bottom: 0.25em !important; margin-left: 1.75em !important; ",
                     "}",
 
-                    "#gmc68219filters_field_jsonFilters { height: 12em; min-height: 12em; max-height: 12em; font-size: 1.1em; resize: none; width: 24.5em; min-width: 24.5em; max-width: 24.5em; }",
+                    "#gmc68219filters_section_0 { margin-top: 0 !important; }",
+
+                    "#gmc68219filters_section_desc_0 { border-style: none !important; text-align: left !important; font-style: italic; }",
+                    "#gmc68219filters_section_desc_0 span:first-child { margin-left: 10.5em; }",
+                    "#gmc68219filters_section_desc_0 span:last-child { float: right; margin-right: 10.25em; }",
+
+
+                    "#gmc68219filters_clearUserScriptIds_var",
+                    "{ display: inline !important; margin-right: 0 !important; }",
+
+                    "#gmc68219filters_field_clearUserScriptIds",
+                    "{ font-size: 0.9em; width: 6em; }",
+
+
+                    "#gmc68219filters_clearUserScriptPrivIds_var",
+                    "{ display: inline !important; margin-right: 0 !important; margin-left: 3em !important; }",
+
+                    "#gmc68219filters_field_clearUserScriptPrivIds",
+                    "{ font-size: 0.9em; width: 8em; }",
+
+
+
+                    "#gmc68219filters_moveUserScriptIds_var,",
+                    "#gmc68219filters_moveUserScriptPrivIds_var",
+                    "{ display: inline !important; margin-right: 0 !important; margin-left: 0 !important; }",
+                    "#gmc68219filters_field_moveUserScriptIds,",
+                    "#gmc68219filters_field_moveUserScriptPrivIds",
+                    "{ font-size: 0.9em; width: 10.75em; }",
+
+                    "#gmc68219filters_copyUserScriptIds_var,",
+                    "#gmc68219filters_copyUserScriptPrivIds_var",
+                    "{ display: inline !important; margin-right: 0 !important; margin-left: 0 !important; }",
+                    "#gmc68219filters_field_copyUserScriptIds,",
+                    "#gmc68219filters_field_copyUserScriptPrivIds",
+                    "{ font-size: 0.9em; width: 6em; }",
+
+                    "#gmc68219filters_usePlain_var { display: inline !important; margin: 0 !important; }",
+
+                    "#gmc68219filters_copyScriptWrightIds_var,",
+                    "#gmc68219filters_copyScriptWrightPrivIds_var",
+                    "{ display: inline !important; margin-left: 0 !important; margin-right: 0 !important; }",
+
+                    "#gmc68219filters_field_copyScriptWrightIds,",
+                    "#gmc68219filters_field_copyScriptWrightPrivIds",
+                    "{ font-size: 0.9em; width: 6em; }",
+
+
+                    "#gmc68219filters_moveScriptWrightIds_var",
+                    "{ display: inline !important; margin-left: 0 !important; margin-right: 0 !important; }",
+
+                    "#gmc68219filters_field_moveScriptWrightIds",
+                    "{ font-size: 0.9em; width: 10.75em; }",
+
+
+                    "#gmc68219filters_moveScriptWrightPrivIds_var",
+                    "{ display: inline !important; margin-left: 5.5em !important; margin-right: 0 !important; }",
+
+                    "#gmc68219filters_field_moveScriptWrightPrivIds",
+                    "{ font-size: 0.9em; width: 10.75em; }",
+
+
+
+                    "#gmc68219filters_clearScriptWrightIds_var",
+                    "{ display: inline !important; margin-left: 0 !important; }",
+
+                    "#gmc68219filters_field_clearScriptWrightIds",
+                    "{ font-size: 0.9em; width: 6em; }",
+
+
+                    "#gmc68219filters_clearScriptWrightPrivIds_var",
+                    "{ display: inline !important; margin-left: 0 !important; }",
+
+                    "#gmc68219filters_field_clearScriptWrightPrivIds",
+                    "{ font-size: 0.9em; width: 8em; }",
+
+
+
+                    "#gmc68219filters_field_jsonFilters { height: 11em; min-height: 11em; max-height: 11em; font-size: 1.1em; resize: none; width: 38.2em; min-width: 38.2em; max-width: 38.2em; margin-top: 0.5em; }",
                     "#gmc68219filters_jsonFilters_field_label > p { margin-bottom: 0.25em; margin-top: 0.25em; }",
 
-                    "#gmc68219filters_lastUserScriptId_var { width: 15em; display: inline !important;  }",
-                    "#gmc68219filters_lastUserScriptId_field_label { display: block !important; padding-left: 0.9em; }",
-                    "#gmc68219filters_field_lastUserScriptId { width: 9em; margin-left: 0.9em; margin-top: 0; text-align: right; }",
-                    "#gmc68219filters_insertUserScriptIdToPU_var { display: inline !important; margin-left: 0 !important; }",
-                    "#gmc68219filters_field_insertUserScriptIdToPU { height: 2.25em; width: 14.4em; }",
 
-                    "#gmc68219filters_lastScriptWrightId_var { width: 15em; display: inline !important; }",
-                    "#gmc68219filters_lastScriptWrightId_field_label { display: block !important; padding-left: 0.9em; }",
-                    "#gmc68219filters_field_lastScriptWrightId { width: 9em; margin-left: 0.9em; margin-top: 0; text-align: right; }",
+                    "#gmc68219filters_insertUserScriptIdToPU_var { display: inline !important; }",
+                    "#gmc68219filters_field_insertUserScriptIdToPU { height: 2.25em; width: 8.5em; }",
+                    "#gmc68219filters_lastUserScriptId_var { display: inline !important; margin-left: 0 !important; }",
+                    "#gmc68219filters_field_lastUserScriptId { width: 8.125em; margin-top: 0; text-align: right; }",
+
+                    "#gmc68219filters_lastScriptWrightId_var { display: inline !important; }",
+                    "#gmc68219filters_field_lastScriptWrightId { width: 8.125em; margin-top: 0; text-align: right; }",
                     "#gmc68219filters_insertScriptWrightIdToPU_var { display: inline !important; margin-left: 0 !important; }",
-                    "#gmc68219filters_field_insertScriptWrightIdToPU { height: 2.25em; width: 14.4em; }",
+                    "#gmc68219filters_field_insertScriptWrightIdToPU { height: 2.25em; width: 8.5em; }",
 
-                "#gmc68219filters_buttons_holder { margin: 0.5em; padding-top: 0; /position: absolute; text-align: inherit; bottom: 0; right: 0; }",
+                "#gmc68219filters_buttons_holder { margin: 0.5em; margin-top: 1em; padding-top: 0; text-align: inherit; bottom: 0; right: 0; }",
                 "#gmc68219filters .saveclose_buttons { margin: 0.5em 10px; }",
                 "#gmc68219filters_saveBtn { float: right; margin-right: 0.4em !important; width: 10em;",
                 "#gmc68219filters_resetLink { margin-right: 1.5em; }",
@@ -2769,21 +3240,26 @@
     {
       'postPUStoSAM': {
           "type": "button",
-          "label": 'Queue Potentially Unwanted Ids to Spam and Malware',
+          "label": 'Queue Potentially Unwanted (PU) Ids to Spam and Malware',
           "script": function () {
             try {
-              let json, write;
+              let json, write, post, GROUPS;
 
-              // Validate current list, save, wrap, validate
+              GROUPS = JSON.parse(gLIST + '}');
               json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
 
-              gmcFilters.set("jsonFilters", JSON.stringify(json, null, ""));
-              write = true;
-
-              json = JSON.parse('{"user":' + gmcFilters.fields["jsonFilters"].node.value + '}');
+              let jsonFull = JSON.parse('{"user":' + gmcFilters.fields["jsonFilters"].node.value + '}');
 
               let reports = [];
-              parseList(json, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aHide, aProvider) {
+
+              let pendingReports = GM_getValue(":pendingReports");
+              if (pendingReports) {
+                pendingReports.split(',').forEach(function (e, i, a) {
+                  reports.push(e);
+                });
+              }
+
+              parseList(jsonFull, function (aScope, aPatterns, aAdvisory, aSummary, aTips, aBlock, aReduce, aCollapse, aHide, aProvider, aCollector) {
                 switch (aScope) {
                   case "@uso:script":
                   case "@uso:author":
@@ -2793,10 +3269,62 @@
                         if (matches) {
                           let id = matches[1];
 
-                          if (aScope == "@uso:script")
-                            reports.push('/scripts/show/' + id);
-                          else
-                            reports.push('/users/' + id);
+                          if (aScope == "@uso:script") {
+                            if (!json["@uso:script (private)"]) {
+                              json["@uso:script (private)"] = ["GUARD Potentially unwanted script", []];
+                              write = true;
+                            }
+
+                            let privateSids = json["@uso:script (private)"][1]; // TODO:
+                            let found;
+                            privateSids.forEach(function (e, i, a) {
+                              if (e == id)
+                                found = true;
+                            });
+
+                            if (!found && GROUPS && GROUPS["collections"]["@uso:script"]) {
+                              let globalSids = GROUPS["collections"]["@uso:script"][1]; // TODO:
+                              globalSids.forEach(function (e, i, a) {
+                                if (e == id)
+                                  found = true;
+                              });
+                            }
+
+                            if (!found) {
+                              privateSids.push(id);
+                              write = true;
+                              reports.push('/' + id);
+                            }
+
+                          }
+                          else {
+                            if (!json["@uso:author (private)"]) {
+                              json["@uso:author (private)"] = ["GUARD Potentially unwanted script", []];
+                              write = true;
+                            }
+
+                            let privateAids = json["@uso:author (private)"][1]; // TODO:
+                            let found;
+                            privateAids.forEach(function (e, i, a) {
+                              if (e == id)
+                                found = true;
+                            });
+
+                            if (!found && GROUPS && GROUPS["collections"]["@uso:author"]) {
+                              let globalAids = GROUPS["collections"]["@uso:author"][1]; // TODO:
+                              globalAids.forEach(function (e, i, a) {
+                                if (e == id)
+                                  found = true;
+                              });
+                            }
+
+                            if (!found) {
+                              privateAids.push(id);
+                              write = true;
+                              reports.push('/users/' + id);
+                            }
+
+                          }
                         }
                       }
                     }
@@ -2804,18 +3332,28 @@
                 }
               });
 
-              GM_setValue(":pendingReports", reports.sort(function (a, b) {
-                  let re = /(\d+)$/;
-                  return a.match(re)[1] - b.match(re)[1];
-              }).sort(function (a, b) {
-                  let re = /^(.*\/)\d+$/;
-                  if (a.match(re)[1] < b.match(re)[1])
-                    return -1;
-                  if (a.match(re)[1] > b.match(re)[1])
-                    return 1
+              if (write) {
+                json["@uso:author"][1] = [];
+                json["@uso:script"][1] = [];
 
-                  return 0;
-              }).toString());
+                gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+                gmcFilters.set("jsonFilters", JSON.stringify(json, null, ""));
+
+                GM_setValue(":pendingReports", reports.sort(function (a, b) {
+                    let re = /(\d+)$/;
+                    return a.match(re)[1] - b.match(re)[1];
+                }).sort(function (a, b) {
+                    let re = /^(.*\/)\d+$/;
+                    if (a.match(re)[1] < b.match(re)[1])
+                      return -1;
+                    if (a.match(re)[1] > b.match(re)[1])
+                      return 1
+
+                    return 0;
+                }).toString());
+
+                post = true;
+              }
 
               let openSAMtopic = gmcFilters.fields["openSAMtopic"].node.checked;
               if (openSAMtopic != gmcFilters.get("openSAMtopic")) {
@@ -2826,7 +3364,7 @@
               if (write)
                 gmcFilters.write();
 
-              if (openSAMtopic) {
+              if (post && openSAMtopic) {
                 gmcFilters.close();
                 location.href = "/topics/9#posts-last";
               }
@@ -2841,6 +3379,326 @@
           "type": "checkbox",
           "label": 'Auto open the <a href="/topics/9#posts-last"></>Spam and Malware</a> topic on queue',
           "default": false
+      },
+      'clearUserScriptIds' : {
+          "type": "button",
+          "label": 'Clear PU',
+          "script": function () {
+            try {
+              let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+              json["@uso:script"][1] = [];
+
+              gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+            }
+            catch (e) {
+              alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+            }
+          }
+      },
+      'moveUserScriptIds': {
+          "type": "button",
+          "label": 'Move PU to private',
+          "script": function () {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let sids = json["@uso:script"][1];
+                if (sids.length > 0) {
+                  let GROUPS = JSON.parse(gLIST + '}');
+
+                  sids.sort(function (a, b) { return a - b });
+
+                  if (!json["@uso:script (private)"])
+                    json["@uso:script (private)"] = ["GUARD Potentially unwanted script", []];
+
+                  let privateSids = json["@uso:script (private)"][1]; // TODO:
+                  sids.forEach(function (e, i, a) {
+                    let found;
+                    privateSids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                    });
+
+                    if (!found && GROUPS && GROUPS["collections"]["@uso:script"]) {
+                      let globalSids = GROUPS["collections"]["@uso:script"][1]; // TODO:
+                      globalSids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                      });
+                    }
+
+                    if (!found)
+                      privateSids.push(e);
+                  });
+
+                  json["@uso:script (private)"][1] = privateSids.sort(function (a, b) { return a - b });
+                  json["@uso:script"][1] = [];
+
+                  gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+                }
+              }
+              catch (e) {
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+          }
+      },
+      'copyUserScriptIds' : {
+          "type": "button",
+          "label": 'Copy PU',
+          "script": function () {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let aids = json["@uso:script"][1];
+
+                if (aids.length > 0) {
+                  aids.sort(function (a, b) { return a - b });
+
+                  if (gmcFilters.fields["usePlain"].node.checked)
+                    GM_setClipboard(
+                        aids.join('\n'), "text"
+                    );
+                  else
+                    GM_setClipboard(
+                        aids.map(function (aE) {
+                          return '"' + aE + '"'
+                        }).join(',\n'), "text"
+                    );
+                }
+              }
+              catch (e) {
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+          }
+      },
+      'usePlain': {
+          "type": "checkbox",
+          "label": '',
+          "default": false
+      },
+      'copyScriptWrightIds' : {
+          "type": "button",
+          "label": 'Copy PU',
+          "script": function () {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let aids = json["@uso:author"][1];
+
+                if (aids.length > 0) {
+                  aids.sort(function (a, b) { return a - b });
+
+                  if (gmcFilters.fields["usePlain"].node.checked)
+                    GM_setClipboard(
+                        aids.join('\n'), "text"
+                    );
+                  else
+                    GM_setClipboard(
+                        aids.map(function (aE) {
+                          return '"' + aE + '"'
+                        }).join(',\n'), "text"
+                    );
+                }
+              }
+              catch (e) {
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+          }
+      },
+      'moveScriptWrightIds': {
+          "type": "button",
+          "label": 'Move PU to private',
+          "script": function () {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let aids = json["@uso:author"][1];
+                if (aids.length > 0) {
+                  let GROUPS = JSON.parse(gLIST + '}');
+
+                  aids.sort(function (a, b) { return a - b });
+
+                  if (!json["@uso:author (private)"])
+                    json["@uso:author (private)"] = ["GUARD Potentially unwanted script", []];
+
+                  let privateAids = json["@uso:author (private)"][1]; // TODO:
+                  aids.forEach(function (e, i, a) {
+                    let found;
+                    privateAids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                    });
+
+                    if (!found && GROUPS && GROUPS["collections"]["@uso:author"]) {
+                      let globalAids = GROUPS["collections"]["@uso:author"][1]; // TODO:
+                      globalAids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                      });
+                    }
+
+                    if (!found)
+                      privateAids.push(e);
+                  });
+
+                  json["@uso:author (private)"][1] = privateAids.sort(function (a, b) { return a - b });
+                  json["@uso:author"][1] = [];
+
+                  gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+                }
+              }
+              catch (e) {
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+          }
+      },
+      'clearScriptWrightIds' : {
+          "type": "button",
+          "label": 'Clear PU',
+          "script": function () {
+            try {
+              let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+              json["@uso:author"][1] = [];
+
+              gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+            }
+            catch (e) {
+              alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+            }
+          }
+      },
+      'clearUserScriptPrivIds' : {
+          "section" : [,'<span class="gmc-yellownote">Group Script shortcuts</span><span class="gmc-yellownote">Group Author shortcuts</span>'],
+
+          "type": "button",
+          "label": 'Clear private',
+          "script": function () {
+            try {
+              let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+              json["@uso:script (private)"][1] = [];
+
+              gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+            }
+            catch (e) {
+              if (!/is\sundefined$/.test(e.message))
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+            }
+          }
+      },
+      'moveUserScriptPrivIds': {
+          "type": "button",
+          "label": 'Move private to PU',
+          "script": function () {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let privateSids = json["@uso:script (private)"][1];
+                if (privateSids.length > 0) {
+                  let GROUPS = JSON.parse(gLIST + '}');
+
+                  privateSids.sort(function (a, b) { return a - b });
+
+                  if (!json["@uso:script"])
+                    json["@uso:script"] = ["GUARD Potentially unwanted script", []];
+
+                  let sids = json["@uso:script"][1]; // TODO:
+                  privateSids.forEach(function (e, i, a) {
+                    let found;
+                    sids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                    });
+
+                    if (!found && GROUPS && GROUPS["collections"]["@uso:script"]) {
+                      let globalSids = GROUPS["collections"]["@uso:script"][1]; // TODO:
+                      globalSids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                      });
+                    }
+
+                    if (!found)
+                      sids.push(e);
+                  });
+
+
+                  json["@uso:script"][1] = sids.sort(function (a, b) { return a - b });
+                  json["@uso:script (private)"][1] = [];
+
+                  gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+                }
+              }
+              catch (e) {
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+          }
+      },
+      'moveScriptWrightPrivIds': {
+          "type": "button",
+          "label": 'Move private to PU',
+          "script": function () {
+              try {
+                let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+                let privateAids = json["@uso:author (private)"][1];
+                if (privateAids.length > 0) {
+                  let GROUPS = JSON.parse(gLIST + '}');
+
+                  privateAids.sort(function (a, b) { return a - b });
+
+                  if (!json["@uso:author"])
+                    json["@uso:author"] = ["GUARD Potentially unwanted script", []];
+
+                  let aids = json["@uso:author"][1];
+                  privateAids.forEach(function (e, i, a) {
+                    let found;
+                    aids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                    });
+
+                    if (!found && GROUPS && GROUPS["collections"]["@uso:author"]) {
+                      let globalAids = GROUPS["collections"]["@uso:author"][1]; // TODO:
+                      globalAids.forEach(function (e1, i1, a1) {
+                      if (e == e1)
+                        found = true;
+                      });
+                    }
+
+                    if (!found)
+                      aids.push(e);
+                  });
+
+                  json["@uso:author"][1] = aids.sort(function (a, b) { return a - b });
+                  json["@uso:author (private)"][1] = [];
+
+                  gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+                }
+              }
+              catch (e) {
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+              }
+          }
+      },
+      'clearScriptWrightPrivIds' : {
+          "type": "button",
+          "label": 'Clear private',
+          "script": function () {
+            try {
+              let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+
+              json["@uso:author (private)"][1] = [];
+
+              gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
+            }
+            catch (e) {
+              if (!/is\sundefined$/.test(e.message))
+                alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
+            }
+          }
       },
       'jsonFilters': {
           "type": 'textarea',
@@ -2866,65 +3724,103 @@
                 ].join("\n")
               ), null, " ")
       },
-      'lastUserScriptId': {
-          "label": 'Currently working with this User Script Id',
-          "type": "text",
-          "default": ""
-      },
       'insertUserScriptIdToPU': {
           "type": "button",
-          "label": 'Insert to Potentialy Unwanted',
+          "label": 'Script to PU',
           "script": function () {
             let sid = gmcFilters.fields["lastUserScriptId"].node.value;
             if (sid != "") {
               try {
                 let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+                let GROUPS = JSON.parse(gLIST + '}');
 
-                let found, scripts = json["@uso:script"][1];
+                let found, scripts = json["@uso:script"][1]; // TODO:
                 scripts.forEach(function (e, i, a) {
                   if (e == sid)
                     found = true;
                 });
 
+                if (!found && json["@uso:script (private)"]) {
+                  scripts = json["@uso:script (private)"][1]; // TODO:
+                  scripts.forEach(function (e, i, a) {
+                    if (e == sid)
+                      found = true;
+                  });
+                }
+
+                if (!found && GROUPS && GROUPS["collections"]["@uso:script"]) {
+                  let globalSids = GROUPS["collections"]["@uso:script"][1]; // TODO:
+                  globalSids.forEach(function (e, i, a) {
+                  if (e == sid)
+                    found = true;
+                  });
+                }
+
                 if (!found) {
+                  if (!json["@uso:script"])
+                    json["@uso:script"] = ["GUARD Potentially unwanted script", []];
+
                   json["@uso:script"][1].push(sid);
 
                   gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
                 }
               }
-              catch (e) { // TODO: Isolate error
+              catch (e) {
                 alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
               }
             }
           }
       },
+      'lastUserScriptId': {
+          "type": "text",
+          "default": ""
+      },
       'lastScriptWrightId': {
-          "label": 'Currently working with this ScriptWright Id',
           "type": "text",
           "default": ""
       },
       'insertScriptWrightIdToPU': {
           "type": "button",
-          "label": 'Insert to Potentialy Unwanted',
+          "label": 'Author to PU',
           "script": function () {
             let aid = gmcFilters.fields["lastScriptWrightId"].node.value;
             if (aid != "") {
               try {
                 let json = JSON.parse(gmcFilters.fields["jsonFilters"].node.value);
+                let GROUPS = JSON.parse(gLIST + '}');
 
-                let found, authors = json["@uso:author"][1];
+                let found, authors = json["@uso:author"][1]; // TODO:
                 authors.forEach(function (e, i, a) {
                   if (e == aid)
                     found = true;
                 });
 
+                if (json["@uso:author (private)"]) {
+                  authors = json["@uso:author (private)"][1]; // TODO:
+                  authors.forEach(function (e, i, a) {
+                    if (e == aid)
+                      found = true;
+                  });
+                }
+
+                if (!found && GROUPS && GROUPS["collections"]["@uso:author"]) {
+                  let globalAids = GROUPS["collections"]["@uso:author"][1]; // TODO:
+                  globalAids.forEach(function (e, i, a) {
+                    if (e == aid)
+                      found = true;
+                    });
+                  }
+
                 if (!found) {
+                  if (!json["@uso:author"])
+                    json["@uso:author"] = ["GUARD Potentially unwanted script", []];
+
                   json["@uso:author"][1].push(aid);
 
                   gmcFilters.fields["jsonFilters"].node.value = JSON.stringify(json, null, " ");
                 }
               }
-              catch (e) { // TODO: Isolate error
+              catch (e) {
                 alert('ERROR: Invalid JSON for advisories.\n\nPlease correct or reset to defaults');
               }
             }
@@ -2940,11 +3836,15 @@
     }
     catch (e) {}
 
+    gmcFilters.fields["usePlain"].node.title = "Use plain ids for clipboard copy";
     gmcFilters.fields["jsonFilters"].node.setAttribute("spellcheck", "false");
     gmcFilters.fields["jsonFilters"].node.setAttribute("wrap", "off");
 
     gmcFilters.fields["lastScriptWrightId"].node.setAttribute("readonly", "readonly");
+    gmcFilters.fields["lastScriptWrightId"].node.setAttribute("placeholder", "No ScriptWright Id");
+
     gmcFilters.fields["lastUserScriptId"].node.setAttribute("readonly", "readonly");
+    gmcFilters.fields["lastUserScriptId"].node.setAttribute("placeholder", "No User Script Id");
 
     let saveBtn = document.getElementById("gmc68219filters_saveBtn");
     if (saveBtn)
@@ -3008,15 +3908,26 @@
   }
 
   let pendingReports = GM_getValue(":pendingReports");
-  if (/^\/topics\/9\/?$/.test(gPATHNAME) && pendingReports && authenticated) {
-    if (!gmcFilters.get("openSAMtopic")) {
-      if(confirm("You seem to have pending reports.\n\nDo you wish to post now?\n\nPlease note if cancelled the reports will be removed from the queue")) {
-        doReport();
-      }
+  if (/^\/topics\/9\/?$/.test(gPATHNAME) && authenticated && pendingReports) {
+    let paginationLast = document.querySelector("#content .pagination .next_page");
+    if (paginationLast && !paginationLast.classList.contains("disabled")) {
+      let url = paginationLast.previousSibling.previousSibling.href;
+      if (url)
+        location.replace(url + "#footer");
     }
     else {
-      doReport();
+      if (!gmcFilters.get("openSAMtopic")) {
+        if (confirm("You seem to have pending reports.\n\nDo you wish to post now?\n\nPlease note if cancelled the reports will be removed from the queue")) {
+          GM_deleteValue(":pendingReports");
+          doReport(pendingReports);
+        }
+      }
+      else {
+        GM_deleteValue(":pendingReports");
+        doReport(pendingReports);
+      }
     }
+
   }
   else {
     if (
