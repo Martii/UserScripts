@@ -8,7 +8,7 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.3.0
+// @version       2.0.3.1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
 // @include /^https?://userscripts.org/?$/
@@ -1679,7 +1679,7 @@
 
         if (aScope == "@include" && atMatches)
           for (let i = 0, atMatch; atMatch = atMatches[i++];)
-            if ((typeof patternx == "object") ? patternx.test(atMatch) : (atMatch == patternx) ? true : false) {
+            if (atMatch.search(patternx) > -1) {
               pushAdvisory(aSa, aAdvisory, aSummary);
               if (aReduce) REDUCE = true;
               break;
@@ -1687,7 +1687,7 @@
 
         if (aScope == "@include" && atIncludes) {
           for (let i = 0, atInclude; atInclude = atIncludes[i++];)
-            if ((typeof patternx == "object") ? patternx.test(atInclude) : (atInclude == patternx) ? true : false) {
+            if (atInclude.search(patternx) > -1) {
               pushAdvisory(aSa, aAdvisory, aSummary);
               if (aReduce) REDUCE = true;
               break;
@@ -1699,7 +1699,7 @@
         }
 
         if (/^\@uso:author(?:$|\s)/.test(aScope) && atUsoAuthor)
-          if ((typeof patternx == "object") ? patternx.test(atUsoAuthor) : (atUsoAuthor == patternx) ? true : false) {
+          if (atUsoAuthor.search(patternx) > -1) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
@@ -1720,7 +1720,7 @@
           }
 
         if (/^\@uso:script(?:$|\s)/.test(aScope) && atUsoScript)
-          if ((typeof patternx == "object") ? patternx.test(atUsoScript) : (atUsoScript == patternx) ? true : false) {
+          if (atUsoScript.search(patternx) > -1) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
@@ -1741,7 +1741,7 @@
           }
 
         if (aScope == "@uso:title" && atUsoTitle) {
-          if ((typeof patternx == "object") ? patternx.test(atUsoTitle) : (atUsoTitle == patternx) ? true : false) {
+          if (atUsoTitle.search(patternx) > -1) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
@@ -1813,7 +1813,7 @@
         }
 
         if (aScope == "@uso:desc" && atUsoDesc) {
-          if ((typeof patternx == "object") ? patternx.test(atUsoDesc) : (atUsoDesc == patternx) ? true : false) {
+          if (atUsoDesc.search(patternx) > -1) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
@@ -1883,14 +1883,14 @@
         }
 
         if (aScope == "updaterEmbed" && aSource) {
-          if (patternx.test(aSource) && aScriptId != 68219 && aScriptId != 69307) {
+          if (aSource.search(patternx) > -1 && aScriptId != 68219 && aScriptId != 69307) {
             EMBED = true;
             pushAdvisory(aSa, aAdvisory, aSummary + (aPatterns[pattern] ? " " + aPatterns[pattern] : "") + (aTips ? "\n      " + aTips.join("\n      ") : ""));
           }
         }
 
         if (aScope == "search" && aSource) {
-          if (patternx.test(aSource)) {
+          if (aSource.search(patternx) > -1) {
             if (aSummary == "Potentially unwanted script") {
               block = true;
               REDUCE = true;
