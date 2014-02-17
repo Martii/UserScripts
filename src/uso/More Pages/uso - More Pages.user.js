@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.4
+// @version       1.0.5
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/*
@@ -77,7 +77,7 @@
       if (this.readyState == this.DONE) {
         switch (this.status) {
           case 404:
-            aMorepageNode.parentNode.removeChild(aMorepageNode);
+            aMorepageNode.classList.add("hide");
             break;
           default:
             aCb(aUrl, aMorepageNode, this.responseText);
@@ -119,7 +119,7 @@
 
         var node = docfrag.querySelector("#content > table > tbody > tr td");  // NOTE: Watchpoint
         if (!node) {
-          aMorepageNode.parentNode.removeChild(aMorepageNode);
+          aMorepageNode.classList.add("hide");
           return;
         }
 
