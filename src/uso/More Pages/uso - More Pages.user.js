@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.3
+// @version       1.0.4
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/*
@@ -55,6 +55,10 @@
   function pageCheck(aUrl, aCb, aAnchorNode, aReferenceNode) {
     var req = new XMLHttpRequest();
     req.open('GET', aUrl);
+    if (authenticated)
+      req.setRequestHeader('Range', 'bytes=0-5120');
+    else
+      req.setRequestHeader('Range', 'bytes=0-2328');
     req.onreadystatechange = function () {
       if (this.readyState == this.DONE && this.status != 404)
         aCb(aUrl, aAnchorNode, aReferenceNode, this.responseText);
@@ -65,6 +69,10 @@
   function paginationCheck(aUrl, aCb, aMorepageNode) {
     var req = new XMLHttpRequest();
     req.open('GET', aUrl);
+    if (authenticated)
+      req.setRequestHeader('Range', 'bytes=0-5120');
+    else
+      req.setRequestHeader('Range', 'bytes=0-2328');
     req.onreadystatechange = function () {
       if (this.readyState == this.DONE) {
         switch (this.status) {
@@ -79,6 +87,8 @@
     };
     req.send();
   }
+
+  var authenticated = document.querySelector("body.loggedin");
 
   var paginationNodes = document.querySelectorAll("#content .pagination");
   for (var i = 0, paginationNode; paginationNode = paginationNodes[i++];) {
