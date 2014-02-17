@@ -4,12 +4,12 @@
 // ==UserScript==
 // @name          uso - More Pages
 // @namespace     http://userscripts.org/users/37004
-// @description   Adds a link to the next page and optionally if detected as missing
+// @description   Adds a link to the next possible page and if detected alters text on successful xhr with existence check
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.0
+// @version       1.0.1
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/*
@@ -62,12 +62,20 @@
     req.send();
   }
 
-  function getCheck(aUrl, aCb, aAnchorNode, aReferenceNode) {
+  function getCheck(aUrl, aCb, aMorepageNode) {
     var req = new XMLHttpRequest();
     req.open('GET', aUrl);
     req.onreadystatechange = function () {
-      if (this.readyState == this.DONE && this.status != 404)
-        aCb(aUrl, aAnchorNode, aReferenceNode, this.responseText);
+      if (this.readyState == this.DONE) {
+        switch (this.status) {
+          case 404:
+            aMorepageNode.parentNode.removeChild(aMorepageNode);
+            break;
+          default:
+          aCb(aUrl, aMorepageNode, this.responseText);
+          break;
+        }
+      }
     };
     req.send();
   }
@@ -83,18 +91,31 @@
       var morepage = parseInt(matches[1]) + 1;
 
       var url = location.pathname + qsReplace(location.search, "page", morepage);
-      getCheck(url, function (aUrl, aAnchorNode, aReferenceNode, aResponseText) {
-        if (/No\sresults\.\sSorry\!/i.test(aResponseText))
-          ; // TODO:
-        else {
-          var nodeA = document.createElement("a");
-          nodeA.href = aUrl
-          nodeA.textContent = "\u2026";
 
-          aAnchorNode.insertBefore(nodeA, aReferenceNode);
-          aAnchorNode.insertBefore(document.createTextNode(" "), aReferenceNode);
+      var nodeA = document.createElement("a");
+      nodeA.href = url;
+      nodeA.textContent = "?";
+
+      var morepageNode = paginationNode.insertBefore(nodeA, lastpageNode);
+      paginationNode.insertBefore(document.createTextNode(" "), lastpageNode);
+
+      getCheck(url, function (aUrl, aMorepageNode, aResponseText) {
+        var docfrag = document.createDocumentFragment();
+
+        var nodeDiv = document.createElement("div");
+        nodeDiv.innerHTML = aResponseText;
+
+        docfrag.appendChild(nodeDiv);
+
+        var node = docfrag.querySelector("#content > table > tbody > tr td");  // NOTE: Watchpoint
+        if (!node) {
+          aMorepageNode.parentNode.removeChild(aMorepageNode);
+          return;
         }
-      }, paginationNode, lastpageNode);
+
+        aMorepageNode.textContent = "\u2026";
+
+      }, morepageNode);
     }
   }
 
