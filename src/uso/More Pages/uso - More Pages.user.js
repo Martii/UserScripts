@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.2
+// @version       1.0.3
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/*
@@ -52,17 +52,17 @@
     return "";
   }
 
-  function headCheck(aUrl, aCb, aAnchorNode, aReferenceNode) {
+  function pageCheck(aUrl, aCb, aAnchorNode, aReferenceNode) {
     var req = new XMLHttpRequest();
-    req.open('HEAD', aUrl);
+    req.open('GET', aUrl);
     req.onreadystatechange = function () {
       if (this.readyState == this.DONE && this.status != 404)
-        aCb(aUrl, aAnchorNode, aReferenceNode);
+        aCb(aUrl, aAnchorNode, aReferenceNode, this.responseText);
     };
     req.send();
   }
 
-  function getCheck(aUrl, aCb, aMorepageNode) {
+  function paginationCheck(aUrl, aCb, aMorepageNode) {
     var req = new XMLHttpRequest();
     req.open('GET', aUrl);
     req.onreadystatechange = function () {
@@ -99,7 +99,7 @@
       var morepageNode = paginationNode.insertBefore(nodeA, lastpageNode);
       paginationNode.insertBefore(document.createTextNode(" "), lastpageNode);
 
-      getCheck(url, function (aUrl, aMorepageNode, aResponseText) {
+      paginationCheck(url, function (aUrl, aMorepageNode, aResponseText) {
         var docfrag = document.createDocumentFragment();
 
         var nodeDiv = document.createElement("div");
@@ -130,13 +130,33 @@
       var morepage = parseInt(matches[1]) + 1;
 
       var url = endpageNode.pathname + qsReplace(endpageNode.search, "page", morepage);
-      headCheck(url, function (aUrl, aAnchorNode, aReferenceNode) {
+      pageCheck(url, function (aUrl, aAnchorNode, aReferenceNode, aResponseText) {
         var nodeA = document.createElement("a");
         nodeA.href = aUrl;
         nodeA.textContent = "\u2026";
 
         aAnchorNode.insertBefore(document.createTextNode(" "), aReferenceNode);
         aAnchorNode.insertBefore(nodeA, aReferenceNode);
+
+        // Attempt to correct last detected page using same postid (hash may be incorrect if post(s) removed due to spam flagging)
+        var docfrag = document.createDocumentFragment();
+
+        var nodeDiv = document.createElement("div");
+        nodeDiv.innerHTML = aResponseText;
+
+        docfrag.appendChild(nodeDiv);
+
+        var nextpageNode = docfrag.querySelector(".pagination *:last-child");
+        if (nextpageNode) {
+          var lastpageNode = nextpageNode.previousSibling.previousSibling;
+          if (lastpageNode) {
+            var lastpage = lastpageNode.textContent;
+
+            var lastpostNode = aAnchorNode.parentNode.parentNode.querySelector(".lastpost");
+            if (lastpostNode)
+              lastpostNode.search = qsReplace(lastpostNode.search, "page", lastpage);
+          }
+        }
 
       }, pagesNode, lastpagesNode);
     }
