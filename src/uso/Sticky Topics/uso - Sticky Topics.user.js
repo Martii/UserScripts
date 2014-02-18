@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.6
+// @version       1.0.7
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include       /^https?://userscripts\.org/scripts/show/?/
@@ -27,7 +27,134 @@
   /**
    *
    */
+  function pageCheck(aUrl, aCb, aAnchorNode, aQueue) {
+    var req = new XMLHttpRequest();
+    req.open('GET', aUrl);
+    if (authenticated)
+      req.setRequestHeader('Range', 'bytes=0-7168');
+    else
+      req.setRequestHeader('Range', 'bytes=0-3259');
+    req.onreadystatechange = function () {
+      if (this.readyState == this.DONE) {
+        switch (this.status) {
+          case 404:
+            aAnchorNode.parentNode.parentNode.classList.add("hide");
+            aQueue.shift();
+            if (aQueue.length > 0)
+              pageCheck(aQueue[0].pathname, pageProc, aQueue[0], aQueue);
+            break;
+          default:
+            aCb(aUrl, aAnchorNode, this.responseText);
+            aQueue.shift();
+            if (aQueue.length > 0)
+              pageCheck(aQueue[0].pathname, pageProc, aQueue[0], aQueue);
+            break;
+        }
+      }
+    };
+    req.send();
+  }
 
+  /**
+   *
+   */
+  function pageProc(aUrl, aAnchorNode, aResponseText) {
+    var docfrag = document.createDocumentFragment();
+
+    var nodeDiv = document.createElement("div");
+    nodeDiv.innerHTML = aResponseText;
+
+    docfrag.appendChild(nodeDiv);
+
+    var subtitleNode = docfrag.querySelector(".subtitle");
+    if (subtitleNode) {
+      var textNode = subtitleNode.lastChild;
+      var matches = textNode.textContent.match(/(\d+)\spost/i);
+      if (matches) {
+        var postCount = matches[1];
+
+        var anchorNodeCount = aAnchorNode.parentNode.nextSibling.firstChild;
+        if (anchorNodeCount) {
+          if (anchorNodeCount.textContent == "\u00BB") {
+            anchorNodeCount.textContent = matches[1] + "  " + anchorNodeCount.textContent;
+            anchorNodeCount.classList.add("lastpost");
+            anchorNodeCount.classList.add("postslast");
+          }
+          else
+            anchorNodeCount.textContent = matches[1];
+        }
+        anchorNodeCount.parentNode.classList.add("count");
+      }
+    }
+
+    var topic_title = docfrag.querySelector("#topic-title");
+    if (topic_title) {
+      var textContent = topic_title.textContent.trim();
+      if (textContent.length > 30)
+        textContent = textContent.substr(0, 27) + "...";
+
+      aAnchorNode.textContent = textContent;
+    }
+  }
+
+  /**
+   *
+   */
+  function getCounts() {
+    var queue = [];
+
+    var stickytopicsNode = document.querySelector("#right #stickytopics");
+    var topicsNode = document.querySelector("#right #topics");
+    if (stickytopicsNode && topicsNode) {
+
+      var stickytopicItems = stickytopicsNode.querySelectorAll("tr td:first-child a");
+      var topicItems = topicsNode.querySelectorAll("tr td:first-child a");
+      var found;
+
+      for (var i = 0, stickytopicItem; stickytopicItem = stickytopicItems[i]; ++i) {
+        found = false;
+
+        for (var j = 0, topicItem; topicItem = topicItems[j]; ++j) {
+
+          if (stickytopicItem.pathname == topicItem.pathname) {
+
+            stickytopicItem.textContent = topicItem.textContent;
+
+            var stickytopicItemCount = stickytopicItem.parentNode.nextSibling.firstChild;
+            var topicItemCount = topicItem.parentNode.nextSibling.firstChild;
+
+            if (stickytopicItemCount && topicItemCount) {
+              var matches = topicItemCount.textContent.match(/^(\d+)\s*/);
+              if (matches) {
+                if (stickytopicItemCount.textContent == "\u00BB") {
+                  stickytopicItemCount.textContent = matches[1] + "  " + stickytopicItemCount.textContent;
+                  stickytopicItemCount.classList.add("lastpost");
+                  stickytopicItemCount.classList.add("postslast");
+                }
+                else
+                  stickytopicItemCount.textContent = matches[1];
+
+                stickytopicItemCount.parentNode.classList.add("count");
+                found = true;
+              }
+            }
+            break;
+          }
+
+        }
+
+        if (!found)
+          queue.push(stickytopicItem);
+      }
+
+      if (queue.length > 0)
+        pageCheck(queue[0].pathname, pageProc, queue[0], queue);
+    }
+  }
+
+  /**
+   *
+   */
   function moveTable(aTable) {
     /**
     * Add styling
@@ -35,7 +162,10 @@
     var css = [
         '#right #stickytopics { font-size: 0.9em; }',
         '#right #stickytopics td:last-child { text-align: right; }',
-        '#right #stickytopics thead th { background: none repeat scroll 0 0 #333; color: #fff; }'
+        '#right #stickytopics thead th { background: none repeat scroll 0 0 #333; color: #fff; }',
+        "#stickytopics .postslast { padding: 0.125em 0.25em 0.125em 0.5em; }",
+        "#stickytopics td.count { text-align: right; background-color: #eee; }"
+
 
     ].join('');
 
@@ -63,11 +193,14 @@
     var script_sidebarNode = document.getElementById("script_sidebar");
     if (script_sidebarNode && topicsNode)
       script_sidebarNode.insertBefore(nodeDiv, topicsNode);
+
+    getCounts();
   }
 
   /**
    *
    */
+  var authenticated = document.querySelector("body.loggedin");
   var abort;
 
   var full_descriptionNode = document.getElementById("full_description");
@@ -104,7 +237,6 @@
                     }
                   }
                   else {
-                    console.info('ABORT: Too many links');
                     abort = true;
                   }
                   break;
@@ -119,7 +251,6 @@
                       aNode.textContent = "\u00BB";
                     }
                     else {
-                      console.info('ABORT: Too many links');
                       abort = true;
                     }
                   }
