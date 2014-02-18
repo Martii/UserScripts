@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.7
+// @version       1.0.8
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include       /^https?://userscripts\.org/scripts/show/?/
@@ -156,15 +156,19 @@
    *
    */
   function moveTable(aTable) {
+
+    var UAC = document.querySelector("#header .alt_topbottom");
+
     /**
     * Add styling
     */
     var css = [
-        '#right #stickytopics { font-size: 0.9em; }',
-        '#right #stickytopics td:last-child { text-align: right; }',
-        '#right #stickytopics thead th { background: none repeat scroll 0 0 #333; color: #fff; }',
-        "#stickytopics .postslast { padding: 0.125em 0.25em 0.125em 0.5em; }",
-        "#stickytopics td.count { text-align: right; background-color: #eee; }"
+        '#stickytopics { ' + (UAC ? 'font-size: 12px;' : 'font-size: 0.9em;') + ' }',
+        (UAC ? '#stickytopics td, #stickytopics th { padding: 3px 5px; }' : ''),
+        '#stickytopics td:last-child { text-align: right; }',
+        '#stickytopics thead th { background: none repeat scroll 0 0 #333; color: #fff; }',
+        '#stickytopics .postslast { padding: 0.125em 0.25em 0.125em 0.5em; }',
+        '#stickytopics td.count { text-align: right; background-color: #eee; ' + (UAC ? 'padding-right: 8px !important; ' : '') + '}'
 
 
     ].join('');
