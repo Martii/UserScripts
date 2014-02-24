@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.4
+// @version       1.0.5
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include       http://userscripts.org/*
@@ -45,18 +45,19 @@
       var firstNode = abbrNodes.snapshotItem(0);
       var lastNode = abbrNodes.snapshotItem(abbrNodes.snapshotLength - 1);
 
-      var firstNodeSpan = document.createElement("span");
-      firstNodeSpan.title = firstNode.title;
-      firstNodeSpan.textContent = (firstNode.textContent ? firstNode.textContent.trim() : firstNode.nextSibling.textContent.trim());
+      var firstNodeAbbr = document.createElement("abbr");
+      firstNodeAbbr.title = firstNode.title;
+      firstNodeAbbr.textContent = (firstNode.textContent ? firstNode.textContent.trim() : firstNode.nextSibling.textContent.trim());
 
-      var lastNodeSpan = document.createElement("span");
-      lastNodeSpan.title = lastNode.title;
-      lastNodeSpan.textContent = (lastNode.textContent ? lastNode.textContent.trim() : lastNode.nextSibling.textContent.trim());
+      var lastNodeAbbr = document.createElement("abbr");
+      lastNodeAbbr.title = lastNode.title;
+      lastNodeAbbr.textContent = (lastNode.textContent ? lastNode.textContent.trim() : lastNode.nextSibling.textContent.trim());
 
       thisNode.appendChild(document.createTextNode(", this page from "));
-      thisNode.appendChild(firstNodeSpan);
+      thisNode.appendChild(firstNodeAbbr);
       thisNode.appendChild(document.createTextNode(" to "));
-      thisNode.appendChild(lastNodeSpan);
+      thisNode.appendChild(lastNodeAbbr);
+      thisNode.appendChild(document.createTextNode(" "));
     }
   }
 
