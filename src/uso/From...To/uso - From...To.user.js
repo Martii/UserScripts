@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.3
+// @version       1.0.4
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include       http://userscripts.org/*
@@ -40,22 +40,23 @@
       null
     );
     if (abbrNodes.snapshotLength > 0) {
+      thisNode.lastChild.textContent = thisNode.lastChild.textContent.replace(/\s*$/, "");
+
       var firstNode = abbrNodes.snapshotItem(0);
       var lastNode = abbrNodes.snapshotItem(abbrNodes.snapshotLength - 1);
 
-      var lastTextNode = document.createTextNode(
-          " to " + (lastNode.textContent ? lastNode.textContent.trim() : lastNode.nextSibling.textContent.trim())
-      );
+      var firstNodeSpan = document.createElement("span");
+      firstNodeSpan.title = firstNode.title;
+      firstNodeSpan.textContent = (firstNode.textContent ? firstNode.textContent.trim() : firstNode.nextSibling.textContent.trim());
 
+      var lastNodeSpan = document.createElement("span");
+      lastNodeSpan.title = lastNode.title;
+      lastNodeSpan.textContent = (lastNode.textContent ? lastNode.textContent.trim() : lastNode.nextSibling.textContent.trim());
 
-      var firstTextNode = document.createTextNode(
-          ", this page from " + (firstNode.textContent ? firstNode.textContent.trim() : firstNode.nextSibling.textContent.trim())
-      );
-
-      thisNode.lastChild.textContent = thisNode.lastChild.textContent.replace(/\s*$/, "");
-
-      thisNode.appendChild(firstTextNode);
-      thisNode.appendChild(lastTextNode);
+      thisNode.appendChild(document.createTextNode(", this page from "));
+      thisNode.appendChild(firstNodeSpan);
+      thisNode.appendChild(document.createTextNode(" to "));
+      thisNode.appendChild(lastNodeSpan);
     }
   }
 
