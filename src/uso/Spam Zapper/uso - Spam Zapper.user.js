@@ -10,18 +10,20 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.5
+// @version         1.0.6
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
 // @include  http://userscripts.org/topics*
+// @include  http://userscripts.org/groups/*/topics*
 // @include  http://userscripts.org/scripts/discuss/*
 // @include  http://userscripts.org/forums/*
 // @include  http://userscripts.org/users/*/posts*
 
 // @include  https://userscripts.org/posts*
-// @include  https://userscripts.org/scripts/discuss/*
 // @include  https://userscripts.org/topics*
+// @include  https://userscripts.org/groups/*/topics*
+// @include  https://userscripts.org/scripts/discuss/*
 // @include  https://userscripts.org/forums/*
 // @include  https://userscripts.org/users/*/posts*
 
@@ -353,6 +355,13 @@
   /**
    *
    */
+  GM_addStyle(
+    [
+      '.post form[action="/spam"] { clear: left; padding-top: 0.25em; }'
+
+    ].join('\n')
+  );
+
   if (gSPAMQSP) {
     GM_addStyle(
       [
