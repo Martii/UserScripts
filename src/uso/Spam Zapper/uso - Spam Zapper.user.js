@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.6
+// @version         1.0.7
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
@@ -361,6 +361,13 @@
 
     ].join('\n')
   );
+
+  if (!gLOGGEDIN) {
+    var spampollNodes = document.querySelectorAll(".spam_poll");
+    for (var i = 0, spampollNode; spampollNode = spampollNodes[i++];) {
+      spampollNode.textContent = spampollNode.textContent.replace(/\s+Do\s+you\s+or\s+$/, "");
+    }
+  }
 
   if (gSPAMQSP) {
     GM_addStyle(
