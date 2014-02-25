@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.2
+// @version         1.0.3
 // @icon            http://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
@@ -28,7 +28,6 @@
 // @downloadURL https://userscripts.org/scripts/source/398715.user.js
 
 // @grant  GM_addStyle
-// @grant  GM_deleteValue
 // @grant  GM_getValue
 // @grant  GM_setValue
 
