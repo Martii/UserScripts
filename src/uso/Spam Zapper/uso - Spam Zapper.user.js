@@ -10,16 +10,18 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.4
+// @version         1.0.5
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
-// @include  http://userscripts.org/topics/*
+// @include  http://userscripts.org/topics*
+// @include  http://userscripts.org/scripts/discuss/*
 // @include  http://userscripts.org/forums/*
 // @include  http://userscripts.org/users/*/posts*
 
 // @include  https://userscripts.org/posts*
-// @include  https://userscripts.org/topics/*
+// @include  https://userscripts.org/scripts/discuss/*
+// @include  https://userscripts.org/topics*
 // @include  https://userscripts.org/forums/*
 // @include  https://userscripts.org/users/*/posts*
 
@@ -363,14 +365,34 @@
   if (gLOGGEDIN) {
     var login_statusNode = document.querySelector("#root #top .login_status");
     if (login_statusNode) {
+      var nodeA = document.createElement("a");
+      nodeA.id = "userspams";
+      nodeA.href = "#";
+      nodeA.textContent = "0 Spams Queued";
+
       var nodeLi = document.createElement("li");
-      nodeLi.id = "userspams";
-      nodeLi.textContent = "0 Spams Queued";
+      nodeLi.appendChild(nodeA);
 
       login_statusNode.insertBefore(nodeLi, login_statusNode.firstChild);
     }
   }
 
+  var topicNodes = document.querySelectorAll('#topics-index #content table tr, #content table.topics tr');
+  for (var i = 0, topicNode; topicNode = topicNodes[i++];) {
+    var authorNode = topicNode.querySelector('td:nth-child(2) .author');
+    if (authorNode) {
+      var matches = authorNode.href.match(/(\d+)$/);
+      if (matches) {
+        var aid = matches[1];
+
+        for (var authorid in authorids)
+          if (aid == authorid) {
+            topicNode.classList.add("hide");
+            break;
+          }
+      }
+    }
+  }
 
   var postNodes = document.querySelectorAll('.post');
   for (var i = 0, postNode; postNode = postNodes[i++];) {
@@ -380,9 +402,13 @@
     if (matches)
       pid = matches[1];
 
-    var authorNode = postNode.querySelector('.author a[user_id]') || postNode.querySelector('.author a[href^="/users/"]') || document.querySelector('#root #section h2 a[href^="/users/"]');
+    var authorNode = postNode.querySelector('.author a[user_id]')
+        || postNode.querySelector('.author a[href^="/users/"]')
+            || document.querySelector('#root #section h2 a[href^="/users/"]');
     if (authorNode)
-      aid = authorNode.getAttribute("user_id") || authorNode.getAttribute("href").match(/(\d+)$/)[1] || document.querySelector('#root #section h2 a[href^="/users/"]').match(/(\d+)$/)[1];
+      aid = authorNode.getAttribute("user_id")
+          || authorNode.getAttribute("href").match(/(\d+)$/)[1]
+              || document.querySelector('#root #section h2 a[href^="/users/"]').match(/(\d+)$/)[1];
 
     if (gLOGGEDIN) {
       var spampollNode = postNode.querySelector('.body .spam_poll form input[value="SPAM"]');
@@ -428,6 +454,7 @@
         postFound = true;
         postids[postid] = new Date().getTime();
         GM_setValue("postids", JSON.stringify(postids, null, ""));
+        break;
       }
 
     for (var authorid in authorids)
@@ -435,6 +462,7 @@
         authorFound = true;
         authorids[authorid] = new Date().getTime();
         GM_setValue("authorids", JSON.stringify(authorids, null, ""));
+        break;
       }
 
     if (authorFound || postFound) {
