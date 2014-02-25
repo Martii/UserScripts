@@ -10,8 +10,8 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.1
-// @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+// @version         1.0.2
+// @icon            http://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
 // @include  http://userscripts.org/topics/*
@@ -28,6 +28,7 @@
 // @downloadURL https://userscripts.org/scripts/source/398715.user.js
 
 // @grant  GM_addStyle
+// @grant  GM_deleteValue
 // @grant  GM_getValue
 // @grant  GM_setValue
 
@@ -37,6 +38,7 @@
    *
    */
   var
+      gDEBUG,
       gRETRIES = 3,
       gLOGGEDIN = document.querySelector("body.loggedin"),
       gSPAMQSP = /spam\=1/.test(location.search) // TODO:
@@ -79,7 +81,8 @@
       }
     }
 
-    console.log('SPAM: ' + data);
+    if (gDEBUG)
+      console.log('SPAM: ' + data);
 
     var req = new XMLHttpRequest();
     req.open('POST', "/spam");
@@ -114,7 +117,6 @@
       }
     }
     req.send(data);
-
   }
 
   /**
@@ -150,7 +152,8 @@
       }
     }
 
-    console.log('SPAMS: ' + data);
+    if (gDEBUG)
+      console.log('SPAMS: ' + data);
 
     var req = new XMLHttpRequest();
     req.open('POST', "/spam");
@@ -226,7 +229,8 @@
       }
     }
 
-    console.log('HAM: ' + data);
+    if (gDEBUG)
+      console.log('HAM: ' + data);
 
     var req = new XMLHttpRequest();
     req.open('POST', "/spam");
@@ -267,7 +271,12 @@
     ev.stopPropagation();
     var thisNode = ev.target;
 
-    var trNode = thisNode.parentNode.parentNode.parentNode;
+    var trNode;
+    if (thisNode.parentNode.parentNode.classList.contains("spam_poll"))
+      trNode = thisNode.parentNode.parentNode.parentNode.parentNode;
+    else
+      trNode = thisNode.parentNode.parentNode.parentNode;
+
     trNode.classList.add("bad-ham");
     if (!gSPAMQSP)
       hidePost(trNode);
@@ -323,7 +332,11 @@
     ev.stopPropagation();
     var thisNode = ev.target;
 
-    var trNode = thisNode.parentNode.parentNode;
+    var trNode;
+    if (thisNode.parentNode.parentNode.classList.contains("spam_poll"))
+      trNode = thisNode.parentNode.parentNode.parentNode.parentNode;
+    else
+      trNode = thisNode.parentNode.parentNode;
 
     submitHam(gRETRIES, trNode);
   }
@@ -373,6 +386,16 @@
       aid = authorNode.getAttribute("user_id") || authorNode.getAttribute("href").match(/(\d+)$/)[1] || document.querySelector('#root #section h2 a[href^="/users/"]').match(/(\d+)$/)[1];
 
     if (gLOGGEDIN) {
+      var spampollNode = postNode.querySelector('.body .spam_poll form input[value="SPAM"]');
+      if (spampollNode)
+        spampollNode.addEventListener("click", spamClick, true);
+
+      var hampollNode = postNode.querySelector('.body .spam_poll form input[value="NOT SPAM"]');
+      if (hampollNode) {
+        hampollNode.value = "HAM";
+        hampollNode.addEventListener("click", hamClick, true);
+      }
+
       var spamNode = postNode.querySelector('form input[value="SPAM"]');
       if (spamNode) {
         spamNode.addEventListener("click", spamClick, true);
