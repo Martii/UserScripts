@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.9
+// @version         1.0.10
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
@@ -91,7 +91,7 @@
     if (newQs.length > 0)
       return ("?" + newQs.join("&"));
     else
-      return;
+      return ("?" + aName + "=" + aValue);
   }
 
   /**
@@ -103,6 +103,9 @@
 
       var oldpage = lastpage[gPATHNAME];
       var newpage = getQsp(gSEARCH, "page");
+
+      if (!newpage)
+        newpage = "1";
 
       if (parseInt(oldpage) > parseInt(newpage)) {
         var prevpageNode = paginationNode.querySelector('.prev_page');
