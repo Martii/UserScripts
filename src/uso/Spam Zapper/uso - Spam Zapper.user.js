@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.8
+// @version         1.0.9
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
@@ -44,8 +44,78 @@
       gDEBUG,
       gRETRIES = 3,
       gLOGGEDIN = document.querySelector("body.loggedin"),
-      gSPAMQSP = /spam\=1/.test(location.search) // TODO:
+      gPATHNAME = location.pathname,
+      gSEARCH = location.search,
+      gSPAMQSP = (getQsp(gSEARCH, "spam") == 1)
   ;
+
+  /**
+   *
+   */
+  function getQsp(aQs, aName) {
+    aQs = aQs.replace(/^\?/, "");
+
+    var qsps = aQs.split("&");
+    for (var i = 0, qsp; qsp = qsps[i++];) {
+      var qspnv = qsp.split("=");
+      var name = qspnv[0];
+      var value = qspnv[1];
+
+      if (name == aName)
+        return value;
+    }
+
+    return null;
+  }
+
+  /**
+   *
+   */
+  function replaceQsp(aQs, aName, aValue) {
+    aQs = aQs.replace(/^\?/, "");
+
+    var newQs = [];
+
+    var qsps = aQs.split("&");
+    for (var i = 0, qsp; qsp = qsps[i++];) {
+      var qspnv = qsp.split("=");
+      var name = qspnv[0];
+      var value = qspnv[1];
+
+      if (name == aName)
+        value = aValue;
+
+      newQs.push(name + "=" + value);
+    }
+
+    if (newQs.length > 0)
+      return ("?" + newQs.join("&"));
+    else
+      return;
+  }
+
+  /**
+   *
+   */
+  function autoPage() {
+    var paginationNode = document.querySelector('.pagination');
+    if (paginationNode) {
+
+      var oldpage = lastpage[gPATHNAME];
+      var newpage = getQsp(gSEARCH, "page");
+
+      if (parseInt(oldpage) > parseInt(newpage)) {
+        var prevpageNode = paginationNode.querySelector('.prev_page');
+        if (prevpageNode && !prevpageNode.classList.contains('disabled'))
+          location.replace(replaceQsp(gSEARCH, "page", parseInt(newpage) - 1));
+      }
+      else { // NOTE: Assume ascending
+        var nextpageNode = paginationNode.querySelector('.next_page');
+        if (nextpageNode && !nextpageNode.classList.contains('disabled'))
+          location.replace(replaceQsp(gSEARCH, "page", parseInt(newpage) + 1));
+      }
+    }
+  }
 
   /**
    *
@@ -275,6 +345,9 @@
     req.send(data);
   }
 
+  /**
+   *
+   */
   function spamClick(ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -293,6 +366,9 @@
     submitSpam(gRETRIES, trNode);
   }
 
+  /**
+   *
+   */
   function spamsClick(ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -336,6 +412,9 @@
     }
   }
 
+  /**
+   *
+   */
   function hamClick(ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -350,10 +429,13 @@
     submitHam(gRETRIES, trNode);
   }
 
-
+  /**
+   *
+   */
   var
       postids = JSON.parse(GM_getValue("postids", "{}")),
       authorids = JSON.parse(GM_getValue("authorids", "{}")),
+      lastpage = JSON.parse(GM_getValue("lastpage", "{}")),
       queue = [],
       idle = true
   ;
@@ -363,7 +445,10 @@
    */
   GM_addStyle(
     [
-      '.post form[action="/spam"] { clear: left; padding-top: 0.25em; }'
+      '.post form[action="/spam"] { clear: left; padding-top: 0.25em; }',
+      '.actions { float: right; font-size: 0.9em; margin-left: 1em; }',
+      '.action { color: #444; margin-left: 0.5em; text-decoration: none; }',
+      '.action:hover { color: #444; text-decoration: underline !important; }'
 
     ].join('\n')
   );
@@ -399,6 +484,19 @@
     }
   }
 
+  var pageNodes = document.querySelectorAll('.pagination a');
+  for (var i = 0, pageNode; pageNode = pageNodes[i++];) {
+    pageNode.addEventListener("click", function () {
+      var page = getQsp(gSEARCH, "page");
+      if (page) {
+        lastpage[gPATHNAME] = page;
+        GM_setValue("lastpage", JSON.stringify(lastpage, null, ""));
+      }
+    }, false);
+  }
+
+  var countHiddenTopics = 0;
+
   var topicNodes = document.querySelectorAll('#topics-index #content table tr, #content table.topics tr');
   for (var i = 0, topicNode; topicNode = topicNodes[i++];) {
     var authorNode = topicNode.querySelector('td:nth-child(2) .author');
@@ -407,14 +505,32 @@
       if (matches) {
         var aid = matches[1];
 
+        var thisColumn = authorNode.parentNode.parentNode;
+        if (thisColumn) {
+          var nodeA = document.createElement("a");
+          nodeA.classList.add("action");
+          nodeA.textContent = "posts";
+          nodeA.href = "/users/" + aid + "/posts";
+
+          var nodeDiv = document.createElement("div");
+          nodeDiv.classList.add("actions");
+
+          nodeDiv.appendChild(nodeA);
+          thisColumn.insertBefore(nodeDiv, thisColumn.firstChild);
+        }
+
         for (var authorid in authorids)
           if (aid == authorid) {
             topicNode.classList.add("hide");
+            countHiddenTopics++;
             break;
           }
       }
     }
   }
+
+  if (countHiddenTopics == topicNodes.length - 1)
+    autoPage();
 
   var postNodes = document.querySelectorAll('.post');
   for (var i = 0, postNode; postNode = postNodes[i++];) {
