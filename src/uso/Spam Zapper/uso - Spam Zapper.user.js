@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.10
+// @version         1.0.11
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
@@ -98,25 +98,21 @@
    *
    */
   function autoPage() {
-    var paginationNode = document.querySelector('.pagination');
-    if (paginationNode) {
+    var currPage = getQsp(gSEARCH, "page");
+    if (!currPage)
+      currPage = "1";
 
-      var oldpage = lastpage[gPATHNAME];
-      var newpage = getQsp(gSEARCH, "page");
+    var currPagex = parseInt(currPage);
 
-      if (!newpage)
-        newpage = "1";
-
-      if (parseInt(oldpage) > parseInt(newpage)) {
-        var prevpageNode = paginationNode.querySelector('.prev_page');
-        if (prevpageNode && !prevpageNode.classList.contains('disabled'))
-          location.replace(replaceQsp(gSEARCH, "page", parseInt(newpage) - 1));
-      }
-      else { // NOTE: Assume ascending
-        var nextpageNode = paginationNode.querySelector('.next_page');
-        if (nextpageNode && !nextpageNode.classList.contains('disabled'))
-          location.replace(replaceQsp(gSEARCH, "page", parseInt(newpage) + 1));
-      }
+    if (direction == "prev" && currPagex != 1) {
+      var prevpageNode = paginationNode.querySelector('.prev_page');
+      if (prevpageNode && !prevpageNode.classList.contains('disabled'))
+        location.replace(replaceQsp(gSEARCH, "page", currPagex - 1));
+    }
+    else { // NOTE: Assume ascending as default
+      var nextpageNode = paginationNode.querySelector('.next_page');
+      if (nextpageNode && !nextpageNode.classList.contains('disabled'))
+        location.replace(replaceQsp(gSEARCH, "page", currPagex + 1));
     }
   }
 
@@ -487,15 +483,23 @@
     }
   }
 
-  var pageNodes = document.querySelectorAll('.pagination a');
-  for (var i = 0, pageNode; pageNode = pageNodes[i++];) {
-    pageNode.addEventListener("click", function () {
-      var page = getQsp(gSEARCH, "page");
-      if (page) {
-        lastpage[gPATHNAME] = page;
-        GM_setValue("lastpage", JSON.stringify(lastpage, null, ""));
-      }
-    }, false);
+  var direction;
+
+  var paginationNode = document.querySelector('.pagination');
+  if (paginationNode) {
+    var oldpage = (lastpage[gPATHNAME] ? parseInt(lastpage[gPATHNAME]) : 1);
+
+    var newpage = getQsp(gSEARCH, "page");
+    lastpage[gPATHNAME] = (newpage ? newpage : "1");
+
+    newpage = parseInt(lastpage[gPATHNAME]);
+
+    if (newpage < oldpage)
+      direction = "prev";
+    else // NOTE: Assume ascending as default
+      direction = "next";
+
+    GM_setValue("lastpage", JSON.stringify(lastpage, null, ""));
   }
 
   var countHiddenTopics = 0;
