@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.11
+// @version         1.0.12
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
@@ -99,15 +99,19 @@
    */
   function autoPage() {
     var currPage = getQsp(gSEARCH, "page");
-    if (!currPage)
+    if (!currPage) {
       currPage = "1";
+      direction = "next";
+    }
 
     var currPagex = parseInt(currPage);
 
-    if (direction == "prev" && currPagex != 1) {
-      var prevpageNode = paginationNode.querySelector('.prev_page');
-      if (prevpageNode && !prevpageNode.classList.contains('disabled'))
-        location.replace(replaceQsp(gSEARCH, "page", currPagex - 1));
+    if (direction == "prev") {
+      if (currPage != 1) {
+        var prevpageNode = paginationNode.querySelector('.prev_page');
+        if (prevpageNode && !prevpageNode.classList.contains('disabled'))
+          location.replace(replaceQsp(gSEARCH, "page", currPagex - 1));
+      }
     }
     else { // NOTE: Assume ascending as default
       var nextpageNode = paginationNode.querySelector('.next_page');
