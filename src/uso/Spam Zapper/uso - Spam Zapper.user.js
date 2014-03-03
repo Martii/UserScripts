@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.0.12
+// @version         1.1.0
 // @icon            https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/posts*
@@ -19,6 +19,7 @@
 // @include  http://userscripts.org/scripts/discuss/*
 // @include  http://userscripts.org/forums/*
 // @include  http://userscripts.org/users/*/posts*
+// @include  http://userscripts.org/scripts/show/398715
 
 // @include  https://userscripts.org/posts*
 // @include  https://userscripts.org/topics*
@@ -26,13 +27,21 @@
 // @include  https://userscripts.org/scripts/discuss/*
 // @include  https://userscripts.org/forums/*
 // @include  https://userscripts.org/users/*/posts*
+// @include  https://userscripts.org/scripts/show/398715
 
 // @updateURL   https://userscripts.org/scripts/source/398715.meta.js
 // @installURL  https://userscripts.org/scripts/source/398715.user.js
 // @downloadURL https://userscripts.org/scripts/source/398715.user.js
 
+// @resource icon  https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+// @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
+
+// @require https://raw.github.com/sizzlemctwizzle/GM_config/de36fb6f8ddcd727389f2d8841c31749686d9e61/gm_config.js
+
 // @grant  GM_addStyle
+// @grant  GM_getResourceURL
 // @grant  GM_getValue
+// @grant  GM_log
 // @grant  GM_setValue
 
 // ==/UserScript==
@@ -44,10 +53,19 @@
       gDEBUG,
       gRETRIES = 3,
       gLOGGEDIN = document.querySelector("body.loggedin"),
+      gPROTOCOL = location.protocol,
       gPATHNAME = location.pathname,
       gSEARCH = location.search,
-      gSPAMQSP = (getQsp(gSEARCH, "spam") == 1)
+      gSPAMQSP = (getQsp(gSEARCH, "spam") == 1),
+      gUSERPOSTS = /^\/users\/\d+\/posts/.test(gPATHNAME),
+      gISHOMEPAGE = /^\/scripts\/show\//.test(gPATHNAME),
+      gISFRAMELESS = false
   ;
+
+  try {
+    gISFRAMELESS = (window == window.top);
+  }
+  catch (e) {}
 
   /**
    *
@@ -363,7 +381,10 @@
       trNode = thisNode.parentNode.parentNode.parentNode;
 
     trNode.classList.add("bad-ham");
-    if (!gSPAMQSP)
+    if (gUSERPOSTS)
+      trNode.classList.add("clip");
+
+    if (!gSPAMQSP && !gUSERPOSTS && gmcHome.get('hideTaggedSpams'))
       hidePost(trNode);
 
     submitSpam(gRETRIES, trNode);
@@ -393,8 +414,12 @@
           var id = authorNode.getAttribute("user_id") || authorNode.getAttribute("href").match(/(\d+)$/)[1];
           if (id == authorid) {
             postNode.classList.add("bad-ham");
-            if (!gSPAMQSP)
+            if (gUSERPOSTS)
+              postNode.classList.add("clip");
+
+            if (!gSPAMQSP && !gUSERPOSTS && gmcHome.get('hideTaggedSpams'))
               hidePost(postNode);
+
             queue.push(postNode);
           }
         }
@@ -432,9 +457,135 @@
     submitHam(gRETRIES, trNode);
   }
 
+  function insertHook() {
+    var hookNode = document.getElementById("full_description");
+
+    if (hookNode && !hookNode.firstChild)
+      return hookNode.appendChild(document.createElement("div"));
+    else if (hookNode)
+      return (hookNode.insertBefore(document.createElement("div"), hookNode.firstChild));
+    else {
+      hookNode = document.getElementById("content");
+
+      if (hookNode) {
+        var nodeDiv = document.createElement("div");
+
+        var full_descriptionNodeDiv = document.createElement("div");
+        full_descriptionNodeDiv.id = "full_description";
+
+        full_descriptionNodeDiv.appendChild(nodeDiv);
+
+        return hookNode.appendChild(full_descriptionNodeDiv);
+      }
+      else {
+        if (gmcHome.get("enableDebugging"))
+          console.log("ERROR: USO DOM change detected... appending GMC remote to EoD");
+        return document.body.appendChild(document.createElement("div"));
+      }
+    }
+  }
+
+
+
   /**
-   *
+   * Init
    */
+
+  /** **/
+  if (typeof GM_configStruct == "undefined") {
+    if (gDEBUG)
+      console.error('Fatal error. GM_config not found');
+    return;
+  }
+
+  GM_config = null;
+
+  var gmcHome = new GM_configStruct();
+  gmcHome.init({
+    id: "gmc398715home",
+    frame: (gISHOMEPAGE ? insertHook() : ""),
+    title:
+      [
+        '<img alt="Spam Zapper" title="uso &ndash; Spam Zapper" src="' + GM_getResourceURL("icon") + '" />',
+        '<p>Preferences</p>',
+        '<span>',
+          '<a href="' + gPROTOCOL + '//github.com/sizzlemctwizzle/GM_config/wiki/">',
+              '<img alt="GM_config" title="Powered in part by GM_config" src="' + GM_getResourceURL("gmc") + '" />',
+          '</a>',
+        '</span>'
+
+      ].join(""),
+    css:
+        [
+          "@media screen, projection {",
+                "#gmc398715home { position: static !important; z-index: 0 !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 0 0.5em 0 !important; border: 1px solid #ddd !important; clear: right !important; }",
+
+                "#gmc398715home_header a { display: inline; }",
+                "#gmc398715home_header img { max-height: 32px; margin-right: 0.125em; vertical-align: middle; }",
+                "#gmc398715home_header > p { display: inline; margin: 0; vertical-align: middle; }",
+                "#gmc398715home_header span { float: right; }",
+                "#gmc398715home_header span > a { display: inline; margin-left: 0.25em; }",
+                "#gmc398715home_wrapper { background-color: #eee; padding-bottom: 0.25em; }",
+                "#gmc398715home .config_header { background-color: #333; color: #fff; font-size: 1.57em; margin: 0; padding: 0 0.5em; text-align: left; }",
+                "#gmc398715home .config_var { clear: both; margin: 0.33em; padding: 0; }",
+                "#gmc398715home .field_label { color: #333; font-size: 100%; font-weight: normal; margin: 0 0.25em; position: relative; top: -0.2em; }",
+                "#gmc398715home .section_header_holder { margin: 0.25em 0.5em !important; }",
+                "#gmc398715home .section_desc { margin: 0.25em 1.5em !important; }",
+
+                    ".gmc-yellownote { background-color: #ffd; font-size: 0.66em !important; }",
+                    ".gmc398715home-invisilink { text-decoration: none; color: #000; }",
+                    ".gmc398715home-invisilink:hover { color: #000; }",
+
+
+                "#gmc398715home .reset, #gmc398715home .reset a, #gmc398715home_buttons_holder { text-align: inherit; }",
+                "#gmc398715home_buttons_holder { margin: 0.5em; }",
+                "#gmc398715home_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }",
+                "#gmc398715home_resetLink { margin-right: 1.5em; }",
+                "#gmc398715home_closeBtn { display: none; }",
+          "}",
+
+          "@media print {",
+              "#gmc398715home { display: none !important; }",
+          "}"
+
+        ].join("\n")
+    ,
+    fields: {
+      'hideTaggedSpams': {
+        "type": "checkbox",
+        "label": 'Hide tagged spams in mixed User areas',
+        "default": false
+      },
+      'hideTaggedSpammers': {
+        "type": "checkbox",
+        "label": 'Hide tagged spammers in mixed User areas',
+        "default": false
+      },
+      'autoPageSpammers': {
+        "type": "checkbox",
+        "label": 'Automatically page if current page is all spammers in select areas',
+        "default": false
+      },
+      'enableDebugging': {
+        "type": "checkbox",
+        "label": 'Enable debugging',
+        "default": false
+      }
+    },
+    events: {
+      save: function () {
+        var write = false;
+        var reopen = false;
+
+        // TODO:
+
+        if (write) gmc.write();
+        if (reopen) { gmc.close(); gmc.open(); }
+      }
+    }
+  });
+
+  /** **/
   var
       postids = JSON.parse(GM_getValue("postids", "{}")),
       authorids = JSON.parse(GM_getValue("authorids", "{}")),
@@ -443,17 +594,23 @@
       idle = true
   ;
 
+  if (gISFRAMELESS && /\/scripts\/show\/398715\/?$/.test(gPATHNAME)) {
+    gmcHome.open();
+  }
+
   /**
    *
    */
   GM_addStyle(
-    [
-      '.post form[action="/spam"] { clear: left; padding-top: 0.25em; }',
-      '.actions { float: right; font-size: 0.9em; margin-left: 1em; }',
-      '.action { color: #444; margin-left: 0.5em; text-decoration: none; }',
-      '.action:hover { color: #444; text-decoration: underline !important; }'
+      [
+        '.post form[action="/spam"] { clear: left; padding-top: 0.25em; }',
+        '.actions { float: right; font-size: 0.9em; margin-left: 1em; }',
+        '.action { color: #444; margin-left: 0.5em; text-decoration: none; }',
+        '.action:hover { color: #444; text-decoration: underline !important; }',
 
-    ].join('\n')
+        '.clip .body { display: block; max-height: 12em; overflow: auto !important; }'
+
+      ].join('\n')
   );
 
   if (!gLOGGEDIN) {
@@ -465,10 +622,10 @@
 
   if (gSPAMQSP) {
     GM_addStyle(
-      [
-        '.post .body { display: block; max-height: 12em; overflow: auto; }'
+        [
+          '.post .body { display: block; max-height: 12em; overflow: auto; }'
 
-      ].join('\n')
+        ].join('\n')
     );
   }
 
@@ -506,46 +663,51 @@
     GM_setValue("lastpage", JSON.stringify(lastpage, null, ""));
   }
 
-  var countHiddenTopics = 0;
+    var countHiddenTopics = 0;
+    var topicNodes = document.querySelectorAll('#topics-index #content table tr, #content table.topics tr');
 
-  var topicNodes = document.querySelectorAll('#topics-index #content table tr, #content table.topics tr');
-  for (var i = 0, topicNode; topicNode = topicNodes[i++];) {
-    var authorNode = topicNode.querySelector('td:nth-child(2) .author');
-    if (authorNode) {
-      var matches = authorNode.href.match(/(\d+)$/);
-      if (matches) {
-        var aid = matches[1];
+    for (var i = 0, topicNode; topicNode = topicNodes[i++];) {
+      var authorNode = topicNode.querySelector('td:nth-child(2) .author');
+      if (authorNode) {
+        var matches = authorNode.href.match(/(\d+)$/);
+        if (matches) {
+          var aid = matches[1];
 
-        var thisColumn = authorNode.parentNode.parentNode;
-        if (thisColumn) {
-          var nodeA = document.createElement("a");
-          nodeA.classList.add("action");
-          nodeA.textContent = "posts";
-          nodeA.href = "/users/" + aid + "/posts";
+          var thisColumn = authorNode.parentNode.parentNode;
+          if (thisColumn) {
+            var nodeA = document.createElement("a");
+            nodeA.classList.add("action");
+            nodeA.textContent = "posts";
+            nodeA.href = "/users/" + aid + "/posts";
 
-          var nodeDiv = document.createElement("div");
-          nodeDiv.classList.add("actions");
+            var nodeDiv = document.createElement("div");
+            nodeDiv.classList.add("actions");
 
-          nodeDiv.appendChild(nodeA);
-          thisColumn.insertBefore(nodeDiv, thisColumn.firstChild);
-        }
-
-        for (var authorid in authorids)
-          if (aid == authorid) {
-            topicNode.classList.add("hide");
-            countHiddenTopics++;
-            break;
+            nodeDiv.appendChild(nodeA);
+            thisColumn.insertBefore(nodeDiv, thisColumn.firstChild);
           }
+
+          for (var authorid in authorids)
+            if (aid == authorid) {
+              topicNode.classList.add("spam");
+
+              if (gmcHome.get('hideTaggedSpammers'))
+                topicNode.classList.add("hide");
+
+              countHiddenTopics++;
+              break;
+            }
+        }
       }
     }
-  }
 
-  if (countHiddenTopics == topicNodes.length - 1)
-    autoPage();
+    if (countHiddenTopics == topicNodes.length - 1 && gmcHome.get('autoPageSpammers'))
+      autoPage();
+
 
   var postNodes = document.querySelectorAll('.post');
   for (var i = 0, postNode; postNode = postNodes[i++];) {
-    var pid = undefined, aid = undefined;
+    var pid = null, aid = null;
 
     var matches = postNode.id.match(/\-(\d+)$/);
     if (matches)
@@ -615,12 +777,15 @@
       }
 
     if (authorFound || postFound) {
+      if (!gSPAMQSP)
+        postNode.classList.add("clip");
+
       if (postFound)
         postNode.classList.add("spam");
       else
         postNode.classList.add("bad-ham");
 
-      if (!gSPAMQSP)
+      if (!gSPAMQSP && !gUSERPOSTS && gmcHome.get('hideTaggedSpams'))
         hidePost(postNode);
     }
 
