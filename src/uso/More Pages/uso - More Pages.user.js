@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.6
+// @version       1.0.7
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/*
@@ -70,9 +70,9 @@
     var req = new XMLHttpRequest();
     req.open('GET', aUrl);
     if (authenticated)
-      req.setRequestHeader('Range', 'bytes=0-7168');
+      req.setRequestHeader('Range', 'bytes=0-8192'); // NOTE: Watchpoint
     else
-      req.setRequestHeader('Range', 'bytes=0-3259');
+      req.setRequestHeader('Range', 'bytes=0-3723');
     req.onreadystatechange = function () {
       if (this.readyState == this.DONE) {
         switch (this.status) {
