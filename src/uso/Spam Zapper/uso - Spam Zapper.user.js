@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.1
+// @version         1.1.2
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -33,7 +33,7 @@
 // @installURL  https://userscripts.org/scripts/source/398715.user.js
 // @downloadURL https://userscripts.org/scripts/source/398715.user.js
 
-// @resource icon  https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+// @resource icon  https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 // @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
 
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/de36fb6f8ddcd727389f2d8841c31749686d9e61/gm_config.js
@@ -42,7 +42,9 @@
 // @grant  GM_getResourceURL
 // @grant  GM_getValue
 // @grant  GM_log
+// @grant  GM_setClipboard
 // @grant  GM_setValue
+// @grant  GM_xmlhttpRequest
 
 // ==/UserScript==
 
@@ -276,9 +278,9 @@
 
             queue.shift();
 
-            var userspamsNode = document.querySelector("#root #top #userspams");
-            if (userspamsNode)
-              userspamsNode.textContent = queue.length + ' Spams Queued';
+            var spamsNodes = document.querySelectorAll(".spams");
+            for (var i = 0, spamsNode; spamsNode = spamsNodes[i++];)
+              spamsNode.textContent = queue.length + ' Spams Queued';
 
             if (queue.length > 0)
               submitSpams(gRETRIES);
@@ -427,12 +429,9 @@
 
       var queued = queue.length;
       if (queued > 0) {
-        var userspamsNode = document.querySelector("#root #top #userspams");
-        if (userspamsNode) {
-          var matches = userspamsNode.textContent.match(/(\d+)\s/);
-          if (matches)
-            userspamsNode.textContent = queued + " Spams Queued";
-        }
+        var spamsNodes = document.querySelectorAll(".spams");
+        for (var i = 0, spamsNode; spamsNode = spamsNodes[i++];)
+          spamsNode.textContent = queue.length + ' Spams Queued';
 
         if (idle)
           submitSpams(gRETRIES);
@@ -485,8 +484,6 @@
     }
   }
 
-
-
   /**
    * Init
    */
@@ -499,6 +496,10 @@
   }
 
   GM_config = null;
+
+  var gWriteSpammers = false,
+      gWriteSpams = false
+  ;
 
   var gmcHome = new GM_configStruct();
   gmcHome.init({
@@ -536,9 +537,12 @@
                     ".gmc398715home-invisilink { text-decoration: none; color: #000; }",
                     ".gmc398715home-invisilink:hover { color: #000; }",
 
+                    "#gmc398715home_copySpammers_var,",
+                    "#gmc398715home_mergeSpammers_var",
+                    "{ display: inline; }",
 
                 "#gmc398715home .reset, #gmc398715home .reset a, #gmc398715home_buttons_holder { text-align: inherit; }",
-                "#gmc398715home_buttons_holder { margin: 0.5em; }",
+                "#gmc398715home_buttons_holder { margin: 2em 0.5em 0.5em; }",
                 "#gmc398715home_saveBtn { margin: 0.5em !important; padding: 0 3.0em !important; }",
                 "#gmc398715home_resetLink { margin-right: 1.5em; }",
                 "#gmc398715home_closeBtn { display: none; }",
@@ -552,13 +556,39 @@
     ,
     fields: {
       'hideTaggedSpams': {
+        "section": ["Manage Spams List", "This section handles posts"],
         "type": "checkbox",
-        "label": 'Hide tagged spams in mixed User areas',
+        "label": 'Hide tagged in mixed User areas',
         "default": false
       },
+      'clearSpams': {
+        "type": "button",
+        "label": 'Clear',
+        "click": function () {
+          postids = {};
+          gWriteSpams = true;
+        }
+      },
+      'copySpams': {
+        "type": "button",
+        "label": 'Copy to Clipboard',
+        "click": function () {
+          var ids = { spams: [] },
+              spams = ids["spams"];
+
+          for (var postid in postids)
+            spams.push(postid);
+
+          if (spams.length > 0) {
+            spams.sort(function (a, b) { return a - b });
+            GM_setClipboard(JSON.stringify(ids, null, " "), "text");
+          }
+        }
+      },
       'hideTaggedSpammers': {
+        "section": ["Manage Spammers List", "This section handles authors"],
         "type": "checkbox",
-        "label": 'Hide tagged spammers in mixed User areas',
+        "label": 'Hide tagged in mixed User areas',
         "default": false
       },
       'autoPageSpammers': {
@@ -566,21 +596,90 @@
         "label": 'Automatically page if current page is all spammers in select areas',
         "default": false
       },
-      'enableDebugging': {
-        "type": "checkbox",
-        "label": 'Enable debugging',
-        "default": false
+      'clearSpammers': {
+        "type": "button",
+        "label": 'Clear',
+        "click": function () {
+          authorids = {};
+          gWriteSpammers = true;
+        }
+      },
+      'copySpammers': {
+        "type": "button",
+        "label": 'Copy to Clipboard',
+        "click": function () {
+          var ids = { spammers: [] },
+              spammers = ids["spammers"];
+
+          for (var authorid in authorids)
+            spammers.push(authorid);
+
+          if (spammers.length > 0) {
+            spammers.sort(function (a, b) { return a - b });
+            GM_setClipboard(JSON.stringify(ids, null, " "), "text");
+          }
+        }
+      },
+      'mergeSpammers': {
+        "type": "button",
+        "label": 'Merge Upstream List',
+        "click": function () {
+          if (confirm(
+            [
+              'NETWORK OF TRUST CONFIRMATION',
+              '',
+              'Do you wish to proceed merging the upstream spammers list into your own?',
+              '',
+              '\u00A0'
+
+            ].join('\n')
+          ))
+            GM_xmlhttpRequest({
+              method: "GET",
+              url: "http://beta.usocheckup.dune.net/spammers.json",
+              onload: function(aR) {
+                var write = false,
+                    ids = JSON.parse(aR.responseText),
+                    spammers = ids["spammers"]
+                ;
+
+                for (var i = 0, spammer; spammer = spammers[i++];)
+                  if (!authorids[spammer]) {
+                    authorids[spammer] = new Date().getTime();
+                    write = true;
+                  }
+
+                if (write)
+                  gWriteSpammers = true;
+              }
+            });
+        }
       }
     },
     events: {
+      open: function () {
+        if (typeof GM_setClipboard == "undefined") {
+          gmcHome.fields["copySpams"].node.setAttribute("disabled", "disabled");
+          gmcHome.fields["copySpammers"].node.setAttribute("disabled", "disabled");
+        }
+      },
       save: function () {
-        var write = false;
-        var reopen = false;
+        if (gWriteSpammers) {
+          GM_setValue("authorids", JSON.stringify(authorids, null, ""));
+          gWriteSpammers = false;
+        }
 
-        // TODO:
+        if (gWriteSpams) {
+          GM_setValue("postids", JSON.stringify(postids, null, ""));
+          gWriteSpams = false;
+        }
+      },
+      reset: function () {
+        authorids = {};
+        gWriteSpammers = true;
 
-        if (write) gmc.write();
-        if (reopen) { gmc.close(); gmc.open(); }
+        postids = {};
+        gWriteSpams = true;
       }
     }
   });
@@ -608,7 +707,9 @@
         '.action { color: #444; margin-left: 0.5em; text-decoration: none; }',
         '.action:hover { color: #444; text-decoration: underline !important; }',
 
-        '.clip .body { display: block; max-height: 12em; overflow: auto !important; }'
+        '.clip .body { display: block; max-height: 12em; overflow: auto !important; }',
+
+        '#footer-content .footer_status { margin-bottom: 1.5em; }'
 
       ].join('\n')
   );
@@ -632,15 +733,33 @@
   if (gLOGGEDIN) {
     var login_statusNode = document.querySelector("#root #top .login_status");
     if (login_statusNode) {
-      var nodeA = document.createElement("a");
-      nodeA.id = "userspams";
-      nodeA.href = "#";
-      nodeA.textContent = "0 Spams Queued";
+      var topNodeA = document.createElement("a");
+      topNodeA.classList.add("spams");
+      topNodeA.href = "/scripts/show/398715";
+      topNodeA.textContent = "0 Spams Queued";
 
       var nodeLi = document.createElement("li");
-      nodeLi.appendChild(nodeA);
+      nodeLi.appendChild(topNodeA);
 
       login_statusNode.insertBefore(nodeLi, login_statusNode.firstChild);
+    }
+
+    var footer_contentNode = document.querySelector("#footer #footer-content");
+    if (footer_contentNode) {
+      var thisNode = footer_contentNode.firstChild.nextSibling;
+      if (thisNode) {
+        var bottomNodeA = document.createElement("a");
+        bottomNodeA.classList.add("spams");
+        bottomNodeA.href = "/scripts/show/398715";
+        bottomNodeA.textContent = "0 Spams Queued";
+
+        var footer_statusNode = document.createElement("div");
+        footer_statusNode.classList.add("footer_status");
+
+        footer_statusNode.appendChild(bottomNodeA);
+
+        thisNode.insertBefore(footer_statusNode, thisNode.firstChild);
+      }
     }
   }
 
@@ -796,12 +915,9 @@
   if (gLOGGEDIN) {
     var queued = queue.length;
     if (queued > 0) {
-      var userspamsNode = document.querySelector("#root #top #userspams");
-      if (userspamsNode) {
-        var matches = userspamsNode.textContent.match(/(\d+)\s/);
-        if (matches)
-          userspamsNode.textContent = queued + " Spams Queued";
-      }
+      var spamsNodes = document.querySelectorAll(".spams");
+      for (var i = 0, spamsNode; spamsNode = spamsNodes[i++];)
+        spamsNode.textContent = queue.length + ' Spams Queued';
 
       if (idle)
         submitSpams(gRETRIES);
