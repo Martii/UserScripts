@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.2
+// @version         1.1.3
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -96,22 +96,27 @@
 
     var newQs = [];
 
+    var found;
+
     var qsps = aQs.split("&");
     for (var i = 0, qsp; qsp = qsps[i++];) {
       var qspnv = qsp.split("=");
       var name = qspnv[0];
       var value = qspnv[1];
 
-      if (name == aName)
+      if (name == aName) {
         value = aValue;
+        found = true;
+      }
 
       newQs.push(name + "=" + value);
     }
 
+    if (!found)
+      newQs.push(aName + "=" + aValue);
+
     if (newQs.length > 0)
       return ("?" + newQs.join("&"));
-    else
-      return ("?" + aName + "=" + aValue);
   }
 
   /**
@@ -123,6 +128,7 @@
       currPage = "1";
       direction = "next";
     }
+
 
     var currPagex = parseInt(currPage);
 
@@ -284,8 +290,17 @@
 
             if (queue.length > 0)
               submitSpams(gRETRIES);
-            else
+            else {
               idle = true;
+
+              var tbodyNode = node.parentNode,
+                  postedNodes =  document.querySelectorAll("tr.post"),
+                  spammedNodes = document.querySelectorAll("tr.spam")
+              ;
+
+              if (!gSPAMQSP && postedNodes.length > 0 && postedNodes.length == spammedNodes.length && gmcHome.get('autoPageSpams'))
+                autoPage();
+            }
 
             break;
           default:
@@ -561,6 +576,11 @@
         "label": 'Hide tagged in mixed User areas',
         "default": false
       },
+      'autoPageSpams': {
+        "type": "checkbox",
+        "label": 'Automatically page if current page is all spammers in select areas',
+        "default": false
+      },
       'clearSpams': {
         "type": "button",
         "label": 'Clear',
@@ -782,7 +802,7 @@
     GM_setValue("lastpage", JSON.stringify(lastpage, null, ""));
   }
 
-    var countHiddenTopics = 0;
+    var countSpammersTopics = 0;
     var topicNodes = document.querySelectorAll('#topics-index #content table tr, #content table.topics tr');
 
     for (var i = 0, topicNode; topicNode = topicNodes[i++];) {
@@ -813,16 +833,18 @@
               if (gmcHome.get('hideTaggedSpammers'))
                 topicNode.classList.add("hide");
 
-              countHiddenTopics++;
+              countSpammersTopics++;
               break;
             }
         }
       }
     }
 
-    if (countHiddenTopics == topicNodes.length - 1 && gmcHome.get('autoPageSpammers'))
+    if (topicNodes.length > 0 && countSpammersTopics == topicNodes.length - 1 && gmcHome.get('autoPageSpammers'))
       autoPage();
 
+
+  var countSpamsPosts = 0;
 
   var postNodes = document.querySelectorAll('.post');
   for (var i = 0, postNode; postNode = postNodes[i++];) {
@@ -899,8 +921,10 @@
       if (!gSPAMQSP)
         postNode.classList.add("clip");
 
-      if (postFound)
+      if (postFound) {
         postNode.classList.add("spam");
+        countSpamsPosts++;
+      }
       else
         postNode.classList.add("bad-ham");
 
@@ -922,6 +946,13 @@
       if (idle)
         submitSpams(gRETRIES);
     }
+
+    if (!gSPAMQSP && postNodes.length > 0 && countSpamsPosts == postNodes.length && gmcHome.get('autoPageSpams'))
+      autoPage();
+  }
+  else {
+    if (!gSPAMQSP && postNodes.length > 0 && countSpamsPosts == postNodes.length && gmcHome.get('autoPageSpams'))
+      autoPage();
   }
 
 })();
