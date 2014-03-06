@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.3
+// @version         1.1.4
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -578,7 +578,7 @@
       },
       'autoPageSpams': {
         "type": "checkbox",
-        "label": 'Automatically page if current page is all spammers in select areas',
+        "label": 'Automatically page if current page is all spams in select areas',
         "default": false
       },
       'clearSpams': {
