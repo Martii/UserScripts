@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.4
+// @version         1.1.5
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -58,7 +58,7 @@
       gPROTOCOL = location.protocol,
       gPATHNAME = location.pathname,
       gSEARCH = location.search,
-      gSPAMQSP = (getQsp(gSEARCH, "spam") == 1),
+      gSPAMQSP = (/^(?:1)$/.test(getQsp(gSEARCH, "spam"))),
       gUSERPOSTS = /^\/users\/\d+\/posts/.test(gPATHNAME),
       gISHOMEPAGE = /^\/scripts\/show\//.test(gPATHNAME),
       gISFRAMELESS = false
@@ -294,8 +294,8 @@
               idle = true;
 
               var tbodyNode = node.parentNode,
-                  postedNodes =  document.querySelectorAll("tr.post"),
-                  spammedNodes = document.querySelectorAll("tr.spam")
+                  postedNodes =  tbodyNode.querySelectorAll("tr.post"),
+                  spammedNodes = tbodyNode.querySelectorAll("tr.spam")
               ;
 
               if (!gSPAMQSP && postedNodes.length > 0 && postedNodes.length == spammedNodes.length && gmcHome.get('autoPageSpams'))
@@ -600,7 +600,7 @@
             spams.push(postid);
 
           if (spams.length > 0) {
-            spams.sort(function (a, b) { return a - b });
+            spams.sort(function (a, b) { return a - b }).reverse();
             GM_setClipboard(JSON.stringify(ids, null, " "), "text");
           }
         }
@@ -635,7 +635,7 @@
             spammers.push(authorid);
 
           if (spammers.length > 0) {
-            spammers.sort(function (a, b) { return a - b });
+            spammers.sort(function (a, b) { return a - b }).reverse();
             GM_setClipboard(JSON.stringify(ids, null, " "), "text");
           }
         }
