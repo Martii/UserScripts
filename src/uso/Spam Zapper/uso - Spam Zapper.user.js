@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.7
+// @version         1.1.8
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -36,7 +36,7 @@
 // @resource icon  https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 // @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
 
-// @require https://raw.github.com/sizzlemctwizzle/GM_config/de36fb6f8ddcd727389f2d8841c31749686d9e61/gm_config.js
+// @require https://raw.github.com/sizzlemctwizzle/GM_config/44d73b4a5418a6fb6a0e03c59ae1dc173eb4e353/gm_config.js
 
 // @grant  GM_addStyle
 // @grant  GM_deleteValue
