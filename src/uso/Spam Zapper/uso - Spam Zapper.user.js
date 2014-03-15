@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.6
+// @version         1.1.7
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -781,76 +781,78 @@
 
   var direction = (lastdirection[gPATHNAME] ? lastdirection[gPATHNAME] : "");
 
-  var paginationNodes = document.querySelectorAll('.pagination');
-  for (var i = 0, paginationNode; paginationNode = paginationNodes[i++];) {
+  if (!gSPAMQSP) {
+    var paginationNodes = document.querySelectorAll('.pagination');
+    for (var i = 0, paginationNode; paginationNode = paginationNodes[i++];) {
 
-    var pageNodes = paginationNode.querySelectorAll('a');
-    for (var j = 0, pageNode; pageNode = pageNodes[j++];) {
-      pageNode.addEventListener("click", function () {
-        delete lastdirection[gPATHNAME];
-        GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
-      }, false);
-    }
-
-    var prev_pageNode = paginationNode.querySelector('.prev_page');
-    if (prev_pageNode) {
-      if (prev_pageNode.classList.contains("disabled")) {
-        var nodeSpan = document.createElement("span");
-        nodeSpan.classList.add("disabled");
-        nodeSpan.classList.add("autoprev_page");
-        nodeSpan.textContent = "\u00AB\u00AB";
-
-        delete lastdirection[gPATHNAME];
-        GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
-        direction = "";
-
-        paginationNode.insertBefore(nodeSpan, prev_pageNode);
-        paginationNode.insertBefore(document.createTextNode(" "), prev_pageNode);
-      }
-      else {
-        var nodeA = document.createElement("a");
-        nodeA.classList.add("autoprev_page");
-        nodeA.href = prev_pageNode.href;
-        nodeA.textContent = "\u00AB\u00AB";
-        nodeA.addEventListener("click", function () {
-          lastdirection[gPATHNAME] = "prev";
+      var pageNodes = paginationNode.querySelectorAll('a');
+      for (var j = 0, pageNode; pageNode = pageNodes[j++];) {
+        pageNode.addEventListener("click", function () {
+          delete lastdirection[gPATHNAME];
           GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
-          direction = "prev";
         }, false);
-
-        paginationNode.insertBefore(nodeA, prev_pageNode);
-        paginationNode.insertBefore(document.createTextNode(" "), prev_pageNode);
       }
-    }
 
-    var next_pageNode = paginationNode.querySelector('.next_page');
-    if (next_pageNode) {
-      if (next_pageNode.classList.contains("disabled")) {
-        var nodeSpan = document.createElement("span");
-        nodeSpan.classList.add("disabled");
-        nodeSpan.classList.add("autonext_page");
-        nodeSpan.textContent = "\u00BB\u00BB";
+      var prev_pageNode = paginationNode.querySelector('.prev_page');
+      if (prev_pageNode) {
+        if (prev_pageNode.classList.contains("disabled")) {
+          var nodeSpan = document.createElement("span");
+          nodeSpan.classList.add("disabled");
+          nodeSpan.classList.add("autoprev_page");
+          nodeSpan.textContent = "\u00AB\u00AB";
 
-        delete lastdirection[gPATHNAME];
-        GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
-        direction = "";
-
-        paginationNode.appendChild(document.createTextNode(" "));
-        paginationNode.appendChild(nodeSpan);
-      }
-      else {
-        var nodeA = document.createElement("a");
-        nodeA.classList.add("autonext_page");
-        nodeA.href = next_pageNode.href;
-        nodeA.textContent = "\u00BB\u00BB";
-        nodeA.addEventListener("click", function () {
-          lastdirection[gPATHNAME] = "next";
+          delete lastdirection[gPATHNAME];
           GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
-          direction = "next";
-        }, false);
+          direction = "";
 
-        paginationNode.appendChild(document.createTextNode(" "));
-        paginationNode.appendChild(nodeA);
+          paginationNode.insertBefore(nodeSpan, prev_pageNode);
+          paginationNode.insertBefore(document.createTextNode(" "), prev_pageNode);
+        }
+        else {
+          var nodeA = document.createElement("a");
+          nodeA.classList.add("autoprev_page");
+          nodeA.href = prev_pageNode.href;
+          nodeA.textContent = "\u00AB\u00AB";
+          nodeA.addEventListener("click", function () {
+            lastdirection[gPATHNAME] = "prev";
+            GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+            direction = "prev";
+          }, false);
+
+          paginationNode.insertBefore(nodeA, prev_pageNode);
+          paginationNode.insertBefore(document.createTextNode(" "), prev_pageNode);
+        }
+      }
+
+      var next_pageNode = paginationNode.querySelector('.next_page');
+      if (next_pageNode) {
+        if (next_pageNode.classList.contains("disabled")) {
+          var nodeSpan = document.createElement("span");
+          nodeSpan.classList.add("disabled");
+          nodeSpan.classList.add("autonext_page");
+          nodeSpan.textContent = "\u00BB\u00BB";
+
+          delete lastdirection[gPATHNAME];
+          GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+          direction = "";
+
+          paginationNode.appendChild(document.createTextNode(" "));
+          paginationNode.appendChild(nodeSpan);
+        }
+        else {
+          var nodeA = document.createElement("a");
+          nodeA.classList.add("autonext_page");
+          nodeA.href = next_pageNode.href;
+          nodeA.textContent = "\u00BB\u00BB";
+          nodeA.addEventListener("click", function () {
+            lastdirection[gPATHNAME] = "next";
+            GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+            direction = "next";
+          }, false);
+
+          paginationNode.appendChild(document.createTextNode(" "));
+          paginationNode.appendChild(nodeA);
+        }
       }
     }
   }
