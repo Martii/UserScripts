@@ -9,7 +9,7 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.7
+// @version       1.0.8
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  http://userscripts.org/*
@@ -23,35 +23,59 @@
 
 // ==/UserScript==
 
-  function qsReplace(aQs, aName, aValue) {
-    var aQs = location.search.replace(/^\?/, "");
+  /**
+   *
+   */
+  function getQsp(aQs, aName) {
+    aQs = aQs.replace(/^\?/, "");
+
+    var qsps = aQs.split("&");
+    for (var i = 0, qsp; qsp = qsps[i++];) {
+      var qspnv = qsp.split("=");
+      var name = qspnv[0];
+      var value = qspnv[1];
+
+      if (name == aName)
+        return value;
+    }
+
+    return null;
+  }
+
+  /**
+   *
+   */
+  function replaceQsp(aQs, aName, aValue) {
+    aQs = aQs.replace(/^\?/, "");
+
     var newQs = [];
+
     var found;
 
     var qsps = aQs.split("&");
     for (var i = 0, qsp; qsp = qsps[i++];) {
-      var namevalue = qsp.split("=");
-      var name = namevalue[0];
-      var value = namevalue[1];
+      var qspnv = qsp.split("=");
+      var name = qspnv[0];
+      var value = qspnv[1];
 
       if (name == aName) {
-        found = true;
         value = aValue;
+        found = true;
       }
+
       newQs.push(name + "=" + value);
     }
 
     if (!found)
-      newQs.unshift(aName + "=" + aValue);
+      newQs.push(aName + "=" + aValue);
 
-    var qs = newQs.join("&");
-
-    if (qs)
-      return "?" + qs;
-
-    return "";
+    if (newQs.length > 0)
+      return ("?" + newQs.join("&"));
   }
 
+  /**
+   *
+   */
   function pageCheck(aUrl, aCb, aAnchorNode, aReferenceNode) {
     var req = new XMLHttpRequest();
     req.open('GET', aUrl);
@@ -66,6 +90,9 @@
     req.send();
   }
 
+  /**
+   *
+   */
   function paginationCheck(aUrl, aCb, aMorepageNode) {
     var req = new XMLHttpRequest();
     req.open('GET', aUrl);
@@ -77,7 +104,7 @@
       if (this.readyState == this.DONE) {
         switch (this.status) {
           case 404:
-            aMorepageNode.classList.add("hide");
+            aMorepageNode.parentNode.removeChild(aMorepageNode);
             break;
           default:
             aCb(aUrl, aMorepageNode, this.responseText);
@@ -88,6 +115,9 @@
     req.send();
   }
 
+  /**
+   *
+   */
   var authenticated = document.querySelector("body.loggedin");
 
   var paginationNodes = document.querySelectorAll("#content .pagination");
@@ -100,7 +130,7 @@
     if (matches) {
       var morepage = parseInt(matches[1]) + 1;
 
-      var url = location.pathname + qsReplace(location.search, "page", morepage);
+      var url = location.pathname + replaceQsp(location.search, "page", morepage);
 
       var nodeA = document.createElement("a");
       nodeA.href = url;
@@ -119,12 +149,31 @@
 
         var node = docfrag.querySelector("#content > table > tbody > tr td");  // NOTE: Watchpoint
         if (!node) {
-          aMorepageNode.classList.add("hide");
+          aMorepageNode.parentNode.removeChild(aMorepageNode);
           return;
         }
 
         aMorepageNode.textContent = "\u2026";
 
+        var next_pageNodes = document.querySelectorAll('.next_page');
+        for (var i = 0, next_pageNode; next_pageNode = next_pageNodes[i++];) {
+          if (next_pageNode.classList.contains("disabled")) {
+            var current_pageNode = next_pageNode.parentNode.querySelector('.current');
+            if (current_pageNode) {
+              var current_page = parseInt(current_pageNode.textContent);
+
+              var nodeA = document.createElement("a");
+              nodeA.classList.add("next_page");
+              nodeA.rel = "next";
+              nodeA.href = aMorepageNode.pathname + replaceQsp(aMorepageNode.search, "page", current_page + 1) + aMorepageNode.hash;
+              nodeA.textContent = "Next \u00BB";
+
+              next_pageNode.parentNode.insertBefore(document.createTextNode(" "), next_pageNode);
+              next_pageNode.parentNode.insertBefore(nodeA, next_pageNode);
+              next_pageNode.parentNode.removeChild(next_pageNode);
+            }
+          }
+        }
       }, morepageNode);
     }
   }
@@ -139,7 +188,7 @@
     if (matches) {
       var morepage = parseInt(matches[1]) + 1;
 
-      var url = endpageNode.pathname + qsReplace(endpageNode.search, "page", morepage);
+      var url = endpageNode.pathname + replaceQsp(endpageNode.search, "page", morepage);
       pageCheck(url, function (aUrl, aAnchorNode, aReferenceNode, aResponseText) {
         var nodeA = document.createElement("a");
         nodeA.href = aUrl;
@@ -164,7 +213,7 @@
 
             var lastpostNode = aAnchorNode.parentNode.parentNode.querySelector(".lastpost");
             if (lastpostNode)
-              lastpostNode.search = qsReplace(lastpostNode.search, "page", lastpage);
+              lastpostNode.search = replaceQsp(lastpostNode.search, "page", lastpage);
           }
         }
 
