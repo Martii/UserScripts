@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.5
+// @version         1.1.6
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -39,6 +39,7 @@
 // @require https://raw.github.com/sizzlemctwizzle/GM_config/de36fb6f8ddcd727389f2d8841c31749686d9e61/gm_config.js
 
 // @grant  GM_addStyle
+// @grant  GM_deleteValue
 // @grant  GM_getResourceURL
 // @grant  GM_getValue
 // @grant  GM_log
@@ -122,26 +123,28 @@
   /**
    *
    */
-  function autoPage() {
+  function autoPaging() {
     var currPage = getQsp(gSEARCH, "page");
     if (!currPage) {
       currPage = "1";
-      direction = "next";
     }
-
 
     var currPagex = parseInt(currPage);
 
     if (direction == "prev") {
       if (currPage != 1) {
-        var prevpageNode = paginationNode.querySelector('.prev_page');
-        if (prevpageNode && !prevpageNode.classList.contains('disabled'))
+        var paginationNode = document.querySelector('.pagination');
+
+        var prev_pageNode = paginationNode.querySelector('.prev_page');
+        if (prev_pageNode && !prev_pageNode.classList.contains('disabled'))
           location.replace(replaceQsp(gSEARCH, "page", currPagex - 1));
       }
     }
-    else { // NOTE: Assume ascending as default
-      var nextpageNode = paginationNode.querySelector('.next_page');
-      if (nextpageNode && !nextpageNode.classList.contains('disabled'))
+    else {
+      var paginationNode = document.querySelector('.pagination');
+
+      var next_pageNode = paginationNode.querySelector('.next_page');
+      if (next_pageNode && !next_pageNode.classList.contains('disabled'))
         location.replace(replaceQsp(gSEARCH, "page", currPagex + 1));
     }
   }
@@ -298,8 +301,8 @@
                   spammedNodes = tbodyNode.querySelectorAll("tr.spam")
               ;
 
-              if (!gSPAMQSP && postedNodes.length > 0 && postedNodes.length == spammedNodes.length && gmcHome.get('autoPageSpams'))
-                autoPage();
+              if (!gSPAMQSP && postedNodes.length > 0 && postedNodes.length == spammedNodes.length && direction != "")
+                autoPaging();
             }
 
             break;
@@ -576,11 +579,6 @@
         "label": 'Hide tagged in mixed User areas',
         "default": false
       },
-      'autoPageSpams': {
-        "type": "checkbox",
-        "label": 'Automatically page if current page is all spams in select areas',
-        "default": false
-      },
       'clearSpams': {
         "type": "button",
         "label": 'Clear',
@@ -609,11 +607,6 @@
         "section": ["Manage Spammers List", "This section handles authors"],
         "type": "checkbox",
         "label": 'Hide tagged in mixed User areas',
-        "default": false
-      },
-      'autoPageSpammers': {
-        "type": "checkbox",
-        "label": 'Automatically page if current page is all spammers in select areas',
         "default": false
       },
       'clearSpammers': {
@@ -708,10 +701,13 @@
   var
       postids = JSON.parse(GM_getValue("postids", "{}")),
       authorids = JSON.parse(GM_getValue("authorids", "{}")),
-      lastpage = JSON.parse(GM_getValue("lastpage", "{}")),
+      lastdirection = JSON.parse(GM_getValue("lastdirection", "{}")),
       queue = [],
       idle = true
   ;
+
+  // TODO: Remove after a while
+  GM_deleteValue("lastpage");
 
   if (gISFRAMELESS && /\/scripts\/show\/398715\/?$/.test(gPATHNAME)) {
     gmcHome.open();
@@ -783,65 +779,122 @@
     }
   }
 
-  var direction;
+  var direction = (lastdirection[gPATHNAME] ? lastdirection[gPATHNAME] : "");
 
-  var paginationNode = document.querySelector('.pagination');
-  if (paginationNode) {
-    var oldpage = (lastpage[gPATHNAME] ? parseInt(lastpage[gPATHNAME]) : 1);
+  var paginationNodes = document.querySelectorAll('.pagination');
+  for (var i = 0, paginationNode; paginationNode = paginationNodes[i++];) {
 
-    var newpage = getQsp(gSEARCH, "page");
-    lastpage[gPATHNAME] = (newpage ? newpage : "1");
+    var pageNodes = paginationNode.querySelectorAll('a');
+    for (var j = 0, pageNode; pageNode = pageNodes[j++];) {
+      pageNode.addEventListener("click", function () {
+        delete lastdirection[gPATHNAME];
+        GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+      }, false);
+    }
 
-    newpage = parseInt(lastpage[gPATHNAME]);
+    var prev_pageNode = paginationNode.querySelector('.prev_page');
+    if (prev_pageNode) {
+      if (prev_pageNode.classList.contains("disabled")) {
+        var nodeSpan = document.createElement("span");
+        nodeSpan.classList.add("disabled");
+        nodeSpan.classList.add("autoprev_page");
+        nodeSpan.textContent = "\u00AB\u00AB";
 
-    if (newpage < oldpage)
-      direction = "prev";
-    else // NOTE: Assume ascending as default
-      direction = "next";
+        delete lastdirection[gPATHNAME];
+        GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+        direction = "";
 
-    GM_setValue("lastpage", JSON.stringify(lastpage, null, ""));
-  }
+        paginationNode.insertBefore(nodeSpan, prev_pageNode);
+        paginationNode.insertBefore(document.createTextNode(" "), prev_pageNode);
+      }
+      else {
+        var nodeA = document.createElement("a");
+        nodeA.classList.add("autoprev_page");
+        nodeA.href = prev_pageNode.href;
+        nodeA.textContent = "\u00AB\u00AB";
+        nodeA.addEventListener("click", function () {
+          lastdirection[gPATHNAME] = "prev";
+          GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+          direction = "prev";
+        }, false);
 
-    var countSpammersTopics = 0;
-    var topicNodes = document.querySelectorAll('#topics-index #content table tr, #content table.topics tr');
-
-    for (var i = 0, topicNode; topicNode = topicNodes[i++];) {
-      var authorNode = topicNode.querySelector('td:nth-child(2) .author');
-      if (authorNode) {
-        var matches = authorNode.href.match(/(\d+)$/);
-        if (matches) {
-          var aid = matches[1];
-
-          var thisColumn = authorNode.parentNode.parentNode;
-          if (thisColumn) {
-            var nodeA = document.createElement("a");
-            nodeA.classList.add("action");
-            nodeA.textContent = "posts";
-            nodeA.href = "/users/" + aid + "/posts";
-
-            var nodeDiv = document.createElement("div");
-            nodeDiv.classList.add("actions");
-
-            nodeDiv.appendChild(nodeA);
-            thisColumn.insertBefore(nodeDiv, thisColumn.firstChild);
-          }
-
-          for (var authorid in authorids)
-            if (aid == authorid) {
-              topicNode.classList.add("spam");
-
-              if (gmcHome.get('hideTaggedSpammers'))
-                topicNode.classList.add("hide");
-
-              countSpammersTopics++;
-              break;
-            }
-        }
+        paginationNode.insertBefore(nodeA, prev_pageNode);
+        paginationNode.insertBefore(document.createTextNode(" "), prev_pageNode);
       }
     }
 
-    if (topicNodes.length > 0 && countSpammersTopics == topicNodes.length - 1 && gmcHome.get('autoPageSpammers'))
-      autoPage();
+    var next_pageNode = paginationNode.querySelector('.next_page');
+    if (next_pageNode) {
+      if (next_pageNode.classList.contains("disabled")) {
+        var nodeSpan = document.createElement("span");
+        nodeSpan.classList.add("disabled");
+        nodeSpan.classList.add("autonext_page");
+        nodeSpan.textContent = "\u00BB\u00BB";
+
+        delete lastdirection[gPATHNAME];
+        GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+        direction = "";
+
+        paginationNode.appendChild(document.createTextNode(" "));
+        paginationNode.appendChild(nodeSpan);
+      }
+      else {
+        var nodeA = document.createElement("a");
+        nodeA.classList.add("autonext_page");
+        nodeA.href = next_pageNode.href;
+        nodeA.textContent = "\u00BB\u00BB";
+        nodeA.addEventListener("click", function () {
+          lastdirection[gPATHNAME] = "next";
+          GM_setValue("lastdirection", JSON.stringify(lastdirection, null, ""));
+          direction = "next";
+        }, false);
+
+        paginationNode.appendChild(document.createTextNode(" "));
+        paginationNode.appendChild(nodeA);
+      }
+    }
+  }
+
+  var countSpammersTopics = 0;
+  var topicNodes = document.querySelectorAll('#topics-index #content table tr, #content table.topics tr');
+
+  for (var i = 0, topicNode; topicNode = topicNodes[i++];) {
+    var authorNode = topicNode.querySelector('td:nth-child(2) .author');
+    if (authorNode) {
+      var matches = authorNode.href.match(/(\d+)$/);
+      if (matches) {
+        var aid = matches[1];
+
+        var thisColumn = authorNode.parentNode.parentNode;
+        if (thisColumn) {
+          var nodeA = document.createElement("a");
+          nodeA.classList.add("action");
+          nodeA.textContent = "posts";
+          nodeA.href = "/users/" + aid + "/posts";
+
+          var nodeDiv = document.createElement("div");
+          nodeDiv.classList.add("actions");
+
+          nodeDiv.appendChild(nodeA);
+          thisColumn.insertBefore(nodeDiv, thisColumn.firstChild);
+        }
+
+        for (var authorid in authorids)
+          if (aid == authorid) {
+            topicNode.classList.add("spam");
+
+            if (gmcHome.get('hideTaggedSpammers'))
+              topicNode.classList.add("hide");
+
+            countSpammersTopics++;
+            break;
+          }
+      }
+    }
+  }
+
+  if (topicNodes.length > 0 && countSpammersTopics == topicNodes.length - 1 && direction != "")
+    autoPaging();
 
 
   var countSpamsPosts = 0;
@@ -947,12 +1000,12 @@
         submitSpams(gRETRIES);
     }
 
-    if (!gSPAMQSP && postNodes.length > 0 && countSpamsPosts == postNodes.length && gmcHome.get('autoPageSpams'))
-      autoPage();
+    if (!gSPAMQSP && postNodes.length > 0 && countSpamsPosts == postNodes.length && direction != "")
+      autoPaging();
   }
   else {
-    if (!gSPAMQSP && postNodes.length > 0 && countSpamsPosts == postNodes.length && gmcHome.get('autoPageSpams'))
-      autoPage();
+    if (!gSPAMQSP && postNodes.length > 0 && countSpamsPosts == postNodes.length && direction != "")
+      autoPaging();
   }
 
 })();
