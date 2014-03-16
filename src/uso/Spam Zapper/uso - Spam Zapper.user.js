@@ -7,10 +7,11 @@
 // @description     Background requests for spam buttons and native USO alteration to the post when marked as spam.
 // @copyright       2013+, Marti Martz (http://userscripts.org/users/37004)
 // @contributor     Jesse Andrews (http://userscripts.org/users/2)
+// @contributor     LouCypher (http://userscripts.org/users/12)
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.9
+// @version         1.1.10
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -62,7 +63,8 @@
       gSPAMQSP = (/^(?:1)$/.test(getQsp(gSEARCH, "spam"))),
       gUSERPOSTS = /^\/users\/\d+\/posts/.test(gPATHNAME),
       gISHOMEPAGE = /^\/scripts\/show\//.test(gPATHNAME),
-      gISFRAMELESS = false
+      gISFRAMELESS = false,
+      gUSERNAME
   ;
 
   try {
@@ -506,6 +508,10 @@
    * Init
    */
 
+  var usernameNode = document.querySelector('.login_status a[href^="/home"]');
+  if (usernameNode)
+    gUSERNAME = usernameNode.textContent;
+
   /** **/
   if (typeof GM_configStruct == "undefined") {
     if (gDEBUG)
@@ -935,8 +941,15 @@
 
     if (gLOGGEDIN) {
       var spampollNode = postNode.querySelector('.body .spam_poll form input[value="SPAM"]');
-      if (spampollNode)
-        spampollNode.addEventListener("click", spamClick, true);
+      if (spampollNode) {
+        if (authorNode.textContent != gUSERNAME)
+          spampollNode.addEventListener("click", spamClick, true);
+        else {
+          spampollNode.classList.add("hide");
+          if (spampollNode.parentNode.nextSibling && spampollNode.parentNode.nextSibling.textContent)
+            spampollNode.parentNode.nextSibling.textContent = "";
+        }
+      }
 
       var hampollNode = postNode.querySelector('.body .spam_poll form input[value="NOT SPAM"]');
       if (hampollNode) {
@@ -946,17 +959,21 @@
 
       var spamNode = postNode.querySelector('form input[value="SPAM"]');
       if (spamNode) {
-        spamNode.addEventListener("click", spamClick, true);
+        if (authorNode.textContent != gUSERNAME) {
+          spamNode.addEventListener("click", spamClick, true);
 
-        var anchorNode = spamNode.parentNode.parentNode;
+          var anchorNode = spamNode.parentNode.parentNode;
 
-        var spamsNodeInput = document.createElement("input");
-        spamsNodeInput.type = "button";
-        spamsNodeInput.value = "SPAMS";
-        spamsNodeInput.addEventListener("click", spamsClick, true);
+          var spamsNodeInput = document.createElement("input");
+          spamsNodeInput.type = "button";
+          spamsNodeInput.value = "SPAMS";
+          spamsNodeInput.addEventListener("click", spamsClick, true);
 
-        anchorNode.appendChild(spamsNodeInput);
-        anchorNode.appendChild(document.createElement("p"));
+          anchorNode.appendChild(spamsNodeInput);
+          anchorNode.appendChild(document.createElement("p"));
+        }
+        else
+          spamNode.classList.add("hide");
 
         if (gSPAMQSP) {
           var hamNodeInput = document.createElement("input");
