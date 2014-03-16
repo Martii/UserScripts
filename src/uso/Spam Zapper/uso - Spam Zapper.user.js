@@ -10,7 +10,7 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.8
+// @version         1.1.9
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 
 // @include  http://userscripts.org/posts*
@@ -724,6 +724,7 @@
         '.action:hover { color: #444; text-decoration: underline !important; }',
 
         '.clip .body { display: block; max-height: 12em; overflow: auto !important; }',
+        '.spam small:not(a) { background: none repeat scroll 0 0 #fad8da; color: #666; }',
 
         '#footer-content .footer_status { margin-bottom: 1.5em; }'
 
@@ -869,16 +870,21 @@
 
         var thisColumn = authorNode.parentNode.parentNode;
         if (thisColumn) {
-          var nodeA = document.createElement("a");
-          nodeA.classList.add("action");
-          nodeA.textContent = "posts";
-          nodeA.href = "/users/" + aid + "/posts";
+          var actionsNodeDiv = thisColumn.querySelector('.actions');
+          if (!actionsNodeDiv) {
+            actionsNodeDiv = document.createElement("div");
+            actionsNodeDiv.classList.add("actions");
+            thisColumn.insertBefore(actionsNodeDiv, thisColumn.firstChild);
+          }
 
-          var nodeDiv = document.createElement("div");
-          nodeDiv.classList.add("actions");
+          if (authorNode.textContent != "by ") {
+            var nodeA = document.createElement("a");
+            nodeA.classList.add("action");
+            nodeA.textContent = "posts";
+            nodeA.href = "/users/" + aid + "/posts";
 
-          nodeDiv.appendChild(nodeA);
-          thisColumn.insertBefore(nodeDiv, thisColumn.firstChild);
+            actionsNodeDiv.appendChild(nodeA);
+          }
         }
 
         for (var authorid in authorids)
@@ -891,6 +897,16 @@
             countSpammersTopics++;
             break;
           }
+
+        if (authorNode.textContent == "by ") {
+          authorNode.outerHTML = 'by deleted user';
+
+          topicNode.classList.add("spam");
+          if (gmcHome.get('hideTaggedSpammers'))
+            topicNode.classList.add("hide");
+
+          countSpammersTopics++;
+        }
       }
     }
   }
