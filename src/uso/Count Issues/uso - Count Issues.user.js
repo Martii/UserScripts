@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.0.8
+// @version       1.0.1.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?://userscripts\.org/scripts//
@@ -2862,6 +2862,26 @@
                 /**  Move syntax highlight if present **/
                 let syntax_highlight_select = document.getElementById("syntax-highlight-select");
                 if (syntax_highlight_select) {
+                  let copy_text_button =  document.getElementById("copy-text-button");
+                  if (copy_text_button) {
+                    GM_setStyle({
+                        node: gCSS,
+                        data:
+                          [
+                            ".copy-text { margin-left: 0 !important; }"
+
+                          ].join("\n")
+                    });
+
+                    let nodeDiv = document.createElement("div");
+                    let nodeLi = document.createElement("li");
+
+                    nodeDiv.appendChild(copy_text_button);
+                    nodeLi.appendChild(nodeDiv);
+
+                    toolbarTopNode.appendChild(nodeLi);
+                  }
+
                   let syntax_highlight_button = document.getElementById("syntax-highlight-button");
 
                   if (syntax_highlight_button) {
