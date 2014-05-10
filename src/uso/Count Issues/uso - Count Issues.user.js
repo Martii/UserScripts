@@ -10,14 +10,14 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.0
+// @version       1.0.1.1esr1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
-// @include   /^https?://userscripts\.org/scripts//
-// @include   /^https?://userscripts\.org/topics//
-// @include   /^https?://userscripts\.org/reviews//
-// @exclude   /^https?://userscripts\.org/scripts/diff//
-// @exclude   /^https?://userscripts\.org/scripts/version//
+// @include   /^https?://userscripts\.org(?:\:\d+)?/scripts//
+// @include   /^https?://userscripts\.org(?:\:\d+)?/topics//
+// @include   /^https?://userscripts\.org(?:\:\d+)?/reviews//
+// @exclude   /^https?://userscripts\.org(?:\:\d+)?/scripts/diff//
+// @exclude   /^https?://userscripts\.org(?:\:\d+)?/scripts/version//
 
 // @include   http://userscripts.org/scripts/*/*
 // @include   https://userscripts.org/scripts/*/*
@@ -30,13 +30,13 @@
 // @exclude   http://userscripts.org/scripts/version/*
 // @exclude   https://userscripts.org/scripts/version/*
 
-// @updateURL   https://userscripts.org/scripts/source/69307.meta.js
-// @installURL  https://userscripts.org/scripts/source/69307.user.js
-// @downloadURL https://userscripts.org/scripts/source/69307.user.js
+// @updateURL   http://userscripts.org:8080/scripts/source/69307.meta.js
+// @installURL  http://userscripts.org:8080/scripts/source/69307.user.js
+// @downloadURL http://userscripts.org:8080/scripts/source/69307.user.js
 
-// @require https://userscripts.org/scripts/source/115323.user.js
+// @require http://userscripts.org:8080/scripts/source/115323.user.js
 // @require https://raw.github.com/einars/js-beautify/master/js/lib/beautify.js
-// @require https://userscripts.org/scripts/version/87269/575920.user.js
+// @require http://userscripts.org:8080/scripts/version/87269/575920.user.js
 // @require https://raw.github.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
 
 // @resource icon https://s3.amazonaws.com/uso_ss/icon/69307/large.png
@@ -340,7 +340,7 @@
     GM_xmlhttpRequest({
       retry: 5,
       method: "HEAD",
-      url: protocol + "//userscripts.org/scripts/show/" + aScriptid,
+      url: "/scripts/show/" + aScriptid,
       onload: function(xhr) {
         switch (xhr.status) {
           case 500:
@@ -620,7 +620,7 @@
     hookNode.classList.add("throb");
     GM_xmlhttpRequest({
       retry: 5,
-      url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + lastValueOf(mb, "version", "uso") + ".user.js",
+      url: "/scripts/version/" + scriptid + "/" + lastValueOf(mb, "version", "uso") + ".user.js",
       method: "GET",
       onload: function (xhr) {
         switch (xhr.status) {
@@ -801,7 +801,7 @@
 
       GM_xmlhttpRequest({
         method: "GET",
-        url: protocol + "//userscripts.org/scripts/version/" + scriptid + "/" + diffid + ".meta.js",
+        url: "/scripts/version/" + scriptid + "/" + diffid + ".meta.js",
         onload: function (xhr) {
           targetNode.classList.remove("throb");
           switch (xhr.status) {
@@ -815,7 +815,7 @@
 
               let names = gmcHome.get("showVersionsKeysString").split(",");
               for (let name in names) {
-                let prefix;
+                let prefix, key;
                 [key, prefix] = names[name].split(/:/).reverse();
 
                 if (!prefix && typeof diffMb[key] != "undefined")
@@ -828,11 +828,27 @@
                 targetNode.title = title;
 
               if (gmcHome.get("archiveMode")) {
+
+                let dateid = "";
+                if (gmcHome.get("archiveDate")) {
+                  let utc = new Date(diffMb["uso"]["timestamp"]);
+                  dateid = utc.toLocaleFormat(".%Y%m%d%H%M.%S"); // NOTE: Watchpoint
+                }
+
+                let hashid = "";
+                if (gmcHome.get("archiveHash")) {
+                  hashid = "." + diffMb["uso"]["hash"];
+                }
+
                 let thatNode = targetNode.previousSibling.previousSibling;
-                thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/user\.js$/, diffMb["uso"]["hash"] + ".user.js"));
-                thatNode.title = thatNode.title.replace(/user\.js$/, diffMb["uso"]["hash"] + ".user.js");
+                thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/\.user\.js$/, dateid + hashid + ".user.js"));
+                thatNode.title = thatNode.title.replace(/\.user\.js$/, dateid + hashid + ".user.js");
               }
 
+              break;
+
+            default:
+              console.log('Untrapped status code of : ' + xhr.status);
               break;
           }
         }
@@ -1181,7 +1197,7 @@
                       ev.preventDefault();
 
                       ev.target.classList.add("throb");
-                      getVersions(protocol + "//userscripts.org" + ev.target.pathname + ev.target.search);
+                      getVersions(ev.target.pathname + ev.target.search);
                     }, false);
                   }
               }
@@ -1239,7 +1255,7 @@
     let noticeNode = thisNode.parentNode;
     noticeNode.classList.add("throb");
 
-    getVersions(protocol + "//userscripts.org/scripts/versions/" + scriptid, thisNode);
+    getVersions("/scripts/versions/" + scriptid, thisNode);
   }
 
   /**
@@ -1604,8 +1620,14 @@
                         "#gmc69307home_showVersionsLocale_var,",
                         "#gmc69307home_showVersionsKeys_var,",
                         "#gmc69307home_showVersionsKeysString_var,",
+                        "{ margin-left: 2em !important; }",
+
                         "#gmc69307home_archiveMode_var",
                         "{ margin-left: 2em !important; }",
+
+                        "#gmc69307home_archiveDate_var,",
+                        "#gmc69307home_archiveHash_var",
+                        "{ margin-left: 3.5em !important; }",
 
                         "#gmc69307home_maxHeightListMd_var,",
                         "#gmc69307home_maxHeightListFinds_var",
@@ -1790,7 +1812,7 @@
       },
       'showVersionsKeys': {
           "type": 'checkbox',
-          "label": 'Show metadata block key(s) if present in tooltip <em class="gmc-yellownote">BETA</em>',
+          "label": 'Show metadata block key(s) if present in tooltip',
           "default": false
       },
       'showVersionsKeysString': {
@@ -1800,7 +1822,17 @@
       },
       'archiveMode': {
           "type": 'checkbox',
-          "label": 'Use archive mode <em class="gmc-yellownote">BETA</em>',
+          "label": 'Use archive mode',
+          "default": false
+      },
+      'archiveDate': {
+          "type": 'checkbox',
+          "label": 'Include date stamp in the filename <em class="gmc-yellownote">hover over the visible dates to retrieve the full date from the meta.js</em>',
+          "default": false
+      },
+      'archiveHash': {
+          "type": 'checkbox',
+          "label": 'Include file hash in the filename <em class="gmc-yellownote">hover over the visible dates to retrieve the sha1 hash from the meta.js</em>',
           "default": false
       },
       'showLineNumbers': {
@@ -2031,7 +2063,7 @@
         GM_xmlhttpRequest({
           retry: 5,
           method: "GET",
-          url: protocol + "//userscripts.org/scripts/issues/" + scriptid,
+          url: "/scripts/issues/" + scriptid,
           onload: function (xhr) {
             switch (xhr.status) {
               case 404:
@@ -2078,7 +2110,7 @@
      */
     GM_xmlhttpRequest({
       retry: 5,
-      url: protocol + "//userscripts.org/scripts/source/" + scriptid + ".meta.js",
+      url: "/scripts/source/" + scriptid + ".meta.js",
       method: "GET",
       onload: function (xhr) {
         switch (xhr.status) {
