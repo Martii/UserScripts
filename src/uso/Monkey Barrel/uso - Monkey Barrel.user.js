@@ -8,15 +8,15 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.10
+// @version       0.1.10.1esr1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
 
-// @include   /^https?:\/\/userscripts\.org\/?.*/
+// @include   /^https?://userscripts\.org(?::\d{1,5})?/?.*/
 
 // @include   http://userscripts.org/*
 // @include   https://userscripts.org/*
 
-// @require   https://userscripts.org/scripts/source/115323.user.js
+// @require   http://userscripts.org:8080/scripts/source/115323.user.js
 // @require   https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
 
 // @resource  gmc https://s3.amazonaws.com/uso_ss/24274/large.png
@@ -48,7 +48,7 @@ Please note this script uses native JSON and native classList which requires Fir
 
     GM_xmlhttpRequest({
       retry: 5,
-      url: location.protocol + "//" + location.host + "/topics/" + aTopicid + ".rss",
+      url: "/topics/" + aTopicid + ".rss",
       method: "GET",
       onload: function (xhr) {
         switch (xhr.status) {
@@ -74,7 +74,7 @@ Please note this script uses native JSON and native classList which requires Fir
             if (xpr && xpr.singleNodeValue) {
               let thisNode = xpr.singleNodeValue;
 
-              if (/^https?:\/\/userscripts\.org\/posts\/\d+\/?/i.test(thisNode.textContent)) {
+              if (/^https?:\/\/userscripts\.org(?::\d{1,5})?\/posts\/\d+\/?/i.test(thisNode.textContent)) {
                 let url = thisNode.textContent.replace(/http:/i, location.protocol);
                 GM_xmlhttpRequest({
                   retry: 5,
@@ -362,7 +362,7 @@ Please note this script uses native JSON and native classList which requires Fir
         }
       }
 
-      if (location.pathname.match(/\/scripts\/show\/114843/i)) {
+      if (location.pathname.match(/^\/scripts\/show\/114843/i)) {
         gmc.open(); // NOTE: First open
       }
 
@@ -520,7 +520,8 @@ Please note this script uses native JSON and native classList which requires Fir
 
           gmc.write();
 
-          gmc.fields["jsonMenus"].node.textContent = JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, " ");
+          if (gmc.isOpen)
+            gmc.fields["jsonMenus"].node.textContent = JSON.stringify(JSON.parse(gmc.get("jsonMenus")), null, " ");
         }
       }
 
