@@ -5,26 +5,28 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.23
+// @version       0.1.23.1esr1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
 
-// @include       /^https?:\/\/userscripts\.org\/.*/
-// @include       http://userscripts.org/*
-// @include       https://userscripts.org/*
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/?/
 
-// @require   https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
-// @require   https://userscripts.org/scripts/source/115323.user.js
+// @include  http://userscripts.org/*
 
-// @resource      more https://s3.amazonaws.com/uso_ss/24276/large.gif
-// @resource      uso https://s3.amazonaws.com/uso_ss/24277/large.png
-// @resource      cse https://s3.amazonaws.com/uso_ss/24338/large.png
-// @resource      gmc https://s3.amazonaws.com/uso_ss/24274/large.png
+// @include  https://userscripts.org/*
 
-// @grant         GM_deleteValue
-// @grant         GM_getResourceURL
-// @grant         GM_getValue
-// @grant         GM_log
-// @grant         GM_setValue
+// @require  https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
+// @require  http://userscripts.org:8080/scripts/source/115323.user.js
+
+// @resource  more https://s3.amazonaws.com/uso_ss/24276/large.gif
+// @resource  uso https://s3.amazonaws.com/uso_ss/24277/large.png
+// @resource  cse https://s3.amazonaws.com/uso_ss/24338/large.png
+// @resource  gmc https://s3.amazonaws.com/uso_ss/24274/large.png
+
+// @grant  GM_deleteValue
+// @grant  GM_getResourceURL
+// @grant  GM_getValue
+// @grant  GM_log
+// @grant  GM_setValue
 
 // ==/UserScript==
 
@@ -32,6 +34,7 @@
     return;
 
   let protocol = "http" + (/^https:$/i.test(location.protocol) ? "s" : "") + ":";
+  let port = /^80$/.test(location.port) ? "" : ":8080";
 
   if (typeof GM_configStruct != "undefined") {
     // Reclaim some memory
@@ -124,7 +127,7 @@
     gmc.init(
         document.body.insertBefore(document.createElement("div"), document.body.firstChild),
         ([
-            '<a href="' + protocol + '//userscripts.org/scripts/show/158922" target="_top">',
+            '<a href="/scripts/show/158922" target="_top">',
               '<img alt="searchIn" title="uso - searchIn" src="' + protocol + '//s3.amazonaws.com/uso_ss/icon/158922/large.png" />',
             '</a>',
             '<p>Options</p>',
@@ -406,7 +409,7 @@
       let inputNodeCref = document.createElement("input");
       inputNodeCref.name = "cref";
       inputNodeCref.type = "hidden";
-      inputNodeCref.value = protocol + "//userscripts.org/cse.xml";
+      inputNodeCref.value = protocol + "//userscripts.org" + port + "/cse.xml";
 
       let formNode = document.createElement("form");
       formNode.method = "get";
