@@ -11,8 +11,16 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.10
+// @version         1.1.10.1esr1
 // @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
+
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/posts/
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/topics/
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/groups/.*/topics/
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/scripts/discuss//
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/forums//
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/users/.*/posts/
+// @include  /^https?://userscripts\.org(?::\d{1,5})?/scripts/show/398715/
 
 // @include  http://userscripts.org/posts*
 // @include  http://userscripts.org/topics*
@@ -30,9 +38,9 @@
 // @include  https://userscripts.org/users/*/posts*
 // @include  https://userscripts.org/scripts/show/398715
 
-// @updateURL   https://userscripts.org/scripts/source/398715.meta.js
-// @installURL  https://userscripts.org/scripts/source/398715.user.js
-// @downloadURL https://userscripts.org/scripts/source/398715.user.js
+// @updateURL   https://userscripts.org:8080/scripts/source/398715.meta.js
+// @installURL  https://userscripts.org:8080/scripts/source/398715.user.js
+// @downloadURL https://userscripts.org:8080/scripts/source/398715.user.js
 
 // @resource icon  https://s3.amazonaws.com/uso_ss/icon/398715/large.png
 // @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
