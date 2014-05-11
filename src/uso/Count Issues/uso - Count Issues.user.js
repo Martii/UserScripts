@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.1esr3
+// @version       1.0.1.1esr4
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?://userscripts\.org(?:\:\d+)?/scripts//
@@ -975,7 +975,7 @@
                     GM_xmlhttpRequest({
                       retry: 5,
                       method: "GET",
-                      url: targetNode.protocol + "//" + targetNode.hostname + targetNode.pathname,
+                      url: targetNode.pathname,
                       onload: function (xhr) {
                         switch (xhr.status) {
                           case 404:
@@ -1060,7 +1060,7 @@
                     GM_xmlhttpRequest({
                       retry: 5,
                       method: "GET",
-                      url: targetNode.protocol + "//" + targetNode.hostname + targetNode.pathname,
+                      url: targetNode.pathname,
                       onload: function (xhr) {
                         switch (xhr.status) {
                           case 404:
