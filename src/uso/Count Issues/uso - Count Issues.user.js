@@ -10,7 +10,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.1esr2
+// @version       1.0.1.1esr3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?://userscripts\.org(?:\:\d+)?/scripts//
@@ -452,7 +452,6 @@
                 checkUSOValue(itemNode, matches[1]);
             }
             else {
-              console.log('hit');
               re = new RegExp("^file:", "i");
               matches = valued.match(re);
               if (matches)
