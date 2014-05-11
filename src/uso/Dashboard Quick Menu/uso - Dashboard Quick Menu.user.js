@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
 // ==UserScript==
 // @name          uso - Dashboard Quick Menu
@@ -7,18 +7,19 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.4
+// @version       1.0.4.1esr1
 // @icon          https://s3.amazonaws.com/uso_ss/icon/105402/large.png
-//
-//@include /^https?:\/\/userscripts\.org/.*/
+
+// @include /^https?://userscripts\.org(?::\d{1,5})?/?/
+
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
-//
-// @require https://userscripts.org/scripts/source/115323.user.js
-//
+
+// @require http://userscripts.org:8080/scripts/source/115323.user.js
+
 // @grant GM_getValue
 // @grant GM_setValue
-//
+
 // ==/UserScript==
 
 /*
@@ -32,7 +33,7 @@ Please note this script uses native JSON and native classList which requires Fir
 */
 
   // Initialize the menu
-  if (window.location.pathname == "/home") {
+  if (location.pathname == "/home") {
     let menu = {}, xpr = document.evaluate(
     "//ul[@class='subnav']//li[@class='menu']/a",
     document.body,
