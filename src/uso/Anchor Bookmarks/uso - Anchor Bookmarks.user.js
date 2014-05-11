@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
 // ==UserScript==
 // @name          uso - Anchor Bookmarks
@@ -8,19 +8,25 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.7.2
+// @version       0.5.7.3esr1
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
-//
+
+// @include /^https?://userscripts\.org(?::\d{1,5})?//
+
+// @exclude /^https?://userscripts\.org/login/
+// @exclude /^https?://userscripts\.org/scripts/diff//
+// @exclude /^https?://userscripts\.org/scripts/version//
+
 // @include http://userscripts.org/*
 // @include https://userscripts.org/*
-//
+
 // @exclude http://userscripts.org/login*
 // @exclude https://userscripts.org/login*
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
 // @exclude https://userscripts.org/scripts/version/*
-//
+
 // ==/UserScript==
 
   var img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAl2cEFnAAAAEAAAABAAXMatwwAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAlNJREFUOE+Nk+tLU3EYx+3+v6RRb3tXEAhBBDWjzK03Um+VirI0IWr3c+ZYURJJsTHnSJshdH3TtNoNZLY1zV3Y3TkvZ3rm1G1++/1+mey0ih74nHHg+X7OzvP8TgOABo1OeVLPa1Jq7X38Ca1etaXj1OsGo95J7o/TzC/YhYSz8/kc/lWRaBhfA34YTbzIGbScRECfQms6HMT0bODnL2GmhuGRISws5SEIyyD/ZI1kmusEs9EQYZoRjlFmdhgZtSOVTkAoLMPrc0Fv0LjrBNH47DZhxBK1RPDFM8Ek9mEbPF4XnctmnSCejCKeisE7FURrlxlNMg5NLRwUty2Y/BbCVGASLs9nlNZLIENFnSCVicMXCOHIOR06jQ/w/LUSL5zjuDtgwOHzPPyh78jMpVjv9oZ2SQTZXBoXuizo7b8C24dOqGx+2MZteOs7DeWzq1B0W5HLZ1kvWf0Wye2WCOYX5nDwDIfHL6+j4+FHdDxyY8x7GcMTcpjfyNEo47FINlEj2CMR0DVRQZ99FPygHO36MZgcN/Dq01H0O0xMIBSWWC89XHWCZWERrTctkJHXeOI4hjtPu3FJ/R7WdydwsXcAip5BrIorrJcMsUpyeyWCwoqAYDiJxrN6dPDXoDY7oba40X5PhUMtPCLJHNZKxVrBPomA2sXiKkLRDNpuWYmIZ8h7hhBL57G5ucGgRY5/heT2SwQ0XFwT2VPorjc21lmgXC6jUqmgWq0yaJHvgQoOMAG5yQgFAf9bYlGkgvzOOSATbeb7dIm/fc6/Q3rTZAanaPYH/jkU5snfMgQAAAAASUVORK5CYII=";
