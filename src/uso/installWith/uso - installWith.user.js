@@ -8,19 +8,19 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.3.1
+// @version       2.0.4.0
 // @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 
-// @include /^https?://userscripts.org/?$/
-// @include /^https?://userscripts\.org/scripts/
-// @include /^https?://userscripts\.org/topics//
-// @include /^https?://userscripts\.org/reviews//
-// @include /^https?://userscripts\.org/users/.+?/scripts/
-// @include /^https?://userscripts\.org/users/.+?/favorites/
-// @include /^https?://userscripts\.org/groups/\d+/scripts/
-// @include /^https?://userscripts\.org/tags//
-// @include /^https?://userscripts\.org/home/(?:scripts|favorites)/
-// @include /^https?://userscripts\.org/posts//
+// @include /^https?://userscripts.org(?::\d{1,5})?/?$/
+// @include /^https?://userscripts\.org(?::\d{1,5})?/scripts/
+// @include /^https?://userscripts\.org(?::\d{1,5})?/topics//
+// @include /^https?://userscripts\.org(?::\d{1,5})?/reviews//
+// @include /^https?://userscripts\.org(?::\d{1,5})?/users/.+?/scripts/
+// @include /^https?://userscripts\.org(?::\d{1,5})?/users/.+?/favorites/
+// @include /^https?://userscripts\.org(?::\d{1,5})?/groups/\d+/scripts/
+// @include /^https?://userscripts\.org(?::\d{1,5})?/tags//
+// @include /^https?://userscripts\.org(?::\d{1,5})?/home/(?:scripts|favorites)/
+// @include /^https?://userscripts\.org(?::\d{1,5})?/posts//
 
 // @include http://userscripts.org/
 // @include http://userscripts.org/scripts*
@@ -47,8 +47,8 @@
 // @include https://userscripts.org/posts*
 
 
-// @exclude /^https?://userscripts\.org/scripts/diff//
-// @exclude /^https?://userscripts\.org/scripts/version//
+// @exclude /^https?://userscripts\.org(?::\d{1,5})?/scripts/diff//
+// @exclude /^https?://userscripts\.org(?::\d{1,5})?/scripts/version//
 
 // @exclude http://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
@@ -56,9 +56,9 @@
 // @exclude https://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/version/*
 
-// @updateURL   https://userscripts.org/scripts/source/68219.meta.js
-// @installURL  https://userscripts.org/scripts/source/68219.user.js
-// @downloadURL https://userscripts.org/scripts/source/68219.user.js
+// @updateURL   http://userscripts.org:8080/scripts/source/68219.meta.js
+// @installURL  http://userscripts.org:8080/scripts/source/68219.user.js
+// @downloadURL http://userscripts.org:8080/scripts/source/68219.user.js
 
 // @resource icon  https://s3.amazonaws.com/uso_ss/icon/68219/large.png
 // @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
@@ -70,10 +70,11 @@
 
 // @resource list http://beta.usocheckup.dune.net/list.json
 
-// @require https://secure.dune.net/usocheckup/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
-// @require https://userscripts.org/scripts/source/61794.user.js
-// @require https://userscripts.org/scripts/source/115323.user.js
-// @require https://raw.github.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
+//@require https://secure.dune.net/usocheckup/68219.js?method=install&open=window&maxage=1&custom=yes&topicid=45479&id=usoCheckup
+//@require http://userscripts.org/scripts/source/61794.user.js
+
+// @require https://raw.githubusercontent.com/Martii/UserScripts/dc7d27fef916db3bea640139bd852b2c75a08ff8/lib/GM_setStyle/GM_setStyle.js
+// @require https://raw.githubusercontent.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
 
 // @grant GM_addStyle
 // @grant GM_deleteValue
@@ -97,6 +98,7 @@
       gJSE = !!(typeof window.wrappedJSObject == "object" && typeof window.wrappedJSObject.jQuery == "function"),
 
       gPROTOCOL = location.protocol,
+      gPORTX = /^80$/.test(location.port) ? "" : ":8080",
       gHOSTNAME = location.hostname,
       gPATHNAME = location.pathname,
       gISHOMEPAGE = /^\/scripts\/show\//.test(gPATHNAME),
@@ -214,7 +216,7 @@
   function doReport(aReports) {
     GM_xmlhttpRequest({
       retry: gRETRIES,
-      url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/topics/9.rss",
+      url: "/topics/9.rss",
       method: "GET",
       onload: function(aR) {
         switch(aR.status) {
@@ -251,9 +253,9 @@
                 matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org(\/users\/\d+)\/?/);
                 if (matches)
                   reported.push(matches[1]);
-                else if (matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org\/scripts\/show(\/\d+)\/?/))
+                else if (matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org(?::\d{1,5})?\/scripts\/show(\/\d+)\/?/))
                   reported.push(matches[1]);
-                else if (matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org(\/\d+)\/?/))
+                else if (matches = thisAnchor.href.match(/^https?:\/\/userscripts\.org(?::\d{1,5})?(\/\d+)\/?/))
                   reported.push(matches[1]);
               }
 
@@ -647,7 +649,7 @@
 
       GM_xmlhttpRequest({
         retry: gRETRIES,
-        url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/scripts/source/" + scriptId + ".user.js",
+        url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org" + gPORTX + "/scripts/source/" + scriptId + ".user.js",
         method: "HEAD",
         onload: function(aR) {
           switch(aR.status) {
@@ -1352,7 +1354,7 @@
               DDS = true;
           }
           else {
-            if (/^https?:\/\/userscripts.org\/scripts\/\w+\/\d+.*\.(?:user|meta)\.js/.test(aURL))
+            if (/^https?:\/\/userscripts.org(?::\d{1,5})?\/scripts\/\w+\/\d+.*\.(?:user|meta)\.js/.test(aURL))
               BT = true;
             else
               RHV = true;
@@ -1568,7 +1570,7 @@
         updateURL,
         aScriptId,
         /^(\d+.*\.(?:meta|user)\.js)$/,
-        /^https?:\/\/(?:.*\.)?userscripts\.org\/scripts\/source\/(\d+).*\.(meta|user)\.js/,
+        /^https?:\/\/(?:.*\.)?userscripts\.org(?::\d{1,5})?\/scripts\/source\/(\d+).*\.(meta|user)\.js/,
         function (aREL, aSSL, aISI, aRHV, aBT, aDDS) {
           if (aISI) { ISI = true; REDUCE = true; }
           if (aREL) REL = true;
@@ -2075,7 +2077,7 @@
 
             GM_xmlhttpRequest({
               retry: gRETRIES,
-              url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org/login",
+              url: "http" + ((/^https:$/i.test(gPROTOCOL) || gmcHome.get("forceInstallSecure")) ? "s" : "") + "://userscripts.org" + gPORTX + "/login",
               method: "HEAD",
               onload: function (aR) {
                 switch(aR.status) {
