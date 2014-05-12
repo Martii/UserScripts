@@ -1,7 +1,7 @@
 ## NOTES
 
 * This API library is not frozen yet
-* Return values may not be present with `@run-at document-start` in this implementation depending on the status of greasemonkey/greasemonkey#1384... In these situations use the callback object parameter instead.
+* Return values may not be present with `@run-at document-start` in this implementation depending on the status of [upstream#1384](https://github.com/greasemonkey/greasemonkey/issues/1384)... In these situations use the callback object parameter instead.
 * Comments are removed from CSS by design during validation. :)
 
 ## Overview
