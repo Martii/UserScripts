@@ -1,4 +1,3 @@
-
 (function () {
   "use strict";
 
@@ -10,34 +9,45 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.1esr4
+// @version       1.0.1.1esr5
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
-// @include   /^https?://userscripts\.org(?:\:\d+)?/scripts//
-// @include   /^https?://userscripts\.org(?:\:\d+)?/topics//
-// @include   /^https?://userscripts\.org(?:\:\d+)?/reviews//
-// @exclude   /^https?://userscripts\.org(?:\:\d+)?/scripts/diff//
-// @exclude   /^https?://userscripts\.org(?:\:\d+)?/scripts/version//
+// @include   /^https?://userscripts\.org(?::\d{1,5})?/scripts//
+// @include   /^https?://userscripts\.org(?::\d{1,5})?/topics//
+// @include   /^https?://userscripts\.org(?::\d{1,5})?/reviews//
+
+//@exclude   /^https?://userscripts\.org(?::\d{1,5})?/scripts/diff//
+//@exclude   /^https?://userscripts\.org(?::\d{1,5})?/scripts/version//
 
 // @include   http://userscripts.org/scripts/*/*
-// @include   https://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
-// @include   https://userscripts.org/topics/*
 // @include   http://userscripts.org/reviews/*
+
+// @include   https://userscripts.org/scripts/*/*
+// @include   https://userscripts.org/topics/*
 // @include   https://userscripts.org/reviews/*
+
 // @exclude   http://userscripts.org/scripts/diff/*
-// @exclude   https://userscripts.org/scripts/diff/*
 // @exclude   http://userscripts.org/scripts/version/*
+
+// @exclude   https://userscripts.org/scripts/diff/*
 // @exclude   https://userscripts.org/scripts/version/*
+
+// @include   http://userscripts.org:8080/scripts/*/*
+// @include   http://userscripts.org:8080/topics/*
+// @include   http://userscripts.org:8080/reviews/*
+
+// @exclude   http://userscripts.org:8080/scripts/diff/*
+// @exclude   http://userscripts.org:8080/scripts/version/*
 
 // @updateURL   http://userscripts.org:8080/scripts/source/69307.meta.js
 // @installURL  http://userscripts.org:8080/scripts/source/69307.user.js
 // @downloadURL http://userscripts.org:8080/scripts/source/69307.user.js
 
-// @require http://userscripts.org:8080/scripts/source/115323.user.js
+// @require https://raw.githubusercontent.com/Martii/UserScripts/dc7d27fef916db3bea640139bd852b2c75a08ff8/lib/GM_setStyle/GM_setStyle.js
 // @require https://raw.github.com/einars/js-beautify/master/js/lib/beautify.js
 // @require http://userscripts.org:8080/scripts/version/87269/575920.user.js
-// @require https://raw.github.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
+// @require https://raw.githubusercontent.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
 
 // @resource icon https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 // @resource gmc  https://s3.amazonaws.com/uso_ss/24274/large.png
@@ -841,8 +851,14 @@
                 }
 
                 let thatNode = targetNode.previousSibling.previousSibling;
-                thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/\.user\.js$/, dateid + hashid + ".user.js"));
-                thatNode.title = thatNode.title.replace(/\.user\.js$/, dateid + hashid + ".user.js");
+                if (gmcHome.get("archiveVersionLast")) {
+                  thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/\.(\d+)\.user\.js$/, dateid + hashid + ".$1.user.js"));
+                  thatNode.title = thatNode.title.replace(/\.(\d+)\.user\.js$/, dateid + hashid + ".$1.user.js");
+                }
+                else {
+                  thatNode.setAttribute("download", thatNode.getAttribute("download").replace(/\.user\.js$/, dateid + hashid + ".user.js"));
+                  thatNode.title = thatNode.title.replace(/\.user\.js$/, dateid + hashid + ".user.js");
+                }
               }
 
               break;
@@ -1625,6 +1641,7 @@
                         "#gmc69307home_archiveMode_var",
                         "{ margin-left: 2em !important; }",
 
+                        "#gmc69307home_archiveVersionLast_var,",
                         "#gmc69307home_archiveDate_var,",
                         "#gmc69307home_archiveHash_var",
                         "{ margin-left: 3.5em !important; }",
@@ -1823,6 +1840,11 @@
       'archiveMode': {
           "type": 'checkbox',
           "label": 'Use archive mode',
+          "default": false
+      },
+      'archiveVersionLast': {
+          "type": 'checkbox',
+          "label": 'Place version last in the filename before the extension <em class="gmc-yellownote">useful for automation when controlled sorting may not be available</em>',
           "default": false
       },
       'archiveDate': {
