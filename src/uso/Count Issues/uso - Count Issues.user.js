@@ -9,15 +9,15 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.1esr5
+// @version       1.0.1.1esr6
 // @icon          https://s3.amazonaws.com/uso_ss/icon/69307/large.png
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/scripts//
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/topics//
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/reviews//
 
-//@exclude   /^https?://userscripts\.org(?::\d{1,5})?/scripts/diff//
-//@exclude   /^https?://userscripts\.org(?::\d{1,5})?/scripts/version//
+// @exclude   /^https?://userscripts\.org(?::\d{1,5})?/scripts/diff//
+// @exclude   /^https?://userscripts\.org(?::\d{1,5})?/scripts/version//
 
 // @include   http://userscripts.org/scripts/*/*
 // @include   http://userscripts.org/topics/*
