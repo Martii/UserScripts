@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.1esr9
+// @version       1.0.1.1esr10
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/f97e602288fa6dff248f9011c9ac55165d409935/src/uso/Count%20Issues/res/icon48.png
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/scripts//
@@ -48,7 +48,7 @@
 // @require http://userscripts.org:8080/scripts/version/87269/575920.user.js
 
 // @resource icon   https://raw.githubusercontent.com/Martii/UserScripts/f97e602288fa6dff248f9011c9ac55165d409935/src/uso/Count%20Issues/res/icon32.png
-// @resource reload https://raw.githubusercontent.com/Martii/UserScripts/f97e602288fa6dff248f9011c9ac55165d409935/src/uso/Count%20Issues/res/reload16.png
+// @resource reload https://raw.githubusercontent.com/Martii/UserScripts/8a8104e9042ac33a13d6973e3acf9f41ace9fc76/src/uso/Count%20Issues/res/reload16.png
 // @resource gmc    https://raw.githubusercontent.com/sizzlemctwizzle/GM_config/master/gm_config_icon.png
 
 // @grant GM_getResourceURL
