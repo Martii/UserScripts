@@ -8,8 +8,8 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.4.1esr1
-// @icon          https://s3.amazonaws.com/uso_ss/icon/68219/large.png
+// @version       2.0.4.1esr2
+// @icon          https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/icon48.png
 
 // @include /^https?://userscripts.org(?::\d{1,5})?/?$/
 // @include /^https?://userscripts\.org(?::\d{1,5})?/scripts/
@@ -21,6 +21,18 @@
 // @include /^https?://userscripts\.org(?::\d{1,5})?/tags//
 // @include /^https?://userscripts\.org(?::\d{1,5})?/home/(?:scripts|favorites)/
 // @include /^https?://userscripts\.org(?::\d{1,5})?/posts//
+
+// @include http://userscripts.org:8080/
+// @include http://userscripts.org:8080/scripts*
+// @include http://userscripts.org:8080/topics/*
+// @include http://userscripts.org:8080/reviews/*
+// @include http://userscripts.org:8080/users/*/scripts*
+// @include http://userscripts.org:8080/users/*/favorites*
+// @include http://userscripts.org:8080/groups/*/scripts*
+// @include http://userscripts.org:8080/tags/*
+// @include http://userscripts.org:8080/home/scripts*
+// @include http://userscripts.org:8080/home/favorites*
+// @include http://userscripts.org:8080/posts*
 
 // @include http://userscripts.org/
 // @include http://userscripts.org/scripts*
@@ -60,13 +72,13 @@
 // @installURL  http://userscripts.org:8080/scripts/source/68219.user.js
 // @downloadURL http://userscripts.org:8080/scripts/source/68219.user.js
 
-// @resource icon  https://s3.amazonaws.com/uso_ss/icon/68219/large.png
-// @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
-// @resource usoc  https://s3.amazonaws.com/uso_ss/24278/large.png
-// @resource uso   https://s3.amazonaws.com/uso_ss/24277/large.png
-// @resource clear https://s3.amazonaws.com/uso_ss/24273/large.gif
-// @resource more  https://s3.amazonaws.com/uso_ss/24276/large.gif
-// @resource less  https://s3.amazonaws.com/uso_ss/24275/large.gif
+// @resource icon  https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/icon32.png
+// @resource gmc   https://raw.githubusercontent.com/sizzlemctwizzle/GM_config/master/gm_config_icon.png
+// @resource usoc  https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/usoc16.png
+// @resource uso   https://raw.githubusercontent.com/Martii/UserScripts/25f7560148e78b41d48492bc81ac882c11ef71b1/res/compatibilityMatrix/uso16.png
+// @resource clear https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/clear1.gif
+// @resource more  https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/more9x5.gif
+// @resource less  https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/less5x9.gif
 
 // @resource list http://beta.usocheckup.dune.net/list.json
 
