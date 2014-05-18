@@ -8,8 +8,8 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.4.1esr2
-// @icon          https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/icon48.png
+// @version       2.0.4.1esr3
+// @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/installWith/res/icon48.png
 
 // @include /^https?://userscripts.org(?::\d{1,5})?/?$/
 // @include /^https?://userscripts\.org(?::\d{1,5})?/scripts/
@@ -72,13 +72,13 @@
 // @installURL  http://userscripts.org:8080/scripts/source/68219.user.js
 // @downloadURL http://userscripts.org:8080/scripts/source/68219.user.js
 
-// @resource icon  https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/icon32.png
+// @resource icon  https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/installWith/res/icon32.png
 // @resource gmc   https://raw.githubusercontent.com/sizzlemctwizzle/GM_config/master/gm_config_icon.png
 // @resource usoc  https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/usoc16.png
-// @resource uso   https://raw.githubusercontent.com/Martii/UserScripts/25f7560148e78b41d48492bc81ac882c11ef71b1/res/compatibilityMatrix/uso16.png
-// @resource clear https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/clear1.gif
-// @resource more  https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/more9x5.gif
-// @resource less  https://raw.githubusercontent.com/Martii/UserScripts/6b504402560dccd02e19156401efef3d2b235c87/src/uso/installWith/res/less5x9.gif
+// @resource uso   https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/uso16.png
+// @resource clear https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/installWith/res/clear1.gif
+// @resource more  https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/installWith/res/more9x5.gif
+// @resource less  https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/installWith/res/less5x9.gif
 
 // @resource list http://beta.usocheckup.dune.net/list.json
 
