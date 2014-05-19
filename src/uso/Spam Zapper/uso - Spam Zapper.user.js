@@ -11,8 +11,8 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.10.1esr2
-// @icon            https://s3.amazonaws.com/uso_ss/icon/398715/large.png
+// @version         1.1.11
+// @icon            https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Spam%20Zapper/res/icon48.png
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/posts/
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/topics/
@@ -21,6 +21,14 @@
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/forums//
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/users/.*/posts/
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/scripts/show/398715/
+
+// @include  http://userscripts.org:8080/posts*
+// @include  http://userscripts.org:8080/topics*
+// @include  http://userscripts.org:8080/groups/*/topics*
+// @include  http://userscripts.org:8080/scripts/discuss/*
+// @include  http://userscripts.org:8080/forums/*
+// @include  http://userscripts.org:8080/users/*/posts*
+// @include  http://userscripts.org:8080/scripts/show/398715
 
 // @include  http://userscripts.org/posts*
 // @include  http://userscripts.org/topics*
@@ -38,14 +46,10 @@
 // @include  https://userscripts.org/users/*/posts*
 // @include  https://userscripts.org/scripts/show/398715
 
-// @updateURL   http://userscripts.org:8080/scripts/source/398715.meta.js
-// @installURL  http://userscripts.org:8080/scripts/source/398715.user.js
-// @downloadURL http://userscripts.org:8080/scripts/source/398715.user.js
+// @resource icon  https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Spam%20Zapper/res/icon32.png
+// @resource gmc   https://raw.githubusercontent.com/sizzlemctwizzle/GM_config/master/gm_config_icon.png
 
-// @resource icon  https://s3.amazonaws.com/uso_ss/icon/398715/large.png
-// @resource gmc   https://s3.amazonaws.com/uso_ss/24274/large.png
-
-// @require https://raw.github.com/sizzlemctwizzle/GM_config/44d73b4a5418a6fb6a0e03c59ae1dc173eb4e353/gm_config.js
+// @require https://raw.githubusercontent.com/sizzlemctwizzle/GM_config/44d73b4a5418a6fb6a0e03c59ae1dc173eb4e353/gm_config.js
 
 // @grant  GM_addStyle
 // @grant  GM_deleteValue
