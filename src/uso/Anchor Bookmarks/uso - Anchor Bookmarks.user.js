@@ -8,23 +8,31 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.5.7.3esr1
+// @version       0.5.8
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include /^https?://userscripts\.org(?::\d{1,5})?//
 
-// @exclude /^https?://userscripts\.org/login/
-// @exclude /^https?://userscripts\.org/scripts/diff//
-// @exclude /^https?://userscripts\.org/scripts/version//
+// @exclude /^https?://userscripts\.org(?::\d{1,5})?/login/
+// @exclude /^https?://userscripts\.org(?::\d{1,5})?/scripts/diff//
+// @exclude /^https?://userscripts\.org(?::\d{1,5})?/scripts/version//
+
+// @include http://userscripts.org:8080/*
 
 // @include http://userscripts.org/*
+
 // @include https://userscripts.org/*
 
+// @exclude http://userscripts.org:8080/login*
+// @exclude http://userscripts.org:8080/scripts/diff/*
+// @exclude http://userscripts.org:8080/scripts/version/*
+
 // @exclude http://userscripts.org/login*
-// @exclude https://userscripts.org/login*
 // @exclude http://userscripts.org/scripts/diff/*
-// @exclude https://userscripts.org/scripts/diff/*
 // @exclude http://userscripts.org/scripts/version/*
+
+// @exclude https://userscripts.org/login*
+// @exclude https://userscripts.org/scripts/diff/*
 // @exclude https://userscripts.org/scripts/version/*
 
 // ==/UserScript==
