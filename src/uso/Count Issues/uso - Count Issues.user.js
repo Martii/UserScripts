@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.1esr11
+// @version       1.0.1.1esr12
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Count%20Issues/res/icon48.png
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/scripts//
@@ -40,12 +40,10 @@
 // @exclude   http://userscripts.org:8080/scripts/diff/*
 // @exclude   http://userscripts.org:8080/scripts/version/*
 
-// @updateURL   http://userscripts.org:8080/scripts/source/69307.meta.js
-
 // @require https://raw.githubusercontent.com/Martii/UserScripts/dc7d27fef916db3bea640139bd852b2c75a08ff8/lib/GM_setStyle/GM_setStyle.js
 // @require https://raw.githubusercontent.com/Martii/GM_config/a0d0066ffaefb5fbb3402c3d46ac705e8b4124d8/gm_config.js
 // @require https://raw.githubusercontent.com/einars/js-beautify/master/js/lib/beautify.js
-// @require http://userscripts.org:8080/scripts/version/87269/575920.user.js
+// @require https://raw.githubusercontent.com/w35l3y/userscripts/4d5f3987e5c8213eb824f352e318a1cc13977d7a/includes/87269.user.js
 
 // @resource icon   https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Count%20Issues/res/icon32.png
 // @resource reload https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Count%20Issues/res/reload16.png
