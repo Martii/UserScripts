@@ -5,22 +5,25 @@
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.23.1esr1
-// @icon          https://s3.amazonaws.com/uso_ss/icon/158922/large.png
+// @version       0.1.24
+// @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Searchin%27/res/icon48.png
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/?/
+
+// @include  http://userscripts.org:8080/*
 
 // @include  http://userscripts.org/*
 
 // @include  https://userscripts.org/*
 
-// @require  https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
-// @require  http://userscripts.org:8080/scripts/source/115323.user.js
+// @require  https://raw.githubusercontent.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
+// @require  https://raw.githubusercontent.com/Martii/UserScripts/master/lib/GM_setStyle/GM_setStyle.js
 
-// @resource  more https://s3.amazonaws.com/uso_ss/24276/large.gif
-// @resource  uso https://s3.amazonaws.com/uso_ss/24277/large.png
-// @resource  cse https://s3.amazonaws.com/uso_ss/24338/large.png
-// @resource  gmc https://s3.amazonaws.com/uso_ss/24274/large.png
+// @resource  icon https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Searchin%27/res/icon32.png
+// @resource  more https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Searchin%27/res/more9x5.gif
+// @resource  uso  https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/uso16.png
+// @resource  cse  https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Searchin%27/res/cse16.png
+// @resource  gmc  https://raw.githubusercontent.com/sizzlemctwizzle/GM_config/master/gm_config_icon.png
 
 // @grant  GM_deleteValue
 // @grant  GM_getResourceURL
@@ -60,7 +63,7 @@
     gmcHome.init(
         divNode,
         ([
-            '<img alt="searchIn" title="uso - searchIn" src="' + protocol + '//s3.amazonaws.com/uso_ss/icon/158922/large.png" />',
+            '<img alt="searchIn" title="uso - searchIn" src="' + GM_getResourceURL("icon") + '" />',
             '<p>Preferences</p>',
             '<span>',
               '<a href="' + protocol + '//github.com/sizzlemctwizzle/GM_config/wiki">',
@@ -128,7 +131,7 @@
         document.body.insertBefore(document.createElement("div"), document.body.firstChild),
         ([
             '<a href="/scripts/show/158922" target="_top">',
-              '<img alt="searchIn" title="uso - searchIn" src="' + protocol + '//s3.amazonaws.com/uso_ss/icon/158922/large.png" />',
+              '<img alt="searchIn" title="uso - searchIn" src="' + GM_getResourceURL("icon") + '" />',
             '</a>',
             '<p>Options</p>',
             '<span>',
