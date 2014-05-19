@@ -8,9 +8,11 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC) Attribution Non-Commercial Share Alike; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.2.0
+// @version       0.2.1
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/topics//
+
+// @include  http://userscripts.org:8080/topics/*
 
 // @include  http://userscripts.org/topics/*
 
@@ -18,14 +20,9 @@
 
 // ==/UserScript==
 
-/*
-NOTE: This script uses object existence tests on the wrappedJSObject, but NEVER CALLS those objects
-
-CHANGELOG
-=========
-http://userscripts.org/topics/26205
-
-*/
+/**
+ * NOTE: This script uses object existence tests on the wrappedJSObject, but NEVER CALLS those objects
+ */
 
   function cancelReply(aEv) {
     aEv.preventDefault();
