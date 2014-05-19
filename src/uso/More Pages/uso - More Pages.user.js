@@ -9,12 +9,15 @@
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.9
+// @version       1.0.10
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/?/
 
+// @include  http://userscripts.org:8080/*
+
 // @include  http://userscripts.org/*
+
 // @include  https://userscripts.org/*
 
 // @grant  none
