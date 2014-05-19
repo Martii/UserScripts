@@ -7,30 +7,27 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.4.1esr1
-// @icon          https://s3.amazonaws.com/uso_ss/icon/105402/large.png
+// @version       1.0.5
+// @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Dashboard%20Quick%20Menu/res/icon48.png
 
 // @include /^https?://userscripts\.org(?::\d{1,5})?/?/
 
+// @include http://userscripts.org:8080/*
+
 // @include http://userscripts.org/*
+
 // @include https://userscripts.org/*
 
-// @require http://userscripts.org:8080/scripts/source/115323.user.js
+// @require https://raw.githubusercontent.com/Martii/UserScripts/master/lib/GM_setStyle/GM_setStyle.js
 
 // @grant GM_getValue
 // @grant GM_setValue
 
 // ==/UserScript==
 
-/*
-
-CHANGELOG
-=========
-http://userscripts.org/topics/77715
-
-Please note this script uses native JSON and native classList which requires Firefox 3.6.x+
-
-*/
+/**
+ * NOTE: this script uses native JSON and native classList which requires Firefox 3.6.x+
+ */
 
   // Initialize the menu
   if (location.pathname == "/home") {
