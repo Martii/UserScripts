@@ -8,18 +8,21 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.10.1esr1
-// @icon          https://s3.amazonaws.com/uso_ss/icon/114843/large.png
+// @version       0.1.11
+// @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Monkey%20Barrel/res/icon48.png
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/?.*/
 
+// @include   http://userscripts.org:8080/*
+
 // @include   http://userscripts.org/*
+
 // @include   https://userscripts.org/*
 
-// @require   http://userscripts.org:8080/scripts/source/115323.user.js
-// @require   https://raw.github.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
+// @require   https://raw.githubusercontent.com/Martii/UserScripts/master/lib/GM_setStyle/GM_setStyle.js
+// @require   https://raw.githubusercontent.com/Martii/GM_config/42d6367b3c8ccc1b8f32af7b23fce5078716ff14/gm_config.js
 
-// @resource  gmc https://s3.amazonaws.com/uso_ss/24274/large.png
+// @resource  gmc https://raw.githubusercontent.com/sizzlemctwizzle/GM_config/master/gm_config_icon.png
 
 // @grant GM_addStyle
 // @grant GM_getResourceURL
@@ -31,10 +34,6 @@
 // ==/UserScript==
 
 /*
-
-CHANGELOG
-=========
-http://userscripts.org/topics/89961
 
 Please note this script uses native JSON and native classList which requires Firefox 3.6.x+ and Greasemonkey 0.9.8+
 
