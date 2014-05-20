@@ -8,7 +8,7 @@
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       0.4.0
+// @version       0.4.1
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/screen.css/res/icon48.png
 
 // @include /^https?://userscripts\.org(?::\d{1,5})?/?/
@@ -55,6 +55,16 @@
     data:
       [
         "#root #content .posts tbody tr.spacer:first-child { display: none; }"
+
+      ].join("\n")
+  });
+
+  // Fix tag cloud of userscripts
+  GM_setStyle({
+    node: gCSS,
+    data:
+      [
+        "body#users-show #tag-cloud h4 { margin-left: 0; }"
 
       ].join("\n")
   });
