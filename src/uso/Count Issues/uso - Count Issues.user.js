@@ -9,7 +9,7 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.1.1esr12
+// @version       1.0.2
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Count%20Issues/res/icon48.png
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/scripts//
@@ -57,8 +57,6 @@
 // @grant GM_xmlhttpRequest
 
 // ==/UserScript==
-
-  /** CHANGELOG: http://userscripts.org/topics/46434#posts-last **/
 
   if (!document || !document.body || location.hash == "#posts-last")
     return;
@@ -450,7 +448,7 @@
         switch (aName) {
           case "downloadURL":
           case "installURL":
-            re = new RegExp("^(?:https?:\\/\\/userscripts\\.org(?:\\:\\d+)?\\/scripts\\/source\\/)?(\\d+)\\.user\\.js", "i");
+            re = new RegExp("^(?:https?:\\/\\/userscripts\\.org(?:\\:\\d{1,5})?\\/scripts\\/source\\/)?(\\d+)\\.user\\.js", "i");
             matches = valued.match(re);
             if (matches && matches[1] == scriptid) {
               let itemNode = displayValue(nodeUl, nodeLi, valued, valued, "/scripts/show/" + matches[1]);
@@ -495,7 +493,7 @@
               displayValue(nodeUl, nodeLi, valued, valued);
             break;
           case "require":
-            re = new RegExp("^(?:https?:\\/\\/(?:www\\.|greasefire\\.)?userscripts\\.org(?:\\:\\d+)?\\/scripts\\/(?:source|version)\\/)?(\\d+)(?:\\/\\d+)?\\.(?:user|meta)\\.js", "i");
+            re = new RegExp("^(?:https?:\\/\\/(?:www\\.|greasefire\\.)?userscripts\\.org(?:\\:\\d{1,5})?\\/scripts\\/(?:source|version)\\/)?(\\d+)(?:\\/\\d+)?\\.(?:user|meta)\\.js", "i");
             matches = valued.match(re);
             if (matches) {
               let itemNode = displayValue(nodeUl, nodeLi, valued, valued, "/scripts/show/" + matches[1]);
@@ -512,7 +510,7 @@
                 resourceName = matches[1],
                 url = matches[2]
               ;
-              re = new RegExp("^(?:https?:\\/\\/(?:www\\.|greasefire\\.)?userscripts\\.org(?:\\:\\d+)?\\/scripts\\/(?:source|version)\\/)?(\\d+)(?:\\/\\d+)?\\.(?:user|meta)\\.js", "i");
+              re = new RegExp("^(?:https?:\\/\\/(?:www\\.|greasefire\\.)?userscripts\\.org(?:\\:\\d{1,5})?\\/scripts\\/(?:source|version)\\/)?(\\d+)(?:\\/\\d+)?\\.(?:user|meta)\\.js", "i");
               matches = url.match(re);
               if (matches) {
                 let itemNode = displayValueResource(nodeUl, nodeLi, resourceName, url, url, "/scripts/show/" + matches[1]);
@@ -527,7 +525,7 @@
             }
             break;
           case "updateURL":
-            re = new RegExp("^(?:https?:\\/\\/userscripts\\.org(?:\\:\\d+)?\\/scripts\\/source\\/)?(\\d+)\\.meta\\.js", "i");
+            re = new RegExp("^(?:https?:\\/\\/userscripts\\.org(?:\\:\\d{1,5})?\\/scripts\\/source\\/)?(\\d+)\\.meta\\.js", "i");
             matches = valued.match(re);
             if (matches && matches[1] == scriptid) {
               let itemNode = displayValue(nodeUl, nodeLi, valued, valued, "/scripts/show/" + matches[1]);
