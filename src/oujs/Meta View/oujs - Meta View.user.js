@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       1.0.0rc4pre
+// @version       1.0.0rc5pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  /^https?://openuserjs\.org(?::\d{1,5})?/scripts//
@@ -90,7 +90,7 @@
 
       var sr_install_buttonNode = document.querySelector('.sr-install-button');
       if (sr_install_buttonNode) {
-        var installURL = sr_install_buttonNode.parentNode.href;
+        var installURL = sr_install_buttonNode.parentNode.pathname;
 
         var sr_meta_buttonNode = document.createElement('button');
         sr_meta_buttonNode.classList.add('sr-button');
