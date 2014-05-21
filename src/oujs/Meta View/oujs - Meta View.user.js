@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       1.0.0rc2pre
+// @version       1.0.0rc3pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  /^https?://openuserjs\.org(?::\d{1,5})?/scripts//
@@ -86,7 +86,7 @@
   else {
     var sr_source_buttonNode = document.querySelector('.sr-source-button');
     if (sr_source_buttonNode) {
-      var hookNode = sr_source_buttonNode.parentNode;
+      var hookNode = sr_source_buttonNode.parentNode.parentNode;
 
       var sr_install_buttonNode = document.querySelector('.sr-install-button');
       if (sr_install_buttonNode) {
@@ -158,7 +158,13 @@
           var thisNode = ev.target;
         });
 
-        hookNode.appendChild(sr_meta_buttonNode);
+        var NodeA = document.createElement('a');
+        NodeA.classList.add('button-anchor');
+        NodeA.href = sr_source_buttonNode.parentNode.pathname.replace(/\/source$/, '/meta'); // NOTE: Watchpoint
+
+        NodeA.appendChild(sr_meta_buttonNode);
+
+        hookNode.insertBefore(NodeA, sr_source_buttonNode.parentNode.nextSibling.nextSibling);
       }
     }
   }
