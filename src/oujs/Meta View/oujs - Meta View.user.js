@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       1.0.0rc5pre
+// @version       1.0.0rc6pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @include  /^https?://openuserjs\.org(?::\d{1,5})?/scripts//
@@ -35,6 +35,12 @@
   if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
     var pNode = document.querySelector('.content-box p');
     if (pNode && /The\sfile\sor\sfolder\swas\snot\sfound/.test(pNode.textContent)) {
+        var titleNode = document.head.querySelector('title');
+        if (titleNode) {
+          var title = GM_getValue('scriptTitle', '');
+          titleNode.textContent = 'Meta View ' + (title ? ' ' + title : '');
+        }
+
         var hookNode = pNode.parentNode;
 
         // Reset div
@@ -71,12 +77,6 @@
 
           ].join('\n')
         );
-
-        var titleNode = document.head.querySelector('title');
-        if (titleNode) {
-          var title = GM_getValue('scriptTitle', '');
-          titleNode.textContent = 'Meta View ' + (title ? ' ' + title : '');
-        }
     }
 
     // Erase keys
