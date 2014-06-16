@@ -7,7 +7,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.1
+// @version       0.0.2
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 
 // @include   http://www.example.com/*
@@ -21,6 +21,3 @@
 })();
 
 // Attempt to trigger a syncop for OUJS
-
-// Attempt to trigger a syncop for OUJS using application/json from GH
-
