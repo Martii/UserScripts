@@ -4,12 +4,15 @@
 // ==UserScript==
 // @name          oujs - Meta View
 // @namespace     https://openuserjs.org/users/Marti
-// @description   Adds a script navigation link next to Source Code titled View Meta and opens a phantom url to show the detected metadata block
+// @description   Adds a script navigation link next to Source Code titled `Meta` and opens a phantom url to show the detected metadata block
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       2.0.0rc2pre
+// @version       2.0.0rc3pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+
+// @homepageURL  https://openuserjs.org/scripts/marti/httpsopenuserjs.orgusersMarti/oujs_-_Meta_View
+// @supportURL   https://openuserjs.org/scripts/marti/httpsopenuserjs.orgusersMarti/oujs_-_Meta_View/issues
 
 // @include  /^https?://openuserjs\.org(?::\d{1,5})?/scripts//
 
@@ -28,7 +31,7 @@
       var titleNode = document.head.querySelector('title');
       if (titleNode) {
         var title = GM_getValue('scriptTitle', '');
-        titleNode.textContent = 'Meta View ' + (title ? ' ' + title : '');
+        titleNode.textContent = 'Meta ' + (title ? ' ' + title : '');
       }
 
       var hookNode = panelBodyNode;
@@ -72,7 +75,7 @@
 
         var NodeA = document.createElement('a');
         NodeA.href = sourceNode.pathname.replace(/\/source$/, '/meta'); // NOTE: Watchpoint
-        NodeA.textContent = "View Meta";
+        NodeA.textContent = "Meta";
 
 
         NodeA.addEventListener('click', function (ev) {
