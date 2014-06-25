@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       2.0.0rc3pre
+// @version       2.0.0rc4pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @homepageURL  https://openuserjs.org/scripts/marti/httpsopenuserjs.orgusersMarti/oujs_-_Meta_View
@@ -91,31 +91,33 @@
               console.log('META VIEW REQUEST SUMMARY');
 
               console.group();
+                console.log(
+                  [
+                    '',
+                    xhr.status,
+                    xhr.statusText,
+                    xhr.readyState,
+                    xhr.responseHeaders,
+                    xhr.finalUrl,
+                    ''
 
-              console.log(
-                [
-                  '',
-                  xhr.status,
-                  xhr.statusText,
-                  xhr.readyState,
-                  xhr.responseHeaders,
-                  xhr.finalUrl,
-                  ''
-
-                ].join('\n')
-              );
-
+                  ].join('\n')
+                );
               console.groupEnd();
 
-              GM_setValue('responseText', xhr.responseText);
+              switch (xhr.status) {
+                case 200:
+                  GM_setValue('responseText', xhr.responseText);
 
-              var scriptTitleNode = document.querySelector('h2.page-heading a.script-name');
-              if (scriptTitleNode)
-                GM_setValue('scriptTitle', scriptTitleNode.textContent.trim());
-              else
-                GM_setValue('scriptTitle', '');
+                  var scriptTitleNode = document.querySelector('h2.page-heading a.script-name');
+                  if (scriptTitleNode)
+                    GM_setValue('scriptTitle', scriptTitleNode.textContent.trim());
+                  else
+                    GM_setValue('scriptTitle', '');
 
-              location.pathname += '/meta';
+                  location.pathname += '/meta';
+                  break;
+              }
             }
           });
         });
