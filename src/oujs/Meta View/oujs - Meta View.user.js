@@ -8,15 +8,17 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       2.0.0rc4pre
+// @version       2.0.0rc5pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @homepageURL  https://openuserjs.org/scripts/marti/httpsopenuserjs.orgusersMarti/oujs_-_Meta_View
 // @supportURL   https://openuserjs.org/scripts/marti/httpsopenuserjs.orgusersMarti/oujs_-_Meta_View/issues
 
 // @include  /^https?://openuserjs\.org(?::\d{1,5})?/scripts//
+// @include  /^http://localhost(?::\d{1,5})?/scripts//
 
-// @include  https://openuserjs.org/scripts/*/*/*
+// @include  https://openuserjs.org/scripts/*/*
+// @include  http://localhost:8080/scripts/*/*
 
 // @grant  GM_deleteValue
 // @grant  GM_getValue
