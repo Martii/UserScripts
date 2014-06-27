@@ -1,18 +1,18 @@
 (function() {
-  'use strict'
+  'use strict';
 
 // ==UserScript==
 // @name          oujs - Meta View
 // @namespace     https://openuserjs.org/users/Marti
-// @description   Adds a script navigation link next to Source Code titled `Meta` and opens a phantom url to show the detected metadata block
+// @description   Adds a script navigation link next to `Source Code` titled `Meta` and opens a phantom url to show the detected metadata block
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       2.0.0rc5pre
+// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @version       2.0.0rc6pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
-// @homepageURL  https://openuserjs.org/scripts/marti/httpsopenuserjs.orgusersMarti/oujs_-_Meta_View
-// @supportURL   https://openuserjs.org/scripts/marti/httpsopenuserjs.orgusersMarti/oujs_-_Meta_View/issues
+// @homepageURL  https://openuserjs.org/scripts/marti/oujs_-_Meta_View
+// @supportURL   https://openuserjs.org/scripts/marti/oujs_-_Meta_View/issues
 
 // @include  /^https?://openuserjs\.org(?::\d{1,5})?/scripts//
 // @include  /^http://localhost(?::\d{1,5})?/scripts//
