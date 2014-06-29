@@ -5,9 +5,9 @@
 // @namespace     http://userscripts.org/users/37004
 // @description   Enables user dropdown menu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.5
+// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @version       1.0.6
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Dashboard%20Quick%20Menu/res/icon48.png
 
 // @include /^https?://userscripts\.org(?::\d{1,5})?/?/
