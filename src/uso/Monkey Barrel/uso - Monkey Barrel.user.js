@@ -6,9 +6,9 @@
 // @namespace     http://userscripts.org/users/37004
 // @description   Enhanced menu system for Userscripts.org
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.1.11
+// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @version       0.1.12
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Monkey%20Barrel/res/icon48.png
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/?.*/
