@@ -9,9 +9,9 @@
 // @contributor     Jesse Andrews (http://userscripts.org/users/2)
 // @contributor     LouCypher (http://userscripts.org/users/12)
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
-// @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version         1.1.11
+// @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @version         1.1.12
 // @icon            https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Spam%20Zapper/res/icon48.png
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/posts/
