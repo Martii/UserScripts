@@ -9,8 +9,12 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       1.0.3
+// @version       1.0.4
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Count%20Issues/res/icon48.png
+
+// @supportURL http://userscripts.org/topics/46432
+// @homepageURL https://openuserjs.org/scripts/Marti/uso_-_Count_Issues
+// @homepageURL http://userscripts.org/scripts/show/69307
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/scripts//
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/topics//
