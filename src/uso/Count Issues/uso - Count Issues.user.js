@@ -7,9 +7,9 @@
 // @description   Counts issues on USO
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       1.0.2
+// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @version       1.0.3
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Count%20Issues/res/icon48.png
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/scripts//
