@@ -4,8 +4,9 @@
 // @namespace     http://userscripts.org/users/37004
 // @description   Enhances and moves the search box into the mainmenu
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
+// @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.24
+// @version       0.1.25
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Searchin%27/res/icon48.png
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/?/
