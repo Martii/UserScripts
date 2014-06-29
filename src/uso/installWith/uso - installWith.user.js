@@ -6,9 +6,9 @@
 // @namespace     http://userscripts.org/users/37004
 // @description   Adds option to install script with an icon and/or updater plus the original script advisor. "So easy, a cavemonkey can do it"
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @version       2.0.4.1esr3
+// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @version       2.0.4.1esr4
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/installWith/res/icon48.png
 
 // @include /^https?://userscripts.org(?::\d{1,5})?/?$/
