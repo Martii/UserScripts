@@ -8,8 +8,13 @@
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.0.4.1esr4
+// @version       2.0.4.1esr5
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/installWith/res/icon48.png
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/installWith
+// @homepageURL   https://openuserjs.org/scripts/marti/uso_-_installWith
+// @homepageURL   http://userscripts.org/scripts/show/68219
+// @supportURL    http://userscripts.org/topics/45480
 
 // @include /^https?://userscripts.org(?::\d{1,5})?/?$/
 // @include /^https?://userscripts\.org(?::\d{1,5})?/scripts/
