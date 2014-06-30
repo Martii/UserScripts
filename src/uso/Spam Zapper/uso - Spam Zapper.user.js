@@ -11,8 +11,13 @@
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version         1.1.12
+// @version         1.1.13
 // @icon            https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Spam%20Zapper/res/icon48.png
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/Spam%20Zapper
+// @homepageURL   https://openuserjs.org/scripts/Marti/uso_-_Spam_Zapper
+// @homepageURL   http://userscripts.org/scripts/show/398715
+// @supportURL    http://userscripts.org/topics/197997
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/posts/
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/topics/
