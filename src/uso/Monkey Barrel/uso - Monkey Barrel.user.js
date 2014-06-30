@@ -8,8 +8,13 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.12
+// @version       0.1.13
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Monkey%20Barrel/res/icon48.png
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/Monkey%20Barrel
+// @homepageURL   https://openuserjs.org/scripts/Marti/uso_-_Monkey_Barrel
+// @homepageURL   http://userscripts.org/scripts/show/114843
+// @supportURL    http://userscripts.org/topics/89959
 
 // @include   /^https?://userscripts\.org(?::\d{1,5})?/?.*/
 
