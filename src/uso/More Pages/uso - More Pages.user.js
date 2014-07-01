@@ -9,8 +9,13 @@
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @icon          http://www.gravatar.com/avatar.php?gravatar_id=e615596ec6d7191ab628a1f0cec0006d&r=PG&s=48&default=identicon
-// @version       1.0.11
+// @version       1.0.12
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/More%20Pages
+// @homepageURL   https://openuserjs.org/scripts/Marti/uso_-_More_Pages
+// @homepageURL   http://userscripts.org/scripts/show/385863
+// @supportURL    http://userscripts.org/topics/190793
 
 // @include  /^https?://userscripts\.org(?::\d{1,5})?/?/
 
