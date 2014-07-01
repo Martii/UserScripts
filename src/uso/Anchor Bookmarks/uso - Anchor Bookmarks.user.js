@@ -8,8 +8,13 @@
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.5.9
+// @version       0.5.10
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/Anchor%20Bookmarks
+// @homepageURL   https://openuserjs.org/scripts/Marti/uso_-_Anchor_Bookmarks
+// @homepageURL   http://userscripts.org/scripts/show/69725
+// @supportURL    http://userscripts.org/topics/46795
 
 // @include /^https?://userscripts\.org(?::\d{1,5})?//
 
