@@ -1,10 +1,14 @@
-[&#x2B06;](#body "Top") [&#x2B07;](#footer "Bottom") [&#x21EA;](#user-content "Top of User Content")
+[toTop]: #body "Top"
+[toBottom]: #footer "Bottom"
+[toUserContent]: #user-content "Top of User Content"
+
+[&#x2B06;][toTop] [&#x2B07;][toBottom] [&#x21EA;][toUserContent]
 
 ## ![](https://raw.githubusercontent.com/Martii/UserScripts/master/res/info16.png) [CHANGELOG](https://github.com/Martii/UserScripts/commits/master/lib/GM_setStyle)
 
 * *No miscellaneous notes at this time*
 
-[&#x2B06;](#body "Top") [&#x2B07;](#footer "Bottom") [&#x21EA;](#user-content "Top of User Content")
+[&#x2B06;][toTop] [&#x2B07;][toBottom] [&#x21EA;][toUserContent]
 
 ## ![](https://raw.githubusercontent.com/Martii/UserScripts/master/res/info16.png) NOTES
 
@@ -12,7 +16,7 @@
 * Return values may not be present with `@run-at document-start` in this implementation depending on the status of [upstream#1384](https://github.com/greasemonkey/greasemonkey/issues/1384)... In these situations use the callback object parameter instead.
 * Comments are removed from CSS by design during validation. :)
 
-[&#x2B06;](#body "Top") [&#x2B07;](#footer "Bottom") [&#x21EA;](#user-content "Top of User Content")
+[&#x2B06;][toTop] [&#x2B07;][toBottom] [&#x21EA;][toUserContent]
 
 ## ![](https://raw.githubusercontent.com/Martii/UserScripts/master/res/info16.png) Overview
 Alternative to using [GM_addStyle](http://sourceforge.net/p/greasemonkey/wiki/GM_addStyle/) with validation and "pretty" simple formatting
@@ -23,7 +27,7 @@ To be used with [@require](http://sourceforge.net/p/greasemonkey/wiki/Metadata_B
 
 More details to come as they develop. :)
 
-[&#x2B06;](#body "Top") [&#x2B07;](#footer "Bottom") [&#x21EA;](#user-content "Top of User Content")
+[&#x2B06;][toTop] [&#x2B07;][toBottom] [&#x21EA;][toUserContent]
 
 ## ![](https://raw.githubusercontent.com/Martii/UserScripts/master/res/info16.png) Compatibility Matrix
 
@@ -69,7 +73,7 @@ More details to come as they develop. :)
 [urliwi]: https://openuserjs.org/scripts/marti/httpuserscripts.orgusers37004/uso_-_installWith
 [urlgmc]: https://github.com/sizzlemctwizzle/GM_config/wiki/
 
-[&#x2B06;](#body "Top") [&#x2B07;](#footer "Bottom") [&#x21EA;](#user-content "Top of User Content")
+[&#x2B06;][toTop] [&#x2B07;][toBottom] [&#x21EA;][toUserContent]
 
 ## ![](https://raw.githubusercontent.com/Martii/UserScripts/master/res/info16.png) Syntax
 
@@ -101,4 +105,4 @@ let styleNode = GM_setStyle({
 });
 ```
 
-[&#x2B06;](#body "Top") [&#x2B07;](#footer "Bottom") [&#x21EA;](#user-content "Top of User Content")
+[&#x2B06;][toTop] [&#x2B07;][toBottom] [&#x21EA;][toUserContent]
