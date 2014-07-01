@@ -9,8 +9,13 @@
 // @copyright   2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license     Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @license     GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version     0.1.4
+// @version     0.1.5
 // @icon  https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/Retry
+// @homepageURL   https://openuserjs.org/scripts/Marti/uso_-_Retry
+// @homepageURL   http://userscripts.org/scripts/show/162319
+// @supportURL    http://userscripts.org/topics/124034
 
 // @include /^https?://userscripts\.org(?::\d{1,5})?/?/
 
