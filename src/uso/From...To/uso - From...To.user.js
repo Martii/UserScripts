@@ -8,8 +8,13 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       1.0.8
+// @version       1.0.9
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/From...To
+// @homepageURL   https://openuserjs.org/scripts/Marti/uso_-_From…To
+// @homepageURL   http://userscripts.org/scripts/show/396490
+// @supportURL    http://userscripts.org/topics/196657
 
 // @include       /^https?://userscripts\.org(?::\d{1,5})?//
 
