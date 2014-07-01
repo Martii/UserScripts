@@ -7,8 +7,13 @@
 // @copyright     2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       1.0.6
+// @version       1.0.7
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Dashboard%20Quick%20Menu/res/icon48.png
+
+// @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/Dashboard%20Quick%20Menu
+// @homepageURL   https://openuserjs.org/scripts/Marti/uso_-_Dashboard_Quick_Menu
+// @homepageURL   http://userscripts.org/scripts/show/105402
+// @supportURL    http://userscripts.org/topics/77713
 
 // @include /^https?://userscripts\.org(?::\d{1,5})?/?/
 
