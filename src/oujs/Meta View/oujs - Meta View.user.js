@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.0.0rc7pre
+// @version       2.0.0rc8pre
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -48,7 +48,7 @@
       ace_text_inputNodeTextarea.classList.add('ace_text-input');
       ace_text_inputNodeTextarea.wrap = 'off';
       ace_text_inputNodeTextarea.setAttribute('spellcheck', 'false');
-      ace_text_inputNodeTextarea.style = 'opacity: 1; height: 550px; width: 100%; min-width: 100%; max-width: 100%; right: 1605px; bottom: 350px;';
+      ace_text_inputNodeTextarea.style = 'opacity: 1; min-height: 200px; height: -moz-calc(100vh - 210px); height: -o-calc(100vh - 210px); height: -webkit-calc(100vh - 210px); height: calc(100vh - 210px); width: 100%; min-width: 100%; max-width: 100%; right: 1605px; bottom: 350px;';
       ace_text_inputNodeTextarea.setAttribute('readonly', '');
 
       ace_text_inputNodeTextarea.value = GM_getValue('responseText', 'no data found in storage');
