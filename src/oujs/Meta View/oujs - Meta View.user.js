@@ -8,8 +8,8 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.0.0rc8pre
-// @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
+// @version       2.1.0
+// @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
 // @homepageURL  https://openuserjs.org/scripts/marti/oujs_-_Meta_View
@@ -21,110 +21,125 @@
 // @include  https://openuserjs.org/scripts/*/*
 // @include  http://localhost:8080/scripts/*/*
 
-// @grant  GM_deleteValue
-// @grant  GM_getValue
-// @grant  GM_setValue
+// @require  https://openuserjs.org/js/ace/ace.js
+// @require  https://openuserjs.org/js/ace/theme-dawn.js
+// @require  https://openuserjs.org/js/ace/mode-javascript.js
+// @require  https://openuserjs.org/js/ace/ext-searchbox.js
+
 // @grant  GM_xmlhttpRequest
+// @grant  GM_addStyle
 
 // ==/UserScript==
 
-  if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
-    var panelBodyNode = document.querySelector('div.panel-body');
-    if (panelBodyNode && panelBodyNode.firstChild.nextSibling.textContent == "404") {
-      var titleNode = document.head.querySelector('title');
-      if (titleNode) {
-        var title = GM_getValue('scriptTitle', '');
-        titleNode.textContent = 'Meta ' + (title ? ' ' + title : '');
-      }
+  var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
+  if (matches) {
+    var
+        userName = matches[1],
+        scriptName = matches[2]
+    ;
 
-      var hookNode = panelBodyNode;
+    if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
+      var panelBodyNode = document.querySelector('div.panel-body');
+      if (panelBodyNode && panelBodyNode.firstChild.nextSibling.textContent == '404') {
 
-      // Reset content
-      while (hookNode.hasChildNodes())
-        hookNode.removeChild(hookNode.firstChild);
+        var titleNode = document.head.querySelector('title');
+        if (titleNode) {
+          titleNode.textContent = 'Meta ' + scriptName + '| OpenUserJS';
+        }
 
-      // Simulate a View Source page
-      var ace_text_inputNodeTextarea = document.createElement('textarea');
-      ace_text_inputNodeTextarea.classList.add('ace_text-input');
-      ace_text_inputNodeTextarea.wrap = 'off';
-      ace_text_inputNodeTextarea.setAttribute('spellcheck', 'false');
-      ace_text_inputNodeTextarea.style = 'opacity: 1; min-height: 200px; height: -moz-calc(100vh - 210px); height: -o-calc(100vh - 210px); height: -webkit-calc(100vh - 210px); height: calc(100vh - 210px); width: 100%; min-width: 100%; max-width: 100%; right: 1605px; bottom: 350px;';
-      ace_text_inputNodeTextarea.setAttribute('readonly', '');
+        var hookNode = panelBodyNode;
 
-      ace_text_inputNodeTextarea.value = GM_getValue('responseText', 'no data found in storage');
+        // Reset content
+        while (hookNode.hasChildNodes())
+          hookNode.removeChild(hookNode.firstChild);
 
-      var editorNodePre = document.createElement('pre');
-      editorNodePre.classList.add('ace_editor');
-      editorNodePre.classList.add('ace-dawn');
-      editorNodePre.id = 'editor';
+        var NodeDiv = document.createElement('div');
+        NodeDiv.classList.add('alert');
+        NodeDiv.classList.add('alert-warning');
 
-      editorNodePre.appendChild(ace_text_inputNodeTextarea);
-      hookNode.appendChild(editorNodePre);
-    }
+        var NodeStrong = document.createElement('strong');
+        NodeStrong.textContent = 'PLEASE WAIT';
 
-    // Erase keys
-    GM_deleteValue('scriptTitle');
-    GM_deleteValue('responseText');
-  }
-  else {
+        var NodeText = document.createTextNode(': Fetching the metadata block');
 
-    var sourceNode = document.querySelector('#content-navbar ul.nav li a[href$="/source"]');
-    if (sourceNode) {
-      var hookNode = sourceNode.parentNode.parentNode;
+        NodeDiv.appendChild(NodeStrong);
+        NodeDiv.appendChild(NodeText);
 
-      var installNode = document.querySelector('h2.page-heading a[href$=".user.js"]');
-      if (installNode) {
-        var installURL = installNode.pathname;
+        hookNode.appendChild(NodeDiv);
 
-        var NodeA = document.createElement('a');
-        NodeA.href = sourceNode.pathname.replace(/\/source$/, '/meta'); // NOTE: Watchpoint
-        NodeA.textContent = "Meta";
+        var url = '/install/' + userName + '/' + scriptName + '.user.js';
+        GM_xmlhttpRequest({
+          method: 'GET',
+          url: url,
+          headers: {
+            'Accept': 'text/x-userscript-meta'
+          },
+          onload: function(xhr) {
+            console.log('META VIEW REQUEST SUMMARY');
 
+            console.group();
+              console.log(
+                [
+                  '',
+                  xhr.status,
+                  xhr.statusText,
+                  xhr.readyState,
+                  xhr.responseHeaders,
+                  xhr.finalUrl,
+                  ''
 
-        NodeA.addEventListener('click', function (ev) {
-          ev.preventDefault();
+                ].join('\n')
+              );
+            console.groupEnd();
 
-          GM_xmlhttpRequest({
-            method: 'GET',
-            url: installURL,
-            headers: {
-              'Accept': 'text/x-userscript-meta'
-            },
-            onload: function(xhr) {
-              console.log('META VIEW REQUEST SUMMARY');
-
-              console.group();
-                console.log(
+            switch (xhr.status) {
+              case 200:
+                // Simulate a View Source page
+                GM_addStyle(
                   [
-                    '',
-                    xhr.status,
-                    xhr.statusText,
-                    xhr.readyState,
-                    xhr.responseHeaders,
-                    xhr.finalUrl,
-                    ''
+                    '#editor { height: calc(100vh - 210px); }'
 
                   ].join('\n')
                 );
-              console.groupEnd();
 
-              switch (xhr.status) {
-                case 200:
-                  GM_setValue('responseText', xhr.responseText);
+                var editorNodePre = document.createElement('pre');
+                editorNodePre.classList.add('ace_editor');
+                editorNodePre.classList.add('ace-dawn');
+                editorNodePre.id = 'editor';
 
-                  var scriptTitleNode = document.querySelector('h2.page-heading a.script-name');
-                  if (scriptTitleNode)
-                    GM_setValue('scriptTitle', scriptTitleNode.textContent.trim());
-                  else
-                    GM_setValue('scriptTitle', '');
+                editorNodePre.textContent = xhr.responseText;
 
-                  location.pathname += '/meta';
-                  break;
-              }
+                hookNode.removeChild(NodeDiv);
+
+                hookNode.appendChild(editorNodePre);
+
+                var editor = ace.edit('editor');
+                editor.setTheme('ace/theme/dawn');
+                editor.getSession().setMode('ace/mode/javascript');
+                editor.setReadOnly(true);
+
+                break;
+              default:
+                NodeDiv.classList.remove('alert-warning');
+                NodeDiv.classList.add('alert-danger');
+
+                NodeStrong.textContent = 'ERROR';
+                NodeText.textContent = ': Unable to fetch the metadata block with status of: ' + xhr.status;
+
+                break;
             }
-          });
+          }
         });
+      }
+    }
+    else {
+      var sourceNode = document.querySelector('#content-navbar ul.nav li a[href$="/source"]');
+      if (sourceNode) {
+        var hookNode = sourceNode.parentNode.parentNode;
 
+        var NodeA = document.createElement('a');
+        NodeA.href = '/scripts/' + userName + '/' + scriptName + '/meta';
+        NodeA.textContent = 'Meta';
 
         var NodeLi = document.createElement('li');
         NodeLi.appendChild(NodeA);
