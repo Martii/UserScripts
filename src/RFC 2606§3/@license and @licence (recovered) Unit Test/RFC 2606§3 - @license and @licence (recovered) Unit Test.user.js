@@ -1,14 +1,19 @@
 (function () {
 
 // ==UserScript==
-// @name          RFC 2606§3 - @license and @licence (recovered) Unit Test
-// @namespace     http://localhost.localdomain
-// @description   Tests out non-unique keys 2
-// @description   Tests out non-unique keys
+// @namespace          http://localhost.localdomain
+
+// @name               RFC 2606§3 - @license and @licence (recovered) Unit Test
+// @name:de-DE         RFC 2606§3 - @license und @licence (wiederhergestellt) Komponententest
+
+// @description        Tests out non-unique keys 2
+// @description        Tests out non-unique keys
+// @description:de-DE  Tests, nicht eindeutige Schlüssel
+
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @licence       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2014.07.13.0001
+// @version       2014.07.27.0000
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @iconURL       https://s3.amazonaws.com/uso_ss/icon/13701/large.png?test
