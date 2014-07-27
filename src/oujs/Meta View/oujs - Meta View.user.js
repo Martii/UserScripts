@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.1.1
+// @version       2.2.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -21,13 +21,7 @@
 // @include  https://openuserjs.org/scripts/*/*
 // @include  http://localhost:8080/scripts/*/*
 
-// @require  https://openuserjs.org/js/ace/ace.js
-// @require  https://openuserjs.org/js/ace/theme-dawn.js
-// @require  https://openuserjs.org/js/ace/mode-javascript.js
-// @require  https://openuserjs.org/js/ace/ext-searchbox.js
-
-// @grant  GM_xmlhttpRequest
-// @grant  GM_addStyle
+// @grant none
 
 // ==/UserScript==
 
@@ -39,6 +33,14 @@
     ;
 
     if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
+      var NodeScript = document.createElement('script');
+      NodeScript.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js');
+      NodeScript.setAttribute('type', 'text/javascript');
+      NodeScript.setAttribute('charset', 'UTF-8');
+
+      var bodyNode = document.querySelector('body');
+      bodyNode.appendChild(NodeScript);
+
       var panelBodyNode = document.querySelector('div.panel-body');
       if (panelBodyNode && panelBodyNode.firstChild.nextSibling.textContent == '404') {
 
@@ -68,46 +70,49 @@
         hookNode.appendChild(NodeDiv);
 
         var url = '/install/' + userName + '/' + scriptName + '.user.js';
-        GM_xmlhttpRequest({
-          method: 'GET',
-          url: url,
-          headers: {
-            'Accept': 'text/x-userscript-meta'
-          },
-          onload: function(xhr) {
+
+        var req = new XMLHttpRequest();
+        req.open('GET', url);
+        req.setRequestHeader('Accept', 'text/x-userscript-meta');
+
+        req.onreadystatechange = function () {
+          if (this.readyState == this.DONE) {
             console.log('META VIEW REQUEST SUMMARY');
 
             console.group();
               console.log(
                 [
                   '',
-                  xhr.status,
-                  xhr.statusText,
-                  xhr.readyState,
-                  xhr.responseHeaders,
-                  xhr.finalUrl,
+                  this.status,
+                  this.statusText,
+                  this.readyState,
+                  this.responseHeaders,
+                  this.finalUrl,
                   ''
 
                 ].join('\n')
               );
             console.groupEnd();
 
-            switch (xhr.status) {
+            switch (this.status) {
               case 200:
                 // Simulate a Source Code page
-                GM_addStyle(
+                var NodeStyle = document.createElement('style');
+                NodeStyle.setAttribute('type', 'text/css');
+                NodeStyle.textContent =
                   [
                     '#editor { min-height: 200px; min-height: -moz-calc(100vh - 210px); min-height: -o-calc(100vh - 210px); min-height: -webkit-calc(100vh - 210px); min-height: calc(100vh - 210px); }'
 
                   ].join('\n')
-                );
+                ;
+                document.head.appendChild(NodeStyle);
 
                 var editorNodePre = document.createElement('pre');
                 editorNodePre.classList.add('ace_editor');
                 editorNodePre.classList.add('ace-dawn');
                 editorNodePre.id = 'editor';
 
-                editorNodePre.textContent = xhr.responseText;
+                editorNodePre.textContent = this.responseText;
 
                 hookNode.removeChild(NodeDiv);
 
@@ -124,12 +129,13 @@
                 NodeDiv.classList.add('alert-danger');
 
                 NodeStrong.textContent = 'ERROR';
-                NodeText.textContent = ': Unable to fetch the metadata block with status of: ' + xhr.status;
+                NodeText.textContent = ': Unable to fetch the metadata block with status of: ' + this.status;
 
                 break;
             }
           }
-        });
+        }
+        req.send();
       }
     }
     else {
