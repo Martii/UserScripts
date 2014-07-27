@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.0
+// @version       2.2.1
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -24,6 +24,97 @@
 // @grant none
 
 // ==/UserScript==
+
+  function parseMeta(aString, aNormalize) {
+    var rLine = /\/\/ @(\S+)(?:\s+(.*))?/;
+    var headers = {};
+    var name = null;
+    var prefix = null;
+    var key = null;
+    var value = null;
+    var line = null;
+    var lineMatches = null;
+    var lines = {};
+    var uniques = {
+      'description': true,
+      'icon': true,
+      'name': true,
+      'namespace': true,
+      'version': true,
+      'oujs:author': true
+    };
+    var unique = null;
+    var one = null;
+    var matches = null;
+
+    lines = aString.split(/[\r\n]+/).filter(function (aElement, aIndex, aArray) {
+      return (aElement.match(rLine));
+    });
+
+    for (line in lines) {
+      var header = null;
+
+      lineMatches = lines[line].replace(/\s+$/, '').match(rLine);
+      name = lineMatches[1];
+      value = lineMatches[2];
+      if (aNormalize) {
+        // Upmix from...
+        switch (name) {
+          case 'homepage':
+          case 'source':
+          case 'website':
+            name = 'homepageURL';
+            break;
+          case 'defaulticon':
+          case 'iconURL':
+            name = 'icon';
+            break;
+          case 'licence':
+            name = 'license';
+            break;
+        }
+      }
+      name = name.split(/:/).reverse();
+      key = name[0];
+      prefix = name[1];
+      if (key) {
+        unique = {};
+        if (prefix) {
+          if (!headers[prefix]) {
+            headers[prefix] = {};
+          }
+          header = headers[prefix];
+          if (aNormalize) {
+            for (one in uniques) {
+              matches = one.match(/(.*):(.*)$/);
+              if (uniques[one] && matches && matches[1] === prefix) {
+                unique[matches[2]] = true;
+              }
+            }
+          }
+        } else {
+          header = headers;
+          if (aNormalize) {
+            for (one in uniques) {
+              if (uniques[one] && !/:/.test(one)) {
+                unique[one] = true;
+              }
+            }
+          }
+        }
+        if (!header[key] || aNormalize && unique[key]) {
+          header[key] = value || '';
+        } else if (!aNormalize || header[key] !== (value || '')
+            && !(header[key] instanceof Array && header[key].indexOf(value) > -1)) {
+          if (!(header[key] instanceof Array)) {
+            header[key] = [header[key]];
+          }
+          header[key].push(value || '');
+        }
+      }
+    }
+    return headers;
+  }
 
   var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
   if (matches) {
@@ -101,27 +192,43 @@
                 NodeStyle.setAttribute('type', 'text/css');
                 NodeStyle.textContent =
                   [
-                    '#editor { min-height: 200px; min-height: -moz-calc(100vh - 210px); min-height: -o-calc(100vh - 210px); min-height: -webkit-calc(100vh - 210px); min-height: calc(100vh - 210px); }'
+                    '#mdb, #obj { min-height: 200px; min-height: -moz-calc(39vh); min-height: -o-calc(39vh); min-height: -webkit-calc(39vh); min-height: calc(39vh); }'
 
                   ].join('\n')
                 ;
                 document.head.appendChild(NodeStyle);
 
-                var editorNodePre = document.createElement('pre');
-                editorNodePre.classList.add('ace_editor');
-                editorNodePre.classList.add('ace-dawn');
-                editorNodePre.id = 'editor';
+                var mdbNodePre = document.createElement('pre');
+                mdbNodePre.classList.add('ace_editor');
+                mdbNodePre.classList.add('ace-dawn');
+                mdbNodePre.id = 'mdb';
 
-                editorNodePre.textContent = this.responseText;
+                mdbNodePre.textContent = this.responseText;
+
+                hookNode.appendChild(mdbNodePre);
+
+                var objNodePre = document.createElement('pre');
+                objNodePre.classList.add('ace_editor');
+                objNodePre.classList.add('ace-dawn');
+                objNodePre.id = 'obj';
+
+                objNodePre.textContent = JSON.stringify(parseMeta(this.responseText, false), null, ' ');
+
+                hookNode.appendChild(objNodePre);
 
                 hookNode.removeChild(NodeDiv);
 
-                hookNode.appendChild(editorNodePre);
 
-                var editor = ace.edit('editor');
-                editor.setTheme('ace/theme/dawn');
-                editor.getSession().setMode('ace/mode/javascript');
-                editor.setReadOnly(true);
+                var mdb = ace.edit('mdb');
+                mdb.setTheme('ace/theme/dawn');
+                mdb.getSession().setMode('ace/mode/javascript');
+                mdb.setReadOnly(true);
+
+                var obj = ace.edit('obj');
+                obj.setTheme('ace/theme/dawn');
+                obj.getSession().setMode('ace/mode/json');
+                obj.setReadOnly(true);
+
 
                 break;
               default:
