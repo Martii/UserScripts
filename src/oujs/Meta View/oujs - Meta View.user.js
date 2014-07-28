@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.1
+// @version       2.2.2
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -160,7 +160,7 @@
 
         hookNode.appendChild(NodeDiv);
 
-        var url = '/install/' + userName + '/' + scriptName + '.user.js';
+        var url = '/src/scripts/' + userName + '/' + scriptName + '.user.js';
 
         var req = new XMLHttpRequest();
         req.open('GET', url);
@@ -187,6 +187,8 @@
 
             switch (this.status) {
               case 200:
+                var responseText = this.responseText.match(/^(\/\/ ==UserScript==[\s\S]*?^\/\/ ==\/UserScript==)/m)[1].trim();
+
                 // Simulate a Source Code page
                 var NodeStyle = document.createElement('style');
                 NodeStyle.setAttribute('type', 'text/css');
@@ -203,7 +205,7 @@
                 mdbNodePre.classList.add('ace-dawn');
                 mdbNodePre.id = 'mdb';
 
-                mdbNodePre.textContent = this.responseText;
+                mdbNodePre.textContent = responseText;
 
                 hookNode.appendChild(mdbNodePre);
 
@@ -212,7 +214,7 @@
                 objNodePre.classList.add('ace-dawn');
                 objNodePre.id = 'obj';
 
-                objNodePre.textContent = JSON.stringify(parseMeta(this.responseText, false), null, ' ');
+                objNodePre.textContent = JSON.stringify(parseMeta(responseText, false), null, ' ');
 
                 hookNode.appendChild(objNodePre);
 
