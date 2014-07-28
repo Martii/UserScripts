@@ -3,6 +3,7 @@
 // ==UserScript==
 // @namespace          http://localhost.localdomain
 
+// @name               RFC 2606§3 - @license and @licence (recovered) Unit Test 2
 // @name               RFC 2606§3 - @license and @licence (recovered) Unit Test
 // @name:de-DE         RFC 2606§3 - @license und @licence (wiederhergestellt) Komponententest
 
@@ -14,7 +15,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @licence       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2014.07.27.0003
+// @version       2014.07.27.0004
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @iconURL       https://s3.amazonaws.com/uso_ss/icon/13701/large.png?test
