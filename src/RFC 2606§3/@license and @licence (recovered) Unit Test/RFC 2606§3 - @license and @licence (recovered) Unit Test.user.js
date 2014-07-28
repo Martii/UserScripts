@@ -1,6 +1,8 @@
 (function () {
 
 // ==UserScript==
+// @run-at             document-end
+
 // @namespace          http://localhost.localdomain
 
 // @name               RFC 2606§3 - @license and @licence (recovered) Unit Test 2
@@ -17,7 +19,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @licence       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2014.07.27.0009
+// @version       2014.07.28.000
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @iconURL       https://s3.amazonaws.com/uso_ss/icon/13701/large.png?test
