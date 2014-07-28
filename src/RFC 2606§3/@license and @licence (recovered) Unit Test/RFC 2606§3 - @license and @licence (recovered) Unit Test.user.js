@@ -48,6 +48,8 @@
 
 // @unwrap
 
+// @someotherkey:fr  Tests de clefs non unique
+
 //@require http://localhost:8080/libs/src/Marti/GM_setStyle.js
 
 // ==/UserScript==
