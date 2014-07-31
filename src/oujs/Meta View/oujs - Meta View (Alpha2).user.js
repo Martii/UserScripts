@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.3a2.2
+// @version       2.2.3a2.3
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -30,39 +30,39 @@
 
     var blocks = aString.match(/^\/\/ ==[^\/\s]+==\s*$/mg);
     blocks.forEach(function (aElement, aIndex, aArray) {
-      var block = aElement.trim().match(/^\/\/ ==(.*)==$/)[1];
-      var unique = {};
       var matches = null;
+      var block = aElement.trim().match(/^\/\/ ==(.*)==$/)[1];
       var rBlock = new RegExp('^// ==' + block + '==([\\s\\S]*?)^// ==/' + block + '==', 'm');
-      var rLine = /\/\/ @(\S+)(?:\s+(.*))?/;
+      var unique = {};
       var lines = {};
-      var head = null;
+      var rLine = /\/\/ @(\S+)(?:\s+(.*))?/;
       var line = null;
+      var head = null;
       var name = null;
       var value = null;
       var key = null;
       var locale = null;
 
-      if (aNormalize) {
-        switch (block) {
-          case 'UserScript':
-            unique = {
-              'description': true,
-              'icon': true,
-              'name': true,
-              'namespace': true,
-              'version': true
-            }
-            break;
-          case 'OpenUserJS':
-            unique = {
-              'author': true
-            }
-        }
-      }
-
       matches = aString.match(rBlock);
       if (matches) {
+        if (aNormalize) {
+          switch (block) {
+            case 'UserScript':
+              unique = {
+                'description': true,
+                'icon': true,
+                'name': true,
+                'namespace': true,
+                'version': true
+              }
+              break;
+            case 'OpenUserJS':
+              unique = {
+                'author': true
+              }
+          }
+        }
+
         lines = matches[1].split(/[\r\n]+/).filter(function (aElement, aIndex, aArray) {
           return (aElement.match(rLine));
         });
