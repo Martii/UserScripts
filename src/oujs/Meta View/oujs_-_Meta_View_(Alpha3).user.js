@@ -134,7 +134,7 @@
         scriptName = matches[2]
     ;
 
-    if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
+    if (/\/metaA3$/.test(location.pathname)) { // NOTE: Currently a 404 page
       var NodeScript = document.createElement('script');
       NodeScript.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js');
       NodeScript.setAttribute('type', 'text/javascript');
@@ -148,7 +148,7 @@
 
         var titleNode = document.head.querySelector('title');
         if (titleNode) {
-          titleNode.textContent = 'Meta Alpha ' + scriptName + '| OpenUserJS';
+          titleNode.textContent = 'Meta Alpha 3 ' + scriptName + '| OpenUserJS';
         }
 
         var hookNode = panelBodyNode;
@@ -277,8 +277,8 @@
         var hookNode = sourceNode.parentNode.parentNode;
 
         var NodeA = document.createElement('a');
-        NodeA.href = '/scripts/' + userName + '/' + scriptName + '/meta';
-        NodeA.textContent = 'Meta Alpha';
+        NodeA.href = '/scripts/' + userName + '/' + scriptName + '/metaA3';
+        NodeA.textContent = 'Meta Alpha 3';
 
         var NodeLi = document.createElement('li');
         NodeLi.appendChild(NodeA);
