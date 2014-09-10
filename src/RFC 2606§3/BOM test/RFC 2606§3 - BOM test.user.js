@@ -1,7 +1,7 @@
 ﻿(function () {
 
 // ==UserScript==
-// @name          RFC 2606§3 - BOM test
+// @name          RFC 2606§3 - BOM test ö
 // @namespace     http://localhost.localdomain
 // @description   Tests out a BOM
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
