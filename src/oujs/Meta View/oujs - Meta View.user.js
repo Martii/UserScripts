@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.5
+// @version       2.2.6
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -139,6 +139,7 @@
         scriptName = matches[2]
     ;
 
+    var hookNode;
     if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
       var NodeScript = document.createElement('script');
       NodeScript.setAttribute('src', '/js/ace/ace.js'); // Watchpoint
@@ -156,7 +157,7 @@
           titleNode.textContent = 'Meta ' + scriptName + '| OpenUserJS';
         }
 
-        var hookNode = panelBodyNode;
+        hookNode = panelBodyNode;
 
         // Reset content
         while (hookNode.hasChildNodes())
@@ -429,14 +430,14 @@
                 break;
             }
           }
-        }
+        };
         req.send();
       }
     }
     else {
       var sourceNode = document.querySelector('#content-navbar ul.nav li a[href$="/source"]');
       if (sourceNode) {
-        var hookNode = sourceNode.parentNode.parentNode;
+        hookNode = sourceNode.parentNode.parentNode;
 
         var NodeA = document.createElement('a');
         NodeA.href = '/scripts/' + userName + '/' + scriptName + '/meta';
