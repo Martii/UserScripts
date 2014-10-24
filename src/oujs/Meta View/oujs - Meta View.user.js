@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.7
+// @version       2.2.8
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -153,15 +153,158 @@
       if (panelBodyNode && panelBodyNode.firstChild.nextSibling.textContent == '404') {
 
         var titleNode = document.head.querySelector('title');
-        if (titleNode) {
+        if (titleNode)
           titleNode.textContent = 'Meta ' + scriptName + '| OpenUserJS';
-        }
 
         hookNode = panelBodyNode;
 
         // Reset content
         while (hookNode.hasChildNodes())
           hookNode.removeChild(hookNode.firstChild);
+
+
+        // Simulate navbar
+        var navbar2TextStrongNodeB = document.createElement('b');
+        navbar2TextStrongNodeB.textContent = 'Installs:';
+
+        var navbar2TextIconNodeI = document.createElement('i');
+        navbar2TextIconNodeI.classList.add('fa');
+        navbar2TextIconNodeI.classList.add('fa-fw');
+        navbar2TextIconNodeI.classList.add('fa-signal');
+
+        var navbar2TextNodeP = document.createElement('p');
+        navbar2TextNodeP.classList.add('navbar-text');
+        navbar2TextNodeP.classList.add('pull-right');
+        navbar2TextNodeP.classList.add('hidden-xs');
+
+        var navNodeUl = document.createElement('ul');
+        navNodeUl.classList.add('nav');
+        navNodeUl.classList.add('navbar-nav');
+
+        var navNodeA4Span4 = document.createElement('span');
+        navNodeA4Span4.classList.add('badge');
+
+        var navNodeA4 = document.createElement('a');
+        navNodeA4.textContent = 'Issues ';
+        navNodeA4.href = '/scripts/' + userName + '/' + scriptName + '/issues';
+
+        var navNodeLi4 = document.createElement('li');
+
+        var navNodeA3 = document.createElement('a');
+        navNodeA3.textContent = 'Meta';
+        navNodeA3.href = '/scripts/' + userName + '/' + scriptName + '/meta';
+
+        var navNodeLi3 = document.createElement('li');
+        navNodeLi3.classList.add('active');
+
+        var navNodeA2 = document.createElement('a');
+        navNodeA2.textContent = 'Source Code';
+        navNodeA2.href = '/scripts/' + userName + '/' + scriptName + '/source';
+
+        var navNodeLi2 = document.createElement('li');
+
+        var navNodeA1 = document.createElement('a');
+        navNodeA1.textContent = 'About';
+        navNodeA1.href = '/scripts/' + userName + '/' + scriptName;
+
+        var navNodeLi1 = document.createElement('li');
+
+        var navbarCollapseNodeDiv = document.createElement('div');
+        navbarCollapseNodeDiv.classList.add('navbar-collapse');
+        navbarCollapseNodeDiv.classList.add('collapse');
+        navbarCollapseNodeDiv.classList.add('in');
+        navbarCollapseNodeDiv.id = 'content-navbar';
+
+        var navbar1TextStrongNodeB = document.createElement('b');
+        navbar1TextStrongNodeB.textContent = 'Installs:';
+
+        var navbar1TextIconNodeI = document.createElement('i');
+        navbar1TextIconNodeI.classList.add('fa');
+        navbar1TextIconNodeI.classList.add('fa-fw');
+        navbar1TextIconNodeI.classList.add('fa-signal');
+
+        var navbar1TextNodeP = document.createElement('p');
+        navbar1TextNodeP.classList.add('navbar-text');
+        navbar1TextNodeP.classList.add('visible-xs');
+
+        var navbarBrandNodeDiv = document.createElement('div');
+        navbarBrandNodeDiv.classList.add('navbar-brand');
+        navbarBrandNodeDiv.classList.add('visible-xs');
+
+        var navbarToggleIconNodeI = document.createElement('i');
+        navbarToggleIconNodeI.classList.add('fa');
+        navbarToggleIconNodeI.classList.add('fa-bars');
+
+        var navbarToggleNodeButton = document.createElement('button');
+        navbarToggleNodeButton.type = 'button';
+        navbarToggleNodeButton.setAttribute('data-toggle', 'collapse');
+        navbarToggleNodeButton.setAttribute('data-target', '#content-navbar');
+        navbarToggleNodeButton.classList.add('navbar-toggle');
+
+        var navbarHeaderNodeDiv = document.createElement('div');
+        navbarHeaderNodeDiv.classList.add('navbar-header');
+
+        var navbarNodeNav = document.createElement('nav');
+        navbarNodeNav.classList.add('navbar');
+        navbarNodeNav.classList.add('navbar-default');
+        navbarNodeNav.classList.add('navbar-static-top');
+        navbarNodeNav.setAttribute('role', 'navigation'); // Watchpoint
+
+        // Piece elements together
+        navbarNodeNav.appendChild(navbarHeaderNodeDiv);
+        navbarHeaderNodeDiv.appendChild(navbarToggleNodeButton);
+        navbarToggleNodeButton.appendChild(navbarToggleIconNodeI);
+        navbarHeaderNodeDiv.appendChild(navbarBrandNodeDiv);
+        navbarHeaderNodeDiv.appendChild(navbar1TextNodeP);
+        navbar1TextNodeP.appendChild(navbar1TextIconNodeI);
+        navbar1TextNodeP.appendChild(navbar1TextStrongNodeB);
+
+        navbarNodeNav.appendChild(navbarCollapseNodeDiv);
+        navbarCollapseNodeDiv.appendChild(navNodeUl);
+        navNodeUl.appendChild(navNodeLi1);
+        navNodeLi1.appendChild(navNodeA1);
+        navNodeUl.appendChild(navNodeLi2);
+        navNodeLi2.appendChild(navNodeA2);
+        navNodeUl.appendChild(navNodeLi3);
+        navNodeLi3.appendChild(navNodeA3);
+        navNodeUl.appendChild(navNodeLi4);
+        navNodeLi4.appendChild(navNodeA4);
+        navNodeA4.appendChild(navNodeA4Span4);
+
+        navbarCollapseNodeDiv.appendChild(navbar2TextNodeP);
+
+        navbar2TextNodeP.appendChild(navbar2TextIconNodeI);
+        navbar2TextNodeP.appendChild(navbar2TextStrongNodeB);
+
+        // Simulate the page-heading
+        var scriptNameNodeA = document.createElement('a');
+        scriptNameNodeA.classList.add('script-name');
+        scriptNameNodeA.href = '/scripts/' + userName + '/' + scriptName;
+        scriptNameNodeA.textContent = '\u2003';
+
+        var pathDividerNodeSpan = document.createElement('span');
+        pathDividerNodeSpan.classList.add('path-divider');
+        pathDividerNodeSpan.textContent = '\u2003';
+
+        var scriptAuthorNodeA = document.createElement('a');
+        scriptAuthorNodeA.classList.add('script-author');
+        scriptAuthorNodeA.href = '/users/' + userName;
+        scriptAuthorNodeA.textContent = '\u2003';
+
+        var pageHeadingNodeH2 = document.createElement('h2');
+        pageHeadingNodeH2.classList.add('page-heading');
+
+        // Piece elements together
+        pageHeadingNodeH2.appendChild(document.createTextNode(' '));
+        pageHeadingNodeH2.appendChild(scriptAuthorNodeA);
+        pageHeadingNodeH2.appendChild(document.createTextNode(' '));
+        pageHeadingNodeH2.appendChild(pathDividerNodeSpan);
+        pageHeadingNodeH2.appendChild(document.createTextNode(' '));
+        pageHeadingNodeH2.appendChild(scriptNameNodeA);
+
+        // Place parts into the DOM
+        panelBodyNode.parentNode.parentNode.insertBefore(pageHeadingNodeH2, panelBodyNode.parentNode);
+        panelBodyNode.parentNode.parentNode.insertBefore(navbarNodeNav, panelBodyNode.parentNode);
 
         var NodeDiv = document.createElement('div');
         NodeDiv.classList.add('alert');
@@ -241,167 +384,29 @@
                 mdbNodePre.id = 'mdb';
                 mdbNodePre.textContent = responseText;
 
-                // Simulate navbar
-                var navbar2TextStrongNodeB = document.createElement('b');
-                navbar2TextStrongNodeB.textContent = 'Installs:';
-
-                var navbar2TextIconNodeI = document.createElement('i');
-                navbar2TextIconNodeI.classList.add('fa');
-                navbar2TextIconNodeI.classList.add('fa-fw');
-                navbar2TextIconNodeI.classList.add('fa-signal');
-
-                var navbar2TextNodeP = document.createElement('p');
-                navbar2TextNodeP.classList.add('navbar-text');
-                navbar2TextNodeP.classList.add('pull-right');
-                navbar2TextNodeP.classList.add('hidden-xs');
-
-                var navNodeUl = document.createElement('ul');
-                navNodeUl.classList.add('nav');
-                navNodeUl.classList.add('navbar-nav');
-
-                var navNodeA4Span4 = document.createElement('span');
-                navNodeA4Span4.classList.add('badge');
-                navNodeA4Span4.textContent = 'n/a';
-
-                var navNodeA4 = document.createElement('a');
-                navNodeA4.textContent = 'Issues ';
-                navNodeA4.href = '/scripts/' + userName + '/' + scriptName + '/issues';
-
-                var navNodeLi4 = document.createElement('li');
-
-                var navNodeA3 = document.createElement('a');
-                navNodeA3.textContent = 'Meta';
-                navNodeA3.href = '/scripts/' + userName + '/' + scriptName + '/meta';
-
-                var navNodeLi3 = document.createElement('li');
-                navNodeLi3.classList.add('active');
-
-                var navNodeA2 = document.createElement('a');
-                navNodeA2.textContent = 'Source Code';
-                navNodeA2.href = '/scripts/' + userName + '/' + scriptName + '/source';
-
-                var navNodeLi2 = document.createElement('li');
-
-                var navNodeA1 = document.createElement('a');
-                navNodeA1.textContent = 'About';
-                navNodeA1.href = '/scripts/' + userName + '/' + scriptName;
-
-                var navNodeLi1 = document.createElement('li');
-
-                var navbarCollapseNodeDiv = document.createElement('div');
-                navbarCollapseNodeDiv.classList.add('navbar-collapse');
-                navbarCollapseNodeDiv.classList.add('collapse');
-                navbarCollapseNodeDiv.classList.add('in');
-                navbarCollapseNodeDiv.id = 'content-navbar';
-
-                var navbar1TextStrongNodeB = document.createElement('b');
-                navbar1TextStrongNodeB.textContent = 'Installs:';
-
-                var navbar1TextIconNodeI = document.createElement('i');
-                navbar1TextIconNodeI.classList.add('fa');
-                navbar1TextIconNodeI.classList.add('fa-fw');
-                navbar1TextIconNodeI.classList.add('fa-signal');
-
-                var navbar1TextNodeP = document.createElement('p');
-                navbar1TextNodeP.classList.add('navbar-text');
-                navbar1TextNodeP.classList.add('visible-xs');
-
-                var navbarBrandNodeDiv = document.createElement('div');
-                navbarBrandNodeDiv.classList.add('navbar-brand');
-                navbarBrandNodeDiv.classList.add('visible-xs');
-
-                var navbarToggleIconNodeI = document.createElement('i');
-                navbarToggleIconNodeI.classList.add('fa');
-                navbarToggleIconNodeI.classList.add('fa-bars');
-
-                var navbarToggleNodeButton = document.createElement('button');
-                navbarToggleNodeButton.type = 'button';
-                navbarToggleNodeButton.setAttribute('data-toggle', 'collapse');
-                navbarToggleNodeButton.setAttribute('data-target', '#content-navbar');
-                navbarToggleNodeButton.classList.add('navbar-toggle');
-
-                var navbarHeaderNodeDiv = document.createElement('div');
-                navbarHeaderNodeDiv.classList.add('navbar-header');
-
-                var navbarNodeNav = document.createElement('nav');
-                navbarNodeNav.classList.add('navbar');
-                navbarNodeNav.classList.add('navbar-default');
-                navbarNodeNav.classList.add('navbar-static-top');
-                navbarNodeNav.setAttribute('role', 'navigation'); // Watchpoint
-
-                // Piece elements together
-                navbarNodeNav.appendChild(navbarHeaderNodeDiv);
-                navbarHeaderNodeDiv.appendChild(navbarToggleNodeButton);
-                navbarToggleNodeButton.appendChild(navbarToggleIconNodeI);
-                navbarHeaderNodeDiv.appendChild(navbarBrandNodeDiv);
-                navbarHeaderNodeDiv.appendChild(navbar1TextNodeP);
-                navbar1TextNodeP.appendChild(navbar1TextIconNodeI);
-                navbar1TextNodeP.appendChild(navbar1TextStrongNodeB);
-                navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
-
-                navbarNodeNav.appendChild(navbarCollapseNodeDiv);
-                navbarCollapseNodeDiv.appendChild(navNodeUl);
-                navNodeUl.appendChild(navNodeLi1);
-                navNodeLi1.appendChild(navNodeA1);
-                navNodeUl.appendChild(navNodeLi2);
-                navNodeLi2.appendChild(navNodeA2);
-                navNodeUl.appendChild(navNodeLi3);
-                navNodeLi3.appendChild(navNodeA3);
-                navNodeUl.appendChild(navNodeLi4);
-                navNodeLi4.appendChild(navNodeA4);
-                navNodeA4.appendChild(navNodeA4Span4);
-
-                navbarCollapseNodeDiv.appendChild(navbar2TextNodeP);
-
-                navbar2TextNodeP.appendChild(navbar2TextIconNodeI);
-                navbar2TextNodeP.appendChild(navbar2TextStrongNodeB);
-                navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
-
-                // Simulate the page-heading
-                var scriptNameNodeA = document.createElement('a');
-                scriptNameNodeA.classList.add('script-name');
-                scriptNameNodeA.href = '/scripts/' + userName + '/' + scriptName;
-                scriptNameNodeA.textContent = scriptNameX;
-
-                var pathDividerNodeSpan = document.createElement('span');
-                pathDividerNodeSpan.classList.add('path-divider');
-                pathDividerNodeSpan.textContent = "/";
-
-                var scriptAuthorNodeA = document.createElement('a');
-                scriptAuthorNodeA.classList.add('script-author');
-                scriptAuthorNodeA.href = '/users/' + userName;
-                scriptAuthorNodeA.textContent = userName;
+                var scriptIconNodeImg, pageHeadingIconNodeSpan;
 
                 var atIcon = lastValueOf(mb, "icon");
-
-                var scriptIconNodeImg;
                 if (atIcon) {
                   scriptIconNodeImg = document.createElement('img');
                   scriptIconNodeImg.src = atIcon;
                   scriptIconNodeImg.alt = '';
-                }
 
-                var pageHeadingIconNodeSpan = document.createElement('span');
-                pageHeadingIconNodeSpan.classList.add('page-heading-icon');
+                  pageHeadingIconNodeSpan = document.createElement('span');
+                  pageHeadingIconNodeSpan.classList.add('page-heading-icon');
 
-                var pageHeadingNodeH2 = document.createElement('h2');
-                pageHeadingNodeH2.classList.add('page-heading');
-
-                // Piece elements together
-                if (atIcon) {
                   pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
-                  pageHeadingNodeH2.appendChild(pageHeadingIconNodeSpan);
+                  pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
                 }
-                pageHeadingNodeH2.appendChild(document.createTextNode(' '));
-                pageHeadingNodeH2.appendChild(scriptAuthorNodeA);
-                pageHeadingNodeH2.appendChild(document.createTextNode(' '));
-                pageHeadingNodeH2.appendChild(pathDividerNodeSpan);
-                pageHeadingNodeH2.appendChild(document.createTextNode(' '));
-                pageHeadingNodeH2.appendChild(scriptNameNodeA);
 
-                // Place parts into the DOM
-                panelBodyNode.parentNode.parentNode.insertBefore(pageHeadingNodeH2, panelBodyNode.parentNode);
-                panelBodyNode.parentNode.parentNode.insertBefore(navbarNodeNav, panelBodyNode.parentNode);
+                scriptAuthorNodeA.textContent = userName;
+                pathDividerNodeSpan.textContent = "/";
+                scriptNameNodeA.textContent = scriptNameX;
+
+                navNodeA4Span4.textContent = 'n/a';
+                navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
+                navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
+
 
                 hookNode.appendChild(mdbNodePre);
                 hookNode.appendChild(objNodePre);
