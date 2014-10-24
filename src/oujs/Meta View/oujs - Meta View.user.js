@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.4
+// @version       2.2.5
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -116,6 +116,22 @@
     return headers;
   }
 
+  /**
+   *
+   */
+  function lastValueOf(aMb, aKey, aPrefix) {
+    if (aPrefix) {
+      if (aMb[aPrefix] && aMb[aPrefix][aKey])
+        return ((typeof aMb[aPrefix][aKey] == "string") ? aMb[aPrefix][aKey] : aMb[aPrefix][aKey][aMb[aPrefix][aKey].length - 1]);
+    }
+    else {
+      if (aMb[aKey])
+        return ((typeof aMb[aKey] == "string") ? aMb[aKey] : aMb[aKey][aMb[aKey].length - 1]);
+    }
+
+    return undefined;
+  }
+
   var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
   if (matches) {
     var
@@ -192,35 +208,206 @@
                 // Simulate a Source Code page
                 var NodeStyle = document.createElement('style');
                 NodeStyle.setAttribute('type', 'text/css');
+                var min_height = 33;
                 NodeStyle.textContent =
                   [
-                    '#mdb, #obj { min-height: 200px; min-height: -moz-calc(39vh); min-height: -o-calc(39vh); min-height: -webkit-calc(39vh); min-height: calc(39vh); }'
+                    '#mdb, #obj { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
+                    '.path-divider { color: #666; margin: 0 0.25em; }'
 
                   ].join('\n')
                 ;
                 document.head.appendChild(NodeStyle);
 
-                var mdbNodePre = document.createElement('pre');
-                mdbNodePre.classList.add('ace_editor');
-                mdbNodePre.classList.add('ace-dawn');
-                mdbNodePre.id = 'mdb';
+                // Parse metadata block to standard
+                var mb = parseMeta(responseText, false);
 
-                mdbNodePre.textContent = responseText;
 
-                hookNode.appendChild(mdbNodePre);
+                // Fix title to be native
+                var scriptNameX = lastValueOf(mb, "name");
 
+                titleNode.textContent = 'Meta ' + scriptNameX + '| OpenUserJS';
+
+                // Create meta views
                 var objNodePre = document.createElement('pre');
                 objNodePre.classList.add('ace_editor');
                 objNodePre.classList.add('ace-dawn');
                 objNodePre.id = 'obj';
+                objNodePre.textContent = JSON.stringify(mb, null, ' ');
 
-                objNodePre.textContent = JSON.stringify(parseMeta(responseText, false), null, ' ');
+                var mdbNodePre = document.createElement('pre');
+                mdbNodePre.classList.add('ace_editor');
+                mdbNodePre.classList.add('ace-dawn');
+                mdbNodePre.id = 'mdb';
+                mdbNodePre.textContent = responseText;
 
+                // Simulate navbar
+                var navbar2TextStrongNodeB = document.createElement('b');
+                navbar2TextStrongNodeB.textContent = 'Installs:';
+
+                var navbar2TextIconNodeI = document.createElement('i');
+                navbar2TextIconNodeI.classList.add('fa');
+                navbar2TextIconNodeI.classList.add('fa-fw');
+                navbar2TextIconNodeI.classList.add('fa-signal');
+
+                var navbar2TextNodeP = document.createElement('p');
+                navbar2TextNodeP.classList.add('navbar-text');
+                navbar2TextNodeP.classList.add('pull-right');
+                navbar2TextNodeP.classList.add('hidden-xs');
+
+                var navNodeUl = document.createElement('ul');
+                navNodeUl.classList.add('nav');
+                navNodeUl.classList.add('navbar-nav');
+
+                var navNodeA4Span4 = document.createElement('span');
+                navNodeA4Span4.classList.add('badge');
+                navNodeA4Span4.textContent = 'n/a';
+
+                var navNodeA4 = document.createElement('a');
+                navNodeA4.textContent = 'Issues ';
+                navNodeA4.href = '/scripts/' + userName + '/' + scriptName + '/issues';
+
+                var navNodeLi4 = document.createElement('li');
+
+                var navNodeA3 = document.createElement('a');
+                navNodeA3.textContent = 'Meta';
+                navNodeA3.href = '/scripts/' + userName + '/' + scriptName + '/meta';
+
+                var navNodeLi3 = document.createElement('li');
+                navNodeLi3.classList.add('active');
+
+                var navNodeA2 = document.createElement('a');
+                navNodeA2.textContent = 'Source Code';
+                navNodeA2.href = '/scripts/' + userName + '/' + scriptName + '/source';
+
+                var navNodeLi2 = document.createElement('li');
+
+                var navNodeA1 = document.createElement('a');
+                navNodeA1.textContent = 'About';
+                navNodeA1.href = '/scripts/' + userName + '/' + scriptName;
+
+                var navNodeLi1 = document.createElement('li');
+
+                var navbarCollapseNodeDiv = document.createElement('div');
+                navbarCollapseNodeDiv.classList.add('navbar-collapse');
+                navbarCollapseNodeDiv.classList.add('collapse');
+                navbarCollapseNodeDiv.classList.add('in');
+                navbarCollapseNodeDiv.id = 'content-navbar';
+
+                var navbar1TextStrongNodeB = document.createElement('b');
+                navbar1TextStrongNodeB.textContent = 'Installs:';
+
+                var navbar1TextIconNodeI = document.createElement('i');
+                navbar1TextIconNodeI.classList.add('fa');
+                navbar1TextIconNodeI.classList.add('fa-fw');
+                navbar1TextIconNodeI.classList.add('fa-signal');
+
+                var navbar1TextNodeP = document.createElement('p');
+                navbar1TextNodeP.classList.add('navbar-text');
+                navbar1TextNodeP.classList.add('visible-xs');
+
+                var navbarBrandNodeDiv = document.createElement('div');
+                navbarBrandNodeDiv.classList.add('navbar-brand');
+                navbarBrandNodeDiv.classList.add('visible-xs');
+
+                var navbarToggleIconNodeI = document.createElement('i');
+                navbarToggleIconNodeI.classList.add('fa');
+                navbarToggleIconNodeI.classList.add('fa-bars');
+
+                var navbarToggleNodeButton = document.createElement('button');
+                navbarToggleNodeButton.type = 'button';
+                navbarToggleNodeButton.setAttribute('data-toggle', 'collapse');
+                navbarToggleNodeButton.setAttribute('data-target', '#content-navbar');
+                navbarToggleNodeButton.classList.add('navbar-toggle');
+
+                var navbarHeaderNodeDiv = document.createElement('div');
+                navbarHeaderNodeDiv.classList.add('navbar-header');
+
+                var navbarNodeNav = document.createElement('nav');
+                navbarNodeNav.classList.add('navbar');
+                navbarNodeNav.classList.add('navbar-default');
+                navbarNodeNav.classList.add('navbar-static-top');
+                navbarNodeNav.setAttribute('role', 'navigation'); // Watchpoint
+
+                // Piece elements together
+                navbarNodeNav.appendChild(navbarHeaderNodeDiv);
+                navbarHeaderNodeDiv.appendChild(navbarToggleNodeButton);
+                navbarToggleNodeButton.appendChild(navbarToggleIconNodeI);
+                navbarHeaderNodeDiv.appendChild(navbarBrandNodeDiv);
+                navbarHeaderNodeDiv.appendChild(navbar1TextNodeP);
+                navbar1TextNodeP.appendChild(navbar1TextIconNodeI);
+                navbar1TextNodeP.appendChild(navbar1TextStrongNodeB);
+                navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
+
+                navbarNodeNav.appendChild(navbarCollapseNodeDiv);
+                navbarCollapseNodeDiv.appendChild(navNodeUl);
+                navNodeUl.appendChild(navNodeLi1);
+                navNodeLi1.appendChild(navNodeA1);
+                navNodeUl.appendChild(navNodeLi2);
+                navNodeLi2.appendChild(navNodeA2);
+                navNodeUl.appendChild(navNodeLi3);
+                navNodeLi3.appendChild(navNodeA3);
+                navNodeUl.appendChild(navNodeLi4);
+                navNodeLi4.appendChild(navNodeA4);
+                navNodeA4.appendChild(navNodeA4Span4);
+
+                navbarCollapseNodeDiv.appendChild(navbar2TextNodeP);
+
+                navbar2TextNodeP.appendChild(navbar2TextIconNodeI);
+                navbar2TextNodeP.appendChild(navbar2TextStrongNodeB);
+                navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
+
+                // Simulate the page-heading
+                var scriptNameNodeA = document.createElement('a');
+                scriptNameNodeA.classList.add('script-name');
+                scriptNameNodeA.href = '/scripts/' + userName + '/' + scriptName;
+                scriptNameNodeA.textContent = scriptNameX;
+
+                var pathDividerNodeSpan = document.createElement('span');
+                pathDividerNodeSpan.classList.add('path-divider');
+                pathDividerNodeSpan.textContent = "/";
+
+                var scriptAuthorNodeA = document.createElement('a');
+                scriptAuthorNodeA.classList.add('script-author');
+                scriptAuthorNodeA.href = '/users/' + userName;
+                scriptAuthorNodeA.textContent = userName;
+
+                var atIcon = lastValueOf(mb, "icon");
+
+                if (atIcon) {
+                  var scriptIconNodeImg = document.createElement('img');
+                  scriptIconNodeImg.src = atIcon;
+                  scriptIconNodeImg.alt = '';
+                }
+
+                var pageHeadingIconNodeSpan = document.createElement('span');
+                pageHeadingIconNodeSpan.classList.add('page-heading-icon');
+
+                var pageHeadingNodeH2 = document.createElement('h2');
+                pageHeadingNodeH2.classList.add('page-heading');
+
+                // Piece elements together
+                if (atIcon) {
+                  pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
+                  pageHeadingNodeH2.appendChild(pageHeadingIconNodeSpan)
+                }
+                pageHeadingNodeH2.appendChild(document.createTextNode(' '));
+                pageHeadingNodeH2.appendChild(scriptAuthorNodeA);
+                pageHeadingNodeH2.appendChild(document.createTextNode(' '));
+                pageHeadingNodeH2.appendChild(pathDividerNodeSpan);
+                pageHeadingNodeH2.appendChild(document.createTextNode(' '));
+                pageHeadingNodeH2.appendChild(scriptNameNodeA);
+
+                // Place parts into the DOM
+                panelBodyNode.parentNode.parentNode.insertBefore(pageHeadingNodeH2, panelBodyNode.parentNode);
+                panelBodyNode.parentNode.parentNode.insertBefore(navbarNodeNav, panelBodyNode.parentNode);
+
+                hookNode.appendChild(mdbNodePre);
                 hookNode.appendChild(objNodePre);
 
+                // Clean up
                 hookNode.removeChild(NodeDiv);
 
-
+                // Activate Ace
                 var mdb = ace.edit('mdb');
                 mdb.setTheme('ace/theme/dawn');
                 mdb.getSession().setMode('ace/mode/javascript');
@@ -230,7 +417,6 @@
                 obj.setTheme('ace/theme/dawn');
                 obj.getSession().setMode('ace/mode/json');
                 obj.setReadOnly(true);
-
 
                 break;
               default:
