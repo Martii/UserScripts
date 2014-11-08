@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.8
+// @version       2.2.9
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -141,8 +141,8 @@
 
     var hookNode;
     if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
-      var NodeScript = document.createElement('script');
-      NodeScript.setAttribute('src', '/js/ace/ace.js'); // Watchpoint
+      var NodeScript = document.createElement('script'); // Watchpoint
+      NodeScript.setAttribute('src', '/redist/npm/ace-builds/src/ace.js');
       NodeScript.setAttribute('type', 'text/javascript');
       NodeScript.setAttribute('charset', 'UTF-8');
 
