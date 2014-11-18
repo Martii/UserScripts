@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.9
+// @version       2.2.10
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -347,6 +347,14 @@
 
             switch (this.status) {
               case 200:
+                if (!this.responseText) {
+                  NodeDiv.classList.remove('alert-warning');
+                  NodeDiv.classList.add('alert-danger');
+                  NodeStrong.textContent = "FAILURE: ";
+                  NodeText.textContent = "Unable to retrieve the metadata block. `responseText` is absent.";
+                  return;
+                }
+
                 var responseText = this.responseText.match(/^(\/\/ ==UserScript==[\s\S]*?^\/\/ ==\/UserScript==)/m)[1].trim();
 
                 // Simulate a Source Code page
