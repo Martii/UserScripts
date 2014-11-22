@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.0.0
+// @version       0.0.1
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @include  https://openuserjs.org/scripts/*/*/source
@@ -18,10 +18,10 @@
 // @include  http://localhost:8080/libs/*/*/source
 
 // @require  https://raw.githubusercontent.com/einars/js-beautify/master/js/lib/beautify.js
-// @require  https://openuserjs.org/redist/npm/ace-builds/src/ace.js
-// @require  https://openuserjs.org/redist/npm/ace-builds/src/theme-dawn.js
-// @require  https://openuserjs.org/redist/npm/ace-builds/src/mode-javascript.js
-// @require  https://openuserjs.org/redist/npm/ace-builds/src/ext-searchbox.js
+// @require  https://raw.githubusercontent.com/ajaxorg/ace-builds/master/src-min-noconflict/ace.js
+// @require  https://raw.githubusercontent.com/ajaxorg/ace-builds/master/src-min-noconflict/theme-dawn.js
+// @require  https://raw.githubusercontent.com/ajaxorg/ace-builds/master/src-min-noconflict/mode-javascript.js
+// @require  https://raw.githubusercontent.com/ajaxorg/ace-builds/master/src-min-noconflict/ext-searchbox.js
 
 // @grant  GM_xmlhttpRequest
 
