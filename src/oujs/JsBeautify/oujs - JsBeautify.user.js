@@ -1,14 +1,15 @@
-(function() {
+(function () {
   'use strict';
 
 // ==UserScript==
 // @name          oujs - JsBeautify
 // @namespace     https://openuserjs.org/users/Marti
 // @description   Beautifies the Source Code Page
-// @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
+// @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
+// @contributor   Chris Holland (https://github.com/Zren)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.0.3
+// @version       0.1.0b
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @include  https://openuserjs.org/scripts/*/*/source
@@ -18,15 +19,10 @@
 // @include  http://localhost:8080/libs/*/*/source
 
 // @require  https://raw.githubusercontent.com/einars/js-beautify/master/js/lib/beautify.js
-// @require  http://openuserjs.org/src/libs/Marti/temp_ace.min.js
-// @require  http://openuserjs.org/src/libs/Marti/temp_ace_theme-dawn.min.js
-// @require  http://openuserjs.org/src/libs/Marti/temp_ace_mode-javascript.min.js
-// @require  http://openuserjs.org/src/libs/Marti/temp_ace_ext-searchbox.min.js
 
-// @grant  GM_xmlhttpRequest
+// @grant  none
 
 // ==/UserScript==
-
 
   function beautify(aE) {
     return js_beautify(aE.replace(/[“”]/g, '"').replace(/\t/g, '  '), {
@@ -49,59 +45,17 @@
     beautifyNodeInput.addEventListener('click', function (aE) {
       var thisNode = document.querySelector('pre#editor');
       if (thisNode) {
-        var textareaNode = thisNode.querySelector('textarea');
-        if (textareaNode) {
-          var matches = location.pathname.match(/^\/(scripts|libs)\/(.*)\/(.*)\/source$/);
-          if (matches) {
-            var scriptType, userName, scriptName;
-            [, scriptType, userName, scriptName] = matches;
-            var url = '/src/' + scriptType + '/' + userName + '/' + scriptName + (scriptType == 'scripts' ? '.user' : '') + '.js';
-            GM_xmlhttpRequest({
-              method: 'GET',
-              url: url,
-              onload: function (xhr) {
-                switch (xhr.status) {
-                  case 200:
-                    thisNode.textContent = beautify(xhr.responseText);
+        ace.edit('editor').getSession().setValue(beautify(ace.edit('editor').getSession().getValue()));
 
-                    var editor = ace.edit('editor');
-                    editor.setTheme('ace/theme/dawn');
-                    editor.getSession().setMode('ace/mode/javascript');
-
-                    aE.target.disabled = 'disabled';
-
-                    var submit_codeNode = document.querySelector('button#submit_code');
-                    if (submit_codeNode) {
-                      submit_codeNode.classList.remove('btn-success');
-                      submit_codeNode.classList.add('btn-warning');
-                    }
-
-                    var ace_gutterLayer = document.querySelector('.ace_gutter-layer');
-                    if (ace_gutterLayer) {
-                      ace_gutterLayer.classList.add('btn-warning');
-                    }
-
-                    break;
-                }
-              }
-            });
-          }
+        var submit_codeNode = document.querySelector('button#submit_code');
+        if (submit_codeNode) {
+          submit_codeNode.classList.remove('btn-success');
+          submit_codeNode.classList.add('btn-warning');
         }
-        else {  // NOTE: No Ace executed on site... probably lag on cloudflare... use local copy
-          thisNode.textContent = beautify(thisNode.textContent);
 
-          var editor = ace.edit('editor');
-          editor.setTheme('ace/theme/dawn');
-          editor.getSession().setMode('ace/mode/javascript');
-
-          aE.target.disabled = 'disabled';
-
-          var submit_codeNode = document.querySelector('input#submit_code');
-          if (submit_codeNode) {
-            submit_codeNode.classList.remove('btn-success');
-            submit_codeNode.classList.add('btn-warning');
-          }
-
+        var ace_gutterLayer = document.querySelector('.ace_gutter-layer');
+        if (ace_gutterLayer) {
+          ace_gutterLayer.classList.add('btn-warning');
         }
       }
     });
