@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.0.1
+// @version       0.0.2
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @include  https://openuserjs.org/scripts/*/*/source
@@ -38,24 +38,24 @@
     }) + '\n';
   }
 
-  let hookNode = document.querySelector('div.container-fluid div.row div.col-md-12');
+  var hookNode = document.querySelector('div.container-fluid div.row div.col-md-12');
   if (hookNode) {
-    let beautifyNodeInput = document.createElement('input');
+    var beautifyNodeInput = document.createElement('input');
     beautifyNodeInput.classList.add('btn');
     beautifyNodeInput.classList.add('btn-success');
     beautifyNodeInput.id = 'beautify';
     beautifyNodeInput.value = 'Beautify';
     beautifyNodeInput.type = 'button';
     beautifyNodeInput.addEventListener('click', function (aE) {
-      let thisNode = document.querySelector('pre#editor');
+      var thisNode = document.querySelector('pre#editor');
       if (thisNode) {
-        let textareaNode = thisNode.querySelector('textarea');
+        var textareaNode = thisNode.querySelector('textarea');
         if (textareaNode) {
-          let matches = location.pathname.match(/^\/(scripts|libs)\/(.*)\/(.*)\/source$/);
+          var matches = location.pathname.match(/^\/(scripts|libs)\/(.*)\/(.*)\/source$/);
           if (matches) {
-            let scriptType, userName, scriptName;
+            var scriptType, userName, scriptName;
             [, scriptType, userName, scriptName] = matches;
-            let url = '/src/' + scriptType + '/' + userName + '/' + scriptName + (scriptType == 'scripts' ? '.user' : '') + '.js';
+            var url = '/src/' + scriptType + '/' + userName + '/' + scriptName + (scriptType == 'scripts' ? '.user' : '') + '.js';
             GM_xmlhttpRequest({
               method: 'GET',
               url: url,
@@ -64,19 +64,19 @@
                   case 200:
                     thisNode.textContent = beautify(xhr.responseText);
 
-                    let editor = ace.edit('editor');
+                    var editor = ace.edit('editor');
                     editor.setTheme('ace/theme/dawn');
                     editor.getSession().setMode('ace/mode/javascript');
 
                     aE.target.disabled = 'disabled';
 
-                    let submit_codeNode = document.querySelector('button#submit_code');
+                    var submit_codeNode = document.querySelector('button#submit_code');
                     if (submit_codeNode) {
                       submit_codeNode.classList.remove('btn-success');
                       submit_codeNode.classList.add('btn-warning');
                     }
 
-                    let ace_gutterLayer = document.querySelector('.ace_gutter-layer');
+                    var ace_gutterLayer = document.querySelector('.ace_gutter-layer');
                     if (ace_gutterLayer) {
                       ace_gutterLayer.classList.add('btn-warning');
                     }
@@ -90,13 +90,13 @@
         else {  // NOTE: No Ace executed on site... probably lag on cloudflare... use local copy
           thisNode.textContent = beautify(thisNode.textContent);
 
-          let editor = ace.edit('editor');
+          var editor = ace.edit('editor');
           editor.setTheme('ace/theme/dawn');
           editor.getSession().setMode('ace/mode/javascript');
 
           aE.target.disabled = 'disabled';
 
-          let submit_codeNode = document.querySelector('input#submit_code');
+          var submit_codeNode = document.querySelector('input#submit_code');
           if (submit_codeNode) {
             submit_codeNode.classList.remove('btn-success');
             submit_codeNode.classList.add('btn-warning');
