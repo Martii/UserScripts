@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.0b
+// @version       0.1.1b
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @include  https://openuserjs.org/scripts/*/*/source
@@ -30,7 +30,8 @@
       indent_char: ' ',
       max_preserve_newlines: 2,
       brace_style: 'end-expand',
-      unescape_strings: true
+      unescape_strings: true,
+      space_after_anon_function: true
     }) + '\n';
   }
 
