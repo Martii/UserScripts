@@ -24,3 +24,5 @@
   alert('Hello, World!');
 
 })();
+
+// Test for #497
