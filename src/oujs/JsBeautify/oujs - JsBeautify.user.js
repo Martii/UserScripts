@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.2b
+// @version       0.1.3b
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @include  https://openuserjs.org/scripts/*/*/source
@@ -70,7 +70,7 @@
     beautifyNodeInput.classList.add('btn');
     beautifyNodeInput.classList.add('btn-success');
     beautifyNodeInput.id = 'beautify';
-    beautifyNodeInput.value = 'Beautify';
+    beautifyNodeInput.setAttribute('value', 'Beautify');
     beautifyNodeInput.type = 'button';
     beautifyNodeInput.addEventListener('click', function (aE) {
       var thisNode = document.querySelector('pre#editor');
@@ -120,7 +120,7 @@
     wrappedNodeInput.classList.add('btn');
     wrappedNodeInput.classList.add('btn-success');
     wrappedNodeInput.id = 'wrap';
-    wrappedNodeInput.value = 'Wrap';
+    wrappedNodeInput.setAttribute('value', 'Wrap');
     wrappedNodeInput.type = 'button';
     wrappedNodeInput.addEventListener('click', function (aE) {
       var thisNode = document.querySelector('pre#editor');
