@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.3b
+// @version       0.1.4b
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @include  https://openuserjs.org/scripts/*/*/source
@@ -62,6 +62,11 @@
         ace_gutterLayer.classList.add('btn-warning');
       }
     }
+
+    var beautifyNodeInput = document.querySelector('#beautify');
+    if (beautifyNodeInput) {
+      beautifyNodeInput.classList.remove('active');
+    }
   });
 
   var hookNode = document.querySelector('div.container-fluid div.row div.col-md-12');
@@ -97,7 +102,9 @@
         }
         else {
           isBlocking = true;
-          aE.target.classList.add('active');
+          if (!hasChanged)
+            aE.target.classList.add('active');
+
           ace.edit('editor').getSession().setValue(beautify(hasChanged ? ace.edit('editor').getSession().getValue() : rawSource));
           isBlocking = false;
 
