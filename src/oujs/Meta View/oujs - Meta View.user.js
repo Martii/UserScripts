@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.10
+// @version       2.2.11
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -327,6 +327,21 @@
         req.setRequestHeader('Accept', 'text/x-userscript-meta');
 
         req.onreadystatechange = function () {
+          function hasCalc(aPrefix) {
+            aPrefix = aPrefix || '';
+            var el = document.createElement('div');
+            el.style.setProperty(aPrefix + 'width', 'calc(1px)', '');
+            return !!el.style.length;
+          }
+
+          function hasAnyCalc() {
+            return hasCalc('-moz-') || hasCalc('-ms-') || hasCalc('-o-') || hasCalc('-webkit-') || hasCalc();
+          }
+
+          function calcHeight() {
+            return parseInt((window.innerHeight - 303) / 2.004);
+          }
+
           if (this.readyState == this.DONE) {
             console.log('META VIEW REQUEST SUMMARY');
 
@@ -421,6 +436,16 @@
 
                 // Clean up
                 hookNode.removeChild(NodeDiv);
+
+                // Resize for older browsers
+                if (!hasAnyCalc()) {
+                  mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                  objNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                  document.addEventListener('resize', function () {
+                    mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                    objNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                  });
+                }
 
                 // Activate Ace
                 var mdb = ace.edit('mdb');
