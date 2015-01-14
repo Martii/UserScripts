@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.2.12
+// @version       2.3.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -162,6 +162,13 @@
         while (hookNode.hasChildNodes())
           hookNode.removeChild(hookNode.firstChild);
 
+        panelBodyNode.classList.remove('panel-body');
+        panelBodyNode.classList.remove('panel-group');
+
+        var parentNode = panelBodyNode.parentNode;
+        parentNode.classList.remove('panel-default');
+        parentNode.classList.remove('panel');
+        parentNode.classList.remove('panel-group');
 
         // Simulate navbar
         var navbar2TextStrongNodeB = document.createElement('b');
