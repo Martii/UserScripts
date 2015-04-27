@@ -501,3 +501,5 @@
   }
 
 })();
+
+// Test for OpenUserJS/OpenUserJS.org#626 manual edit on OUJS, GH existing Import and new sync using local pro
