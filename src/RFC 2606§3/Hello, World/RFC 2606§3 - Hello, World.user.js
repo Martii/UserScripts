@@ -26,3 +26,5 @@
 })();
 
 // Test for #599
+
+// Test for #626 manual edit on OUJS, GH existing Import and new sync using local pro
