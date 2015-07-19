@@ -68,6 +68,12 @@
 
 // ==/UserScript==
 
+// ==OpenUserJS==
+// @author Marti
+// @collaborator sizzle
+// @collaborator jerone
+// ==/OpenUserJS==
+
   // Do Nothing
 
 })();
