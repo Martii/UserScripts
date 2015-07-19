@@ -1,12 +1,5 @@
 (function () {
 
-// ==OpenUserJS==
-// @author Marti
-// @collaborator sizzle
-// @collaborator jerone
-// ==/OpenUserJS==
-
-
 // ==UserScript==
 // @run-at             document-end
 
@@ -74,6 +67,13 @@
 //@require http://localhost:8080/libs/src/Marti/GM_setStyle.js
 
 // ==/UserScript==
+
+// ==OpenUserJS==
+// @author Martii
+// @author Marti
+// @collaborator sizzle
+// @collaborator jerone
+// ==/OpenUserJS==
 
 
   // Do Nothing
