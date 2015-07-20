@@ -4,11 +4,11 @@
 // ==UserScript==
 // @name          oujs - Meta View
 // @namespace     https://openuserjs.org/users/Marti
-// @description   Adds a script navigation link next to `Source Code` titled `Meta` and opens a phantom url to show the detected metadata block
+// @description   Adds a script navigation link next to `Source Code` titled `Meta` and opens a phantom url to show the detected metadata
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       3.0.0.0rc1
+// @version       3.0.0.0rc2
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
