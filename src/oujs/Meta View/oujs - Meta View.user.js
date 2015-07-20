@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2.3.1.0
+// @version       3.0.0.0rc1
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -23,114 +23,71 @@
 
 // @grant none
 
+// Note some older browsers can't handle this dependency in a .user.js
+// @require https://github.com/pegjs/pegjs/releases/download/v0.8.0/peg-0.8.0.min.js
+
 // ==/UserScript==
 
-  function parseMeta(aString, aNormalize) {
+  /*
+   * PREFERENCES
+   */
+  var useFullScriptSource = false;
+
+  /*
+   *
+   */
+  function parserMeta(aParser, aString) {
     var rLine = /\/\/ @(\S+)(?:\s+(.*))?/;
-    var headers = {};
-    var name = null;
-    var prefix = null;
-    var key = null;
-    var value = null;
     var line = null;
-    var lineMatches = null;
     var lines = {};
-    var uniques = {
-      'description': true,
-      'icon': true,
-      'name': true,
-      'namespace': true,
-      'version': true,
-      'oujs:author': true
-    };
+    var header = null;
+    var key = null;
+    var keyword = null;
     var unique = null;
-    var one = null;
-    var matches = null;
+    var headers = {};
+    var i = null;
+    var thisHeader = null;
 
     lines = aString.split(/[\r\n]+/).filter(function (aElement, aIndex, aArray) {
       return (aElement.match(rLine));
     });
 
     for (line in lines) {
-      var header = null;
-
-      lineMatches = lines[line].replace(/\s+$/, '').match(rLine);
-      name = lineMatches[1];
-      value = lineMatches[2];
-      if (aNormalize) {
-        // Upmix from...
-        switch (name) {
-          case 'homepage':
-          case 'source':
-          case 'website':
-            name = 'homepageURL';
-            break;
-          case 'defaulticon':
-          case 'iconURL':
-            name = 'icon';
-            break;
-          case 'licence':
-            name = 'license';
-            break;
-        }
+      try {
+        header = aParser.parse(lines[line], { startRule: 'line' });
+      } catch (aE) {
+        // Ignore anything not understood
+        header = null;
       }
-      name = name.split(/:/).reverse();
-      key = name[0];
-      prefix = name[1];
-      if (key) {
-        unique = {};
-        if (prefix) {
-          if (!headers[prefix]) {
-            headers[prefix] = {};
-          }
-          header = headers[prefix];
-          if (aNormalize) {
-            for (one in uniques) {
-              matches = one.match(/(.*):(.*)$/);
-              if (uniques[one] && matches && matches[1] === prefix) {
-                unique[matches[2]] = true;
-              }
-            }
-          }
-        } else {
-          header = headers;
-          if (aNormalize) {
-            for (one in uniques) {
-              if (uniques[one] && !/:/.test(one)) {
-                unique[one] = true;
-              }
-            }
-          }
-        }
-        if (!header[key] || aNormalize && unique[key]) {
-          header[key] = value || '';
-        } else if (!aNormalize || header[key] !== (value || '')
-            && !(header[key] instanceof Array && header[key].indexOf(value) > -1)) {
-          if (!(header[key] instanceof Array)) {
-            header[key] = [header[key]];
-          }
-          header[key].push(value || '');
-        }
+
+      if (header) {
+        key = header.key;
+        keyword = header.keyword;
+        unique = header.unique;
+
+        delete header.key;
+        delete header.unique;
+
+        // Create if doesn't exist
+        if (!headers[key])
+          headers[key] = [];
+
+        // Check for unique
+        if (unique)
+          for (i = 0; thisHeader = headers[key][i]; ++i)
+            if (thisHeader.keyword === header.keyword)
+              headers[key].splice(i, 1);
+
+        headers[key].push(header);
       }
     }
+
     return headers;
   }
 
   /**
    *
    */
-  function lastValueOf(aMb, aKey, aPrefix) {
-    if (aPrefix) {
-      if (aMb[aPrefix] && aMb[aPrefix][aKey])
-        return ((typeof aMb[aPrefix][aKey] == "string") ? aMb[aPrefix][aKey] : aMb[aPrefix][aKey][aMb[aPrefix][aKey].length - 1]);
-    }
-    else {
-      if (aMb[aKey])
-        return ((typeof aMb[aKey] == "string") ? aMb[aKey] : aMb[aKey][aMb[aKey].length - 1]);
-    }
-
-    return undefined;
-  }
 
   var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
   if (matches) {
@@ -327,7 +284,9 @@
 
         var req = new XMLHttpRequest();
         req.open('GET', url);
-        req.setRequestHeader('Accept', 'text/x-userscript-meta');
+        if (!useFullScriptSource) {
+          req.setRequestHeader('Accept', 'text/x-userscript-meta');
+        }
 
         req.onreadystatechange = function () {
           function hasCalc(aPrefix) {
@@ -346,22 +305,18 @@
           }
 
           if (this.readyState == this.DONE) {
-            console.log('META VIEW REQUEST SUMMARY');
+            console.log(
+              [
+                'META VIEW REQUEST SUMMARY',
+                '',
+                'status: ' + this.status,
+                'statusText: ' + this.statusText,
+                'readyState: ' + this.readyState,
+                'responseHeaders: ' + this.responseHeaders,
+                'finalUrl: ' + this.finalUrl
 
-            console.group();
-              console.log(
-                [
-                  '',
-                  this.status,
-                  this.statusText,
-                  this.readyState,
-                  this.responseHeaders,
-                  this.finalUrl,
-                  ''
-
-                ].join('\n')
-              );
-            console.groupEnd();
+              ].join('\n')
+            );
 
             switch (this.status) {
               case 200:
@@ -373,100 +328,178 @@
                   return;
                 }
 
-                var responseText = this.responseText.match(/^(\/\/ ==UserScript==[\s\S]*?^\/\/ ==\/UserScript==)/m)[1].trim();
-
-                // Simulate a Source Code page
-                var NodeStyle = document.createElement('style');
-                NodeStyle.setAttribute('type', 'text/css');
-                var min_height = 33;
-                NodeStyle.textContent =
-                  [
-                    '#mdb, #obj { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
-                    '.path-divider { color: #666; margin: 0 0.25em; }'
-
-                  ].join('\n')
-                ;
-                document.head.appendChild(NodeStyle);
-
-                // Parse metadata block to standard
-                var mb = parseMeta(responseText, false);
-
-
-                // Fix title to be native
-                var scriptNameX = lastValueOf(mb, "name");
-
-                titleNode.textContent = 'Meta ' + scriptNameX + '| OpenUserJS';
-
-                // Create meta views
-                var objNodePre = document.createElement('pre');
-                objNodePre.classList.add('ace_editor');
-                objNodePre.classList.add('ace-dawn');
-                objNodePre.id = 'obj';
-                objNodePre.textContent = JSON.stringify(mb, null, ' ');
-
-                var mdbNodePre = document.createElement('pre');
-                mdbNodePre.classList.add('ace_editor');
-                mdbNodePre.classList.add('ace-dawn');
-                mdbNodePre.id = 'mdb';
-                mdbNodePre.textContent = responseText;
-
-                var atIcon = lastValueOf(mb, "icon");
-                if (atIcon) {
-                  var pageHeadingIconNodeSpan = document.createElement('span');
-                  pageHeadingIconNodeSpan.classList.add('page-heading-icon');
-                  pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
-
-                  var pageHeadingIconNodeI = document.createElement('i');
-                  pageHeadingIconNodeI.classList.add('fa');
-                  pageHeadingIconNodeI.classList.add('fa-fw');
-                  pageHeadingIconNodeI.classList.add('fa-file-code-o');
-
-                  pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
-                  pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
-
-                  var scriptIconNodeImg = document.createElement('img');
-                  scriptIconNodeImg.addEventListener('load', function () {
-                    pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
-                    pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
-                  });
-                  scriptIconNodeImg.src = atIcon;
+                var responseTextUserScript = this.responseText.match(/^(\/\/ ==UserScript==[\s\S]*?^\/\/ ==\/UserScript==)/m)[1].trim();
+                var responseTextOpenUserJS = null;
+                if (this.responseText.match(/^(\/\/ ==OpenUserJS==[\s\S]*?^\/\/ ==\/OpenUserJS==)/m)) {
+                  responseTextOpenUserJS = this.responseText.match(/^(\/\/ ==OpenUserJS==[\s\S]*?^\/\/ ==\/OpenUserJS==)/m)[1].trim();
+                } else {
+                  responseTextOpenUserJS = '// ==OpenUserJS==\n// ==/OpenUserJS==';
                 }
 
-                scriptAuthorNodeA.textContent = userName;
-                pathDividerNodeSpan.textContent = "/";
-                scriptNameNodeA.textContent = scriptNameX;
 
-                navNodeA4Span4.textContent = 'n/a';
-                navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
-                navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
+                NodeText.textContent = ": Fetching the grammar files";
+
+                var req = new XMLHttpRequest();
+                req.open('GET', '/pegjs/blockUserScript.pegjs');
+
+                req.onreadystatechange = function () {
+                  if (this.readyState == this.DONE) {
+                    switch (this.status) {
+                      case 200:
+                        if (!this.responseText) {
+                          NodeDiv.classList.remove('alert-warning');
+                          NodeDiv.classList.add('alert-danger');
+                          NodeStrong.textContent = "FAILURE: ";
+                          NodeText.textContent = "Unable to parse the metadata blocks. `responseText` is absent for UserScript.";
+                          return;
+                        }
+
+                      var pegUserScriptGrammar = this.responseText;
+
+                      var req = new XMLHttpRequest();
+                      req.open('GET', '/pegjs/blockOpenUserJS.pegjs');
+
+                      req.onreadystatechange = function () {
+                        if (this.readyState == this.DONE) {
+                          switch (this.status) {
+                            case 200:
+                              if (!this.responseText) {
+                                NodeDiv.classList.remove('alert-warning');
+                                NodeDiv.classList.add('alert-danger');
+                                NodeStrong.textContent = "FAILURE: ";
+                                NodeText.textContent = "Unable to parse the metadata blocks. `responseText` is absent for OpenUserJS.";
+                                return;
+                              }
+
+                            var pegOpenUserJSGrammar = this.responseText;
+
+                            NodeText.textContent = ": Parsing Objects";
+
+                            // Parse peg grammar to standard
+                            var parserUserScript = PEG.buildParser(pegUserScriptGrammar, { allowedStartRules: ['line'] });
+                            var parserOpenUserJS = PEG.buildParser(pegOpenUserJSGrammar, { allowedStartRules: ['line'] });
+
+                            // Reparse the respective responseText
+                            var UserScript = parserMeta(parserUserScript, responseTextUserScript);
+                            var OpenUserJS = {};
+                            if (responseTextOpenUserJS) {
+                              OpenUserJS = parserMeta(parserOpenUserJS, responseTextOpenUserJS);
+                            }
 
 
-                hookNode.appendChild(mdbNodePre);
-                hookNode.appendChild(objNodePre);
+                            NodeText.textContent = ": Simulating Source Code page";
 
-                // Clean up
-                hookNode.removeChild(NodeDiv);
+                            // Simulate a Source Code page
+                            var NodeStyle = document.createElement('style');
+                            NodeStyle.setAttribute('type', 'text/css');
+                            var min_height = 52;
+                            NodeStyle.textContent =
+                              [
+                                '#mdb { min-height: 115px; }',
+                                '#peg { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
+                                '.path-divider { color: #666; margin: 0 0.25em; }'
 
-                // Resize for older browsers
-                if (!hasAnyCalc()) {
-                  mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                  objNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                  document.addEventListener('resize', function () {
-                    mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                    objNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                  });
-                }
+                              ].join('\n')
+                            ;
+                            document.head.appendChild(NodeStyle);
 
-                // Activate Ace
-                var mdb = ace.edit('mdb');
-                mdb.setTheme('ace/theme/dawn');
-                mdb.getSession().setMode('ace/mode/javascript');
-                mdb.setReadOnly(true);
+                            // Fix title to be native
+                            var scriptNameX = null;
+                            UserScript['name'].forEach(function (e, i, a) {
+                              if (!e.locale) { // Default to absent locale... requirement of OUJS to have `@name`
+                                scriptNameX = e.value;
+                              }
+                            });
 
-                var obj = ace.edit('obj');
-                obj.setTheme('ace/theme/dawn');
-                obj.getSession().setMode('ace/mode/json');
-                obj.setReadOnly(true);
+                            titleNode.textContent = 'Meta ' + scriptNameX + '| OpenUserJS';
+
+                            // Create meta views
+                            var pegNodePre = document.createElement('pre');
+                            pegNodePre.classList.add('ace_editor');
+                            pegNodePre.classList.add('ace-dawn');
+                            pegNodePre.id = 'peg';
+                            pegNodePre.textContent = JSON.stringify({ UserScript, OpenUserJS }, null, ' ');
+
+                            var mdbNodePre = document.createElement('pre');
+                            mdbNodePre.classList.add('ace_editor');
+                            mdbNodePre.classList.add('ace-dawn');
+                            mdbNodePre.id = 'mdb';
+                            mdbNodePre.textContent = responseTextUserScript + (responseTextOpenUserJS ? '\n\n' + responseTextOpenUserJS : '');
+
+                            var atIcon = UserScript['icon'];
+                            if (atIcon) {
+                              atIcon = UserScript['icon'][0].value;
+
+                              var pageHeadingIconNodeSpan = document.createElement('span');
+                              pageHeadingIconNodeSpan.classList.add('page-heading-icon');
+                              pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
+
+                              var pageHeadingIconNodeI = document.createElement('i');
+                              pageHeadingIconNodeI.classList.add('fa');
+                              pageHeadingIconNodeI.classList.add('fa-fw');
+                              pageHeadingIconNodeI.classList.add('fa-file-code-o');
+
+                              pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
+                              pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
+
+                              var scriptIconNodeImg = document.createElement('img');
+                              scriptIconNodeImg.addEventListener('load', function () {
+                                pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
+                                pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
+                              });
+                              scriptIconNodeImg.src = atIcon;
+                            }
+
+                            scriptAuthorNodeA.textContent = userName;
+                            pathDividerNodeSpan.textContent = "/";
+                            scriptNameNodeA.textContent = scriptNameX;
+
+                            navNodeA4Span4.textContent = 'n/a';
+                            navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
+                            navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
+
+
+                            hookNode.appendChild(mdbNodePre);
+                            hookNode.appendChild(pegNodePre);
+
+                            // Clean up
+                            hookNode.removeChild(NodeDiv);
+
+                            // Resize for older browsers
+                            if (!hasAnyCalc()) {
+                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                              pegNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                              document.addEventListener('resize', function () {
+                                mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                                pegNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                              });
+                            }
+
+                            // Activate Ace
+                            var mdb = ace.edit('mdb');
+                            mdb.setTheme('ace/theme/dawn');
+                            mdb.getSession().setMode('ace/mode/javascript');
+                            mdb.setReadOnly(true);
+
+                            var peg = ace.edit('peg');
+                            peg.setTheme('ace/theme/dawn');
+                            peg.getSession().setMode('ace/mode/javascript');
+                            peg.setReadOnly(true);
+
+                            if (useFullScriptSource) {
+                              var ace_gutterLayer = document.querySelector('.ace_gutter-layer');
+                              if (ace_gutterLayer)
+                                ace_gutterLayer.classList.add('btn-warning');
+                            }
+
+                          }
+                        }
+                      };
+                      req.send();
+                    }
+                  }
+                };
+                req.send();
 
                 break;
               default:
@@ -474,7 +507,7 @@
                 NodeDiv.classList.add('alert-danger');
 
                 NodeStrong.textContent = 'ERROR';
-                NodeText.textContent = ': Unable to fetch the metadata block with status of: ' + this.status;
+                NodeText.textContent = ': Unable to fetch the metadata blocks with status of: ' + this.status;
 
                 break;
             }
@@ -501,5 +534,3 @@
   }
 
 })();
-
-// Test for OpenUserJS/OpenUserJS.org#626 manual edit on OUJS, GH existing Import and new sync using local pro and using actual production
