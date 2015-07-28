@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       3.0.0.0rc5
+// @version       3.0.0.0rc6
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -78,6 +78,12 @@
         if (unique) {
           for (i = 0; thisHeader = headers[name][i]; ++i) {
             if (thisHeader.key === header.key) {
+              headers[name].splice(i, 1);
+            }
+          }
+        } else {
+          for (i = 0; thisHeader = headers[name][i]; ++i) {
+            if (thisHeader.value === header.value) {
               headers[name].splice(i, 1);
             }
           }
