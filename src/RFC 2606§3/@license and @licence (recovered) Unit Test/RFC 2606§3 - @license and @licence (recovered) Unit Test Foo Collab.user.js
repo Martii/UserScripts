@@ -67,6 +67,9 @@
 
 //@require http://localhost:8080/libs/src/Marti/GM_setStyle.js
 
+// @oujs:author sizzle
+// @oujs:collaborator Marti
+
 // ==/UserScript==
 
 // ==OpenUserJS==
