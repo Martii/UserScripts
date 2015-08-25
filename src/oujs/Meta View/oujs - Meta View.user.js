@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       3.0.0.0rc6
+// @version       3.0.0.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -352,10 +352,7 @@
                 var responseTextOpenUserJS = null;
                 if (this.responseText.match(/^(\/\/ ==OpenUserJS==[\s\S]*?^\/\/ ==\/OpenUserJS==)/m)) {
                   responseTextOpenUserJS = this.responseText.match(/^(\/\/ ==OpenUserJS==[\s\S]*?^\/\/ ==\/OpenUserJS==)/m)[1].trim();
-                } else {
-                  responseTextOpenUserJS = '// ==OpenUserJS==\n// ==/OpenUserJS==';
                 }
-
 
                 NodeText.textContent = ": Fetching the grammar files";
 
@@ -412,11 +409,10 @@
                             // Simulate a Source Code page
                             var NodeStyle = document.createElement('style');
                             NodeStyle.setAttribute('type', 'text/css');
-                            var min_height = 52;
+                            var min_height = 33;
                             NodeStyle.textContent =
                               [
-                                '#mdb { min-height: 115px; }',
-                                '#peg { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
+                                '#mdb, #peg { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
                                 '.path-divider { color: #666; margin: 0 0.25em; }'
 
                               ].join('\n')
@@ -438,7 +434,7 @@
                             pegNodePre.classList.add('ace_editor');
                             pegNodePre.classList.add('ace-dawn');
                             pegNodePre.id = 'peg';
-                            pegNodePre.textContent = JSON.stringify({ UserScript, OpenUserJS }, null, ' ');
+                            pegNodePre.textContent = JSON.stringify((responseTextOpenUserJS ? { UserScript, OpenUserJS } : { UserScript }), null, ' ');
 
                             var mdbNodePre = document.createElement('pre');
                             mdbNodePre.classList.add('ace_editor');
