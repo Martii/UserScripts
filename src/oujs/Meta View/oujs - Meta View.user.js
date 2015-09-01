@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       3.0.0.0
+// @version       3.0.0.1
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -24,7 +24,7 @@
 // @grant none
 
 // Note some older browsers can't handle this dependency in a .user.js
-// @require https://github.com/pegjs/pegjs/releases/download/v0.8.0/peg-0.8.0.min.js
+// @require https://github.com/pegjs/pegjs/releases/download/v0.9.0/peg-0.9.0.min.js
 
 // ==/UserScript==
 
