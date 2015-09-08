@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       3.0.0.1
+// @version       4.0.0.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -23,87 +23,7 @@
 
 // @grant none
 
-// Note some older browsers can't handle this dependency in a .user.js
-// @require https://github.com/pegjs/pegjs/releases/download/v0.9.0/peg-0.9.0.min.js
-
 // ==/UserScript==
-
-  /*
-   * PREFERENCES
-   */
-  var useFullScriptSource = false;
-
-  /*
-   *
-   */
-  function parserMeta(aParser, aString) {
-    var rLine = /\/\/ @(\S+)(?:\s+(.*))?/;
-    var line = null;
-    var lines = {};
-    var header = null;
-    var key = null;
-    var keyword = null;
-    var unique = null;
-    var name = null;
-    var headers = {};
-    var i = null;
-    var thisHeader = null;
-
-    lines = aString.split(/[\r\n]+/).filter(function (aElement, aIndex, aArray) {
-      return (aElement.match(rLine));
-    });
-
-    for (line in lines) {
-      try {
-        header = aParser.parse(lines[line], { startRule: 'line' });
-      } catch (aE) {
-        // Ignore anything not understood
-        header = null;
-      }
-
-      if (header) {
-        key = header.key;
-        keyword = header.keyword;
-        name = keyword || key;
-        unique = header.unique;
-
-        delete header.unique;
-
-        // Create if doesn't exist
-        if (!headers[name]) {
-          headers[name] = [];
-        }
-
-        // Check for unique
-        if (unique) {
-          for (i = 0; thisHeader = headers[name][i]; ++i) {
-            if (thisHeader.key === header.key) {
-              headers[name].splice(i, 1);
-            }
-          }
-        } else {
-          for (i = 0; thisHeader = headers[name][i]; ++i) {
-            if (thisHeader.value === header.value) {
-              headers[name].splice(i, 1);
-            }
-          }
-        }
-
-        headers[name].push(header);
-      }
-    }
-
-    // Clean up for DB storage
-    for (name in headers) {
-      headers[name].forEach(function (aElement, aIndex, aArray) {
-        if (!aElement.keyword) {
-          delete aElement.key;
-        }
-      });
-    }
-
-    return headers;
-  }
 
   /**
    *
@@ -293,7 +213,7 @@
         var NodeStrong = document.createElement('strong');
         NodeStrong.textContent = 'PLEASE WAIT';
 
-        var NodeText = document.createTextNode(': Fetching the metadata block');
+        var NodeText = document.createTextNode(': Fetching the meta.js');
 
         NodeDiv.appendChild(NodeStrong);
         NodeDiv.appendChild(NodeText);
@@ -304,9 +224,7 @@
 
         var req = new XMLHttpRequest();
         req.open('GET', url);
-        if (!useFullScriptSource) {
-          req.setRequestHeader('Accept', 'text/x-userscript-meta');
-        }
+        req.setRequestHeader('Accept', 'text/x-userscript-meta');
 
         req.onreadystatechange = function () {
           function hasCalc(aPrefix) {
@@ -344,20 +262,18 @@
                   NodeDiv.classList.remove('alert-warning');
                   NodeDiv.classList.add('alert-danger');
                   NodeStrong.textContent = "FAILURE: ";
-                  NodeText.textContent = "Unable to retrieve the metadata block. `responseText` is absent.";
+                  NodeText.textContent = "Unable to retrieve the meta text. `responseText` is absent.";
                   return;
                 }
 
-                var responseTextUserScript = this.responseText.match(/^(\/\/ ==UserScript==[\s\S]*?^\/\/ ==\/UserScript==)/m)[1].trim();
-                var responseTextOpenUserJS = null;
-                if (this.responseText.match(/^(\/\/ ==OpenUserJS==[\s\S]*?^\/\/ ==\/OpenUserJS==)/m)) {
-                  responseTextOpenUserJS = this.responseText.match(/^(\/\/ ==OpenUserJS==[\s\S]*?^\/\/ ==\/OpenUserJS==)/m)[1].trim();
-                }
+                var responseTextMetaJS = this.responseText.trim();
 
-                NodeText.textContent = ": Fetching the grammar files";
+                NodeText.textContent = ": Fetching the meta.json";
+
+                url = '/meta/' + userName + '/' + scriptName + '.meta.json';
 
                 var req = new XMLHttpRequest();
-                req.open('GET', '/pegjs/blockUserScript.pegjs');
+                req.open('GET', url);
 
                 req.onreadystatechange = function () {
                   if (this.readyState == this.DONE) {
@@ -367,151 +283,121 @@
                           NodeDiv.classList.remove('alert-warning');
                           NodeDiv.classList.add('alert-danger');
                           NodeStrong.textContent = "FAILURE: ";
-                          NodeText.textContent = "Unable to parse the metadata blocks. `responseText` is absent for UserScript.";
+                          NodeText.textContent = "Unable to retrieve the meta JSON. `responseText` is absent.";
                           return;
                         }
 
-                      var pegUserScriptGrammar = this.responseText;
+                        var responseTextMetaJSON = this.responseText;
 
-                      var req = new XMLHttpRequest();
-                      req.open('GET', '/pegjs/blockOpenUserJS.pegjs');
+                        var meta = JSON.parse(responseTextMetaJSON);
 
-                      req.onreadystatechange = function () {
-                        if (this.readyState == this.DONE) {
-                          switch (this.status) {
-                            case 200:
-                              if (!this.responseText) {
-                                NodeDiv.classList.remove('alert-warning');
-                                NodeDiv.classList.add('alert-danger');
-                                NodeStrong.textContent = "FAILURE: ";
-                                NodeText.textContent = "Unable to parse the metadata blocks. `responseText` is absent for OpenUserJS.";
-                                return;
-                              }
+                        NodeText.textContent = ": Simulating Source Code page";
 
-                            var pegOpenUserJSGrammar = this.responseText;
+                        // Simulate a Source Code page
+                        var NodeStyle = document.createElement('style');
+                        NodeStyle.setAttribute('type', 'text/css');
+                        var min_height = 33;
+                        NodeStyle.textContent =
+                          [
+                            '#mdb, #json { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
+                            '.path-divider { color: #666; margin: 0 0.25em; }'
 
-                            NodeText.textContent = ": Parsing Objects";
+                          ].join('\n')
+                        ;
+                        document.head.appendChild(NodeStyle);
 
-                            // Parse peg grammar to standard
-                            var parserUserScript = PEG.buildParser(pegUserScriptGrammar, { allowedStartRules: ['line'] });
-                            var parserOpenUserJS = PEG.buildParser(pegOpenUserJSGrammar, { allowedStartRules: ['line'] });
-
-                            // Reparse the respective responseText
-                            var UserScript = parserMeta(parserUserScript, responseTextUserScript);
-                            var OpenUserJS = {};
-                            if (responseTextOpenUserJS) {
-                              OpenUserJS = parserMeta(parserOpenUserJS, responseTextOpenUserJS);
-                            }
-
-
-                            NodeText.textContent = ": Simulating Source Code page";
-
-                            // Simulate a Source Code page
-                            var NodeStyle = document.createElement('style');
-                            NodeStyle.setAttribute('type', 'text/css');
-                            var min_height = 33;
-                            NodeStyle.textContent =
-                              [
-                                '#mdb, #peg { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
-                                '.path-divider { color: #666; margin: 0 0.25em; }'
-
-                              ].join('\n')
-                            ;
-                            document.head.appendChild(NodeStyle);
-
-                            // Fix title to be native
-                            var scriptNameX = null;
-                            UserScript['name'].forEach(function (e, i, a) {
-                              if (!e.locale) { // Default to absent locale... requirement of OUJS to have `@name`
-                                scriptNameX = e.value;
-                              }
-                            });
-
-                            titleNode.textContent = 'Meta ' + scriptNameX + '| OpenUserJS';
-
-                            // Create meta views
-                            var pegNodePre = document.createElement('pre');
-                            pegNodePre.classList.add('ace_editor');
-                            pegNodePre.classList.add('ace-dawn');
-                            pegNodePre.id = 'peg';
-                            pegNodePre.textContent = JSON.stringify((responseTextOpenUserJS ? { UserScript, OpenUserJS } : { UserScript }), null, ' ');
-
-                            var mdbNodePre = document.createElement('pre');
-                            mdbNodePre.classList.add('ace_editor');
-                            mdbNodePre.classList.add('ace-dawn');
-                            mdbNodePre.id = 'mdb';
-                            mdbNodePre.textContent = responseTextUserScript + (responseTextOpenUserJS ? '\n\n' + responseTextOpenUserJS : '');
-
-                            var atIcon = UserScript['icon'];
-                            if (atIcon) {
-                              atIcon = UserScript['icon'][0].value;
-
-                              var pageHeadingIconNodeSpan = document.createElement('span');
-                              pageHeadingIconNodeSpan.classList.add('page-heading-icon');
-                              pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
-
-                              var pageHeadingIconNodeI = document.createElement('i');
-                              pageHeadingIconNodeI.classList.add('fa');
-                              pageHeadingIconNodeI.classList.add('fa-fw');
-                              pageHeadingIconNodeI.classList.add('fa-file-code-o');
-
-                              pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
-                              pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
-
-                              var scriptIconNodeImg = document.createElement('img');
-                              scriptIconNodeImg.addEventListener('load', function () {
-                                pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
-                                pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
-                              });
-                              scriptIconNodeImg.src = atIcon;
-                            }
-
-                            scriptAuthorNodeA.textContent = userName;
-                            pathDividerNodeSpan.textContent = "/";
-                            scriptNameNodeA.textContent = scriptNameX;
-
-                            navNodeA4Span4.textContent = 'n/a';
-                            navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
-                            navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
-
-
-                            hookNode.appendChild(mdbNodePre);
-                            hookNode.appendChild(pegNodePre);
-
-                            // Clean up
-                            hookNode.removeChild(NodeDiv);
-
-                            // Resize for older browsers
-                            if (!hasAnyCalc()) {
-                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                              pegNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                              document.addEventListener('resize', function () {
-                                mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                                pegNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                              });
-                            }
-
-                            // Activate Ace
-                            var mdb = ace.edit('mdb');
-                            mdb.setTheme('ace/theme/dawn');
-                            mdb.getSession().setMode('ace/mode/javascript');
-                            mdb.setReadOnly(true);
-
-                            var peg = ace.edit('peg');
-                            peg.setTheme('ace/theme/dawn');
-                            peg.getSession().setMode('ace/mode/javascript');
-                            peg.setReadOnly(true);
-
-                            if (useFullScriptSource) {
-                              var ace_gutterLayer = document.querySelector('.ace_gutter-layer');
-                              if (ace_gutterLayer)
-                                ace_gutterLayer.classList.add('btn-warning');
-                            }
-
+                        // Fix title to be native
+                        var scriptNameX = null;
+                        meta.UserScript['name'].forEach(function (e, i, a) {
+                          if (!e.locale) { // Default to absent locale... requirement of OUJS to have `@name`
+                            scriptNameX = e.value;
                           }
+                        });
+
+                        titleNode.textContent = 'Meta ' + scriptNameX + ' | OpenUserJS';
+
+                        // Create meta views
+                        var jsonNodePre = document.createElement('pre');
+                        jsonNodePre.classList.add('ace_editor');
+                        jsonNodePre.classList.add('ace-dawn');
+                        jsonNodePre.id = 'json';
+                        jsonNodePre.textContent = JSON.stringify(meta, null, ' ');
+
+                        var mdbNodePre = document.createElement('pre');
+                        mdbNodePre.classList.add('ace_editor');
+                        mdbNodePre.classList.add('ace-dawn');
+                        mdbNodePre.id = 'mdb';
+                        mdbNodePre.textContent = responseTextMetaJS;
+
+                        var atIcon = meta.UserScript['icon'];
+                        if (atIcon) {
+                          atIcon = meta.UserScript['icon'][0].value;
+
+                          var pageHeadingIconNodeSpan = document.createElement('span');
+                          pageHeadingIconNodeSpan.classList.add('page-heading-icon');
+                          pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
+
+                          var pageHeadingIconNodeI = document.createElement('i');
+                          pageHeadingIconNodeI.classList.add('fa');
+                          pageHeadingIconNodeI.classList.add('fa-fw');
+                          pageHeadingIconNodeI.classList.add('fa-file-code-o');
+
+                          pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
+                          pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
+
+                          var scriptIconNodeImg = document.createElement('img');
+                          scriptIconNodeImg.addEventListener('load', function () {
+                            pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
+                            pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
+                          });
+                          scriptIconNodeImg.src = atIcon;
                         }
-                      };
-                      req.send();
+
+                        scriptAuthorNodeA.textContent = userName;
+                        pathDividerNodeSpan.textContent = "/";
+                        scriptNameNodeA.textContent = scriptNameX;
+
+                        navNodeA4Span4.textContent = 'n/a';
+                        navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
+                        navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
+
+
+                        hookNode.appendChild(mdbNodePre);
+                        hookNode.appendChild(jsonNodePre);
+
+                        // Clean up
+                        hookNode.removeChild(NodeDiv);
+
+                        // Resize for older browsers
+                        if (!hasAnyCalc()) {
+                          mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                          jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                          document.addEventListener('resize', function () {
+                            mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                            jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                          });
+                        }
+
+                        // Activate Ace
+                        var mdb = ace.edit('mdb');
+                        mdb.setTheme('ace/theme/dawn');
+                        mdb.getSession().setMode('ace/mode/javascript');
+                        mdb.setReadOnly(true);
+
+                        var mdj = ace.edit('json');
+                        mdj.setTheme('ace/theme/dawn');
+                        mdj.getSession().setMode('ace/mode/javascript');
+                        mdj.setReadOnly(true);
+
+                        break;
+                      default:
+                        NodeDiv.classList.remove('alert-warning');
+                        NodeDiv.classList.add('alert-danger');
+
+                        NodeStrong.textContent = 'ERROR';
+                        NodeText.textContent = ': Unable to fetch the meta.json with status of: ' + this.status;
+
+                        break;
                     }
                   }
                 };
@@ -523,7 +409,7 @@
                 NodeDiv.classList.add('alert-danger');
 
                 NodeStrong.textContent = 'ERROR';
-                NodeText.textContent = ': Unable to fetch the metadata blocks with status of: ' + this.status;
+                NodeText.textContent = ': Unable to fetch the meta.js with status of: ' + this.status;
 
                 break;
             }
