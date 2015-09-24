@@ -20,7 +20,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @licence       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2015.07.19.002
+// @version       2015.09.24.000
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @iconURL       https://s3.amazonaws.com/uso_ss/icon/13701/large.png?test
@@ -41,31 +41,11 @@
 // @include   http://www.example.net/*
 // @include   http://www.example.org/*
 
-//@author Marti Martz (https://github.com/martii)
-//@oujs:author Marti
-//@oujs:collaborator  jerone
-//@oujs:collaborator  sizzle
-//@oujs:collaborator  sizzle
-//@oujs:collaborator  Zren
-
-// @oujs:author: Marti
-// @oujs:author: Marti
-// @oujs:collaborator:  jerone
-// @oujs:collaborator:  sizzle
-// @oujs:collaborator:  sizzle
-// @oujs:collaborator:  Zren
-
-
-// @gf:author: ThisShouldNotTriggerCollaboration
-// @gf:collaborator: ThisShouldNotShowEventually
-
-// @uso:script: 0
+// @author Marti Martz (https://github.com/martii)
+// @author Marti Martz (https://openuserjs.org/users/Marti)
 
 // @unwrap
-
-// @someotherkey:fr  Tests de clefs non unique 2
-
-//@require http://localhost:8080/libs/src/Marti/GM_setStyle.js
+// @noframes
 
 // ==/UserScript==
 
