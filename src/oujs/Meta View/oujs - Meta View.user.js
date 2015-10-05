@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.0.0.0
+// @version       4.0.1.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -296,7 +296,7 @@
                         // Simulate a Source Code page
                         var NodeStyle = document.createElement('style');
                         NodeStyle.setAttribute('type', 'text/css');
-                        var min_height = 33;
+                        var min_height = 32.30;
                         NodeStyle.textContent =
                           [
                             '#mdb, #json { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
@@ -364,6 +364,52 @@
 
                         hookNode.appendChild(mdbNodePre);
                         hookNode.appendChild(jsonNodePre);
+
+                        var wrappedNodeInput =  document.createElement('input');
+                        wrappedNodeInput.classList.add('btn');
+                        wrappedNodeInput.classList.add('btn-success');
+                        wrappedNodeInput.id = 'wrap';
+                        wrappedNodeInput.setAttribute('value', 'Wrap');
+                        wrappedNodeInput.type = 'button';
+                        wrappedNodeInput.addEventListener('click', function (aE) {
+                          var active = false;
+
+                          if (document.querySelector('pre#mdb')) {
+                            if (ace.edit('mdb').getSession().getUseWrapMode()) {
+                              ace.edit('mdb').getSession().setUseWrapMode(false);
+                            }
+                            else {
+                              ace.edit('mdb').getSession().setUseWrapMode(true);
+                              active = true;
+                            }
+                          }
+
+                          if (document.querySelector('pre#json')) {
+                            if (ace.edit('json').getSession().getUseWrapMode()) {
+                              ace.edit('json').getSession().setUseWrapMode(false);
+                            }
+                            else {
+                              ace.edit('json').getSession().setUseWrapMode(true);
+                              active = true;
+                            }
+                          }
+
+                          if (active) {
+                            aE.target.classList.add('active');
+                          } else {
+                            aE.target.classList.remove('active');
+                          }
+
+                          aE.target.blur();
+                        });
+
+                        var toolbarNodeDiv = document.createElement('div');
+                        toolbarNodeDiv.classList.add('btn-toolbar');
+
+                        toolbarNodeDiv.appendChild(wrappedNodeInput);
+
+                        hookNode.appendChild(toolbarNodeDiv);
+
 
                         // Clean up
                         hookNode.removeChild(NodeDiv);
