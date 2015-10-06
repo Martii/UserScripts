@@ -11,7 +11,7 @@
 
 // ==OpenUserJS==
 // @author Marti
-// ==OpenUserJS==
+// ==/OpenUserJS==
 })();
 
 /*
