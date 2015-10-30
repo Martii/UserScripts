@@ -11,9 +11,9 @@
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @author        Marti Martz <somewhere@example.com> (https://openuserjs.org/users/Marti)
 
+// @homepageURL   http://userscripts.org/scripts/show/13701
 // @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/RFC%202606%C2%A73/Hello%2C%20World
 // @homepageURL   https://openuserjs.org/scripts/Marti/RFC_2606%C2%A73_-_Hello,_World!
-// @homepageURL   http://userscripts.org/scripts/show/13701
 // @supportURL    http://userscripts.org/topics/23566
 
 // @include   http://www.example.com/*
