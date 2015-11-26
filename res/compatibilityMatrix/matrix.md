@@ -1,6 +1,6 @@
 ## ![](https://raw.githubusercontent.com/Martii/UserScripts/master/res/info16.png) Compatibility Matrix
 
-![][c]![][ch] | ![][ch][![Mozilla Seamonkey][imgsm]][urlsm]![][ch] | ![][ch][![Apple Safari][imgsi]][urlsi]![][ch] | ![][ch][![Opera Software Opera][imgoa]][urloa]![][ch] | ![][ch][![Microsoft Internet Explorer][imgie]][urlie]![][ch] | [![Chromium Projects Chromium][imgcm]][urlcm][![Google Chrome][imgce]][urlce] | ![][ch][![Maxthon][imgmn]][urlmn]![][ch] | ![][ch][![Moonchild Productions Pale Moon][imgpm]][urlpm]![][ch] | ![][ch][![Mozilla Firefox][imgfx]][urlfx]![][ch] | &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+![][c]![][ch] | ![][ch][![Mozilla SeaMonkey][imgsm]][urlsm]![][ch] | ![][ch][![Apple Safari][imgsi]][urlsi]![][ch] | ![][ch][![Opera Software Opera][imgoa]][urloa]![][ch] | ![][ch][![Microsoft Internet Explorer][imgie]][urlie]![][ch] | [![Chromium Projects Chromium][imgcm]][urlcm][![Google Chrome][imgce]][urlce] | ![][ch][![Maxthon][imgmn]][urlmn]![][ch] | ![][ch][![Moonchild Productions Pale Moon][imgpm]][urlpm]![][ch] | ![][ch][![Mozilla Firefox][imgfx]][urlfx]![][ch] | &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----:
 ![Linux][imgtux]![][ch]     | [![Greasemonkey Port][imggpsf]][urlgpsf] | &ndash; | [![Violent monkey][imgvmoa]][urlvmop] | &ndash; | [![TamperMonkey][imgtmgo]][urltmgo] | [![Violent monkey][imgvmma]][urlvmma] | [![Greasemonkey "Fork"][imggmgh]][urlgfpm] | [![Greasemonkey][imggmao]][urlgmao][![Greasemonkey prc][imggmsf]][urlgmsf] |
 ![Macintosh][imgmac]![][ch] | [![Greasemonkey Port][imggpsf]][urlgpsf] | &ndash; | [![Violent monkey][imgvmoa]][urlvmop] | &ndash; | [![TamperMonkey][imgtmgo]][urltmgo] | [![Violent monkey][imgvmma]][urlvmma] | [![Greasemonkey "Fork"][imggmgh]][urlgfpm] |  [![Greasemonkey][imggmao]][urlgmao][![Greasemonkey prc][imggmsf]][urlgmsf] |
@@ -12,7 +12,7 @@
 [imgtux]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/linux16.png "Linux"
 [imgmac]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/macintosh16.png "Macintosh"
 
-[imgsm]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/seamonkey16.png "Mozilla Seamonkey"
+[imgsm]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/seamonkey16.png "Mozilla SeaMonkey"
 [imgsi]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/safari16.png "Apple Safari"
 [imgoa]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/opera16.png "Opera Software Opera"
 [imgie]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/iexplorer16.png "Microsoft Internet Explorer"
