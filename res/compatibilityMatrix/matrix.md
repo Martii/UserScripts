@@ -26,7 +26,7 @@
 [imgtmgo]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/tampermonkey16.png "TamperMonkey"
 [imgvmma]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/violentmonkey16.png "Violent monkey"
 [imgvmoa]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/violentmonkey16.png "Violent monkey"
-[imggmgh]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/amogreasemonkey16.png "Greasemonkey on GH"
+[imggmgh]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/amogreasemonkey16.png "Greasemonkey Fork on GH"
 [imggmao]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/amogreasemonkey16.png "Greasemonkey on Moz"
 [imggmsf]: https://raw.githubusercontent.com/Martii/UserScripts/master/res/compatibilityMatrix/sfgreasemonkey16.png "Greasemonkey on SF"
 
