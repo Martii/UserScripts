@@ -9,8 +9,15 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.5b
+// @version       0.1.6
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
+
+// @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/JsBeautify
+// @homepageURL  https://openuserjs.org/scripts/Marti/oujs_-_JsBeautify
+// @supportURL   https://openuserjs.org/scripts/Marti/oujs_-_JsBeautify/issues
+
+// @updateURL    https://openuserjs.org/meta/Marti/oujs_-_JsBeautify.meta.js
+// @downloadURL  https://openuserjs.org/install/Marti/oujs_-_JsBeautify.user.js
 
 // @include  https://openuserjs.org/scripts/*/*/source
 // @include  https://openuserjs.org/libs/*/*/source
