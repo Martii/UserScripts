@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.7
+// @version       0.1.8
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/JsBeautify
