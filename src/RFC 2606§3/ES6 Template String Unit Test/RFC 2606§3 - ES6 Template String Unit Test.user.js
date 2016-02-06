@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
 
 // ==UserScript==
 // @name          RFC 2606§3 - ES6 Template String Unit Test
@@ -6,7 +6,7 @@
 // @description   Tests out ES6 Template Strings
 // @copyright     2016+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.0.0
+// @version       0.0.1
 
 // @include   http://www.example.com/*
 // @include   http://www.example.net/*
