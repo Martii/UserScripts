@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.1.3
+// @version       4.1.4
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -304,7 +304,8 @@
                         // Simulate a Source Code page
                         var NodeStyle = document.createElement('style');
                         NodeStyle.setAttribute('type', 'text/css');
-                        var min_height = 51.2;
+                        var min_height = 85.2;
+                        var offset = 306;
                         var textSVGMetaJS = 'data:image/svg+xml;base64,' +
                           'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTIwMCAxNC40ODIxMDggNTIuMTI0Njgy' +
                           'IiBoZWlnaHQ9IjUyLjEyIj48ZyBmaWxsPSIjY2NjIj48cGF0aCBkPSJtOS42NjgtMTUwLjI0cS0uMzYtLjM2LS4zNi0uODc1IDAt' +
@@ -379,7 +380,7 @@
                         NodeStyle.textContent =
                           [
                             '#mdb { min-height: 115px; }',
-                            '#json { min-height: 200px; min-height: -moz-calc(' + min_height + 'vh); min-height: -o-calc(' + min_height + 'vh); min-height: -webkit-calc(' + min_height + 'vh); min-height: calc(' + min_height + 'vh); }',
+                            '#json { min-height: 115px; height: -moz-calc(' + min_height + 'vh - ' + offset + 'px); height: -o-calc(' + min_height + 'vh - ' + offset + 'px); height: -webkit-calc(' + min_height + 'vh - ' + offset + 'px); height: calc(' + min_height + 'vh - ' + offset + 'px); }',
                             '.path-divider { color: #666; margin: 0 0.25em; }',
                             '#mdb .ace_gutter { background: #ebebeb url(' + textSVGMetaJS + ') repeat-y scroll left top !important; }',
                             '#json .ace_gutter { background: #ebebeb url(' + textSVGMetaJSON + ') repeat-y scroll left top !important; }'
