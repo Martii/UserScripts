@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.1.0
+// @version       4.1.1
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -499,10 +499,20 @@
                         if (!hasOurRelative()) {
                           mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
                           jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                          document.addEventListener('resize', function () {
-                            mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                            jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                          });
+
+                          if (window.addEventListener) {
+                            window.addEventListener('resize', function () {
+                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                              jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                            });
+                          }
+                          else if (window.attachEvent) {
+                            window.addEventListener('resize', function () {
+                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                              jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                            });
+
+                          }
                         }
 
                         // Activate Ace
