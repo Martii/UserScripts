@@ -8,7 +8,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.0.9
+// @version       4.1.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -230,15 +230,20 @@
         req.setRequestHeader('Accept', 'text/x-userscript-meta');
 
         req.onreadystatechange = function () {
-          function hasCalc(aPrefix) {
+          function hasRelative(aPrefix) {
             aPrefix = aPrefix || '';
-            var el = document.createElement('div');
-            el.style.setProperty(aPrefix + 'width', 'calc(1px)', '');
-            return !!el.style.length;
+
+            var hasCalc = document.createElement('div');
+            hasCalc.style.setProperty(aPrefix + 'width', 'calc(1px)', '');
+
+            var hasUnitV = document.createElement("div");
+            hasUnitV.style.setProperty(aPrefix + "width", "calc(5vw + 5vw)", "");
+
+            return !!hasCalc.style.length && !!hasUnitV.style.length;
           }
 
-          function hasAnyCalc() {
-            return hasCalc('-moz-') || hasCalc('-ms-') || hasCalc('-o-') || hasCalc('-webkit-') || hasCalc();
+          function hasOurRelative() {
+            return hasRelative('-moz-') || hasRelative('-ms-') || hasRelative('-o-') || hasRelative('-webkit-') || hasRelative();
           }
 
           function calcHeight() {
@@ -491,7 +496,7 @@
                         hookNode.removeChild(NodeDiv);
 
                         // Resize for older browsers
-                        if (!hasAnyCalc()) {
+                        if (!hasOurRelative()) {
                           mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
                           jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
                           document.addEventListener('resize', function () {
