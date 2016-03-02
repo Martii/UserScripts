@@ -28,3 +28,6 @@
   alert('Hello, World!');
 
 })();
+
+
+// Test for https://openuserjs.org/discuss/webhook_not_working
