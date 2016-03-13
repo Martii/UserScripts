@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.1.4
+// @version       4.1.5
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -258,8 +258,10 @@
                 'status: ' + this.status,
                 'statusText: ' + this.statusText,
                 'readyState: ' + this.readyState,
-                'responseHeaders: ' + this.responseHeaders,
-                'finalUrl: ' + this.finalUrl
+                'getAllResponseHeaders():\n' + this.getAllResponseHeaders().split('\n').map(function (aE, aI, aA) {
+                  return '  ' + aE;
+                }).join('\n'),
+                'responseURL: ' + this.responseURL
 
               ].join('\n')
             );
