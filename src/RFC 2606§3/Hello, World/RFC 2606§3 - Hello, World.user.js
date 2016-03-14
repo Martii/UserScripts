@@ -31,3 +31,4 @@
 
 
 // Test for https://openuserjs.org/discuss/webhook_not_working
+// Added a secret to the GH configuration to see if it still works
