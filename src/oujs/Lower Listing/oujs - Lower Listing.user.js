@@ -6,7 +6,7 @@
 // @attribution   Jerone (https://github.com/OpenUserJs/OpenUserJS.org/commit/4481c19b2457625c41904e9eb7560711bb10626b)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.0.0
+// @version       0.0.1
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Lower%20Listing
