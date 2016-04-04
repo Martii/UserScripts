@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.1.8
+// @version       0.2.0
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/JsBeautify
@@ -28,7 +28,7 @@
 // @include  http://localhost:8080/scripts/*/*/source
 // @include  http://localhost:8080/libs/*/*/source
 
-// @require  https://raw.githubusercontent.com/einars/js-beautify/master/js/lib/beautify.js
+// @require  https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify.js
 
 // @grant  none
 
