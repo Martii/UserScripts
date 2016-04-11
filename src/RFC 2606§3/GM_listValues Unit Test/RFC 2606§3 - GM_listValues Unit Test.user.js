@@ -7,7 +7,7 @@
 // @copyright     2007+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @version       0.0.1
+// @version       0.0.2
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @include   http://www.example.com/*
@@ -16,6 +16,8 @@
 
 // @grant GM_setValue
 // @grant GM_listValues
+
+// @updateURL  https://openuserjs.org/meta/Marti/RFC_2606%C2%A73_-_GM_listValues_Unit_Test.meta.js
 
 // ==/UserScript==
 

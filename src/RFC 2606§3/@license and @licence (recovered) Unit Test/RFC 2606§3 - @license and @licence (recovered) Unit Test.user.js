@@ -20,7 +20,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @licence       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       2015.09.24.001
+// @version       2016.04.10.001
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @iconURL       https://s3.amazonaws.com/uso_ss/icon/13701/large.png?test
@@ -46,6 +46,8 @@
 
 // @unwrap
 // @noframes
+
+// @updateURL https://openuserjs.org/meta/Marti/RFC_2606%C2%A73_-_license_and_licence_(recovered)_Unit_Test.meta.js
 
 // ==/UserScript==
 

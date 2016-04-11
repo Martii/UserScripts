@@ -6,13 +6,15 @@
 // @description   Tests out ES6 Template Strings
 // @copyright     2016+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.0.1
+// @version       0.0.2
 
 // @include   http://www.example.com/*
 // @include   http://www.example.net/*
 // @include   http://www.example.org/*
 
 // @grant                none
+
+// @updateURL  https://openuserjs.org/meta/Marti/RFC_2606%C2%A73_-_ES6_Template_String_Unit_Test.meta.js
 
 // ==/UserScript==
 
