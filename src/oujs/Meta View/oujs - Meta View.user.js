@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.1.5
+// @version       4.1.6
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -534,8 +534,8 @@
                         NodeDiv.classList.add('alert-danger');
 
                         NodeStrong.textContent = 'ERROR';
-                        NodeText.textContent = ': Unable to fetch the meta.json with status of: ' + this.status;
-
+                        NodeText.textContent = ': Unable to fetch the meta.json with status of: ' + this.status + this.statusText +
+                          (this.status === 429 ? '. Try again in ' + this.getResponseHeader('Retry-After') + ' seconds' : '');
                         break;
                     }
                   }
@@ -548,7 +548,8 @@
                 NodeDiv.classList.add('alert-danger');
 
                 NodeStrong.textContent = 'ERROR';
-                NodeText.textContent = ': Unable to fetch the meta.js with status of: ' + this.status;
+                NodeText.textContent = ': Unable to fetch the meta.js with status of: ' + this.status + ' ' + this.statusText +
+                  (this.status === 429 ? '. Try again in ' + this.getResponseHeader('Retry-After') + ' seconds' : '');
 
                 break;
             }
