@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.1.7
+// @version       4.1.8
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -32,7 +32,7 @@
    *
    */
 
-  var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
+  var matches = window.location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
   if (matches) {
     var
         userName = matches[1],
@@ -40,7 +40,7 @@
     ;
 
     var hookNode;
-    if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
+    if (/\/meta$/.test(window.location.pathname)) { // NOTE: Currently a 404 page
       var NodeScript = document.createElement('script'); // Watchpoint
       NodeScript.setAttribute('src', '/redist/npm/ace-builds/src/ace.js');
       NodeScript.setAttribute('type', 'text/javascript');
