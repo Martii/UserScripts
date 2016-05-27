@@ -7,7 +7,7 @@
 // @copyright    © 2013+, OpenUserJS Group (https://github.com/OpenUserJs)
 // @license      (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license      GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version      2.0.0a.3
+// @version      2.0.0a.4
 // @icon         https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @author        Marti
@@ -92,14 +92,14 @@
         }
       },
       css:
-        `
-          #gmc { position: static !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 !important; border: none !important; margin-top: 20px !important; margin-bottom: 10px !important; }
-          #gmc_header { text-align: left !important; font-family: "Squada One","Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 30px; font-weight: 500; line-height: 1.1; }
+        [
+          '#gmc { position: static !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 !important; border: none !important; margin-top: 20px !important; margin-bottom: 10px !important; }',
+          '#gmc_header { text-align: left !important; font-family: "Squada One","Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 30px; font-weight: 500; line-height: 1.1; }',
 
-          #gmc_resetLink { display: none; }
-          #gmc_closeBtn { display: none; }
+          '#gmc_resetLink { display: none; }',
+          '#gmc_closeBtn { display: none; }'
 
-        `,
+        ].join(''),
       events: {
         open: function (aDoc) {
           var saveNode = aDoc.querySelector('#gmc_saveBtn');
