@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       4.1.9
+// @version       4.2.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -441,9 +441,26 @@
                         pathDividerNodeSpan.textContent = "/";
                         scriptNameNodeA.textContent = scriptNameX;
 
-                        navNodeA4Span4.textContent = 'n/a';
-                        navbar1TextNodeP.appendChild(document.createTextNode(' n/a'));
-                        navbar2TextNodeP.appendChild(document.createTextNode(' n/a'));
+                        var issueCount =
+                          meta.OpenUserJS &&
+                            meta.OpenUserJS.issues &&
+                              meta.OpenUserJS.issues[0] &&
+                                typeof meta.OpenUserJS.issues[0].value !== 'undefined'
+                                  ? meta.OpenUserJS.issues[0].value
+                                  : 'n/a';
+
+                        navNodeA4Span4.textContent = issueCount;
+
+                        var installCount =
+                          meta.OpenUserJS &&
+                            meta.OpenUserJS.installs &&
+                              meta.OpenUserJS.installs[0] &&
+                                typeof meta.OpenUserJS.installs[0].value !== 'undefined'
+                                  ? meta.OpenUserJS.installs[0].value
+                                  : 'n/a';
+
+                        navbar1TextNodeP.appendChild(document.createTextNode(' ' + installCount));
+                        navbar2TextNodeP.appendChild(document.createTextNode(' ' + installCount));
 
 
                         hookNode.appendChild(mdbNodePre);
