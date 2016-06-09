@@ -7,7 +7,7 @@
 // @copyright    © 2013+, OpenUserJS Group (https://github.com/OpenUserJs)
 // @license      (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
 // @license      GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version      2.0.0a.5
+// @version      2.0.0a.6
 // @icon         https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @author        Marti
@@ -61,11 +61,6 @@
       id: 'gmc',
       title: 'OUJS-1',
       fields: {
-        'shrinkScriptList': {
-          "type": 'checkbox',
-          "label": 'Show lower listings',
-          "default": false
-        },
         'showScriptListLineNumbers': {
           "type": 'checkbox',
           "label": 'Show script list line numbers',
@@ -114,14 +109,6 @@
 
   if (document.location.pathname === '/user/preferences') {
     gmc.open();
-  }
-
-  if (gmc.get('shrinkScriptList')) {
-    var nodeStyle = document.createElement('style');
-    nodeStyle.setAttribute("type", "text/css");
-    nodeStyle.textContent = '.rating .progress { margin-bottom: 0; }';
-
-    document.head.appendChild(nodeStyle);
   }
 
   if (gmc.get('showScriptListLineNumbers')) {
