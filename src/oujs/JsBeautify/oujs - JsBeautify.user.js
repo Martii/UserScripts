@@ -7,9 +7,9 @@
 // @description   Beautifies the Source Code Page
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @contributor   Chris Holland (https://github.com/Zren)
-// @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.2.0
+// @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+// @license       GPL-3.0; http://www.gnu.org/licenses/gpl-3.0-standalone.html
+// @version       0.2.1
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/JsBeautify
