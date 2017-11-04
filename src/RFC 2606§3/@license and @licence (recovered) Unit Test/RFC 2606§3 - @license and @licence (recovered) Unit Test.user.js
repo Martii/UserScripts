@@ -18,8 +18,8 @@
 // @description:fr     Tests de clefs non unique
 
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
-// @licence       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @licence       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       2016.04.10.001
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png

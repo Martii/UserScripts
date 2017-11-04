@@ -5,8 +5,8 @@
 // @namespace     https://openuserjs.org/users/Marti
 // @decription    Tests OUJS site handling of Unicode, `decodeURIComponent`, and other potentially `escape`d characters in a script name
 // @copyright     2016+, Marti Martz (https://openuserjs.org/users/Marti)
-// @license       (CC); http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       2016.04.10.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
