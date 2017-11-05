@@ -6,9 +6,9 @@
 // @description   Converts anchor tags with no attributes into bookmarks via the next available text node line
 // @copyright     2010+, Marti Martz (http://userscripts.org/users/37004)
 // @contributor   sizzlemctwizzle (http://userscripts.org/users/27715)
-// @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.5.10
+// @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @version       0.5.10.1eol
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
 // @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/Anchor%20Bookmarks
