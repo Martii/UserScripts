@@ -9,9 +9,9 @@
 // @contributor     Jesse Andrews (http://userscripts.org/users/2)
 // @contributor     LouCypher (http://userscripts.org/users/12)
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
-// @license         Creative Commons; http://creativecommons.org/licenses/by-nc-sa/3.0/
-// @license         GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version         1.1.13
+// @license         CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+// @license         GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @version         1.1.13.1eol
 // @icon            https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Spam%20Zapper/res/icon48.png
 
 // @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/Spam%20Zapper
