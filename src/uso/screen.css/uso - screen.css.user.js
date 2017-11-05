@@ -6,9 +6,9 @@
 // @namespace     http://userscripts.org/users/37004
 // @description   Corrects any discovered issues with screen.css that come into my scope until USO gets around to fixing and sometimes it will do nothing.
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
-// @license       Creative Commons; http://creativecommons.org/licenses/by-nc-nd/3.0/
-// @license       GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
-// @version       0.4.3
+// @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @version       0.4.3.1eol
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/screen.css/res/icon48.png
 
 // @homepageURL   https://github.com/Martii/UserScripts/tree/master/src/uso/screen.css
