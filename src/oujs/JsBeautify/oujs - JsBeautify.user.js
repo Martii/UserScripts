@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       0.2.2
+// @version       0.3.2
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/JsBeautify
@@ -21,12 +21,18 @@
 
 // @include  https://openuserjs.org/scripts/*/*/source
 // @include  https://openuserjs.org/libs/*/*/source
+// @include  https://openuserjs.org/user/add/scripts/new
+// @include  https://openuserjs.org/user/add/lib/new
 
 // @include  http://openuserjs.org/scripts/*/*/source
 // @include  http://openuserjs.org/libs/*/*/source
+// @include  http://openuserjs.org/user/add/scripts/new
+// @include  http://openuserjs.org/user/add/lib/new
 
 // @include  http://localhost:8080/scripts/*/*/source
 // @include  http://localhost:8080/libs/*/*/source
+// @include  http://localhost:8080/user/add/scripts/new
+// @include  http://localhost:8080/user/add/lib/new
 
 // @require  https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify.js
 
