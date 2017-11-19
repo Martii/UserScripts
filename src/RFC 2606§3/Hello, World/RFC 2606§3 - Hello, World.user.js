@@ -31,3 +31,5 @@
   alert('Hello, World!');
 
 })();
+
+// GH sync test for imports
