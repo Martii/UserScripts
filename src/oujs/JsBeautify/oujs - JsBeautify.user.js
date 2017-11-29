@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       0.3.4
+// @version       0.3.5
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/JsBeautify
@@ -82,7 +82,7 @@
     }
   });
 
-  var hookNode = document.querySelector('div.container-fluid div.row div.col-md-12');
+  var hookNode = document.querySelector('div.container-fluid div.row div.col-md-12, div.container-fluid div.row div.col-sm-8');
   if (hookNode) {
     var beautifyNodeInput = document.createElement('input');
     beautifyNodeInput.classList.add('btn');
