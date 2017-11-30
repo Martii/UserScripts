@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.2.3
+// @version       4.3.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -31,6 +31,8 @@
   /**
    *
    */
+
+  var FQDN = window.location.protocol + '//' + window.location.host;
 
   var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
   if (matches) {
@@ -223,7 +225,7 @@
 
         hookNode.appendChild(NodeDiv);
 
-        var url = '/src/scripts/' + userName + '/' + scriptName + '.user.js';
+        var url = FQDN + '/src/scripts/' + userName + '/' + scriptName + '.user.js';
 
         var req = new XMLHttpRequest();
         req.open('GET', url);
@@ -280,7 +282,7 @@
 
                 NodeText.textContent = ": Fetching the meta.json";
 
-                url = '/meta/' + userName + '/' + scriptName + '.meta.json';
+                url = FQDN + '/meta/' + userName + '/' + scriptName + '.meta.json';
 
                 var req = new XMLHttpRequest();
                 req.open('GET', url);
@@ -381,11 +383,13 @@
 
                         NodeStyle.textContent =
                           [
-                            '#mdb { min-height: 115px; }',
-                            '#json { min-height: 115px; height: -moz-calc(' + min_height + 'vh - ' + offset + 'px); height: -o-calc(' + min_height + 'vh - ' + offset + 'px); height: -webkit-calc(' + min_height + 'vh - ' + offset + 'px); height: calc(' + min_height + 'vh - ' + offset + 'px); }',
+                            '#mdb { min-height: 115px; ' + (typeof GM === 'object' ? 'overflow: scroll !important;' : '') + '}',
+                            '#json { min-height: 115px; height: -moz-calc(' + min_height + 'vh - ' + offset + 'px); height: -o-calc(' + min_height + 'vh - ' + offset + 'px); height: -webkit-calc(' + min_height + 'vh - ' + offset + 'px); height: calc(' + min_height + 'vh - ' + offset + 'px); ' + (typeof GM === 'object' ? 'overflow: scroll !important;' : '') + '}',
                             '.path-divider { color: #666; margin: 0 0.25em; }',
                             '#mdb .ace_gutter { background: #ebebeb url(' + textSVGMetaJS + ') repeat-y scroll left top !important; }',
-                            '#json .ace_gutter { background: #ebebeb url(' + textSVGMetaJSON + ') repeat-y scroll left top !important; }'
+                            '#json .ace_gutter { background: #ebebeb url(' + textSVGMetaJSON + ') repeat-y scroll left top !important; }',
+
+
                           ].join('\n')
                         ;
                         document.head.appendChild(NodeStyle);
