@@ -9,7 +9,7 @@
 // @contributor   Chris Holland (https://github.com/Zren)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       0.3.5
+// @version       0.3.6eol
 // @icon          https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/JsBeautify
@@ -39,6 +39,21 @@
 // @grant  none
 
 // ==/UserScript==
+
+  alert([
+    'WHO: That would be you!',
+    'WHAT: oujs - JsBeautify is EOL and has been integrated into the site.',
+    'WHERE: Somewhere around the globe.',
+    'WHEN: Now perhaps to avoid this naggy alert box.',
+    'WHY: From what I can tell Greasemonkey 4.x via Firefox 57+ no longer has access to page scripts which is where the Ace editor resides.',
+    '',
+    'HOW: Please uninstall from your .user.js engine at your earliest convenience.',
+    '',
+    'Many thanks to all of you that have been using this script and favored it. :)'
+
+  ].join('\n'));
+
+  return;
 
   function beautify(aE) {
     return js_beautify(aE.replace(/[“”]/g, '"').replace(/\t/g, '  '), {
