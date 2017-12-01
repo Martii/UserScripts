@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.3.1
+// @version       4.3.2
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -383,8 +383,8 @@
 
                         NodeStyle.textContent =
                           [
-                            '#mdb { min-height: 115px; ' + (typeof GM === 'object' ? 'overflow: scroll !important;' : '') + '}',
-                            '#json { min-height: 115px; height: -moz-calc(' + min_height + 'vh - ' + offset + 'px); height: -o-calc(' + min_height + 'vh - ' + offset + 'px); height: -webkit-calc(' + min_height + 'vh - ' + offset + 'px); height: calc(' + min_height + 'vh - ' + offset + 'px); ' + (typeof GM === 'object' ? 'overflow: scroll !important;' : '') + '}',
+                            '#mdb { min-height: 115px; overflow: auto; }',
+                            '#json { min-height: 115px; height: -moz-calc(' + min_height + 'vh - ' + offset + 'px); height: -o-calc(' + min_height + 'vh - ' + offset + 'px); height: -webkit-calc(' + min_height + 'vh - ' + offset + 'px); height: calc(' + min_height + 'vh - ' + offset + 'px); overflow: auto; }',
                             '.path-divider { color: #666; margin: 0 0.25em; }',
                             '#mdb .ace_gutter { background: #ebebeb url(' + textSVGMetaJS + ') repeat-y scroll left top !important; }',
                             '#json .ace_gutter { background: #ebebeb url(' + textSVGMetaJSON + ') repeat-y scroll left top !important; }',
@@ -477,7 +477,7 @@
                         wrappedNodeInput.setAttribute('value', 'Wrap');
                         wrappedNodeInput.type = 'button';
 
-                        if (typeof GM === 'object') {
+                        if (typeof ace === 'undefined') {
                           wrappedNodeInput.setAttribute('disabled', 'disabled');
                         }
 
@@ -544,15 +544,17 @@
                         }
 
                         // Activate Ace
-                        var mdb = ace.edit('mdb');
-                        mdb.setTheme('ace/theme/dawn');
-                        mdb.getSession().setMode('ace/mode/javascript');
-                        mdb.setReadOnly(true);
+                        if (typeof ace !== 'undefined') {
+                          var mdb = ace.edit('mdb');
+                          mdb.setTheme('ace/theme/dawn');
+                          mdb.getSession().setMode('ace/mode/javascript');
+                          mdb.setReadOnly(true);
 
-                        var mdj = ace.edit('json');
-                        mdj.setTheme('ace/theme/dawn');
-                        mdj.getSession().setMode('ace/mode/javascript');
-                        mdj.setReadOnly(true);
+                          var mdj = ace.edit('json');
+                          mdj.setTheme('ace/theme/dawn');
+                          mdj.getSession().setMode('ace/mode/javascript');
+                          mdj.setReadOnly(true);
+                        }
 
                         break;
                       default:
