@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.3.2
+// @version       4.4.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -477,7 +477,9 @@
                         wrappedNodeInput.setAttribute('value', 'Wrap');
                         wrappedNodeInput.type = 'button';
 
-                        if (typeof ace === 'undefined') {
+                        var thisAce = (typeof ace === 'undefined' ? window.wrappedJSObject.ace : ace);
+
+                        if (!thisAce) {
                           wrappedNodeInput.setAttribute('disabled', 'disabled');
                         }
 
@@ -485,21 +487,21 @@
                           var active = false;
 
                           if (document.querySelector('pre#mdb')) {
-                            if (ace.edit('mdb').getSession().getUseWrapMode()) {
-                              ace.edit('mdb').getSession().setUseWrapMode(false);
+                            if (thisAce.edit('mdb').getSession().getUseWrapMode()) {
+                              thisAce.edit('mdb').getSession().setUseWrapMode(false);
                             }
                             else {
-                              ace.edit('mdb').getSession().setUseWrapMode(true);
+                              thisAce.edit('mdb').getSession().setUseWrapMode(true);
                               active = true;
                             }
                           }
 
                           if (document.querySelector('pre#json')) {
-                            if (ace.edit('json').getSession().getUseWrapMode()) {
-                              ace.edit('json').getSession().setUseWrapMode(false);
+                            if (thisAce.edit('json').getSession().getUseWrapMode()) {
+                              thisAce.edit('json').getSession().setUseWrapMode(false);
                             }
                             else {
-                              ace.edit('json').getSession().setUseWrapMode(true);
+                              thisAce.edit('json').getSession().setUseWrapMode(true);
                               active = true;
                             }
                           }
@@ -544,13 +546,13 @@
                         }
 
                         // Activate Ace
-                        if (typeof ace !== 'undefined') {
-                          var mdb = ace.edit('mdb');
+                        if (thisAce) {
+                          var mdb = thisAce.edit('mdb');
                           mdb.setTheme('ace/theme/dawn');
                           mdb.getSession().setMode('ace/mode/javascript');
                           mdb.setReadOnly(true);
 
-                          var mdj = ace.edit('json');
+                          var mdj = thisAce.edit('json');
                           mdj.setTheme('ace/theme/dawn');
                           mdj.getSession().setMode('ace/mode/javascript');
                           mdj.setReadOnly(true);
