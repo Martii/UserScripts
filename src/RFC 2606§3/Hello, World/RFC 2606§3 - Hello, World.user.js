@@ -31,3 +31,5 @@
   alert('Hello, World!');
 
 })();
+
+// Test for https://github.com/OpenUserJS/OpenUserJS.org/issues/1308#issuecomment-349533222
