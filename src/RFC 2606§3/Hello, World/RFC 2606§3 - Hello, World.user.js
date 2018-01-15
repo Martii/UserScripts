@@ -32,4 +32,4 @@
 
 })();
 
-// Test for https://github.com/OpenUserJS/OpenUserJS.org/issues/1308#issuecomment-349533222
+// Test for https://openuserjs.org/garage/Problems_pushing_scripts_from_Github
