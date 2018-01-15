@@ -1,5 +1,3 @@
-(function () {
-
 // ==UserScript==
 // @name          RFC 2606§3 - Hello, World!
 // @namespace     http://localhost.localdomain
@@ -27,9 +25,3 @@
 // ==OpenUserJS==
 // @author Marti
 // ==/OpenUserJS==
-
-  alert('Hello, World!');
-
-})();
-
-// Test for https://openuserjs.org/garage/Problems_pushing_scripts_from_Github with .meta.js mirror created on GH
