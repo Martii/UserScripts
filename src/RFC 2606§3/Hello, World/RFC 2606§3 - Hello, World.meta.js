@@ -5,7 +5,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       0.0.2
+// @version       0.0.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @author        Marti Martz <somewhere@example.com> (https://openuserjs.org/users/Marti)
 

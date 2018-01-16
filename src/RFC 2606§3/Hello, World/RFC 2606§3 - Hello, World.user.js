@@ -7,7 +7,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       0.0.2
+// @version       0.0.3
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @author        Marti Martz <somewhere@example.com> (https://openuserjs.org/users/Marti)
 
@@ -36,3 +36,4 @@
 // One more time of actual source change without version... PASS
 // One additional test for matching version bumps... GH cache not allowing fast successive changes still... rechecked payload... potential issue detected with those authors definining their own GH .meta.js and webhook...
 // Applied patch https://github.com/OpenUserJS/OpenUserJS.org/commit/95bfec7189f9fd492227b46f97060f9b42130ab1 and version bumped
+// Retest optimized
