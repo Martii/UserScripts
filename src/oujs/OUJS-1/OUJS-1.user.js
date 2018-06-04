@@ -2,12 +2,12 @@
 // @name         OUJS-1
 // @namespace    https://openuserjs.org/users/Marti
 // @description  Pending rewrite
-// @copyright    © 2016+, Marti Martz, (https://openuserjs.org/users/Marti)
-// @copyright    © 2014-2016, TimidScript
-// @copyright    © 2013+, OpenUserJS Group (https://github.com/OpenUserJs)
+// @copyright    2016+, Marti Martz, (https://openuserjs.org/users/Marti)
+// @copyright    2014-2016, TimidScript
+// @copyright    2013+, OpenUserJS Group (https://github.com/OpenUserJs)
 // @license      CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license      GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version      2.0.0a.7
+// @version      2.0.0a.8
 // @icon         https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @author        Marti
@@ -91,6 +91,7 @@
         [
           '#gmc { position: static !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 !important; border: none !important; margin-top: 20px !important; margin-bottom: 10px !important; }',
           '#gmc_header { text-align: left !important; font-family: "Squada One","Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 30px; font-weight: 500; line-height: 1.1; }',
+          '#gmc .field_label { font-size: inherit; font-weight: inherit; line-height: inherit; margin-left: 5px; }',
 
           '#gmc_resetLink { display: none; }',
           '#gmc_closeBtn { display: none; }'
