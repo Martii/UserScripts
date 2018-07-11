@@ -5,7 +5,7 @@
 // @copyright     2016+, Marti Martz (https://openuserjs.org/users/Marti)
 // @attribution   Jerone (https://github.com/OpenUserJs/OpenUserJS.org/commit/4481c19b2457625c41904e9eb7560711bb10626b)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       0.0.1.0eol
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
