@@ -10,7 +10,7 @@
 // @contributor     LouCypher (http://userscripts.org/users/12)
 // @contributor     Ryan Chatham (http://userscripts.org/users/220970)
 // @license         CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license         GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license         GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version         1.1.13.1eol
 // @icon            https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Spam%20Zapper/res/icon48.png
 
