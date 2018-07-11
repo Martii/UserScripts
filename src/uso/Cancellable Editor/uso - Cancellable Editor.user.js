@@ -7,7 +7,7 @@
 // @description   Allows cancelling of the reply editor while viewing on or offline with site JavaScript disabled
 // @copyright     2009+, Marti Martz (http://userscripts.org/users/37004)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       0.2.4.1eol
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/src/uso/Cancellable%20Editor/res/icon48.png
 
