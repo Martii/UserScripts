@@ -19,7 +19,7 @@
 
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @licence       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       2016.04.10.001
 // @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
 // @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png

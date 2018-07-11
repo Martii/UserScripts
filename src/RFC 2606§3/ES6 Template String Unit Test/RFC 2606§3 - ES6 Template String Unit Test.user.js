@@ -6,7 +6,7 @@
 // @description   Tests out ES6 Template Strings
 // @copyright     2016+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       0.0.2
 
 // @include   http://www.example.com/*
