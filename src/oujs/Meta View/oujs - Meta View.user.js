@@ -4,8 +4,8 @@
 // @description   Adds a script navigation link next to `Source Code` titled `Meta` and opens a phantom url to show the detected metadata
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.4.2
+// @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
+// @version       4.4.3
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
