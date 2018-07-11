@@ -8,7 +8,7 @@
 // @description Auto-Refreshes current URI on USO when a non-200 response code is encountered.
 // @copyright   2011+, Marti Martz (http://userscripts.org/users/37004)
 // @license     CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license     GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license     GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version     0.1.5.1eol
 // @icon  https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
