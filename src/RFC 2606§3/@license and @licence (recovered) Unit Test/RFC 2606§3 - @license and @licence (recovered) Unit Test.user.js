@@ -21,9 +21,9 @@
 // @licence       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       2016.04.10.001
-// @icon          https://s3.amazonaws.com/uso_ss/icon/13701/large.png
-// @defaulticon   https://s3.amazonaws.com/uso_ss/icon/13701/large.png
-// @iconURL       https://s3.amazonaws.com/uso_ss/icon/13701/large.png?test
+// @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
+// @defaulticon   https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
+// @iconURL       https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @source       http://localhost:8080/scripts/Marti/RFC_2606%C2%A73_-_license_and_licence_%28recovered%29_Unit_Test
 // @website      http://localhost:8080/scripts/Marti/RFC_2606%C2%A73_-_license_and_licence_%28recovered%29_Unit_Test
