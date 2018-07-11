@@ -7,7 +7,7 @@
 // @description   Moves a formatted table from the main script homepage description area to the Forum Activity sidebar header
 // @copyright     2014+, Marti Martz (http://userscripts.org/users/37004)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-// @license       GPL-3.0+; http://www.gnu.org/licenses/gpl-3.0.txt
+// @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
 // @version       1.0.12.1eol
 // @icon          https://www.gravatar.com/avatar/e615596ec6d7191ab628a1f0cec0006d?r=PG&s=48&default=identicon
 
