@@ -5,7 +5,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.4.4
+// @version       4.4.5
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -98,6 +98,8 @@
         var navNodeA3 = document.createElement('a');
         navNodeA3.textContent = 'Meta';
         navNodeA3.href = '/scripts/' + userName + '/' + scriptName + '/meta';
+        navNodeA3.classList.add('notranslate');
+        navNodeA3.setAttribute('translate', 'no');
 
         var navNodeLi3 = document.createElement('li');
         navNodeLi3.classList.add('active');
@@ -559,6 +561,8 @@
         var NodeA = document.createElement('a');
         NodeA.href = '/scripts/' + userName + '/' + scriptName + '/meta';
         NodeA.textContent = 'Meta';
+        NodeA.classList.add('notranslate');
+        NodeA.setAttribute('translate', 'no');
 
         var NodeLi = document.createElement('li');
         NodeLi.appendChild(NodeA);
