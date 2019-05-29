@@ -7,7 +7,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       0.0.1.31415
+// @version       0.0.0
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/res/world.png
 // @author        Marti Martz <somewhere@example.com> (https://openuserjs.org/users/Marti)
 
@@ -34,3 +34,6 @@
   alert('Hello, World!');
 
 })();
+
+
+// Test for #1610
