@@ -7,7 +7,7 @@
 // @copyright    2013+, OpenUserJS Group (https://github.com/OpenUserJs)
 // @license      CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version      2.0.0a.8
+// @version      2.0.0a.9
 // @icon         https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @author        Marti
@@ -35,6 +35,8 @@
 
 // ==/UserScript==
 
+/* jshint esversion: 5 */
+/* globals GM_config: true, GM_configStruct */
 
 (function() {
   'use strict';
@@ -155,7 +157,7 @@
               break;
           }
         }
-      }
+      };
       req.send();
     }
     else {
