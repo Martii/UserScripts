@@ -6,7 +6,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.4.8
+// @version       4.4.9
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -32,6 +32,9 @@
 
 /* jshint esversion: 5 */
 /* globals ace */
+
+/* eslint dot-notation: off */
+/* eslint curly: off */
 
 (function() {
   'use strict';
@@ -441,7 +444,7 @@
                         hookNode.appendChild(mdbNodePre);
                         hookNode.appendChild(jsonNodePre);
 
-                        var wrappedNodeInput =  document.createElement('input');
+                        var wrappedNodeInput = document.createElement('input');
                         wrappedNodeInput.classList.add('btn');
                         wrappedNodeInput.classList.add('btn-success');
                         wrappedNodeInput.id = 'wrap';
