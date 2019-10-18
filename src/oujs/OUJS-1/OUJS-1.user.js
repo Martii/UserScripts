@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         OUJS-1
 // @namespace    https://openuserjs.org/users/Marti
-// @description  Pending rewrite
+// @description  Small changes to OUJS that may or may not make it upstream
 // @copyright    2016+, Marti Martz, (https://openuserjs.org/users/Marti)
 // @copyright    2014-2016, TimidScript
 // @copyright    2013+, OpenUserJS Group (https://github.com/OpenUserJs)
 // @license      CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version      2.0.0a.9
+// @version      2.0.0a.10
 // @icon         https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @author        Marti
@@ -86,6 +86,11 @@
         'emphasizeCurrentUsername': {
           "type": 'checkbox',
           "label": 'More emphasis on current username',
+          "default": false
+        },
+        'stickMainNav': {
+          "type": 'checkbox',
+          "label": 'Main navigation to sticky',
           "default": false
         }
       },
@@ -209,10 +214,24 @@
 
     var ownerNodes = document.querySelectorAll('span.label');
     for (var i = 0; i < ownerNodes.length; ++i) {
-      if (ownerNodes[i].firstChild.textContent === usernameNode.textContent) {
+      if (ownerNodes[i].firstChild && ownerNodes[i].firstChild.textContent === usernameNode.textContent) {
         ownerNodes[i].classList.remove('label-info');
         ownerNodes[i].classList.add('label-primary');
       }
+    }
+  }
+
+  if (gmc.get('stickMainNav')) {
+
+    var nodeStyle = document.createElement('style');
+    nodeStyle.setAttribute("type", "text/css");
+    nodeStyle.textContent = '.sticky { position: sticky; top: 0; }';
+
+    document.head.appendChild(nodeStyle);
+
+    var bodynavNode = document.querySelector('body nav');
+    if (bodynavNode) {
+      bodynavNode.classList.add('sticky');
     }
   }
 
