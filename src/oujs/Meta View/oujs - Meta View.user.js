@@ -6,7 +6,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.4.10
+// @version       4.4.11
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -566,20 +566,24 @@
       }
     }
     else {
-      var sourceNode = document.querySelector('#content-navbar ul.nav li a[href$="/source"]');
-      if (sourceNode) {
-        hookNode = sourceNode.parentNode.parentNode;
+      var metaNode = document.querySelector('#content-navbar ul.nav li a[href$="/meta"]');
+      
+      if (!metaNode) {
+        var sourceNode = document.querySelector('#content-navbar ul.nav li a[href$="/source"]');
+        if (sourceNode) {
+          hookNode = sourceNode.parentNode.parentNode;
 
-        var NodeA = document.createElement('a');
-        NodeA.href = '/scripts/' + userName + '/' + scriptName + '/meta';
-        NodeA.textContent = 'Meta';
-        NodeA.classList.add('notranslate');
-        NodeA.setAttribute('translate', 'no');
+          var NodeA = document.createElement('a');
+          NodeA.href = '/scripts/' + userName + '/' + scriptName + '/meta';
+          NodeA.textContent = 'Meta';
+          NodeA.classList.add('notranslate');
+          NodeA.setAttribute('translate', 'no');
 
-        var NodeLi = document.createElement('li');
-        NodeLi.appendChild(NodeA);
+          var NodeLi = document.createElement('li');
+          NodeLi.appendChild(NodeA);
 
-        hookNode.insertBefore(NodeLi, sourceNode.parentNode.nextSibling.nextSibling);
+          hookNode.insertBefore(NodeLi, sourceNode.parentNode.nextSibling.nextSibling);
+        }
       }
     }
   }
