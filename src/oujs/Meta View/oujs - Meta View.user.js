@@ -6,7 +6,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.4.14
+// @version       4.5.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -43,6 +43,14 @@
    *
    */
 
+  var NodeScript = document.createElement('script'); // Watchpoint
+  NodeScript.setAttribute('src', '/redist/npm/ace-builds/src/ace.js');
+  NodeScript.setAttribute('type', 'text/javascript');
+  NodeScript.setAttribute('charset', 'UTF-8');
+
+  var bodyNode = document.querySelector('body');
+  bodyNode.appendChild(NodeScript);
+
   var FQDN = window.location.protocol + '//' + window.location.host;
 
   var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
@@ -54,13 +62,56 @@
 
     var hookNode;
     if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
-      var NodeScript = document.createElement('script'); // Watchpoint
-      NodeScript.setAttribute('src', '/redist/npm/ace-builds/src/ace.js');
-      NodeScript.setAttribute('type', 'text/javascript');
-      NodeScript.setAttribute('charset', 'UTF-8');
 
-      var bodyNode = document.querySelector('body');
-      bodyNode.appendChild(NodeScript);
+      // Simulate a Source Code page
+      var NodeStyle = document.createElement('style');
+      NodeStyle.setAttribute('type', 'text/css');
+      var min_height = 85.2;
+      var offset = 292;
+      var textSVGMetaJS = 'data:image/svg+xml;base64,' + window.btoa([
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -200 14.482108 52.124682" height="52.12">',
+          '<g fill="#ccc">',
+            '<path d="m9.668-150.24q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
+            '<path d="m3.241-160.82q0-2.128 2.265-2.128h6.28v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-8.374v-2.093h.429q-.601-.532-.601-1.613v-.154q0-1.27.789-1.767-.789-.532-.789-1.767v-.154"/>',
+            '<path d="m3.051-168.11q0-2.128 2.265-2.128h2.711v3.895h1.75q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094h-.927v-2.299h.652q2.265 0 2.265 2.128v1.939q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-1.939m3.466 1.767v-1.596h-1.544q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h1.544"/>',
+            '<path d="m10.288-174.6v-.686h1.493v1.613q0 2.128-2.265 2.128h-8.099v-2.299h1.819v-1.441h1.664v1.441h4.564q.48 0 .652-.189.172-.189.172-.566"/>',
+            '<path d="m3.236-180.91v-1.939h8.374v1.939h-.618q.789.532.789 1.767v.36q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-.36q0-1.235.789-1.767h-.618m6.555.36h-4.736q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h4.736q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094"/>',
+            '<path d="m9.672-184.36q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
+            '<path d="m11.977-188.26h-8.768v-2.299h9.01q2.265 0 2.265 2.128v1.39h-1.682v-.463q0-.377-.172-.566-.172-.189-.652-.189m-9.455-1.15q0 .515-.369.892-.369.377-.892.377-.523 0-.892-.377-.369-.377-.369-.892 0-.515.369-.884.369-.369.901-.369.532 0 .892.369.36.369.36.884"/>',
+            '<path d="m6.325-195.87q0-2.128 2.265-2.128h.892q2.265 0 2.265 2.128v1.905q0 2.128-2.265 2.128h-.532v-2.128h.755q.137 0 .24-.094.103-.094.103-.232v-1.407q0-.137-.103-.232-.103-.094-.24-.094h-1.03q-.137 0-.24.094-.103.094-.103.232v1.767q0 2.128-2.265 2.128h-.772q-2.265 0-2.265-2.128v-1.802q0-2.128 2.265-2.128h.309v2.128h-.532q-.137 0-.24.094-.103.094-.103.232v1.304q0 .137.103.232.103.094.24.094h.909q.137 0 .24-.094.103-.094.103-.232v-1.767"/>',
+          '</g>',
+        '</svg>'
+      ].join(''));
+
+      var textSVGMetaJSON = 'data:image/svg+xml;base64,' + window.btoa([
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -200 14.48211 66.085035" height="66.09">',
+          '<g fill="#ccc">',
+            '<path d="m9.668-136.28q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
+            '<path d="m3.241-146.86q0-2.128 2.265-2.128h6.28v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-8.374v-2.093h.429q-.601-.532-.601-1.613v-.154q0-1.27.789-1.767-.789-.532-.789-1.767v-.154"/>',
+            '<path d="m3.051-154.15q0-2.128 2.265-2.128h2.711v3.895h1.75q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094h-.927v-2.299h.652q2.265 0 2.265 2.128v1.939q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-1.939m3.466 1.767v-1.596h-1.544q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h1.544"/>',
+            '<path d="m10.288-160.64v-.686h1.493v1.613q0 2.128-2.265 2.128h-8.099v-2.299h1.819v-1.441h1.664v1.441h4.564q.48 0 .652-.189.172-.189.172-.566"/>',
+            '<path d="m3.236-166.95v-1.939h8.374v1.939h-.618q.789.532.789 1.767v.36q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-.36q0-1.235.789-1.767h-.618m6.555.36h-4.736q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h4.736q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094"/>',
+            '<path d="m9.672-170.4q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
+            '<path d="m11.977-174.3h-8.768v-2.299h9.01q2.265 0 2.265 2.128v1.39h-1.682v-.463q0-.377-.172-.566-.172-.189-.652-.189m-9.455-1.15q0 .515-.369.892-.369.377-.892.377-.523 0-.892-.377-.369-.377-.369-.892 0-.515.369-.884.369-.369.901-.369.532 0 .892.369.36.369.36.884"/>',
+            '<path d="m6.325-181.91q0-2.128 2.265-2.128h.892q2.265 0 2.265 2.128v1.905q0 2.128-2.265 2.128h-.532v-2.128h.755q.137 0 .24-.094.103-.094.103-.232v-1.407q0-.137-.103-.232-.103-.094-.24-.094h-1.03q-.137 0-.24.094-.103.094-.103.232v1.767q0 2.128-2.265 2.128h-.772q-2.265 0-2.265-2.128v-1.802q0-2.128 2.265-2.128h.309v2.128h-.532q-.137 0-.24.094-.103.094-.103.232v1.304q0 .137.103.232.103.094.24.094h.909q.137 0 .24-.094.103-.094.103-.232v-1.767"/>',
+            '<path d="m5.305-190.99h4.197q2.271 0 2.271 2.133v1.944q0 2.133-2.271 2.133h-4.197q-2.271 0-2.271-2.133v-1.944q0-2.133 2.271-2.133m4.679 2.305h-5.178q-.138 0-.241.095-.103.095-.103.232v.946q0 .138.103.232.103.095.241.095h5.178q.138 0 .241-.095.103-.095.103-.232v-.946q0-.138-.103-.232-.103-.095-.241-.095"/>',
+            '<path d="m11.786-194v2.36h-8.595v-2.149h.44q-.616-.546-.616-1.656v-.37q0-2.184 2.325-2.184h6.446v2.36h-6.728q-.141 0-.247.097-.106.097-.106.238v.969q0 .141.106.238.106.097.247.097h6.728"/>',
+          '</g>',
+        '</svg>'
+      ].join(''));
+
+      NodeStyle.textContent =
+        [
+          '#mdb { min-height: 115px; overflow: auto; }',
+          '#json { min-height: 115px; height: -moz-calc(' + min_height + 'vh - ' + offset + 'px); height: -o-calc(' + min_height + 'vh - ' + offset + 'px); height: -webkit-calc(' + min_height + 'vh - ' + offset + 'px); height: calc(' + min_height + 'vh - ' + offset + 'px); overflow: auto; }',
+          '.path-divider { color: #666; margin: 0 0.25em; }',
+          '#mdb .ace_gutter { background: #ebebeb url(' + textSVGMetaJS + ') repeat-y scroll left top !important; }',
+          '#json .ace_gutter { background: #ebebeb url(' + textSVGMetaJSON + ') repeat-y scroll left top !important; }'
+
+        ].join('\n')
+      ;
+      document.head.appendChild(NodeStyle);
+
 
       var panelBodyNode = document.querySelector('div.panel-body');
       if (panelBodyNode && panelBodyNode.firstChild.nextSibling.textContent == '404') {
@@ -224,6 +275,7 @@
         hookNode.parentNode.insertBefore(navbarNodeNav, hookNode.parentNode.firstChild);
         hookNode.parentNode.insertBefore(pageHeadingNodeH2, hookNode.parentNode.firstChild);
 
+        // Status notice
         var NodeDiv = document.createElement('div');
         NodeDiv.classList.add('alert');
         NodeDiv.classList.add('alert-warning');
@@ -238,340 +290,303 @@
 
         hookNode.appendChild(NodeDiv);
 
-        var url = FQDN + '/src/scripts/' + userName + '/' + scriptName + '.user.js';
+        // Create meta views
+        var jsonNodePre = document.createElement('pre');
+        jsonNodePre.classList.add('ace_editor');
+        jsonNodePre.classList.add('ace-dawn');
+        jsonNodePre.id = 'json';
+        jsonNodePre.textContent = '';
 
-        var req = new XMLHttpRequest();
-        req.open('GET', url);
-        req.setRequestHeader('Accept', 'text/x-userscript-meta');
+        var mdbNodePre = document.createElement('pre');
+        mdbNodePre.classList.add('ace_editor');
+        mdbNodePre.classList.add('ace-dawn');
+        mdbNodePre.id = 'mdb';
+        mdbNodePre.textContent = '';
 
-        req.onreadystatechange = function () {
-          function hasRelative(aPrefix) {
-            aPrefix = aPrefix || '';
+        scriptAuthorNodeA.textContent = decodeURI(userName);
+        pathDividerNodeSpan.textContent = "/";
+        scriptNameNodeA.innerHTML = '<i class="fa fa-cog fa-spin"></i>';
 
-            var hasCalc = document.createElement('div');
-            hasCalc.style.setProperty(aPrefix + 'width', 'calc(1px)', '');
+        navNodeA4Span4.textContent = '';
 
-            var hasUnitV = document.createElement("div");
-            hasUnitV.style.setProperty(aPrefix + "width", "calc(5vw + 5vw)", "");
+        hookNode.appendChild(mdbNodePre);
+        hookNode.appendChild(jsonNodePre);
 
-            return !!hasCalc.style.length && !!hasUnitV.style.length;
-          }
+        // Toolbar
+        var wrappedNodeInput = document.createElement('input');
+        wrappedNodeInput.classList.add('btn');
+        wrappedNodeInput.classList.add('btn-sm');
+        wrappedNodeInput.classList.add('btn-success');
+        wrappedNodeInput.id = 'wrap';
+        wrappedNodeInput.setAttribute('value', 'Wrap');
+        wrappedNodeInput.type = 'button';
+        wrappedNodeInput.setAttribute('disabled', 'disabled');
 
-          function hasOurRelative() {
-            return hasRelative('-moz-') || hasRelative('-ms-') || hasRelative('-o-') || hasRelative('-webkit-') || hasRelative();
-          }
+        var toolbarNodeDiv = document.createElement('div');
+        toolbarNodeDiv.classList.add('btn-toolbar');
 
-          function calcHeight() {
-            return parseInt((window.innerHeight - 306) / 2.004);
-          }
+        toolbarNodeDiv.appendChild(wrappedNodeInput);
 
-          if (this.readyState == this.DONE) {
-            console.log(
-              [
-                'META VIEW REQUEST SUMMARY',
-                '',
-                'status: ' + this.status,
-                'statusText: ' + this.statusText,
-                'readyState: ' + this.readyState,
-                'getAllResponseHeaders():\n' + this.getAllResponseHeaders().split('\n').map(function (aE, aI, aA) {
-                  return '  ' + aE;
-                }).join('\n'),
-                'responseURL: ' + this.responseURL
+        hookNode.appendChild(toolbarNodeDiv);
 
-              ].join('\n')
-            );
+        var thisAce = null;
 
-            switch (this.status) {
-              case 200:
-                if (!this.responseText) {
-                  NodeDiv.classList.remove('alert-warning');
-                  NodeDiv.classList.add('alert-danger');
-                  NodeStrong.textContent = "FAILURE: ";
-                  NodeText.textContent = "Unable to retrieve the meta text. `responseText` is absent.";
-                  return;
-                }
+        var Id = setInterval(function () {
+          thisAce = (typeof ace !== 'undefined' ? ace : (window.wrappedJSObject ? window.wrappedJSObject.ace : null));
+          if (thisAce) {
+            clearInterval(Id);
 
-                var responseTextMetaJS = this.responseText.trim();
+            // Activate Ace
+            var commands = ['showSettingsMenu', 'overwrite'];
 
-                NodeText.textContent = ": Fetching the meta.json";
+            var mdb = thisAce.edit('mdb');
+            mdb.setTheme('ace/theme/dawn');
+            mdb.getSession().setMode('ace/mode/javascript');
+            mdb.container.style.fontFamily = "monospace";
+            commands.forEach(function (aE, aI, aA) {
+              mdb.commands.removeCommand(aE);
+            });
+            mdb.setReadOnly(true);
 
-                url = FQDN + '/meta/' + userName + '/' + scriptName + '.meta.json';
+            var mdj = thisAce.edit('json');
+            mdj.setTheme('ace/theme/dawn');
+            mdj.getSession().setMode('ace/mode/json');
+            mdj.container.style.fontFamily = "monospace";
+            commands.forEach(function (aE, aI, aA) {
+              mdj.commands.removeCommand(aE);
+            });
+            mdj.setReadOnly(true);
 
-                var req = new XMLHttpRequest();
-                req.open('GET', url);
+            // Find metas
+            var url = FQDN + '/src/scripts/' + userName + '/' + scriptName + '.user.js';
 
-                req.onreadystatechange = function () {
-                  if (this.readyState == this.DONE) {
-                    switch (this.status) {
-                      case 200:
-                        if (!this.responseText) {
-                          NodeDiv.classList.remove('alert-warning');
-                          NodeDiv.classList.add('alert-danger');
-                          NodeStrong.textContent = "FAILURE: ";
-                          NodeText.textContent = "Unable to retrieve the meta JSON. `responseText` is absent.";
-                          return;
-                        }
+            var req = new XMLHttpRequest();
+            req.open('GET', url);
+            req.setRequestHeader('Accept', 'text/x-userscript-meta');
 
-                        var responseTextMetaJSON = this.responseText;
+            req.onreadystatechange = function () {
+              function hasRelative(aPrefix) {
+                aPrefix = aPrefix || '';
 
-                        var meta = JSON.parse(responseTextMetaJSON);
+                var hasCalc = document.createElement('div');
+                hasCalc.style.setProperty(aPrefix + 'width', 'calc(1px)', '');
 
-                        NodeText.textContent = ": Simulating Source Code page";
+                var hasUnitV = document.createElement("div");
+                hasUnitV.style.setProperty(aPrefix + "width", "calc(5vw + 5vw)", "");
 
-                        // Simulate a Source Code page
-                        var NodeStyle = document.createElement('style');
-                        NodeStyle.setAttribute('type', 'text/css');
-                        var min_height = 85.2;
-                        var offset = 292;
-                        var textSVGMetaJS = 'data:image/svg+xml;base64,' + window.btoa([
-                          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -200 14.482108 52.124682" height="52.12">',
-                            '<g fill="#ccc">',
-                              '<path d="m9.668-150.24q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
-                              '<path d="m3.241-160.82q0-2.128 2.265-2.128h6.28v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-8.374v-2.093h.429q-.601-.532-.601-1.613v-.154q0-1.27.789-1.767-.789-.532-.789-1.767v-.154"/>',
-                              '<path d="m3.051-168.11q0-2.128 2.265-2.128h2.711v3.895h1.75q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094h-.927v-2.299h.652q2.265 0 2.265 2.128v1.939q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-1.939m3.466 1.767v-1.596h-1.544q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h1.544"/>',
-                              '<path d="m10.288-174.6v-.686h1.493v1.613q0 2.128-2.265 2.128h-8.099v-2.299h1.819v-1.441h1.664v1.441h4.564q.48 0 .652-.189.172-.189.172-.566"/>',
-                              '<path d="m3.236-180.91v-1.939h8.374v1.939h-.618q.789.532.789 1.767v.36q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-.36q0-1.235.789-1.767h-.618m6.555.36h-4.736q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h4.736q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094"/>',
-                              '<path d="m9.672-184.36q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
-                              '<path d="m11.977-188.26h-8.768v-2.299h9.01q2.265 0 2.265 2.128v1.39h-1.682v-.463q0-.377-.172-.566-.172-.189-.652-.189m-9.455-1.15q0 .515-.369.892-.369.377-.892.377-.523 0-.892-.377-.369-.377-.369-.892 0-.515.369-.884.369-.369.901-.369.532 0 .892.369.36.369.36.884"/>',
-                              '<path d="m6.325-195.87q0-2.128 2.265-2.128h.892q2.265 0 2.265 2.128v1.905q0 2.128-2.265 2.128h-.532v-2.128h.755q.137 0 .24-.094.103-.094.103-.232v-1.407q0-.137-.103-.232-.103-.094-.24-.094h-1.03q-.137 0-.24.094-.103.094-.103.232v1.767q0 2.128-2.265 2.128h-.772q-2.265 0-2.265-2.128v-1.802q0-2.128 2.265-2.128h.309v2.128h-.532q-.137 0-.24.094-.103.094-.103.232v1.304q0 .137.103.232.103.094.24.094h.909q.137 0 .24-.094.103-.094.103-.232v-1.767"/>',
-                            '</g>',
-                          '</svg>'
-                        ].join(''));
+                return !!hasCalc.style.length && !!hasUnitV.style.length;
+              }
 
-                        var textSVGMetaJSON = 'data:image/svg+xml;base64,' + window.btoa([
-                          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -200 14.48211 66.085035" height="66.09">',
-                            '<g fill="#ccc">',
-                              '<path d="m9.668-136.28q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
-                              '<path d="m3.241-146.86q0-2.128 2.265-2.128h6.28v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-6.555q-.137 0-.24.094-.103.094-.103.232v.738q0 .137.103.232.103.094.24.094h6.555v2.299h-8.374v-2.093h.429q-.601-.532-.601-1.613v-.154q0-1.27.789-1.767-.789-.532-.789-1.767v-.154"/>',
-                              '<path d="m3.051-154.15q0-2.128 2.265-2.128h2.711v3.895h1.75q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094h-.927v-2.299h.652q2.265 0 2.265 2.128v1.939q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-1.939m3.466 1.767v-1.596h-1.544q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h1.544"/>',
-                              '<path d="m10.288-160.64v-.686h1.493v1.613q0 2.128-2.265 2.128h-8.099v-2.299h1.819v-1.441h1.664v1.441h4.564q.48 0 .652-.189.172-.189.172-.566"/>',
-                              '<path d="m3.236-166.95v-1.939h8.374v1.939h-.618q.789.532.789 1.767v.36q0 2.128-2.265 2.128h-4.187q-2.265 0-2.265-2.128v-.36q0-1.235.789-1.767h-.618m6.555.36h-4.736q-.137 0-.24.094-.103.094-.103.232v.944q0 .137.103.232.103.094.24.094h4.736q.137 0 .24-.094.103-.094.103-.232v-.944q0-.137-.103-.232-.103-.094-.24-.094"/>',
-                              '<path d="m9.672-170.4q-.36-.36-.36-.875 0-.515.36-.875.36-.36.875-.36.515 0 .875.36.36.36.36.875 0 .515-.36.875-.36.36-.875.36-.515 0-.875-.36"/>',
-                              '<path d="m11.977-174.3h-8.768v-2.299h9.01q2.265 0 2.265 2.128v1.39h-1.682v-.463q0-.377-.172-.566-.172-.189-.652-.189m-9.455-1.15q0 .515-.369.892-.369.377-.892.377-.523 0-.892-.377-.369-.377-.369-.892 0-.515.369-.884.369-.369.901-.369.532 0 .892.369.36.369.36.884"/>',
-                              '<path d="m6.325-181.91q0-2.128 2.265-2.128h.892q2.265 0 2.265 2.128v1.905q0 2.128-2.265 2.128h-.532v-2.128h.755q.137 0 .24-.094.103-.094.103-.232v-1.407q0-.137-.103-.232-.103-.094-.24-.094h-1.03q-.137 0-.24.094-.103.094-.103.232v1.767q0 2.128-2.265 2.128h-.772q-2.265 0-2.265-2.128v-1.802q0-2.128 2.265-2.128h.309v2.128h-.532q-.137 0-.24.094-.103.094-.103.232v1.304q0 .137.103.232.103.094.24.094h.909q.137 0 .24-.094.103-.094.103-.232v-1.767"/>',
-                              '<path d="m5.305-190.99h4.197q2.271 0 2.271 2.133v1.944q0 2.133-2.271 2.133h-4.197q-2.271 0-2.271-2.133v-1.944q0-2.133 2.271-2.133m4.679 2.305h-5.178q-.138 0-.241.095-.103.095-.103.232v.946q0 .138.103.232.103.095.241.095h5.178q.138 0 .241-.095.103-.095.103-.232v-.946q0-.138-.103-.232-.103-.095-.241-.095"/>',
-                              '<path d="m11.786-194v2.36h-8.595v-2.149h.44q-.616-.546-.616-1.656v-.37q0-2.184 2.325-2.184h6.446v2.36h-6.728q-.141 0-.247.097-.106.097-.106.238v.969q0 .141.106.238.106.097.247.097h6.728"/>',
-                            '</g>',
-                          '</svg>'
-                        ].join(''));
+              function hasOurRelative() {
+                return hasRelative('-moz-') || hasRelative('-ms-') || hasRelative('-o-') || hasRelative('-webkit-') || hasRelative();
+              }
 
-                        NodeStyle.textContent =
-                          [
-                            '#mdb { min-height: 115px; overflow: auto; }',
-                            '#json { min-height: 115px; height: -moz-calc(' + min_height + 'vh - ' + offset + 'px); height: -o-calc(' + min_height + 'vh - ' + offset + 'px); height: -webkit-calc(' + min_height + 'vh - ' + offset + 'px); height: calc(' + min_height + 'vh - ' + offset + 'px); overflow: auto; }',
-                            '.path-divider { color: #666; margin: 0 0.25em; }',
-                            '#mdb .ace_gutter { background: #ebebeb url(' + textSVGMetaJS + ') repeat-y scroll left top !important; }',
-                            '#json .ace_gutter { background: #ebebeb url(' + textSVGMetaJSON + ') repeat-y scroll left top !important; }',
+              function calcHeight() {
+                return parseInt((window.innerHeight - 306) / 2.004);
+              }
 
+              if (this.readyState == this.DONE) {
+                console.log(
+                  [
+                    'META VIEW REQUEST SUMMARY',
+                    '',
+                    'status: ' + this.status,
+                    'statusText: ' + this.statusText,
+                    'readyState: ' + this.readyState,
+                    'getAllResponseHeaders():\n' + this.getAllResponseHeaders().split('\n').map(function (aE, aI, aA) {
+                      return '  ' + aE;
+                    }).join('\n'),
+                    'responseURL: ' + this.responseURL
 
-                          ].join('\n')
-                        ;
-                        document.head.appendChild(NodeStyle);
+                  ].join('\n')
+                );
 
-                        // Fix title to be native
-                        var scriptNameX = null;
-                        meta.UserScript['name'].forEach(function (e, i, a) {
-                          if (!e.locale) { // Default to absent locale... requirement of OUJS to have `@name`
-                            scriptNameX = e.value;
-                          }
-                        });
-
-                        titleNode.textContent = 'Meta ' + scriptNameX + ' | OpenUserJS';
-
-                        // Create meta views
-                        var jsonNodePre = document.createElement('pre');
-                        jsonNodePre.classList.add('ace_editor');
-                        jsonNodePre.classList.add('ace-dawn');
-                        jsonNodePre.id = 'json';
-                        jsonNodePre.textContent = JSON.stringify(meta, null, ' ');
-
-                        var mdbNodePre = document.createElement('pre');
-                        mdbNodePre.classList.add('ace_editor');
-                        mdbNodePre.classList.add('ace-dawn');
-                        mdbNodePre.id = 'mdb';
-                        mdbNodePre.textContent = responseTextMetaJS;
-
-                        var atIcon = meta.UserScript['icon'];
-                        if (atIcon) {
-                          atIcon = meta.UserScript['icon'][0].value;
-
-                          var pageHeadingIconNodeSpan = document.createElement('span');
-                          pageHeadingIconNodeSpan.classList.add('page-heading-icon');
-                          pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
-
-                          var pageHeadingIconNodeI = document.createElement('i');
-                          pageHeadingIconNodeI.classList.add('fa');
-                          pageHeadingIconNodeI.classList.add('fa-fw');
-                          pageHeadingIconNodeI.classList.add('fa-file-code-o');
-
-                          pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
-                          pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
-
-                          var scriptIconNodeImg = document.createElement('img');
-                          scriptIconNodeImg.addEventListener('load', function () {
-                            pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
-                            pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
-                          });
-                          scriptIconNodeImg.src = atIcon;
-                        }
-
-                        scriptAuthorNodeA.textContent = decodeURI(userName);
-                        pathDividerNodeSpan.textContent = "/";
-                        scriptNameNodeA.textContent = scriptNameX;
-
-                        var issueCount =
-                          meta.OpenUserJS &&
-                            meta.OpenUserJS.issues &&
-                              meta.OpenUserJS.issues[0] &&
-                                typeof meta.OpenUserJS.issues[0].value !== 'undefined'
-                                  ? meta.OpenUserJS.issues[0].value
-                                  : 'n/a';
-
-                        navNodeA4Span4.textContent = issueCount;
-
-                        var installCount =
-                          meta.OpenUserJS &&
-                            meta.OpenUserJS.installs &&
-                              meta.OpenUserJS.installs[0] &&
-                                typeof meta.OpenUserJS.installs[0].value !== 'undefined'
-                                  ? meta.OpenUserJS.installs[0].value
-                                  : 'n/a';
-
-                        navbar1TextNodeP.appendChild(document.createTextNode(' ' + installCount));
-                        navbar2TextNodeP.appendChild(document.createTextNode(' ' + installCount));
-
-
-                        hookNode.appendChild(mdbNodePre);
-                        hookNode.appendChild(jsonNodePre);
-
-                        var wrappedNodeInput = document.createElement('input');
-                        wrappedNodeInput.classList.add('btn');
-                        wrappedNodeInput.classList.add('btn-sm');
-                        wrappedNodeInput.classList.add('btn-success');
-                        wrappedNodeInput.id = 'wrap';
-                        wrappedNodeInput.setAttribute('value', 'Wrap');
-                        wrappedNodeInput.type = 'button';
-
-                        var thisAce = (typeof ace !== 'undefined' ? ace : (window.wrappedJSObject ? window.wrappedJSObject.ace : null));
-
-                        if (!thisAce) {
-                          wrappedNodeInput.setAttribute('disabled', 'disabled');
-                        }
-
-                        wrappedNodeInput.addEventListener('click', function (aE) {
-                          var active = false;
-
-                          if (document.querySelector('pre#mdb')) {
-                            if (thisAce.edit('mdb').getSession().getUseWrapMode()) {
-                              thisAce.edit('mdb').getSession().setUseWrapMode(false);
-                            }
-                            else {
-                              thisAce.edit('mdb').getSession().setUseWrapMode(true);
-                              active = true;
-                            }
-                          }
-
-                          if (document.querySelector('pre#json')) {
-                            if (thisAce.edit('json').getSession().getUseWrapMode()) {
-                              thisAce.edit('json').getSession().setUseWrapMode(false);
-                            }
-                            else {
-                              thisAce.edit('json').getSession().setUseWrapMode(true);
-                              active = true;
-                            }
-                          }
-
-                          if (active) {
-                            aE.target.classList.add('active');
-                          } else {
-                            aE.target.classList.remove('active');
-                          }
-
-                          aE.target.blur();
-                        });
-
-                        var toolbarNodeDiv = document.createElement('div');
-                        toolbarNodeDiv.classList.add('btn-toolbar');
-
-                        toolbarNodeDiv.appendChild(wrappedNodeInput);
-
-                        hookNode.appendChild(toolbarNodeDiv);
-
-
-                        // Clean up
-                        hookNode.removeChild(NodeDiv);
-
-                        // Resize for older browsers
-                        if (!hasOurRelative()) {
-                          mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                          jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-
-                          if (window.addEventListener) {
-                            window.addEventListener('resize', function () {
-                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                              jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                            }, false);
-                          }
-                          else if (window.attachEvent) {
-                            window.addEventListener('resize', function () {
-                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                              jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                            });
-                          }
-                        }
-
-                        // Activate Ace
-                        if (thisAce) {
-                          var commands = ['showSettingsMenu', 'overwrite'];
-
-                          var mdb = thisAce.edit('mdb');
-                          mdb.setTheme('ace/theme/dawn');
-                          mdb.getSession().setMode('ace/mode/javascript');
-                          mdb.container.style.fontFamily = "monospace";
-                          commands.forEach(function (aE, aI, aA) {
-                            mdb.commands.removeCommand(aE);
-                          });
-                          mdb.setReadOnly(true);
-
-                          var mdj = thisAce.edit('json');
-                          mdj.setTheme('ace/theme/dawn');
-                          mdj.getSession().setMode('ace/mode/json');
-                          mdj.container.style.fontFamily = "monospace";
-                          commands.forEach(function (aE, aI, aA) {
-                            mdj.commands.removeCommand(aE);
-                          });
-                          mdj.setReadOnly(true);
-
-                        }
-
-                        break;
-                      default:
-                        NodeDiv.classList.remove('alert-warning');
-                        NodeDiv.classList.add('alert-danger');
-
-                        NodeStrong.textContent = 'ERROR';
-                        NodeText.textContent = ': Unable to fetch the meta.json with status of: ' + this.status + ' ' + this.statusText +
-                          (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
-                        break;
+                switch (this.status) {
+                  case 200:
+                    if (!this.responseText) {
+                      NodeDiv.classList.remove('alert-warning');
+                      NodeDiv.classList.add('alert-danger');
+                      NodeStrong.textContent = "FAILURE: ";
+                      NodeText.textContent = "Unable to retrieve the meta text. `responseText` is absent.";
+                      return;
                     }
-                  }
-                };
-                req.send();
 
-                break;
-              default:
-                NodeDiv.classList.remove('alert-warning');
-                NodeDiv.classList.add('alert-danger');
+                    var responseTextMetaJS = this.responseText.trim();
+                    mdb.setValue(responseTextMetaJS);
+                    mdb.clearSelection();
+                    mdb.moveCursorTo(0,0);
 
-                NodeStrong.textContent = 'ERROR';
-                NodeText.textContent = ': Unable to fetch the meta.js with status of: ' + this.status + ' ' + this.statusText +
-                  (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
+                    NodeText.textContent = ": Fetching the meta.json";
 
-                break;
-            }
+                    url = FQDN + '/meta/' + userName + '/' + scriptName + '.meta.json';
+
+                    var req = new XMLHttpRequest();
+                    req.open('GET', url);
+
+                    req.onreadystatechange = function () {
+                      if (this.readyState == this.DONE) {
+                        switch (this.status) {
+                          case 200:
+                            if (!this.responseText) {
+                              NodeDiv.classList.remove('alert-warning');
+                              NodeDiv.classList.add('alert-danger');
+                              NodeStrong.textContent = "FAILURE: ";
+                              NodeText.textContent = "Unable to retrieve the meta JSON. `responseText` is absent.";
+                              return;
+                            }
+
+                            var responseTextMetaJSON = this.responseText;
+                            var meta = JSON.parse(responseTextMetaJSON);
+
+                            mdj.setValue(JSON.stringify(meta, null, ' '));
+                            mdj.clearSelection();
+                            mdj.moveCursorTo(0,0);
+
+                            // Finish up DOM
+                            wrappedNodeInput.addEventListener('click', function (aE) {
+                              var active = false;
+
+                              if (document.querySelector('pre#mdb')) {
+                                if (thisAce.edit('mdb').getSession().getUseWrapMode()) {
+                                  thisAce.edit('mdb').getSession().setUseWrapMode(false);
+                                }
+                                else {
+                                  thisAce.edit('mdb').getSession().setUseWrapMode(true);
+                                  active = true;
+                                }
+                              }
+
+                              if (document.querySelector('pre#json')) {
+                                if (thisAce.edit('json').getSession().getUseWrapMode()) {
+                                  thisAce.edit('json').getSession().setUseWrapMode(false);
+                                }
+                                else {
+                                  thisAce.edit('json').getSession().setUseWrapMode(true);
+                                  active = true;
+                                }
+                              }
+
+                              if (active) {
+                                aE.target.classList.add('active');
+                              } else {
+                                aE.target.classList.remove('active');
+                              }
+
+                              aE.target.blur();
+                            });
+                            wrappedNodeInput.removeAttribute('disabled');
+
+                            // Update title to be native
+                            var scriptNameX = null;
+                            meta.UserScript['name'].forEach(function (e, i, a) {
+                              if (!e.locale) { // Default to absent locale... requirement of OUJS to have `@name`
+                                scriptNameX = e.value;
+                              }
+                            });
+
+                            titleNode.textContent = 'Meta ' + scriptNameX + ' | OpenUserJS';
+
+                            // Update srcript name
+                            scriptNameNodeA.textContent = scriptNameX;
+
+                            // Update issue count
+                            var issueCount =
+                              meta.OpenUserJS &&
+                                meta.OpenUserJS.issues &&
+                                  meta.OpenUserJS.issues[0] &&
+                                    typeof meta.OpenUserJS.issues[0].value !== 'undefined'
+                                      ? meta.OpenUserJS.issues[0].value
+                                      : 'n/a';
+
+                            navNodeA4Span4.textContent = issueCount;
+
+                            // Update install count
+                            var installCount =
+                              meta.OpenUserJS &&
+                                meta.OpenUserJS.installs &&
+                                  meta.OpenUserJS.installs[0] &&
+                                    typeof meta.OpenUserJS.installs[0].value !== 'undefined'
+                                      ? meta.OpenUserJS.installs[0].value
+                                      : 'n/a';
+
+                            navbar1TextNodeP.appendChild(document.createTextNode(' ' + installCount));
+                            navbar2TextNodeP.appendChild(document.createTextNode(' ' + installCount));
+
+                            var atIcon = meta.UserScript['icon'];
+                            if (atIcon) {
+                              atIcon = meta.UserScript['icon'][0].value;
+
+                              var pageHeadingIconNodeSpan = document.createElement('span');
+                              pageHeadingIconNodeSpan.classList.add('page-heading-icon');
+                              pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
+
+                              var pageHeadingIconNodeI = document.createElement('i');
+                              pageHeadingIconNodeI.classList.add('fa');
+                              pageHeadingIconNodeI.classList.add('fa-fw');
+                              pageHeadingIconNodeI.classList.add('fa-file-code-o');
+
+                              pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
+                              pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
+
+                              var scriptIconNodeImg = document.createElement('img');
+                              scriptIconNodeImg.addEventListener('load', function () {
+                                pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
+                                pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
+                              });
+                              scriptIconNodeImg.src = atIcon;
+                            }
+
+                            // Clean up
+                            hookNode.removeChild(NodeDiv);
+
+                            // Resize for older browsers
+                            if (!hasOurRelative()) {
+                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                              jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+
+                              if (window.addEventListener) {
+                                window.addEventListener('resize', function () {
+                                  mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                                  jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                                }, false);
+                              }
+                              else if (window.attachEvent) {
+                                window.addEventListener('resize', function () {
+                                  mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                                  jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                                });
+                              }
+                            }
+                            break;
+                          default:
+                            NodeDiv.classList.remove('alert-warning');
+                            NodeDiv.classList.add('alert-danger');
+
+                            NodeStrong.textContent = 'ERROR';
+                            NodeText.textContent = ': Unable to fetch the meta.json with status of: ' + this.status + ' ' + this.statusText +
+                              (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
+                            break;
+                        }
+                      }
+                    };
+                    req.send();
+
+                    break;
+                  default:
+                    NodeDiv.classList.remove('alert-warning');
+                    NodeDiv.classList.add('alert-danger');
+
+                    NodeStrong.textContent = 'ERROR';
+                    NodeText.textContent = ': Unable to fetch the meta.js with status of: ' + this.status + ' ' + this.statusText +
+                      (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
+
+                    break;
+                }
+              }
+            };
+            req.send();
           }
-        };
-        req.send();
+        }, 1)
       }
     }
     else {
@@ -596,5 +611,4 @@
       }
     }
   }
-
 })();
