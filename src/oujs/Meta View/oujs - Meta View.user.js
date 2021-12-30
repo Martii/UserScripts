@@ -6,7 +6,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.5.0
+// @version       4.5.1
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -249,7 +249,6 @@
         var scriptNameNodeA = document.createElement('a');
         scriptNameNodeA.classList.add('script-name');
         scriptNameNodeA.href = '/scripts/' + userName + '/' + scriptName;
-        scriptNameNodeA.textContent = '\u2003';
 
         var pathDividerNodeSpan = document.createElement('span');
         pathDividerNodeSpan.classList.add('path-divider');
@@ -303,9 +302,15 @@
         mdbNodePre.id = 'mdb';
         mdbNodePre.textContent = '';
 
+        var scriptNameNodeSpinner = document.createElement('i');
+        scriptNameNodeSpinner.textContent = '';
+        scriptNameNodeSpinner.classList.add('fa');
+        scriptNameNodeSpinner.classList.add('fa-cog');
+        scriptNameNodeSpinner.classList.add('fa-spin');
+        scriptNameNodeA.appendChild(scriptNameNodeSpinner);
+
         scriptAuthorNodeA.textContent = decodeURI(userName);
         pathDividerNodeSpan.textContent = "/";
-        scriptNameNodeA.innerHTML = '<i class="fa fa-cog fa-spin"></i>';
 
         navNodeA4Span4.textContent = '';
 
@@ -408,6 +413,8 @@
                       NodeDiv.classList.add('alert-danger');
                       NodeStrong.textContent = "FAILURE: ";
                       NodeText.textContent = "Unable to retrieve the meta text. `responseText` is absent.";
+                      scriptNameNodeSpinner.classList.remove('fa-spin');
+                      scriptNameNodeSpinner.classList.add('fa-pulse');
                       return;
                     }
 
@@ -432,6 +439,8 @@
                               NodeDiv.classList.add('alert-danger');
                               NodeStrong.textContent = "FAILURE: ";
                               NodeText.textContent = "Unable to retrieve the meta JSON. `responseText` is absent.";
+                              scriptNameNodeSpinner.classList.remove('fa-spin');
+                              scriptNameNodeSpinner.classList.add('fa-pulse');
                               return;
                             }
 
@@ -565,6 +574,8 @@
                             NodeStrong.textContent = 'ERROR';
                             NodeText.textContent = ': Unable to fetch the meta.json with status of: ' + this.status + ' ' + this.statusText +
                               (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
+                            scriptNameNodeSpinner.classList.remove('fa-spin');
+                            scriptNameNodeSpinner.classList.add('fa-pulse');
                             break;
                         }
                       }
@@ -579,7 +590,8 @@
                     NodeStrong.textContent = 'ERROR';
                     NodeText.textContent = ': Unable to fetch the meta.js with status of: ' + this.status + ' ' + this.statusText +
                       (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
-
+                    scriptNameNodeSpinner.classList.remove('fa-spin');
+                    scriptNameNodeSpinner.classList.add('fa-pulse');
                     break;
                 }
               }
