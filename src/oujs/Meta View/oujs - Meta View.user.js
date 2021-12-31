@@ -6,7 +6,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.5.1
+// @version       4.5.2
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -43,14 +43,6 @@
    *
    */
 
-  var NodeScript = document.createElement('script'); // Watchpoint
-  NodeScript.setAttribute('src', '/redist/npm/ace-builds/src/ace.js');
-  NodeScript.setAttribute('type', 'text/javascript');
-  NodeScript.setAttribute('charset', 'UTF-8');
-
-  var bodyNode = document.querySelector('body');
-  bodyNode.appendChild(NodeScript);
-
   var FQDN = window.location.protocol + '//' + window.location.host;
 
   var matches = location.pathname.match(/^\/scripts\/(.*?)\/(.*?)(?:$|\/)/);
@@ -64,6 +56,22 @@
     if (/\/meta$/.test(location.pathname)) { // NOTE: Currently a 404 page
 
       // Simulate a Source Code page
+      var bodyNode = document.querySelector('body');
+
+      var NodeScript = document.createElement('script'); // Watchpoint
+      NodeScript.setAttribute('src', '/redist/npm/ace-builds/src/ace.js');
+      NodeScript.setAttribute('type', 'text/javascript');
+      NodeScript.setAttribute('charset', 'UTF-8');
+
+      bodyNode.appendChild(NodeScript);
+
+      var NodeLink = document.createElement('link');
+      NodeLink.setAttribute('rel', 'stylesheet');
+      NodeLink.setAttribute('type', 'text/css');
+      NodeLink.setAttribute('href', '/redist/npm/animate.css/animate.css');
+
+      bodyNode.appendChild(NodeLink);
+
       var NodeStyle = document.createElement('style');
       NodeStyle.setAttribute('type', 'text/css');
       var min_height = 85.2;
@@ -147,9 +155,6 @@
         var navNodeUl = document.createElement('ul');
         navNodeUl.classList.add('nav');
         navNodeUl.classList.add('navbar-nav');
-
-        var navNodeA4Span4 = document.createElement('span');
-        navNodeA4Span4.classList.add('badge');
 
         var navNodeA4 = document.createElement('a');
         navNodeA4.textContent = 'Issues ';
@@ -238,7 +243,6 @@
         navNodeLi3.appendChild(navNodeA3);
         navNodeUl.appendChild(navNodeLi4);
         navNodeLi4.appendChild(navNodeA4);
-        navNodeA4.appendChild(navNodeA4Span4);
 
         navbarCollapseNodeDiv.appendChild(navbar2TextNodeP);
 
@@ -311,8 +315,6 @@
 
         scriptAuthorNodeA.textContent = decodeURI(userName);
         pathDividerNodeSpan.textContent = "/";
-
-        navNodeA4Span4.textContent = '';
 
         hookNode.appendChild(mdbNodePre);
         hookNode.appendChild(jsonNodePre);
@@ -505,9 +507,26 @@
                                   meta.OpenUserJS.issues[0] &&
                                     typeof meta.OpenUserJS.issues[0].value !== 'undefined'
                                       ? meta.OpenUserJS.issues[0].value
-                                      : 'n/a';
+                                      : null;
 
-                            navNodeA4Span4.textContent = issueCount;
+                            if (issueCount && issueCount !== '0') {
+                              var navNodeA4Span4 = document.createElement('span');
+                              navNodeA4Span4.classList.add('badge');
+
+                              var nodeUsername = document.querySelector('.navbar-default .navbar-right li a[href^="/users/"]');
+                              if (nodeUsername) {
+                                var matches = nodeUsername.href.match(/\/users\/(.*)$/) ;
+                                if (matches && matches[1].toLowerCase() === userName.toLowerCase()) {
+                                  navNodeA4Span4.classList.add('animate__animated');
+                                  navNodeA4Span4.classList.add('animate__zoomInRight');
+                                  navNodeA4Span4.classList.add('animate__slow');
+                                }
+                              }
+
+                              navNodeA4.appendChild(navNodeA4Span4);
+
+                              navNodeA4Span4.textContent = issueCount;
+                            }
 
                             // Update install count
                             var installCount =
