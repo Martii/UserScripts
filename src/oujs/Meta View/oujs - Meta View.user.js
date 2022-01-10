@@ -6,7 +6,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.5.2
+// @version       4.6.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -278,20 +278,34 @@
         hookNode.parentNode.insertBefore(navbarNodeNav, hookNode.parentNode.firstChild);
         hookNode.parentNode.insertBefore(pageHeadingNodeH2, hookNode.parentNode.firstChild);
 
-        // Status notice
-        var NodeDiv = document.createElement('div');
-        NodeDiv.classList.add('alert');
-        NodeDiv.classList.add('alert-warning');
+        // Status notices
+        var NodeDiv1 = document.createElement('div');
+        NodeDiv1.classList.add('alert');
+        NodeDiv1.classList.add('alert-warning');
+        NodeDiv1.classList.add('ace_invisible');
+        NodeDiv1.classList.add('ace_emptyMessage');
 
-        var NodeStrong = document.createElement('strong');
-        NodeStrong.textContent = 'PLEASE WAIT';
+        var NodeStrong1 = document.createElement('strong');
+        NodeStrong1.textContent = 'PLEASE WAIT';
 
-        var NodeText = document.createTextNode(': Fetching the meta.js');
+        var NodeText1 = document.createTextNode(': Fetching the meta.js');
 
-        NodeDiv.appendChild(NodeStrong);
-        NodeDiv.appendChild(NodeText);
+        NodeDiv1.appendChild(NodeStrong1);
+        NodeDiv1.appendChild(NodeText1);
 
-        hookNode.appendChild(NodeDiv);
+        var NodeDiv2 = document.createElement('div');
+        NodeDiv2.classList.add('alert');
+        NodeDiv2.classList.add('alert-warning');
+        NodeDiv2.classList.add('ace_invisible');
+        NodeDiv2.classList.add('ace_emptyMessage');
+
+        var NodeStrong2 = document.createElement('strong');
+        NodeStrong2.textContent = 'PLEASE WAIT';
+
+        var NodeText2 = document.createTextNode(': Fetching the meta.json');
+
+        NodeDiv2.appendChild(NodeStrong2);
+        NodeDiv2.appendChild(NodeText2);
 
         // Create meta views
         var jsonNodePre = document.createElement('pre');
@@ -355,6 +369,9 @@
             });
             mdb.setReadOnly(true);
 
+            var node1 = mdb.renderer.emptyMessageNode = NodeDiv1;
+            mdb.renderer.scroller.appendChild(node1);
+
             var mdj = thisAce.edit('json');
             mdj.setTheme('ace/theme/dawn');
             mdj.getSession().setMode('ace/mode/json');
@@ -364,34 +381,37 @@
             });
             mdj.setReadOnly(true);
 
+            var node2 = mdb.renderer.emptyMessageNode = NodeDiv2;
+            mdj.renderer.scroller.appendChild(node2);
+
+            function hasRelative(aPrefix) {
+              aPrefix = aPrefix || '';
+
+              var hasCalc = document.createElement('div');
+              hasCalc.style.setProperty(aPrefix + 'width', 'calc(1px)', '');
+
+              var hasUnitV = document.createElement("div");
+              hasUnitV.style.setProperty(aPrefix + "width", "calc(5vw + 5vw)", "");
+
+              return !!hasCalc.style.length && !!hasUnitV.style.length;
+            }
+
+            function hasOurRelative() {
+              return hasRelative('-moz-') || hasRelative('-ms-') || hasRelative('-o-') || hasRelative('-webkit-') || hasRelative();
+            }
+
+            function calcHeight() {
+              return parseInt((window.innerHeight - 306) / 2.004);
+            }
+
             // Find metas
-            var url = FQDN + '/src/scripts/' + userName + '/' + scriptName + '.user.js';
+            var url1 = FQDN + '/src/scripts/' + userName + '/' + scriptName + '.user.js';
 
-            var req = new XMLHttpRequest();
-            req.open('GET', url);
-            req.setRequestHeader('Accept', 'text/x-userscript-meta');
+            var req1 = new XMLHttpRequest();
+            req1.open('GET', url1);
+            req1.setRequestHeader('Accept', 'text/x-userscript-meta');
 
-            req.onreadystatechange = function () {
-              function hasRelative(aPrefix) {
-                aPrefix = aPrefix || '';
-
-                var hasCalc = document.createElement('div');
-                hasCalc.style.setProperty(aPrefix + 'width', 'calc(1px)', '');
-
-                var hasUnitV = document.createElement("div");
-                hasUnitV.style.setProperty(aPrefix + "width", "calc(5vw + 5vw)", "");
-
-                return !!hasCalc.style.length && !!hasUnitV.style.length;
-              }
-
-              function hasOurRelative() {
-                return hasRelative('-moz-') || hasRelative('-ms-') || hasRelative('-o-') || hasRelative('-webkit-') || hasRelative();
-              }
-
-              function calcHeight() {
-                return parseInt((window.innerHeight - 306) / 2.004);
-              }
-
+            req1.onreadystatechange = function () {
               if (this.readyState == this.DONE) {
                 console.log(
                   [
@@ -411,10 +431,10 @@
                 switch (this.status) {
                   case 200:
                     if (!this.responseText) {
-                      NodeDiv.classList.remove('alert-warning');
-                      NodeDiv.classList.add('alert-danger');
-                      NodeStrong.textContent = "FAILURE: ";
-                      NodeText.textContent = "Unable to retrieve the meta text. `responseText` is absent.";
+                      NodeDiv1.classList.remove('alert-warning');
+                      NodeDiv1.classList.add('alert-danger');
+                      NodeStrong1.textContent = "FAILURE: ";
+                      NodeText1.textContent = "Unable to retrieve the meta text. `responseText` is absent.";
                       scriptNameNodeSpinner.classList.remove('fa-spin');
                       scriptNameNodeSpinner.classList.add('fa-pulse');
                       return;
@@ -425,189 +445,31 @@
                     mdb.clearSelection();
                     mdb.moveCursorTo(0,0);
 
-                    NodeText.textContent = ": Fetching the meta.json";
+                    // Clean up
+                    mdb.renderer.scroller.removeChild(node1);
 
-                    url = FQDN + '/meta/' + userName + '/' + scriptName + '.meta.json';
+                    // Resize for older browsers
+                    if (!hasOurRelative()) {
+                      mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
 
-                    var req = new XMLHttpRequest();
-                    req.open('GET', url);
-
-                    req.onreadystatechange = function () {
-                      if (this.readyState == this.DONE) {
-                        switch (this.status) {
-                          case 200:
-                            if (!this.responseText) {
-                              NodeDiv.classList.remove('alert-warning');
-                              NodeDiv.classList.add('alert-danger');
-                              NodeStrong.textContent = "FAILURE: ";
-                              NodeText.textContent = "Unable to retrieve the meta JSON. `responseText` is absent.";
-                              scriptNameNodeSpinner.classList.remove('fa-spin');
-                              scriptNameNodeSpinner.classList.add('fa-pulse');
-                              return;
-                            }
-
-                            var responseTextMetaJSON = this.responseText;
-                            var meta = JSON.parse(responseTextMetaJSON);
-
-                            mdj.setValue(JSON.stringify(meta, null, ' '));
-                            mdj.clearSelection();
-                            mdj.moveCursorTo(0,0);
-
-                            // Finish up DOM
-                            wrappedNodeInput.addEventListener('click', function (aE) {
-                              var active = false;
-
-                              if (document.querySelector('pre#mdb')) {
-                                if (thisAce.edit('mdb').getSession().getUseWrapMode()) {
-                                  thisAce.edit('mdb').getSession().setUseWrapMode(false);
-                                }
-                                else {
-                                  thisAce.edit('mdb').getSession().setUseWrapMode(true);
-                                  active = true;
-                                }
-                              }
-
-                              if (document.querySelector('pre#json')) {
-                                if (thisAce.edit('json').getSession().getUseWrapMode()) {
-                                  thisAce.edit('json').getSession().setUseWrapMode(false);
-                                }
-                                else {
-                                  thisAce.edit('json').getSession().setUseWrapMode(true);
-                                  active = true;
-                                }
-                              }
-
-                              if (active) {
-                                aE.target.classList.add('active');
-                              } else {
-                                aE.target.classList.remove('active');
-                              }
-
-                              aE.target.blur();
-                            });
-                            wrappedNodeInput.removeAttribute('disabled');
-
-                            // Update title to be native
-                            var scriptNameX = null;
-                            meta.UserScript['name'].forEach(function (e, i, a) {
-                              if (!e.locale) { // Default to absent locale... requirement of OUJS to have `@name`
-                                scriptNameX = e.value;
-                              }
-                            });
-
-                            titleNode.textContent = 'Meta ' + scriptNameX + ' | OpenUserJS';
-
-                            // Update srcript name
-                            scriptNameNodeA.textContent = scriptNameX;
-
-                            // Update issue count
-                            var issueCount =
-                              meta.OpenUserJS &&
-                                meta.OpenUserJS.issues &&
-                                  meta.OpenUserJS.issues[0] &&
-                                    typeof meta.OpenUserJS.issues[0].value !== 'undefined'
-                                      ? meta.OpenUserJS.issues[0].value
-                                      : null;
-
-                            if (issueCount && issueCount !== '0') {
-                              var navNodeA4Span4 = document.createElement('span');
-                              navNodeA4Span4.classList.add('badge');
-
-                              var nodeUsername = document.querySelector('.navbar-default .navbar-right li a[href^="/users/"]');
-                              if (nodeUsername) {
-                                var matches = nodeUsername.href.match(/\/users\/(.*)$/) ;
-                                if (matches && matches[1].toLowerCase() === userName.toLowerCase()) {
-                                  navNodeA4Span4.classList.add('animate__animated');
-                                  navNodeA4Span4.classList.add('animate__zoomInRight');
-                                  navNodeA4Span4.classList.add('animate__slow');
-                                }
-                              }
-
-                              navNodeA4.appendChild(navNodeA4Span4);
-
-                              navNodeA4Span4.textContent = issueCount;
-                            }
-
-                            // Update install count
-                            var installCount =
-                              meta.OpenUserJS &&
-                                meta.OpenUserJS.installs &&
-                                  meta.OpenUserJS.installs[0] &&
-                                    typeof meta.OpenUserJS.installs[0].value !== 'undefined'
-                                      ? meta.OpenUserJS.installs[0].value
-                                      : 'n/a';
-
-                            navbar1TextNodeP.appendChild(document.createTextNode(' ' + installCount));
-                            navbar2TextNodeP.appendChild(document.createTextNode(' ' + installCount));
-
-                            var atIcon = meta.UserScript['icon'];
-                            if (atIcon) {
-                              atIcon = meta.UserScript['icon'][0].value;
-
-                              var pageHeadingIconNodeSpan = document.createElement('span');
-                              pageHeadingIconNodeSpan.classList.add('page-heading-icon');
-                              pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
-
-                              var pageHeadingIconNodeI = document.createElement('i');
-                              pageHeadingIconNodeI.classList.add('fa');
-                              pageHeadingIconNodeI.classList.add('fa-fw');
-                              pageHeadingIconNodeI.classList.add('fa-file-code-o');
-
-                              pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
-                              pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
-
-                              var scriptIconNodeImg = document.createElement('img');
-                              scriptIconNodeImg.addEventListener('load', function () {
-                                pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
-                                pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
-                              });
-                              scriptIconNodeImg.src = atIcon;
-                            }
-
-                            // Clean up
-                            hookNode.removeChild(NodeDiv);
-
-                            // Resize for older browsers
-                            if (!hasOurRelative()) {
-                              mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                              jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-
-                              if (window.addEventListener) {
-                                window.addEventListener('resize', function () {
-                                  mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                                  jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                                }, false);
-                              }
-                              else if (window.attachEvent) {
-                                window.addEventListener('resize', function () {
-                                  mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                                  jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
-                                });
-                              }
-                            }
-                            break;
-                          default:
-                            NodeDiv.classList.remove('alert-warning');
-                            NodeDiv.classList.add('alert-danger');
-
-                            NodeStrong.textContent = 'ERROR';
-                            NodeText.textContent = ': Unable to fetch the meta.json with status of: ' + this.status + ' ' + this.statusText +
-                              (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
-                            scriptNameNodeSpinner.classList.remove('fa-spin');
-                            scriptNameNodeSpinner.classList.add('fa-pulse');
-                            break;
-                        }
+                      if (window.addEventListener) {
+                        window.addEventListener('resize', function () {
+                          mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                        }, false);
                       }
-                    };
-                    req.send();
-
+                      else if (window.attachEvent) {
+                        window.addEventListener('resize', function () {
+                          mdbNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                        });
+                      }
+                    }
                     break;
                   default:
-                    NodeDiv.classList.remove('alert-warning');
-                    NodeDiv.classList.add('alert-danger');
+                    NodeDiv1.classList.remove('alert-warning');
+                    NodeDiv1.classList.add('alert-danger');
 
-                    NodeStrong.textContent = 'ERROR';
-                    NodeText.textContent = ': Unable to fetch the meta.js with status of: ' + this.status + ' ' + this.statusText +
+                    NodeStrong1.textContent = 'ERROR';
+                    NodeText1.textContent = ': Unable to fetch the meta.js with status of: ' + this.status + ' ' + this.statusText +
                       (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
                     scriptNameNodeSpinner.classList.remove('fa-spin');
                     scriptNameNodeSpinner.classList.add('fa-pulse');
@@ -615,7 +477,181 @@
                 }
               }
             };
-            req.send();
+
+
+            NodeText2.textContent = ": Fetching the meta.json";
+
+            var url2 = FQDN + '/meta/' + userName + '/' + scriptName + '.meta.json';
+
+            var req2 = new XMLHttpRequest();
+            req2.open('GET', url2);
+
+            req2.onreadystatechange = function () {
+              if (this.readyState == this.DONE) {
+                switch (this.status) {
+                  case 200:
+                    if (!this.responseText) {
+                      NodeDiv2.classList.remove('alert-warning');
+                      NodeDiv2.classList.add('alert-danger');
+                      NodeStrong2.textContent = "FAILURE: ";
+                      NodeText2.textContent = "Unable to retrieve the meta JSON. `responseText` is absent.";
+                      scriptNameNodeSpinner.classList.remove('fa-spin');
+                      scriptNameNodeSpinner.classList.add('fa-pulse');
+                      return;
+                    }
+
+                    var responseTextMetaJSON = this.responseText;
+                    var meta = JSON.parse(responseTextMetaJSON);
+
+                    mdj.setValue(JSON.stringify(meta, null, ' '));
+                    mdj.clearSelection();
+                    mdj.moveCursorTo(0,0);
+
+                    // Finish up DOM
+                    wrappedNodeInput.addEventListener('click', function (aE) {
+                      var active = false;
+
+                      if (document.querySelector('pre#mdb')) {
+                        if (thisAce.edit('mdb').getSession().getUseWrapMode()) {
+                          thisAce.edit('mdb').getSession().setUseWrapMode(false);
+                        }
+                        else {
+                          thisAce.edit('mdb').getSession().setUseWrapMode(true);
+                          active = true;
+                        }
+                      }
+
+                      if (document.querySelector('pre#json')) {
+                        if (thisAce.edit('json').getSession().getUseWrapMode()) {
+                          thisAce.edit('json').getSession().setUseWrapMode(false);
+                        }
+                        else {
+                          thisAce.edit('json').getSession().setUseWrapMode(true);
+                          active = true;
+                        }
+                      }
+
+                      if (active) {
+                        aE.target.classList.add('active');
+                      } else {
+                        aE.target.classList.remove('active');
+                      }
+
+                      aE.target.blur();
+                    });
+                    wrappedNodeInput.removeAttribute('disabled');
+
+                    // Update title to be native
+                    var scriptNameX = null;
+                    meta.UserScript['name'].forEach(function (e, i, a) {
+                      if (!e.locale) { // Default to absent locale... requirement of OUJS to have `@name`
+                        scriptNameX = e.value;
+                      }
+                    });
+
+                    titleNode.textContent = 'Meta ' + scriptNameX + ' | OpenUserJS';
+
+                    // Update srcript name
+                    scriptNameNodeA.textContent = scriptNameX;
+
+                    // Update issue count
+                    var issueCount =
+                      meta.OpenUserJS &&
+                        meta.OpenUserJS.issues &&
+                          meta.OpenUserJS.issues[0] &&
+                            typeof meta.OpenUserJS.issues[0].value !== 'undefined'
+                              ? meta.OpenUserJS.issues[0].value
+                              : null;
+
+                    if (issueCount && issueCount !== '0') {
+                      var navNodeA4Span4 = document.createElement('span');
+                      navNodeA4Span4.classList.add('badge');
+
+                      var nodeUsername = document.querySelector('.navbar-default .navbar-right li a[href^="/users/"]');
+                      if (nodeUsername) {
+                        var matches = nodeUsername.href.match(/\/users\/(.*)$/) ;
+                        if (matches && matches[1].toLowerCase() === userName.toLowerCase()) {
+                          navNodeA4Span4.classList.add('animate__animated');
+                          navNodeA4Span4.classList.add('animate__zoomInRight');
+                          navNodeA4Span4.classList.add('animate__slow');
+                        }
+                      }
+
+                      navNodeA4.appendChild(navNodeA4Span4);
+
+                      navNodeA4Span4.textContent = issueCount;
+                    }
+
+                    // Update install count
+                    var installCount =
+                      meta.OpenUserJS &&
+                        meta.OpenUserJS.installs &&
+                          meta.OpenUserJS.installs[0] &&
+                            typeof meta.OpenUserJS.installs[0].value !== 'undefined'
+                              ? meta.OpenUserJS.installs[0].value
+                              : 'n/a';
+
+                    navbar1TextNodeP.appendChild(document.createTextNode(' ' + installCount));
+                    navbar2TextNodeP.appendChild(document.createTextNode(' ' + installCount));
+
+                    var atIcon = meta.UserScript['icon'];
+                    if (atIcon) {
+                      atIcon = meta.UserScript['icon'][0].value;
+
+                      var pageHeadingIconNodeSpan = document.createElement('span');
+                      pageHeadingIconNodeSpan.classList.add('page-heading-icon');
+                      pageHeadingIconNodeSpan.setAttribute('data-icon-src', atIcon);
+
+                      var pageHeadingIconNodeI = document.createElement('i');
+                      pageHeadingIconNodeI.classList.add('fa');
+                      pageHeadingIconNodeI.classList.add('fa-fw');
+                      pageHeadingIconNodeI.classList.add('fa-file-code-o');
+
+                      pageHeadingNodeH2.insertBefore(pageHeadingIconNodeSpan, pageHeadingNodeH2.firstChild);
+                      pageHeadingIconNodeSpan.appendChild(pageHeadingIconNodeI);
+
+                      var scriptIconNodeImg = document.createElement('img');
+                      scriptIconNodeImg.addEventListener('load', function () {
+                        pageHeadingIconNodeSpan.removeChild(pageHeadingIconNodeI);
+                        pageHeadingIconNodeSpan.appendChild(scriptIconNodeImg);
+                      });
+                      scriptIconNodeImg.src = atIcon;
+                    }
+
+                    // Clean up
+                    mdj.renderer.scroller.removeChild(node2);
+
+                    // Resize for older browsers
+                    if (!hasOurRelative()) {
+                      jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+
+                      if (window.addEventListener) {
+                        window.addEventListener('resize', function () {
+                          jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                        }, false);
+                      }
+                      else if (window.attachEvent) {
+                        window.addEventListener('resize', function () {
+                          jsonNodePre.style.setProperty('height', calcHeight() + 'px', '');
+                        });
+                      }
+                    }
+                    break;
+                  default:
+                    NodeDiv2.classList.remove('alert-warning');
+                    NodeDiv2.classList.add('alert-danger');
+
+                    NodeStrong2.textContent = 'ERROR';
+                    NodeText2.textContent = ': Unable to fetch the meta.json with status of: ' + this.status + ' ' + this.statusText +
+                      (this.status === 429 ? '. Try again in ' + (this.getResponseHeader('Retry-After') ? this.getResponseHeader('Retry-After') + ' seconds.' : 'a few.') : '');
+                    scriptNameNodeSpinner.classList.remove('fa-spin');
+                    scriptNameNodeSpinner.classList.add('fa-pulse');
+                    break;
+                }
+              }
+            };
+            req1.send();
+            req2.send();
           }
         }, 1)
       }
