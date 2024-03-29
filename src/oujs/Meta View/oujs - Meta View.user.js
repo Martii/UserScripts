@@ -6,7 +6,7 @@
 // @copyright     2014+, Marti Martz (https://openuserjs.org/users/Marti)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       4.6.0
+// @version       5.0.0
 // @icon          https://www.gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?r=G&s=48&default=identicon
 
 // @homepageURL  https://github.com/Martii/UserScripts/tree/master/src/oujs/Meta%20View
@@ -19,8 +19,11 @@
 // @include  /^https?://openuserjs\.org(?::\d{1,5})?/scripts//
 // @include  /^http://localhost(?::\d{1,5})?/scripts//
 
-// @include  https://openuserjs.org/scripts/*/*
-// @include  http://localhost:8080/scripts/*/*
+// @include  https://openuserjs.org/scripts/*
+// @include  http://localhost:8080/scripts/*
+
+// @match    https://openuserjs.org/scripts/*
+// @match    http://localhost:8080/scripts/*
 
 // @grant none
 
