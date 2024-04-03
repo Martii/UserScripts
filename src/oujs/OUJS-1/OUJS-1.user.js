@@ -7,7 +7,7 @@
 // @copyright    2013+, OpenUserJS Group (https://github.com/OpenUserJs)
 // @license      CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license      GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version      3.0.0a.0
+// @version      3.0.1a.0
 // @icon         https://gravatar.com/avatar/7ff58eb098c23feafa72e0b4cd13f396?s=48
 
 // @author        Marti
@@ -94,6 +94,15 @@
           "label": 'More emphasis on current username',
           "default": false
         },
+        'rememberCurrentUsername': {
+          "type": 'checkbox',
+          "label": 'Remember current username',
+          "default": false
+        },
+        'currentUsername': {
+          "type": 'hidden',
+          "default": ''
+        },
         'stickMainNav': {
           "type": 'checkbox',
           "label": 'Main navigation to sticky',
@@ -105,6 +114,8 @@
           '#gmc { position: static !important; width: auto !important; height: auto !important; max-height: none !important; max-width: none !important; margin: 0 !important; border: none !important; margin-top: 20px !important; margin-bottom: 10px !important; }',
           '#gmc_header { text-align: left !important; font-family: "Squada One","Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 30px; font-weight: 500; line-height: 1.1; }',
           '#gmc .field_label { font-size: inherit; font-weight: inherit; line-height: inherit; margin-left: 5px; }',
+
+          '#gmc_clipScriptListLineNumbers_var, #gmc_rememberCurrentUsername_var { margin-left: 1.4em !important; }',
 
           '#gmc_resetLink { display: none; }',
           '#gmc_closeBtn { display: none; }'
@@ -215,13 +226,26 @@
 
       document.head.appendChild(nodeStyle);
 
-      // Get current username
-      var thatNode = document.querySelector('.navbar-right li:last-child');
-      var usernameNode = thatNode.previousSibling.previousSibling.firstChild;
+      // Check for logged in
+      var logoutNode = document.querySelector('.navbar-right li .fa-sign-out');
+
+      if (logoutNode) {
+        var thatNode = document.querySelector('.navbar-right li:last-child');
+        var usernameNode = thatNode.previousSibling.previousSibling.firstChild;
+        var username = usernameNode.textContent;
+
+        gmc.set('currentUsername', gmc.get('rememberCurrentUsername') ? username : '');
+        gmc.save();
+      }
+      else {
+        if (gmc.get('rememberCurrentUsername')) {
+          var username = gmc.get('currentUsername');
+        }
+      }
 
       var ownerNodes = document.querySelectorAll('span.label');
       for (var i = 0; i < ownerNodes.length; ++i) {
-        if (ownerNodes[i].firstChild && ownerNodes[i].firstChild.textContent === usernameNode.textContent) {
+        if (ownerNodes[i].firstChild && ownerNodes[i].firstChild.textContent === username) {
           ownerNodes[i].classList.remove('label-info');
           ownerNodes[i].classList.add('label-primary');
         }
@@ -241,4 +265,5 @@
       }
     }
   }
+
 })();
