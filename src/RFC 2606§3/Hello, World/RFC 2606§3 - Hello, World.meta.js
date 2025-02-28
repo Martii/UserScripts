@@ -5,7 +5,7 @@
 // @copyright     2007+, Marti Martz (http://userscripts.org/users/37004)
 // @license       CC-BY-NC-SA-4.0; https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 // @license       GPL-3.0-or-later; http://www.gnu.org/licenses/gpl-3.0.txt
-// @version       2024.12.25.1
+// @version       2025.02.28.0
 // @icon          https://raw.githubusercontent.com/Martii/UserScripts/master/res/world.png
 //@icon          https://gkeselfbilljenkins.jaas-gcp.cloud.sap.corp/static/7ce2b5b0/favicon.ico
 // @author        Marti Martz <somewhere@example.com> (https://openuserjs.org/users/Marti)
